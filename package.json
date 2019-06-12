@@ -1,0 +1,26 @@
+{
+  "name": "melophony-server",
+  "version": "1.0.0",
+  "description": "Simple server to download from youtube before transferring to devices",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js -e js,squirrelly,css,json -V --exec babel-node --presets @babel/preset-env",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Ben-Lulu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ytdl-core": "^0.29.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/preset-env": "^7.3.1",
+    "babel-preset-es2015": "^6.24.1"
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"]
+  }
+}
