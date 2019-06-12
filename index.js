@@ -3,6 +3,8 @@ import { exec } from "child_process";
 
 const App = Express();
 
+const PORT = 1789;
+
 App.get('/:videoId', function (request, response) {
     console.log(request.params.videoId);
     exec(`ytdl -i https://www.youtube.com/watch?v=${request.params.videoId} | grep m4a`, (error, stdout, stderr) => {
@@ -23,6 +25,6 @@ App.get("/.*", (request, response) => {
     response.send("Fallback");
 });
 
-App.listen(8081, function () {
-    console.log('Example app listening on port 3000!')
+App.listen(PORT, function () {
+    console.log(`Example app listening on port ${PORT}`)
 });
