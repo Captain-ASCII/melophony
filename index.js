@@ -25,6 +25,6 @@ App.get("/.*", (request, response) => {
     response.send("Fallback");
 });
 
-App.listen(PORT, function () {
-    console.log(`Example app listening on port ${PORT}`)
+App.listen(process.env.PORT || PORT, function () {
+    console.log(`Example app listening on port ${process.env.PORT || PORT}`)
 });
