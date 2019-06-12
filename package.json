@@ -4,18 +4,19 @@
   "description": "Simple server to download from youtube before transferring to devices",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node --presets @babel/preset-env",
+    "start": "node babelified_index.js",
+    "bundle": "babel index.js > babelified_index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Daniel Ben-Lulu",
   "license": "ISC",
   "dependencies": {
-    "@babel/node": "^7.4.5",
     "express": "^4.17.1",
     "ytdl": "^0.11.1",
     "ytdl-core": "^0.29.2"
   },
   "devDependencies": {
+    "@babel/node": "^7.4.5",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
