@@ -7,6 +7,7 @@ var _child_process = require("child_process");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var App = (0, _express["default"])();
+var PORT = 1789;
 App.get('/:videoId', function (request, response) {
   console.log(request.params.videoId);
   (0, _child_process.exec)("ytdl -i https://www.youtube.com/watch?v=".concat(request.params.videoId, " | grep m4a"), function (error, stdout, stderr) {
@@ -29,7 +30,7 @@ App.get('/:videoId', function (request, response) {
 App.get("/.*", function (request, response) {
   response.send("Fallback");
 });
-App.listen(8081, function () {
-  console.log('Example app listening on port 3000!');
+App.listen(process.env.PORT || PORT, function () {
+  console.log("Example app listening on port ".concat(process.env.PORT || PORT));
 });
 
