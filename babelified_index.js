@@ -46,41 +46,44 @@ App.put('/:videoId', function (request, response) {
       size: 1,
       state: State.UNAVAILABLE
     };
-  }
+    response.send({
+      added: request.params.videoId
+    });
+    save();
+    console.log("Add ".concat(request.params.videoId, " to files"));
 
-  save();
-  console.log("Add ".concat(request.params.videoId, " to files"));
-  response.send({
-    added: request.params.videoId
-  });
-
-  _ytdlCore["default"].getInfo("https://www.youtube.com/watch?v=".concat(request.params.videoId), {}, function (error, info) {
-    if (error) {
-      response.send("Error: ".concat(error));
-    }
-
-    for (var i in info.formats) {
-      if (info.formats[i].container == "m4a") {
-        var format = info.formats[i];
-        console.log("Found information for ".concat(request.params.videoId, ": [ itag: ").concat(format.itag, ", length: ").concat(format.clen, " ]"));
-        files[request.params.videoId].size = format.clen;
-        files[request.params.videoId].state = State.DOWNLOADING;
-        save();
-        (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
-          if (error) {
-            response.send("Error: ".concat(error));
-          }
-
-          files[request.params.videoId].state = State.AVAILABLE;
-          save();
-          console.log("Download done for ".concat(request.params.videoId));
-          setTimeout(function (_) {
-            return deleteFile(request.params.videoId);
-          }, 300000);
-        });
+    _ytdlCore["default"].getInfo("https://www.youtube.com/watch?v=".concat(request.params.videoId), {}, function (error, info) {
+      if (error) {
+        response.send("Error: ".concat(error));
       }
-    }
-  });
+
+      for (var i in info.formats) {
+        if (info.formats[i].container == "m4a") {
+          var format = info.formats[i];
+          console.log("Found information for ".concat(request.params.videoId, ": [ itag: ").concat(format.itag, ", length: ").concat(format.clen, " ]"));
+          files[request.params.videoId].size = format.clen;
+          files[request.params.videoId].state = State.DOWNLOADING;
+          save();
+          (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
+            if (error) {
+              response.send("Error: ".concat(error));
+            }
+
+            files[request.params.videoId].state = State.AVAILABLE;
+            save();
+            console.log("Download done for ".concat(request.params.videoId));
+            setTimeout(function (_) {
+              return deleteFile(request.params.videoId);
+            }, 300000);
+          });
+        }
+      }
+    });
+  } else {
+    response.send({
+      added: request.params.videoId
+    });
+  }
 });
 App.get("/state/:videoId", function (request, response) {
   var progress = -1;
