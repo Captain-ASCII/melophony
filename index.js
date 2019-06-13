@@ -1,22 +1,33 @@
 import Express from "express";
+import FileSystem from "fs";
 import { exec } from "child_process";
 
 const App = Express();
 
 const PORT = 1789;
+const FILE = "file.m4a";
+
+App.use("/get", Express.static(FILE));
+
+App.get("/clear", function (request, response) {
+    FileSystem.unlinkSync(FILE);
+    response.send({ state: "deleted" });
+});
 
 App.get('/:videoId', function (request, response) {
     console.log(request.params.videoId);
     exec(`ytdl -i https://www.youtube.com/watch?v=${request.params.videoId} | grep m4a`, (error, stdout, stderr) => {
-        if (error) {
+        if (error || typeof stdout != "string") {
             response.send(`Error: ${error}`);
             return;
         }
-        exec(`ytdl -q 140 --print-url https://www.youtube.com/watch?v=${request.params.videoId}`, (error, stdout, stderr) => {
+        let quality = stdout.match(/[0-9]+/);
+        console.warn(quality);
+        exec(`ytdl -q ${quality[0]} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE}`, (error, stdout, stderr) => {
             if (error) {
                 response.send(`Error: ${error}`);
             }
-            response.send({ url: stdout });
+            response.send({ done: true });
         });
     });
 });

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node babelified_index.js",
     "bundle": "babel index.js > babelified_index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "local": "nodemon index.js -e js -V --exec babel-node --presets @babel/preset-env",
+    "test": "echo \"Error: no test specified\" && exit 11"
   },
   "author": "Daniel Ben-Lulu",
   "license": "ISC",
