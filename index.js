@@ -41,38 +41,41 @@ App.put('/:videoId', function (request, response) {
             size: 1,
             state: State.UNAVAILABLE
         };
-    }
-    save();
-    console.log(`Add ${request.params.videoId} to files`);
 
-    response.send({ added: request.params.videoId });
+        response.send({ added: request.params.videoId });
 
-    YTDL.getInfo(`https://www.youtube.com/watch?v=${request.params.videoId}`, {}, (error, info) => {
-        if (error) {
-            response.send(`Error: ${error}`);
-        }
+        save();
+        console.log(`Add ${request.params.videoId} to files`);
 
-        for (let i in info.formats) {
-            if (info.formats[i].container == "m4a") {
-                let format = info.formats[i];
-                console.log(`Found information for ${request.params.videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`);
-
-                files[request.params.videoId].size = format.clen;
-                files[request.params.videoId].state = State.DOWNLOADING;
-                save();
-                exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${request.params.videoId}.m4a`, (error, stdout, stderr) => {
-                    if (error) {
-                        response.send(`Error: ${error}`);
-                    }
-                    files[request.params.videoId].state = State.AVAILABLE;
-                    save();
-                    console.log(`Download done for ${request.params.videoId}`);
-
-                    setTimeout(_ => deleteFile(request.params.videoId), 300000);
-                });
+        YTDL.getInfo(`https://www.youtube.com/watch?v=${request.params.videoId}`, {}, (error, info) => {
+            if (error) {
+                response.send(`Error: ${error}`);
             }
-        }
-    });
+
+            for (let i in info.formats) {
+                if (info.formats[i].container == "m4a") {
+                    let format = info.formats[i];
+                    console.log(`Found information for ${request.params.videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`);
+
+                    files[request.params.videoId].size = format.clen;
+                    files[request.params.videoId].state = State.DOWNLOADING;
+                    save();
+                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${request.params.videoId}.m4a`, (error, stdout, stderr) => {
+                        if (error) {
+                            response.send(`Error: ${error}`);
+                        }
+                        files[request.params.videoId].state = State.AVAILABLE;
+                        save();
+                        console.log(`Download done for ${request.params.videoId}`);
+
+                        setTimeout(_ => deleteFile(request.params.videoId), 300000);
+                    });
+                }
+            }
+        });
+    } else {
+        response.send({ added: request.params.videoId });
+    }
 });
 
 App.get("/state/:videoId", function (request, response) {
