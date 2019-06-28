@@ -8,6 +8,7 @@ const App = Express();
 
 const PORT = 1789;
 const DATA_FILE = "data.json";
+const FILE_FOLDER = "files";
 
 const State = {
     UNAVAILABLE: "unavailable",
@@ -60,7 +61,7 @@ App.put('/:videoId', function (request, response) {
                     files[request.params.videoId].size = format.clen;
                     files[request.params.videoId].state = State.DOWNLOADING;
                     save();
-                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${request.params.videoId}.m4a`, (error, stdout, stderr) => {
+                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE_FOLDER}/${request.params.videoId}.m4a`, (error, stdout, stderr) => {
                         if (error) {
                             response.send(`Error: ${error}`);
                         }
@@ -111,6 +112,26 @@ App.delete("/:videoId", function (request, response) {
     files[request.params.videoId].state = State.DELETED;
     save();
     response.send({ state: "deleted" });
+});
+
+
+
+App.get("/list/current", function (request, response) {
+    response.send(FileSystem.readdirSync(FILE_FOLDER));
+});
+
+App.get("/manifest", function (request, response) {
+    response.send(JSON.parse(FileSystem.readFileSync(DATA_FILE, "utf8")));
+});
+
+App.get("/migrate", function (request, response) {
+    exec(`mkdir ${FILE_FOLDER}`, (error, stdout, stderr) => {
+        if (error) {
+            response.send(`Error: ${error}`);
+        }
+        let filesAtRoot = FileSystem.readdirSync(FILE_FOLDER);
+        response.send({ done: true, files: filesAtRoot });
+    });
 });
 
 App.get("/.*", (request, response) => {

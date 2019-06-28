@@ -15,6 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var App = (0, _express["default"])();
 var PORT = 1789;
 var DATA_FILE = "data.json";
+var FILE_FOLDER = "files";
 var State = {
   UNAVAILABLE: "unavailable",
   DOWNLOADING: "downloading",
@@ -64,7 +65,7 @@ App.put('/:videoId', function (request, response) {
           files[request.params.videoId].size = format.clen;
           files[request.params.videoId].state = State.DOWNLOADING;
           save();
-          (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
+          (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
             if (error) {
               response.send("Error: ".concat(error));
             }
@@ -120,6 +121,26 @@ App["delete"]("/:videoId", function (request, response) {
   save();
   response.send({
     state: "deleted"
+  });
+});
+App.get("/list/current", function (request, response) {
+  response.send(_fs["default"].readdirSync(FILE_FOLDER));
+});
+App.get("/manifest", function (request, response) {
+  response.send(JSON.parse(_fs["default"].readFileSync(DATA_FILE, "utf8")));
+});
+App.get("/migrate", function (request, response) {
+  (0, _child_process.exec)("mkdir ".concat(FILE_FOLDER), function (error, stdout, stderr) {
+    if (error) {
+      response.send("Error: ".concat(error));
+    }
+
+    var filesAtRoot = _fs["default"].readdirSync(FILE_FOLDER);
+
+    response.send({
+      done: true,
+      files: filesAtRoot
+    });
   });
 });
 App.get("/.*", function (request, response) {
