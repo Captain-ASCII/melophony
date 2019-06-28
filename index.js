@@ -31,7 +31,7 @@ function deleteFile(id) {
 }
 
 function save() {
-    FileSystem.writeFile(DATA_FILE, JSON.stringify(files), "utf8");
+    FileSystem.writeFile(DATA_FILE, JSON.stringify(files), "utf8", _ => false);
 }
 
 App.put('/:videoId', function (request, response) {

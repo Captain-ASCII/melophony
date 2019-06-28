@@ -37,7 +37,9 @@ function deleteFile(id) {
 }
 
 function save() {
-  _fs["default"].writeFile(DATA_FILE, JSON.stringify(files), "utf8");
+  _fs["default"].writeFile(DATA_FILE, JSON.stringify(files), "utf8", function (_) {
+    return false;
+  });
 }
 
 App.put('/:videoId', function (request, response) {
