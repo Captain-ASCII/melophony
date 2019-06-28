@@ -25,8 +25,8 @@ try {
 }
 
 function deleteFile(id) {
-    if (FileSystem.existsSync(`${id}.m4a`)) {
-        FileSystem.unlinkSync(`${id}.m4a`);
+    if (FileSystem.existsSync(`${FILE_FOLDER}/${id}.m4a`)) {
+        FileSystem.unlinkSync(`${FILE_FOLDER}/${id}.m4a`);
     }
 }
 
@@ -83,8 +83,8 @@ App.get("/state/:videoId", function (request, response) {
     let progress = -1;
 
     if (files[request.params.videoId]) {
-        if (FileSystem.existsSync(`${request.params.videoId}.m4a`)) {
-            const fileSize = FileSystem.statSync(`${request.params.videoId}.m4a`).size;
+        if (FileSystem.existsSync(`${FILE_FOLDER}/${request.params.videoId}.m4a`)) {
+            const fileSize = FileSystem.statSync(`${FILE_FOLDER}/${request.params.videoId}.m4a`).size;
             progress = fileSize / files[request.params.videoId].size;
         }
         response.send({
@@ -104,7 +104,7 @@ App.get("/status/:videoId", function (request, response) {
 });
 
 App.use("/get/:videoId", function (request, response) {
-    response.sendFile(Path.join(__dirname, `${request.params.videoId}.m4a`));
+    response.sendFile(Path.join(__dirname, FILE_FOLDER, `${request.params.videoId}.m4a`));
 });
 
 App.delete("/:videoId", function (request, response) {

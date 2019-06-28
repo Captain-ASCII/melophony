@@ -31,8 +31,8 @@ try {
 }
 
 function deleteFile(id) {
-  if (_fs["default"].existsSync("".concat(id, ".m4a"))) {
-    _fs["default"].unlinkSync("".concat(id, ".m4a"));
+  if (_fs["default"].existsSync("".concat(FILE_FOLDER, "/").concat(id, ".m4a"))) {
+    _fs["default"].unlinkSync("".concat(FILE_FOLDER, "/").concat(id, ".m4a"));
   }
 }
 
@@ -92,8 +92,8 @@ App.get("/state/:videoId", function (request, response) {
   var progress = -1;
 
   if (files[request.params.videoId]) {
-    if (_fs["default"].existsSync("".concat(request.params.videoId, ".m4a"))) {
-      var fileSize = _fs["default"].statSync("".concat(request.params.videoId, ".m4a")).size;
+    if (_fs["default"].existsSync("".concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a"))) {
+      var fileSize = _fs["default"].statSync("".concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a")).size;
 
       progress = fileSize / files[request.params.videoId].size;
     }
@@ -115,7 +115,7 @@ App.get("/status/:videoId", function (request, response) {
   });
 });
 App.use("/get/:videoId", function (request, response) {
-  response.sendFile(_path["default"].join(__dirname, "".concat(request.params.videoId, ".m4a")));
+  response.sendFile(_path["default"].join(__dirname, FILE_FOLDER, "".concat(request.params.videoId, ".m4a")));
 });
 App["delete"]("/:videoId", function (request, response) {
   deleteFile(request.params.videoId);
