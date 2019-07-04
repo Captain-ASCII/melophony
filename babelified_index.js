@@ -15,7 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var App = (0, _express["default"])();
 var PORT = 1789;
 var DATA_FILE = "data.json";
-var FILE_FOLDER = "files";
+var FILE_DIR = "files";
 var State = {
   UNAVAILABLE: "unavailable",
   DOWNLOADING: "downloading",
@@ -31,8 +31,8 @@ try {
 }
 
 function deleteFile(id) {
-  if (_fs["default"].existsSync("".concat(FILE_FOLDER, "/").concat(id, ".m4a"))) {
-    _fs["default"].unlinkSync("".concat(FILE_FOLDER, "/").concat(id, ".m4a"));
+  if (_fs["default"].existsSync("".concat(FILE_DIR, "/").concat(id, ".m4a"))) {
+    _fs["default"].unlinkSync("".concat(FILE_DIR, "/").concat(id, ".m4a"));
   }
 }
 
@@ -40,6 +40,12 @@ function save() {
   _fs["default"].writeFile(DATA_FILE, JSON.stringify(files), "utf8", function (_) {
     return false;
   });
+}
+
+function checkFileDir() {
+  if (!_fs["default"].existsSync(FILE_DIR)) {
+    _fs["default"].mkdirSync(FILE_DIR);
+  }
 }
 
 App.put('/:videoId', function (request, response) {
@@ -68,7 +74,7 @@ App.put('/:videoId', function (request, response) {
           files[request.params.videoId].size = format.clen;
           files[request.params.videoId].state = State.DOWNLOADING;
           save();
-          (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
+          (0, _child_process.exec)("mkdir -p ".concat(FILE_DIR, " && ytdl -q ").concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(FILE_DIR, "/").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
             if (error) {
               console.log("Error YTDL download: ".concat(error));
               response.send("Error: ".concat(error));
@@ -94,8 +100,8 @@ App.get("/state/:videoId", function (request, response) {
   var progress = -1;
 
   if (files[request.params.videoId]) {
-    if (_fs["default"].existsSync("".concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a"))) {
-      var fileSize = _fs["default"].statSync("".concat(FILE_FOLDER, "/").concat(request.params.videoId, ".m4a")).size;
+    if (_fs["default"].existsSync("".concat(FILE_DIR, "/").concat(request.params.videoId, ".m4a"))) {
+      var fileSize = _fs["default"].statSync("".concat(FILE_DIR, "/").concat(request.params.videoId, ".m4a")).size;
 
       progress = fileSize / files[request.params.videoId].size;
     }
@@ -117,7 +123,8 @@ App.get("/status/:videoId", function (request, response) {
   });
 });
 App.use("/get/:videoId", function (request, response) {
-  response.sendFile(_path["default"].join(__dirname, FILE_FOLDER, "".concat(request.params.videoId, ".m4a")));
+  checkFileDir();
+  response.sendFile(_path["default"].join(__dirname, FILE_DIR, "".concat(request.params.videoId, ".m4a")));
 });
 App["delete"]("/:videoId", function (request, response) {
   deleteFile(request.params.videoId);
@@ -128,24 +135,11 @@ App["delete"]("/:videoId", function (request, response) {
   });
 });
 App.get("/list/current", function (request, response) {
-  response.send(_fs["default"].readdirSync(FILE_FOLDER));
+  checkFileDir();
+  response.send(_fs["default"].readdirSync(FILE_DIR));
 });
 App.get("/manifest", function (request, response) {
   response.send(JSON.parse(_fs["default"].readFileSync(DATA_FILE, "utf8")));
-});
-App.get("/migrate", function (request, response) {
-  (0, _child_process.exec)("mkdir ".concat(FILE_FOLDER), function (error, stdout, stderr) {
-    if (error) {
-      response.send("Error: ".concat(error));
-    }
-
-    var filesAtRoot = _fs["default"].readdirSync(FILE_FOLDER);
-
-    response.send({
-      done: true,
-      files: filesAtRoot
-    });
-  });
 });
 App.get("/.*", function (request, response) {
   response.send("Fallback");
