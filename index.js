@@ -50,6 +50,7 @@ App.put('/:videoId', function (request, response) {
 
         YTDL.getInfo(`https://www.youtube.com/watch?v=${request.params.videoId}`, {}, (error, info) => {
             if (error) {
+                console.log(`Error YTDL info: ${error}`);
                 response.send(`Error: ${error}`);
             }
 
@@ -63,6 +64,7 @@ App.put('/:videoId', function (request, response) {
                     save();
                     exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE_FOLDER}/${request.params.videoId}.m4a`, (error, stdout, stderr) => {
                         if (error) {
+                            console.log(`Error YTDL download: ${error}`);
                             response.send(`Error: ${error}`);
                         }
                         files[request.params.videoId].state = State.AVAILABLE;
