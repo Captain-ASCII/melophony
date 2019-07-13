@@ -8,7 +8,7 @@ const App = Express();
 
 const PORT = 1789;
 const DATA_FILE = "data.json";
-const FILE_FOLDER = "files";
+const FILE_DIR = "files";
 
 const State = {
     UNAVAILABLE: "unavailable",
@@ -24,9 +24,15 @@ try {
     console.warn(`Unable to get previous data, restarting from zero`);
 }
 
+function checkFilesDir() {
+    if (!FileSystem.existsSync(FILE_DIR)) {
+        FileSystem.mkdirSync(FILE_DIR);
+    }
+}
+
 function deleteFile(id) {
-    if (FileSystem.existsSync(`${FILE_FOLDER}/${id}.m4a`)) {
-        FileSystem.unlinkSync(`${FILE_FOLDER}/${id}.m4a`);
+    if (FileSystem.existsSync(`${FILE_DIR}/${id}.m4a`)) {
+        FileSystem.unlinkSync(`${FILE_DIR}/${id}.m4a`);
     }
 }
 
@@ -61,7 +67,8 @@ App.put('/:videoId', function (request, response) {
                     files[request.params.videoId].size = format.clen;
                     files[request.params.videoId].state = State.DOWNLOADING;
                     save();
-                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE_FOLDER}/${request.params.videoId}.m4a`, (error, stdout, stderr) => {
+                    checkFilesDir();
+                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE_DIR}/${request.params.videoId}.m4a`, (error, stdout, stderr) => {
                         if (error) {
                             response.send(`Error: ${error}`);
                         }
@@ -75,7 +82,7 @@ App.put('/:videoId', function (request, response) {
             }
         });
     } else {
-        response.send({ added: request.params.videoId });
+        response.send({ state: `already added ${request.params.videoId}` });
     }
 });
 
@@ -83,8 +90,8 @@ App.get("/state/:videoId", function (request, response) {
     let progress = -1;
 
     if (files[request.params.videoId]) {
-        if (FileSystem.existsSync(`${FILE_FOLDER}/${request.params.videoId}.m4a`)) {
-            const fileSize = FileSystem.statSync(`${FILE_FOLDER}/${request.params.videoId}.m4a`).size;
+        if (FileSystem.existsSync(`${FILE_DIR}/${request.params.videoId}.m4a`)) {
+            const fileSize = FileSystem.statSync(`${FILE_DIR}/${request.params.videoId}.m4a`).size;
             progress = fileSize / files[request.params.videoId].size;
         }
         response.send({
@@ -104,7 +111,11 @@ App.get("/status/:videoId", function (request, response) {
 });
 
 App.use("/get/:videoId", function (request, response) {
-    response.sendFile(Path.join(__dirname, FILE_FOLDER, `${request.params.videoId}.m4a`));
+    if (FileSystem.existsSync(Path.join(__dirname, FILE_DIR, `${request.params.videoId}.m4a`))) {
+        response.sendFile(Path.join(__dirname, FILE_DIR, `${request.params.videoId}.m4a`));
+    } else {
+        response.send({ error: `Could not get ${request.params.videoId}.m4a, file does not exist` });
+    }
 });
 
 App.delete("/:videoId", function (request, response) {
@@ -114,28 +125,17 @@ App.delete("/:videoId", function (request, response) {
     response.send({ state: "deleted" });
 });
 
-
-
 App.get("/list/current", function (request, response) {
-    response.send(FileSystem.readdirSync(FILE_FOLDER));
+    checkFilesDir();
+    response.send(FileSystem.readdirSync(FILE_DIR));
 });
 
 App.get("/manifest", function (request, response) {
     response.send(JSON.parse(FileSystem.readFileSync(DATA_FILE, "utf8")));
 });
 
-App.get("/migrate", function (request, response) {
-    exec(`mkdir ${FILE_FOLDER}`, (error, stdout, stderr) => {
-        if (error) {
-            response.send(`Error: ${error}`);
-        }
-        let filesAtRoot = FileSystem.readdirSync(FILE_FOLDER);
-        response.send({ done: true, files: filesAtRoot });
-    });
-});
-
-App.get("/.*", (request, response) => {
-    response.send("Fallback");
+App.get("/*", (request, response) => {
+    response.send({ state: "Nothing to do" });
 });
 
 App.listen(process.env.PORT || PORT, function () {
