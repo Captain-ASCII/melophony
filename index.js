@@ -40,6 +40,12 @@ function save() {
     FileSystem.writeFile(DATA_FILE, JSON.stringify(files), "utf8", _ => false);
 }
 
+function checkFileDir() {
+    if (!FileSystem.existsSync(FILE_DIR)) {
+        FileSystem.mkdirSync(FILE_DIR);
+    }
+}
+
 App.put('/:videoId', function (request, response) {
 
     if (!files[request.params.videoId]) {
@@ -56,6 +62,7 @@ App.put('/:videoId', function (request, response) {
 
         YTDL.getInfo(`https://www.youtube.com/watch?v=${request.params.videoId}`, {}, (error, info) => {
             if (error) {
+                console.log(`Error YTDL info: ${error}`);
                 response.send(`Error: ${error}`);
             }
 
@@ -70,6 +77,7 @@ App.put('/:videoId', function (request, response) {
                     checkFilesDir();
                     exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${request.params.videoId} > ${FILE_DIR}/${request.params.videoId}.m4a`, (error, stdout, stderr) => {
                         if (error) {
+                            console.log(`Error YTDL download: ${error}`);
                             response.send(`Error: ${error}`);
                         }
                         files[request.params.videoId].state = State.AVAILABLE;

@@ -48,6 +48,12 @@ function save() {
   });
 }
 
+function checkFileDir() {
+  if (!_fs["default"].existsSync(FILE_DIR)) {
+    _fs["default"].mkdirSync(FILE_DIR);
+  }
+}
+
 App.put('/:videoId', function (request, response) {
   if (!files[request.params.videoId]) {
     files[request.params.videoId] = {
@@ -63,6 +69,7 @@ App.put('/:videoId', function (request, response) {
 
     _ytdlCore["default"].getInfo("https://www.youtube.com/watch?v=".concat(request.params.videoId), {}, function (error, info) {
       if (error) {
+        console.log("Error YTDL info: ".concat(error));
         response.send("Error: ".concat(error));
       }
 
@@ -76,6 +83,7 @@ App.put('/:videoId', function (request, response) {
           checkFilesDir();
           (0, _child_process.exec)("ytdl -q ".concat(format.itag, " https://www.youtube.com/watch?v=").concat(request.params.videoId, " > ").concat(FILE_DIR, "/").concat(request.params.videoId, ".m4a"), function (error, stdout, stderr) {
             if (error) {
+              console.log("Error YTDL download: ".concat(error));
               response.send("Error: ".concat(error));
             }
 
