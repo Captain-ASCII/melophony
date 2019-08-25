@@ -1,2 +1,7 @@
 node_modules
 *.m4a
+package-lock.json
+logs.txt
+data
+melophony.ddns.net
+.well-known
