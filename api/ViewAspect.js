@@ -35,7 +35,7 @@ export default class ViewAspect extends BaseAspect {
             let filteredTracks = Object.values(this.tracks).filter(track => {
                 return `${this.get(artists[track.artist], { name: "Unknown"}).name}.${track.title}`.toUpperCase().indexOf(request.params.text.toUpperCase()) > -1;
             }).map(track => {
-                return { ...track, artist: this.get(artists[track.artist], { name: "Unknown"}).name };
+                return { ...track, artist: this.get(this.artists[track.artist], { name: "Unknown"}).name };
             });
             response.render("FilterScreen", { tracks: filteredTracks });
         });
@@ -45,7 +45,7 @@ export default class ViewAspect extends BaseAspect {
         });
 
         this.app.get("/screen/artists", (request, response) => {
-            response.render("ArtistsScreen", { artists: artists });
+            response.render("ArtistsScreen", { artists: this.artists });
         });
     }
 
@@ -53,10 +53,10 @@ export default class ViewAspect extends BaseAspect {
         let result = { "unknown": { name: "Unknown", tracks: [] }};
         for (let i in this.tracks) {
             let artistFound = false;
-            for (let j in artists) {
+            for (let j in this.artists) {
                 if (j == this.tracks[i].artist) {
                     if (!result[j]) {
-                        result[j] = artists[j];
+                        result[j] = this.artists[j];
                         result[j].tracks = [];
                     }
                     result[j].tracks.push(this.tracks[i]);
