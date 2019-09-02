@@ -1,0 +1,363 @@
+
+html, body, #root {
+    background-color: #282c34;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: "Roboto", "Ubuntu", "Open Sans";
+    font-size: 0.85em;
+    color: #D4D7D9;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0005;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7f8c8d;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3498db;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: #2ecc71 !important;
+}
+
+.App {
+    width: 100%;
+    height: 100%;
+    align-self: stretch;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 160px);
+    overflow: hidden;
+}
+
+.main {
+    padding-top: 20px;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    color: #D4D7D9;
+    text-decoration: none;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    font-family: "MontSerrat";
+    margin: 0;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+input {
+    outline: none !important;
+}
+
+input[type="text"] {
+    min-width: 300px;
+    border: none;
+    padding: 5px 10px;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.3);
+    border-radius: 100px;
+}
+
+button {
+    background: none;
+    border: none;
+    outline: none;
+    align-items: center;
+}
+
+.flatButton {
+    color: #D4D7D9;
+    font-size: 1em;
+    display: flex;
+}
+
+.raisedButton {
+    background-color: #D4D7D9;
+    border-radius: 100px;
+    padding: 5px 20px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.raisedButton:hover {
+    color: #FFF;
+    background-color: #2c84F8;
+}
+
+
+/* Header */
+
+#header, #footer {
+    background-color: #282c34;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.3);
+    align-items: center;
+}
+
+#header {
+}
+
+#header > .centeredTitle {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#header > div {
+    padding: 0 20px;
+}
+
+.logo {
+    height: 100%;
+    width: 15%;
+    padding-right: 15px;
+}
+
+.header .searchbar {
+    width: 15%;
+}
+
+.header .border {
+    height: 60%;
+    top: 20%;
+}
+
+
+/* Sidebar */
+
+.sidebar.left {
+    height: 100%;
+    width: 15%;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+#toaster {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 90%;
+    height: 50px;
+    bottom: 10px;
+    background-color: #222;
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    transform: translateX(-110%);
+    transition: transform 1s;
+}
+
+#toaster > * {
+    margin: 20px;
+}
+
+
+/* Footer */
+
+#footer > * {
+    margin: 0 20px;
+}
+
+#controls {
+    width: 10%;
+    display: flex;
+    align-items: center;
+}
+
+#controls > * {
+    margin: 5px;
+}
+
+#currentTrackInfo {
+    width: 20%;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#currentTrackInfo:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#tracker {
+    width: 70%;
+}
+
+/* Content */
+
+#content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#tracks {
+    padding: 20px;
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+
+#artists {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#artists > * {
+    margin: 5px;
+}
+
+.artist {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.artist > h2 {
+    margin-bottom: 10px;
+}
+
+.trackContainer {
+    flex-grow: 1;
+    flex-basis: 150px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.track {
+    padding-top: 56.25%;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.trackInfo {
+    padding: 3px;
+    font-size: 12px;
+    font-family: "MontSerrat";
+    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.trackListItem {
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    font-family: "MontSerrat";
+    display: flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.trackListItem:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.trackListItem > div {
+    width: calc(100% - 50px);
+    display: flex;
+    padding: 3px 0;
+}
+
+.trackListItem > * {
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+}
+
+/* Artist List Item */
+
+.artistListItem {
+    width: 10%;
+    border-radius: 5px;
+    background: #222;
+}
+
+.icon {
+    text-align: center;
+    width: 50px;
+}
+
+.title {
+    flex: 1;
+}
+
+.artistName {
+    width: 20%;
+}
+
+.duration {
+    width: 50px;
+}
+
+#modificationPage {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+}
+
+.input {
+    margin: 20px 10px 10px 10px;
+}
+
+.input > h2 {
+    margin: 10px;
+}
+
+.buttonsPanel {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    align-self: flex-end;
+    display: flex;
+}
+
+.buttonsPanel > * {
+    margin: 0 5px;
+}
