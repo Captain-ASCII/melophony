@@ -3,7 +3,7 @@ import Express from "express";
 import HTTPS from "https";
 import FileSystem from "fs";
 
-import JsonDatabase from "./JsonDatabase";
+import JsonDatabase from "./model/JsonDatabase";
 
 import BaseAspect from "./api/BaseAspect";
 import LogAspect from "./api/LogAspect";

@@ -3,7 +3,7 @@ import FileSystem from "fs";
 import YTDL from "ytdl-core";
 import { exec } from "child_process";
 
-import Track from "./../Track";
+import Track from "./../model/Track";
 
 const FILE_DIR = "files";
 

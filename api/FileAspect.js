@@ -1,7 +1,7 @@
 
 import FileSystem from "fs";
 import Path from "path";
-import Track from "./../Track";
+import Track from "./../model/Track";
 
 import BaseAspect from "./BaseAspect";
 import * as ServerUtils from "./ServerUtils";
