@@ -13,9 +13,9 @@ import ArtistAspect from "./api/ArtistAspect";
 import TrackAspect from "./api/TrackAspect";
 import FileAspect from "./api/FileAspect";
 
-const DEBUG = true;
+const configuration = JSON.parse(FileSystem.readFileSync("configuration/configuration.json", "utf8"));
 
-if (!DEBUG) {
+if (!configuration.DEBUG) {
     const privateKey = FileSystem.readFileSync("melophony.ddns.net/privkey.pem", "utf8");
     const certificate = FileSystem.readFileSync("melophony.ddns.net/cert.pem", "utf8");
     const ca = FileSystem.readFileSync("melophony.ddns.net/chain.pem", "utf8");
@@ -49,7 +49,7 @@ App.get("/*", (request, response) => {
     response.send({ status: "Nothing to do" });
 });
 
-if (DEBUG) {
+if (configuration.DEBUG) {
     App.listen(PORT, function () {
         console.log(`Example app listening on port ${PORT}`)
     });
