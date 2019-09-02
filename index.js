@@ -5,13 +5,14 @@ import FileSystem from "fs";
 
 import JsonDatabase from "./model/JsonDatabase";
 
+import ArtistAspect from "./api/ArtistAspect";
 import BaseAspect from "./api/BaseAspect";
+import FileAspect from "./api/FileAspect";
 import LogAspect from "./api/LogAspect";
 import ModificationAspect from "./api/ModificationAspect";
-import UserAspect from "./api/UserAspect";
-import ArtistAspect from "./api/ArtistAspect";
 import TrackAspect from "./api/TrackAspect";
-import FileAspect from "./api/FileAspect";
+import UserAspect from "./api/UserAspect";
+import ViewAspect from "./api/ViewAspect";
 
 const configuration = JSON.parse(FileSystem.readFileSync("configuration/configuration.json", "utf8"));
 let credentials = {};
@@ -26,6 +27,12 @@ const App = Express();
 
 App.use(Express.json());
 
+App.use(function(request, response, next) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 const PORT = 1789;
 const HTTPS_PORT = 1804;
 
@@ -37,6 +44,7 @@ const db = new JsonDatabase(
     BaseAspect.MODIFIED_TRACKS
 );
 
+new ViewAspect(App, db);
 new LogAspect(App, db);
 new ModificationAspect(App, db);
 new UserAspect(App, db);
