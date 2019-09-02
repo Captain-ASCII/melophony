@@ -26,6 +26,12 @@ export default class JsonDatabase {
         return data;
     }
 
+    clear(collection) {
+        this.collections[collection.__name] = this.getCollection(collection.__name, this, {});
+        FileSystem.writeFile(`${DATA_DIR}/${collection.__name}.json`, JSON.stringify(this.collections[collection.__name]), "utf8", _ => false);
+        return this.collections[collection.__name];
+    }
+
     get(name) {
         return this.collections[name];
     }
