@@ -14,12 +14,13 @@ import TrackAspect from "./api/TrackAspect";
 import FileAspect from "./api/FileAspect";
 
 const configuration = JSON.parse(FileSystem.readFileSync("configuration/configuration.json", "utf8"));
+let credentials = {};
 
 if (!configuration.DEBUG) {
     const privateKey = FileSystem.readFileSync("melophony.ddns.net/privkey.pem", "utf8");
     const certificate = FileSystem.readFileSync("melophony.ddns.net/cert.pem", "utf8");
     const ca = FileSystem.readFileSync("melophony.ddns.net/chain.pem", "utf8");
-    const credentials = { key: privateKey, cert: certificate, ca: ca };
+    credentials = { key: privateKey, cert: certificate, ca: ca };
 }
 const App = Express();
 
