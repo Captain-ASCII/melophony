@@ -52,8 +52,8 @@ export default class FileAspect extends BaseAspect {
         });
 
         this.app.use("/get/:videoId", (request, response) => {
-            if (FileSystem.existsSync(Path.join(__dirname, ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`))) {
-                response.sendFile(Path.join(__dirname, ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`));
+            if (FileSystem.existsSync(Path.join(__dirname, "..", ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`))) {
+                response.sendFile(Path.join(__dirname, "..", ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`));
             } else {
                 response.send({ error: `Could not get ${request.params.videoId}.m4a, file does not exist` });
             }
