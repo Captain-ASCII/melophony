@@ -1,0 +1,25 @@
+{
+  "name": "melophony-web",
+  "version": "1.0.0",
+  "description": "Simple project to access Melophony files from web",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js -e js,squirrelly -V --exec babel-node --presets @babel/preset-env",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Ben-Lulu",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "readline-sync": "^1.4.10",
+    "squirrelly": "^7.3.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
+}

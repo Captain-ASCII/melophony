@@ -1,5 +1,6 @@
 
 import Express from "express";
+import Path from "path";
 const Squirrelly = require("squirrelly");
 
 import BaseAspect from "./BaseAspect";
@@ -9,6 +10,8 @@ Squirrelly.defineFilter("duration", function (durationString) {
     return `${Math.floor(duration/60)}:${duration%60}`;
 });
 
+const commonPath = Path.join(__dirname, "..", "..", "Common", "Views");
+
 export default class ViewAspect extends BaseAspect {
 
     constructor(app, db) {
@@ -17,7 +20,10 @@ export default class ViewAspect extends BaseAspect {
         this.tracks = db.get(BaseAspect.TRACKS);
 
         this.app.set("view engine", "squirrelly");
-        this.app.use("/source", Express.static("source"));
+        this.app.set("views", Path.join(commonPath, "views"));
+
+        this.app.use("/custom", Express.static("custom"));
+        this.app.use("/public", Express.static(Path.join(commonPath, "public")));
 
         this.app.get("/screen/home", (request, response) => {
             response.render("App", { artists: this.getTracksByArtist() });
