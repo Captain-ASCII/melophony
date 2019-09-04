@@ -5,6 +5,6 @@
             <p class="artistName" >{{@this.artist}}</p>
             <p class="duration" >{{@this.duration | duration}}</p>
         </div>
-        <i onclick="modifyTrack('{{@this.id}}')" class="fa fa-pen icon"></i>
+        <i onclick="modifyTrack('{{@this.id}}')" class="fa fa-pen icon button"></i>
     </div>
 {{/foreach}}

@@ -1,24 +1,29 @@
 <div id="modificationPage">
     <div id="modificationPageHeader">
-        <div id="backButton" class="button icon" onclick="hide()" ><i class="fa fa-times icon"></i></div>
-        <h2>{{track.artist}} - {{track.title}}</h2>
+        <div id="backButton" class="button icon" onclick="hide()" ><i class="fa fa-times fa-2x icon"></i></div>
+        <h2 id="modificationPageTitle">{{track.artist}} - {{track.title}}</h2>
         <div id="saveButton" class="button raised" onclick="saveAndHide('{{track.id}}')" >Save</div>
     </div>
     <div class="input">
-        <h2>Title</h2>
+        <i class="fa fa-music fa-2x icon"></i>
         <input type="text" class="form-data" id="title" value="{{track.title}}" />
     </div>
     <div class="input">
-        <h2>Artist</h2>
+        <i class="fa fa-male fa-2x icon"></i>
         <input type="text" class="form-data" id="artist" value="{{track.artist}}" />
     </div>
     <div class="input">
-        <h2>Duration</h2>
+        <i class="fa fa-ruler fa-2x icon"></i>
         <input type="text" class="form-data" id="duration" value="{{track.duration}}" />
     </div>
+
+    <div class="delimiter"></div>
+
     <div class="input">
-        <h2>Duration</h2>
         <div id="trackModificator"></div>
     </div>
-    <div class="button raised" onclick="download('{{track.videoId}}')" >Download</div>
+    <div class="actions">
+        <div class="button raised" onclick="download('{{track.videoId}}')" >Download</div>
+        <div class="button raised alert" onclick="erase('{{track.videoId}}')" >Erase</div>
+    </div>
 </div>

@@ -121,7 +121,7 @@ App.get("/screen/artists", (request, response) => {
 /* Synchronization */
 
 App.get("/synchronize", (request, response) => {
-    download("https://melophony.ddns.net/tracks", TRACKS);
+    download("https://melophony.ddns.net/tracks", TRACKS, _ => response.send("ok"));
 });
 
 App.get("/download/:videoId", (request, response) => {

@@ -12,6 +12,7 @@
 
 // function synchronize() {}
 // function download(videoId) {}
+// function erase(id) {}
 // function toast(text) {}
 
 // /* Track Modification Screen */
