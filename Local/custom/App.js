@@ -14,7 +14,7 @@ async function start() {
     artists = await (await fetch("http://localhost:1958/artists")).json();
     tracksArray = Object.values(tracks);
 
-    trackListHTML = document.getElementById("content").innerHTML;
+    trackListHTML = document.getElementById("tracks").innerHTML;
 
     player = document.getElementById("player");
 
