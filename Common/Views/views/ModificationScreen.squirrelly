@@ -1,6 +1,8 @@
 <div id="modificationPage">
-    <div class="metaData">
-        {{track.videoId}}
+    <div id="modificationPageHeader">
+        <div id="backButton" class="button icon" onclick="hide()" ><i class="fa fa-times icon"></i></div>
+        <h2>{{track.artist}} - {{track.title}}</h2>
+        <div id="saveButton" class="button raised" onclick="saveAndHide('{{track.id}}')" >Save</div>
     </div>
     <div class="input">
         <h2>Title</h2>
@@ -18,9 +20,5 @@
         <h2>Duration</h2>
         <div id="trackModificator"></div>
     </div>
-    <button type="button" id="backButton" class="raisedButton" onclick="download('{{track.videoId}}')" >Download</button>
-    <div class="buttonsPanel">
-        <button type="button" id="backButton" class="raisedButton" onclick="hide()" >Back</button>
-        <button type="button" id="saveButton" class="raisedButton" onclick="saveAndHide('{{track.id}}')" >Save</button>
-    </div>
+    <div class="button raised" onclick="download('{{track.videoId}}')" >Download</div>
 </div>
