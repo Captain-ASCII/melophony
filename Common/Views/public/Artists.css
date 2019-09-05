@@ -1,0 +1,20 @@
+
+.artistListItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+    height: 50px;
+    min-width: 200px;
+    max-width: 400px;
+    flex: 1;
+    border-radius: 5px;
+    background: #222;
+}
+
+.artistActions {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+}

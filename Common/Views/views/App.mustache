@@ -33,39 +33,7 @@
                     </div>
                 </div>
                 <div id="content">
-                    <div id="contentHeader">
-                        <h4 class="subTitle" ></h4>
-                        <div class="searchbar">
-                            <input type="text" oninput="filter(this.value)" />
-                        </div>
-                    </div>
-                    <div id="tracks">
-                        {{test}}
-                        {{#artists}}
-                            <div class="artist">
-                                <h2>{{name}}</h2>
-                                <div>
-                                    {{#tracks}}
-                                        <!-- <div class="trackContainer">
-                                            <div onclick="startPlay('{{@this.id}}')" style="background-image: url('/images/{{@this.id}}.jpg')" class="track">
-                                                <div class="trackInfo">
-                                                    <p>{{@this.title}}</p>
-                                                    <p>{{@this.artist}}</p>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                        <div class="trackListItem">
-                                            <div onclick="startPlay('{{@this.id}}')">
-                                                <p class="title" >{{title}}</p>
-                                                <p class="duration" >{{duration|duration}}</p>
-                                            </div>
-                                            <i onclick="modifyTrack('{{@this.id}}')" class="fa fa-pen icon"></i>
-                                        </div>
-                                    {{/tracks}}
-                                </div>
-                            </div>
-                        {{/artists}}
-                    </div>
+                    {{> TracksScreen}}
                 </div>
                 <div class="sidebar right" >
                     <div class="border"></div>

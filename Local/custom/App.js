@@ -14,7 +14,7 @@ async function start() {
     artists = await (await fetch("http://localhost:1958/artists")).json();
     tracksArray = Object.values(tracks);
 
-    trackListHTML = document.getElementById("tracks").innerHTML;
+    trackListHTML = document.getElementById("content").innerHTML;
 
     player = document.getElementById("player");
 
@@ -35,9 +35,9 @@ async function changeScreen(screen) {
 
 async function filter(text) {
     if (text == "") {
-        document.getElementById("tracks").innerHTML = trackListHTML;
+        document.getElementById("content").innerHTML = trackListHTML;
     } else {
-        document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/filter/tracks/${text}`)).text();
+        document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/tracks/filter/${text}`)).text();
     }
 }
 
@@ -106,11 +106,14 @@ function hide() {
 
 function saveAndHide(id) {
     let inputs = document.querySelectorAll(".form-data");
-    console.warn(tracks[id], inputs);
     for (let input of inputs) {
-        tracks[id][input.id] = input.value;
+        if (input.list) {
+            console.warn(`${input.list.id} option[value='${input.value}']`)
+            tracks[id][input.id] = document.querySelector(`#${input.list.id} option[value='${input.value}']`).getAttribute("data-value");
+        } else {
+            tracks[id][input.id] = input.value;
+        }
     }
-    console.warn(tracks[id])
     fetch(`http://localhost:1958/track/${id}`, {
         method: "PUT",
         body: JSON.stringify(tracks[id]),

@@ -1,10 +1,12 @@
 <div id="artists">
-    {{foreach(options.artists)}}
+    {{#artists}}
         <div class="artistListItem">
             <div>
-                <p class="artistName" >{{@this.name}}</p>
+                <p >{{name}}</p>
             </div>
-            <i onclick="modifyArtist('{{@key}}')" class="fa fa-pen icon"></i>
+            <div class="artistActions">
+                <i onclick="modifyArtist('{{id}}')" class="fa fa-pen icon"></i>
+            </div>
         </div>
-    {{/foreach}}
+    {{/artists}}
 </div>

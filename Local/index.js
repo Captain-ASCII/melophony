@@ -6,13 +6,6 @@ import fetch from "node-fetch";
 import Path from "path";
 
 const Mustache = require("mustache-express");
-// const Squirrelly = require("squirrelly");
-
-// Squirrelly.defineFilter("duration", function (durationString) {
-//     let duration = parseInt(durationString);
-//     return `${Math.floor(duration/60)}:${duration%60}`;
-// });
-
 
 const App = Express();
 const commonPath = Path.join(__dirname, "..", "Common", "Views");
@@ -26,7 +19,6 @@ const IMAGES_DIR = "images";
 
 const tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
 const artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
-const tracksArray = Object.values(tracks);
 
 App.use(Express.json());
 
@@ -48,11 +40,11 @@ App.get("/artists", (request, response) => {
 });
 
 App.get("/artists/tracks", (request, response) => {
-    response.send(getTracksByArtist());
+    response.send(getTracksByArtist(tracks));
 });
 
 App.get("/", (request, response) => {
-    response.render("App", { artists: getTracksByArtist() });
+    response.render("App", { artists: getTracksByArtist(tracks) });
 });
 
 App.put("/track/:id", async (request, response) => {
@@ -93,35 +85,40 @@ App.delete("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
 
 /* Screens */
 
+App.get("/", (request, response) => {
+    response.render("App", { artists: (tracks, artists) });
+});
+
 App.get("/screen/modify/track/:id", (request, response) => {
     let track = tracks[request.params.id];
     response.render("ModificationScreen", {
         track: track,
-        artist: get(artists[track.artist], { name: "Unknown"}).name
+        artist: get(artists[track.artist], { name: "Unknown"}).name,
+        artists: Object.values(artists)
     });
 });
 
-App.get("/screen/filter/tracks/:text", (request, response) => {
-    let filteredTracks = tracksArray.filter(track => {
+App.get("/screen/tracks/filter/:text", (request, response) => {
+    let filteredTracks = Object.values(tracks).filter(track => {
         return `${get(artists[track.artist], { name: "Unknown"}).name}.${track.title}`.toUpperCase().indexOf(request.params.text.toUpperCase()) > -1;
-    }).map(track => {
-        return { ...track, artist: get(artists[track.artist], { name: "Unknown"}).name };
     });
-    response.render("FilterScreen", { tracks: filteredTracks });
+    // .map(track => {
+    //     return { ...track, artist: get(artists[track.artist], { name: "Unknown"}).name };
+    // });
+    response.render("Tracks", { artists: getTracksByArtist(filteredTracks), duration: formatDuration });
 });
 
 App.get("/screen/tracks", (request, response) => {
-    response.render("TracksScreen", { artists: getTracksByArtist() });
+    response.render("TracksScreen", { artists: getTracksByArtist(tracks), duration: formatDuration });
 });
 
 App.get("/screen/artists", (request, response) => {
-    response.render("ArtistsScreen", { artists: artists });
+    response.render("ArtistsScreen", { artists: Object.values(artists) });
 });
 
 App.get("/screen/track/add", (request, response) => {
     response.render("AddTrackScreen", {});
 });
-
 
 
 /* Synchronization */
@@ -150,11 +147,27 @@ App.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
 
 
 
-
+function formatDuration() {
+    return function(t, render) {
+        return `${parseInt(t)/60}:${parseInt(t)%60}`;
+    };
+}
 
 function save() {
     FileSystem.writeFileSync(TRACKS, JSON.stringify(tracks), "utf8");
 }
+
+function toArray(object) {
+    let result = [];
+    for (let k in object) {
+        result.push({ key: k, value: object });
+    }
+    return result;
+}
+
+// function getTracksByArtist(tr) {
+//     return Object.values(artists).map(a => { return { ...a, tracks: Object.values(tr).filter(t => t.artist == a.id) } }).filter(a => a.tracks.length > 0);
+// }
 
 function getTracksByArtist() {
     let result = { "unknown": { name: "Unknown", tracks: [] }};
@@ -175,7 +188,7 @@ function getTracksByArtist() {
             result["unknown"].tracks.push(tracks[i]);
         }
     }
-    return result;
+    return Object.values(result);
 }
 
 function download(url, fileName, callback) {

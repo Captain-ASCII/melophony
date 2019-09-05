@@ -1,7 +1,7 @@
 <div id="modificationPage">
     <div id="modificationPageHeader">
         <div id="backButton" class="button icon" onclick="hide()" ><i class="fa fa-times fa-2x icon"></i></div>
-        <h2 id="modificationPageTitle">{{track.artist}} - {{track.title}}</h2>
+        <h2 id="modificationPageTitle">{{artist}} - {{track.title}}</h2>
         <div id="saveButton" class="button raised" onclick="saveAndHide('{{track.id}}')" >Save</div>
     </div>
     <div class="input">
@@ -10,7 +10,12 @@
     </div>
     <div class="input">
         <i class="fa fa-male fa-2x icon"></i>
-        <input type="text" class="form-data" id="artist" value="{{track.artist}}" />
+        <input type="text" list="artistNames" class="form-data" id="artist" value="{{artist}}" />
+        <datalist id="artistNames">
+            {{#artists}}
+                <option data-value="{{id}}" value="{{name}}"/>
+            {{/artists}}
+        </datalist>
     </div>
     <div class="input">
         <i class="fa fa-ruler fa-2x icon"></i>
