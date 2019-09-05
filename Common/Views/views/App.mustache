@@ -40,11 +40,12 @@
                         </div>
                     </div>
                     <div id="tracks">
-                        {{foreach(options.artists)}}
+                        {{test}}
+                        {{#artists}}
                             <div class="artist">
-                                <h2>{{@this.name}}</h2>
+                                <h2>{{name}}</h2>
                                 <div>
-                                    {{foreach(@this.tracks)}}
+                                    {{#tracks}}
                                         <!-- <div class="trackContainer">
                                             <div onclick="startPlay('{{@this.id}}')" style="background-image: url('/images/{{@this.id}}.jpg')" class="track">
                                                 <div class="trackInfo">
@@ -55,15 +56,15 @@
                                         </div> -->
                                         <div class="trackListItem">
                                             <div onclick="startPlay('{{@this.id}}')">
-                                                <p class="title" >{{@this.title}}</p>
-                                                <p class="duration" >{{@this.duration|duration}}</p>
+                                                <p class="title" >{{title}}</p>
+                                                <p class="duration" >{{duration|duration}}</p>
                                             </div>
                                             <i onclick="modifyTrack('{{@this.id}}')" class="fa fa-pen icon"></i>
                                         </div>
-                                    {{/foreach}}
+                                    {{/tracks}}
                                 </div>
                             </div>
-                        {{/foreach}}
+                        {{/artists}}
                     </div>
                 </div>
                 <div class="sidebar right" >
@@ -78,9 +79,9 @@
                     <p>If you are reading this, it is because your browser does not support the audio element.</p>
                 </audio>
                 <div id="controls">
-                    <button onclick="previous()"><i class="flatButton fa fa-backward fa-2x" ></i></button>
-                    <button onclick="playPause()"><i id="playButton" class="flatButton fa fa-play fa-2x" tabIndex="-1" ></i></button>
-                    <button onclick="next()"><i class="flatButton fa fa-forward fa-2x" ></i></button>
+                    <div class="button icon" onclick="previous()"><i class="fa fa-backward fa-2x" ></i></div>
+                    <div class="button icon" onclick="playPause()"><i id="playButton" class="fa fa-play fa-2x" tabIndex="-1" ></i></div>
+                    <div class="button icon" onclick="next()"><i class="fa fa-forward fa-2x" ></i></div>
                 </div>
                 <div id="currentTrackInfo" onclick="modifyTrack()" ></div>
                 <div id="tracker"></div>

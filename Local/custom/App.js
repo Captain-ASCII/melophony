@@ -71,6 +71,10 @@ function download(id) {
     fetch(`http://localhost:1958/download/${id}`).then(data => toast("OK"));
 }
 
+function requestServerDownload(videoId) {
+    fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("OK"));
+}
+
 function toast(text) {
     document.getElementById("toaster").style.transform = "translateX(0%)";
     setTimeout(_ => document.getElementById("toaster").style.transform = "translateX(-110%)", 3000);

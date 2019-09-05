@@ -12,6 +12,7 @@
 
 // function synchronize() {}
 // function download(videoId) {}
+// function requestServerDownload(videoId) {}
 // function erase(id) {}
 // function toast(text) {}
 
@@ -33,13 +34,13 @@ function play() {
         next();
     } else {
         player.play();
-        document.getElementById("playButton").className = "flatButton fa fa-pause fa-2x";
+        document.getElementById("playButton").className = "fa fa-pause fa-2x";
     }
 }
 
 function pause() {
     player.pause();
-    document.getElementById("playButton").className = "flatButton fa fa-play fa-2x";
+    document.getElementById("playButton").className = "fa fa-play fa-2x";
 }
 
 function playPause() {

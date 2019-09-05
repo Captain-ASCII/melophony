@@ -5,12 +5,13 @@ import FileSystem from "fs";
 import fetch from "node-fetch";
 import Path from "path";
 
-const Squirrelly = require("squirrelly");
+const Mustache = require("mustache-express");
+// const Squirrelly = require("squirrelly");
 
-Squirrelly.defineFilter("duration", function (durationString) {
-    let duration = parseInt(durationString);
-    return `${Math.floor(duration/60)}:${duration%60}`;
-});
+// Squirrelly.defineFilter("duration", function (durationString) {
+//     let duration = parseInt(durationString);
+//     return `${Math.floor(duration/60)}:${duration%60}`;
+// });
 
 
 const App = Express();
@@ -29,7 +30,8 @@ const tracksArray = Object.values(tracks);
 
 App.use(Express.json());
 
-App.set("view engine", "squirrelly");
+App.engine("mustache", Mustache());
+App.set("view engine", "mustache");
 App.set("views", Path.join(commonPath, "views"));
 App.use("/public", Express.static(Path.join(commonPath, "public")));
 
@@ -114,6 +116,10 @@ App.get("/screen/tracks", (request, response) => {
 
 App.get("/screen/artists", (request, response) => {
     response.render("ArtistsScreen", { artists: artists });
+});
+
+App.get("/screen/track/add", (request, response) => {
+    response.render("AddTrackScreen", {});
 });
 
 

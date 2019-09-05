@@ -28,17 +28,6 @@ html, body, #root {
   background: #3498db;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
-}
-
-input:-webkit-autofill {
-    -webkit-text-fill-color: #2ecc71 !important;
-}
-
 .App {
     width: 100%;
     height: 100%;
@@ -74,33 +63,6 @@ p, h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-size: 30px;
-}
-
-input {
-    outline: none !important;
-}
-
-input[type="text"] {
-    height: 36px;
-    min-width: 300px;
-    border: none;
-    padding: 0px 10px;
-    border-radius: 5px;
-    background: #22252c;
-    color: #FFF;
-}
-
-button {
-    background: none;
-    border: none;
-    outline: none;
-    align-items: center;
-}
-
-.flatButton {
-    color: #D4D7D9;
-    font-size: 1em;
-    display: flex;
 }
 
 /* Header */
@@ -393,6 +355,10 @@ button {
     text-align: right;
 }
 
+.button:hover {
+    background-color: #3e4350;
+}
+
 .button.icon {
     border-radius: 100px;
     padding: 0px;
@@ -429,10 +395,45 @@ button {
     background-color: #e74c3c;
 }
 
-.button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.button.icon.floating {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    bottom: 10px;
+    right: 10px;
+    background-color: #22252c;
+    font-size: 20px;
+    box-shadow: 0 6px 10px 2px rgba(0,0,0,0.3);
 }
 
+.button.icon.floating:hover {
+    background-color: #3e4350;
+}
+
+input {
+    outline: none !important;
+}
+
+input[type="text"] {
+    height: 36px;
+    min-width: 300px;
+    border: none;
+    padding: 0px 10px;
+    border-radius: 5px;
+    background: #22252c;
+    color: #FFF;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: #2ecc71 !important;
+}
 
 .delimiter {
     width: 100%;
