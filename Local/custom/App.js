@@ -5,24 +5,13 @@ let tracks = {};
 let artists = {};
 let tracksArray = [];
 let player = null;
-let extractTimeout = null;
-let isBeingModified = false;
-let trackListHTML = "";
 
 async function start() {
     tracks = await (await fetch("http://localhost:1958/availableTracks")).json();
     artists = await (await fetch("http://localhost:1958/artists")).json();
     tracksArray = Object.values(tracks);
 
-    trackListHTML = document.getElementById("content").innerHTML;
-
     player = document.getElementById("player");
-
-    player.onended = function() {
-        if (!isBeingModified) {
-            next();
-        }
-    };
 };
 
 function get(v, defaultValue) {
@@ -34,29 +23,26 @@ async function changeScreen(screen) {
 }
 
 async function filter(text) {
-    if (text == "") {
-        document.getElementById("content").innerHTML = trackListHTML;
-    } else {
-        document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/tracks/filter/${text}`)).text();
-    }
+    document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/tracks/filter/${text}`)).text();
 }
 
-async function modifyTrack(id = currentTrack.id) {
+async function modifyTrack(id) {
     if (!id) {
         return;
     }
 
-    isBeingModified = true;
-    let track = tracks[id];
-    console.warn(tracks, id, tracks[id])
-    player.src = `/tracks/${track.videoId}.m4a`;
-    let content = document.getElementById("content");
-    trackListHTML = content.innerHTML;
+    player.onended = function() {};
+    await changeScreen(`modify/track/${id}`);
+    new InputRange("trackModificator", document.getElementById("trackModificator"), tracks[id], "modifyTrackStart", "modifyTrackEnd");
+}
 
-    content.innerHTML = await (await fetch(`http://localhost:1958/screen/modify/track/${id}`)).text();
-    new InputRange("trackModificator", document.getElementById("trackModificator"), track, "modifyTrackStart", "modifyTrackEnd");
-
-    content.style.overflowY = "hidden";
+async function createArtist() {
+    let artist = await (await fetch(`http://localhost:1958/artist`, {
+        method: "POST",
+        body: document.getElementById("artist").value,
+        headers: { "Content-Type": "text/plain" }
+    })).json();
+    artists[artist.id] = artist;
 }
 
 function modifyArtist() {
@@ -71,12 +57,21 @@ function download(id) {
     fetch(`http://localhost:1958/download/${id}`).then(data => toast("OK"));
 }
 
+function deleteTrack(id) {
+    fetch(`http://localhost:1958/track/${id}`, { method: "DELETE" }).then(data => {
+        changeScreen("tracks");
+        toast("OK");
+    });
+}
+
 function requestServerDownload(videoId) {
     fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("OK"));
 }
 
 function toast(text) {
-    document.getElementById("toaster").style.transform = "translateX(0%)";
+    const toaster = document.getElementById("toaster");
+    toaster.innerHTML = text;
+    toaster.style.transform = "translateX(0%)";
     setTimeout(_ => document.getElementById("toaster").style.transform = "translateX(-110%)", 3000);
 }
 
@@ -85,26 +80,24 @@ function getPercentage(id, value) {
 }
 
 function modifyTrackStart(id, value) {
+    player.src = `/tracks/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.left = `calc(${getPercentage(id, value)}% + 10px)`;
     tracks[id].startTime = parseInt(value);
 }
 
 function modifyTrackEnd(id, value) {
+    player.src = `/tracks/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
     tracks[id].endTime = parseInt(value + (EXTRACT_DURATION / 1000));
 }
 
 function hide() {
-    isBeingModified = false;
-    let content = document.getElementById("content");
-
-    content.innerHTML = trackListHTML;
-    content.style.overflowY = "scroll";
+    changeScreen("tracks");
 }
 
-function saveAndHide(id) {
+async function saveAndHide(id) {
     let inputs = document.querySelectorAll(".form-data");
     for (let input of inputs) {
         if (input.list) {
@@ -114,7 +107,7 @@ function saveAndHide(id) {
             tracks[id][input.id] = input.value;
         }
     }
-    fetch(`http://localhost:1958/track/${id}`, {
+    await fetch(`http://localhost:1958/track/${id}`, {
         method: "PUT",
         body: JSON.stringify(tracks[id]),
         headers: { 'Content-Type': 'application/json' }

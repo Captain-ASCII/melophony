@@ -6,6 +6,7 @@
 // function changeScreen(screen) {}
 // function filter(text) {}
 // function modifyTrack(id = currentTrack.id) {}
+// function createArtist() {}
 // function modifyArtist(id) {}
 
 // /* Track management */
@@ -22,6 +23,7 @@
 // function modifyTrackEnd(id, value) {}
 // function hide() {}
 // function saveAndHide(id) {}
+// function deleteTrack(id) {}
 
 // function startPlay(id) {}
 // function previous()
@@ -29,10 +31,13 @@
 
 /* Player */
 
+let extractTimeout = null;
+
 function play() {
     if (player.src == "") {
         next();
     } else {
+        player.onended = function() { next(); };
         player.play();
         document.getElementById("playButton").className = "fa fa-pause fa-2x";
     }

@@ -25,11 +25,13 @@ if (!configuration.DEBUG) {
 }
 const App = Express();
 
+App.use(Express.text());
 App.use(Express.json());
 
 App.use(function(request, response, next) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    response.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();
 });
 

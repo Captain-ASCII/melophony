@@ -11,6 +11,7 @@
     <div class="input">
         <i class="fa fa-male fa-2x icon"></i>
         <input type="text" list="artistNames" class="form-data" id="artist" value="{{artist}}" />
+        <i class="fa fa-plus fa-1x icon button" onclick="createArtist()"></i>
         <datalist id="artistNames">
             {{#artists}}
                 <option data-value="{{id}}" value="{{name}}"/>
@@ -29,6 +30,6 @@
     </div>
     <div class="actions">
         <div class="button raised" onclick="download('{{track.videoId}}')" >Download</div>
-        <div class="button raised alert" onclick="erase('{{track.videoId}}')" >Erase</div>
+        <div class="button raised alert" onclick="deleteTrack('{{track.videoId}}')" >Delete</div>
     </div>
 </div>

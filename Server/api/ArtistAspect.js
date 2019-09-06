@@ -1,5 +1,6 @@
 
 import BaseAspect from "./BaseAspect";
+import Artist from "./../model/Artist";
 
 export default class ArtistAspect extends BaseAspect {
 
@@ -15,6 +16,12 @@ export default class ArtistAspect extends BaseAspect {
 
         this.app.get("/artist/:id", (request, response) => {
             response.send(this.artists[request.params.id]);
+        });
+
+        this.app.post("/artist", (request, response) => {
+            let artist = new Artist(request.body.value);
+            this.artists[artist.id] = artist;
+            response.send(artist);
         });
 
         this.app.put("/artist/:id", (request, response) => {
