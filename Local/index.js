@@ -124,7 +124,10 @@ App.get("/screen/track/add", (request, response) => {
 /* Synchronization */
 
 App.get("/synchronize", (request, response) => {
-    download("https://melophony.ddns.net/tracks", TRACKS, _ => response.send("ok"));
+    download("https://melophony.ddns.net/tracks", TRACKS, _ => {
+        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+        response.send("ok");
+    });
 });
 
 App.get("/download/:videoId", (request, response) => {
