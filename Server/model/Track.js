@@ -1,13 +1,5 @@
 
-function generateId() {
-    let result = "";
-    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < 8; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
+import * as ModelUtils from "./ModelUtils";
 
 function getArtistId(newArtistName, artists) {
     for (let artistId in artists) {
@@ -15,7 +7,7 @@ function getArtistId(newArtistName, artists) {
             return artistId;
         }
     }
-    let newArtistId = generateId();
+    let newArtistId = ModelUtils.generateId();
     artists[newArtistId] = { name: newArtistName };
     return newArtistId;
 }
@@ -32,7 +24,7 @@ export default class Track {
         let artistName = (length < 0) ? videoTitle : videoTitle.substring(0, length);
         let title = (length < 0) ? videoTitle : videoTitle.substring(length + 3, videoTitle.length);
 
-        this.id = generateId();
+        this.id = ModelUtils.generateId();
         this.title = title;
         this.artist = "Artist";
 

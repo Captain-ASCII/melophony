@@ -5,31 +5,42 @@ import FileSystem from "fs";
 import fetch from "node-fetch";
 import Path from "path";
 
-const Squirrelly = require("squirrelly");
+Object.filter = function (object, filter) {
+    let result = {};
+    for (let key in object) {
+        if (filter(object[key])) {
+            result[key] = object[key];
+        }
+    }
+    return result;
+}
 
-Squirrelly.defineFilter("duration", function (durationString) {
-    let duration = parseInt(durationString);
-    return `${Math.floor(duration/60)}:${duration%60}`;
-});
-
+const Mustache = require("mustache-express");
 
 const App = Express();
 const commonPath = Path.join(__dirname, "..", "Common", "Views");
 
 const PORT = 1958;
 
+const SERVER_ADDRESS = "http://192.168.1.19:1789";
 const TRACKS = "data/tracks.json";
 const ARTISTS = "data/artists.json";
 const TRACKS_DIR = "tracks";
 const IMAGES_DIR = "images";
 
-const tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
-const artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
-const tracksArray = Object.values(tracks);
+let tracks = {};
+let artists = {};
 
+try {
+    tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+    artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
+} catch (error) {}
+
+App.use(Express.text());
 App.use(Express.json());
 
-App.set("view engine", "squirrelly");
+App.engine("mustache", Mustache());
+App.set("view engine", "mustache");
 App.set("views", Path.join(commonPath, "views"));
 App.use("/public", Express.static(Path.join(commonPath, "public")));
 
@@ -46,15 +57,15 @@ App.get("/artists", (request, response) => {
 });
 
 App.get("/artists/tracks", (request, response) => {
-    response.send(getTracksByArtist());
+    response.send(getTracksByArtist(tracks));
 });
 
 App.get("/", (request, response) => {
-    response.render("App", { artists: getTracksByArtist() });
+    response.render("App", { artists: getTracksByArtist(tracks) });
 });
 
 App.put("/track/:id", async (request, response) => {
-    let data = await (await fetch(`https://melophony.ddns.net/track/${request.params.id}`, {
+    let data = await (await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, {
         method: "PUT",
         body: JSON.stringify(request.body),
         headers: { "Content-Type": "application/json" }
@@ -65,16 +76,35 @@ App.put("/track/:id", async (request, response) => {
     response.send({ "status": "done" });
 });
 
+App.delete("/track/:id", async (request, response) => {
+    let data = await (await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, { method: "DELETE" })).json();
+
+    delete tracks[request.params.id];
+    save();
+    response.send({ "status": "done" });
+});
+
+App.post("/artist", async (request, response) => {
+    let artist = await (await fetch(`${SERVER_ADDRESS}/artist`, {
+        method: "POST",
+        body: JSON.stringify({ value: request.body }),
+        headers: { "Content-Type": "application/json" }
+    })).json();
+
+    artists[artist.id] = artist;
+    response.send(artist);
+});
+
 
 /* Redirect distant API calls */
 
 App.get("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`https://melophony.ddns.net/${request.params.request}`)).json();
+    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`)).json();
     response.send(data);
 });
 
 App.put("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`https://melophony.ddns.net/${request.params.request}`, {
+    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -85,7 +115,7 @@ App.put("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
 });
 
 App.delete("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`https://melophony.ddns.net/${request.params.request}`, { method: "DELETE" })).json();
+    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`, { method: "DELETE" })).json();
     response.send(data);
 });
 
@@ -95,38 +125,49 @@ App.get("/screen/modify/track/:id", (request, response) => {
     let track = tracks[request.params.id];
     response.render("ModificationScreen", {
         track: track,
-        artist: get(artists[track.artist], { name: "Unknown"}).name
+        artist: get(artists[track.artist], { name: "Unknown"}).name,
+        artists: Object.values(artists)
     });
 });
 
-App.get("/screen/filter/tracks/:text", (request, response) => {
-    let filteredTracks = tracksArray.filter(track => {
-        return `${get(artists[track.artist], { name: "Unknown"}).name}.${track.title}`.toUpperCase().indexOf(request.params.text.toUpperCase()) > -1;
-    }).map(track => {
-        return { ...track, artist: get(artists[track.artist], { name: "Unknown"}).name };
-    });
-    response.render("FilterScreen", { tracks: filteredTracks });
+App.get("/screen/tracks/filter/:text*?", (request, response) => {
+    let filteredTracks = tracks;
+    if (request.params.text) {
+        filteredTracks = Object.filter(tracks, track => {
+            return `${get(artists[track.artist], { name: "Unknown"}).name}.${track.title}`.toUpperCase().indexOf(request.params.text.toUpperCase()) > -1;
+        });
+    }
+    // .map(track => {
+    //     return { ...track, artist: get(artists[track.artist], { name: "Unknown"}).name };
+    // });
+    response.render("Tracks", { artists: getTracksByArtist(filteredTracks), duration: formatDuration });
 });
 
 App.get("/screen/tracks", (request, response) => {
-    response.render("TracksScreen", { artists: getTracksByArtist() });
+    response.render("TracksScreen", { artists: getTracksByArtist(tracks), duration: formatDuration });
 });
 
 App.get("/screen/artists", (request, response) => {
-    response.render("ArtistsScreen", { artists: artists });
+    response.render("ArtistsScreen", { artists: Object.values(artists).sort((a, b) => a.name.localeCompare(b.name)) });
 });
 
+App.get("/screen/track/add", (request, response) => {
+    response.render("AddTrackScreen", {});
+});
 
 
 /* Synchronization */
 
 App.get("/synchronize", (request, response) => {
-    download("https://melophony.ddns.net/tracks", TRACKS);
+    download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
+        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+        response.send("ok");
+    });
 });
 
 App.get("/download/:videoId", (request, response) => {
     download(
-        `https://melophony.ddns.net/get/${request.params.videoId}`,
+        `${SERVER_ADDRESS}/get/${request.params.videoId}`,
         `tracks/${request.params.videoId}.m4a`,
         _ => response.send("ok")
     );
@@ -144,32 +185,48 @@ App.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
 
 
 
-
+function formatDuration() {
+    return function(t, render) {
+        return `${parseInt(t)/60}:${parseInt(t)%60}`;
+    };
+}
 
 function save() {
     FileSystem.writeFileSync(TRACKS, JSON.stringify(tracks), "utf8");
 }
 
-function getTracksByArtist() {
+function toArray(object) {
+    let result = [];
+    for (let k in object) {
+        result.push({ key: k, value: object });
+    }
+    return result;
+}
+
+// function getTracksByArtist(tr) {
+//     return Object.values(artists).map(a => { return { ...a, tracks: Object.values(tr).filter(t => t.artist == a.id) } }).filter(a => a.tracks.length > 0);
+// }
+
+function getTracksByArtist(currentTracks = tracks) {
     let result = { "unknown": { name: "Unknown", tracks: [] }};
-    for (let i in tracks) {
+    for (let i in currentTracks) {
         let artistFound = false;
         for (let j in artists) {
-            if (j == tracks[i].artist) {
+            if (j == currentTracks[i].artist) {
                 if (!result[j]) {
                     result[j] = artists[j];
                     result[j].tracks = [];
                 }
-                result[j].tracks.push(tracks[i]);
+                result[j].tracks.push(currentTracks[i]);
                 artistFound = true;
                 break;
             }
         }
         if (!artistFound) {
-            result["unknown"].tracks.push(tracks[i]);
+            result["unknown"].tracks.push(currentTracks[i]);
         }
     }
-    return result;
+    return Object.values(result);
 }
 
 function download(url, fileName, callback) {

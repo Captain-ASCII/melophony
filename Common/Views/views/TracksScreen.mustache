@@ -1,0 +1,10 @@
+<div id="contentHeader">
+    <h4 class="subTitle" ></h4>
+    <div class="searchbar">
+        <input type="text" oninput="filter(this.value)" />
+    </div>
+</div>
+<div id="tracks">
+    {{> Tracks}}
+</div>
+<div class="button icon floating" onclick="changeScreen('track/add')"><i class="fa fa-plus icon"></i></div>

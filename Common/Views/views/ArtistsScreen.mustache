@@ -1,0 +1,12 @@
+<div id="artists">
+    {{#artists}}
+        <div class="artistListItem">
+            <div>
+                <p >{{name}}</p>
+            </div>
+            <div class="artistActions">
+                <i onclick="modifyArtist('{{id}}')" class="fa fa-pen icon"></i>
+            </div>
+        </div>
+    {{/artists}}
+</div>

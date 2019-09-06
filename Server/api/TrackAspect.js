@@ -36,16 +36,17 @@ export default class TrackAspect extends BaseAspect {
         });
 
         this.app.delete("/track/:id", (request, response) => {
-            let videoId = this.tracks[request.params.id].videoId;
+            if (this.tracks[request.params.id]) {
+                let videoId = this.tracks[request.params.id].videoId;
 
-            // deleteFile(videoId);
-            // files[request.params.id].state = Track.DELETED;
+                // deleteFile(videoId);
+                // files[request.params.id].state = Track.DELETED;
 
-            delete this.tracks[request.params.id];
-            this.modifiedTracks[request.params.id] = { deleted: true };
+                delete this.tracks[request.params.id];
+                this.modifiedTracks[request.params.id] = { deleted: true };
+            }
 
             response.send({ status: "deleted" });
-
             this.db.save();
         });
     }

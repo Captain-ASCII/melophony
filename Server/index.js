@@ -25,6 +25,7 @@ if (!configuration.DEBUG) {
 }
 const App = Express();
 
+App.use(Express.text());
 App.use(Express.json());
 
 App.use(function(request, response, next) {

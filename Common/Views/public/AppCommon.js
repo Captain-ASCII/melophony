@@ -6,12 +6,15 @@
 // function changeScreen(screen) {}
 // function filter(text) {}
 // function modifyTrack(id = currentTrack.id) {}
+// function createArtist() {}
 // function modifyArtist(id) {}
 
 // /* Track management */
 
 // function synchronize() {}
 // function download(videoId) {}
+// function requestServerDownload(videoId) {}
+// function erase(id) {}
 // function toast(text) {}
 
 // /* Track Modification Screen */
@@ -20,6 +23,7 @@
 // function modifyTrackEnd(id, value) {}
 // function hide() {}
 // function saveAndHide(id) {}
+// function deleteTrack(id) {}
 
 // function startPlay(id) {}
 // function previous()
@@ -27,18 +31,21 @@
 
 /* Player */
 
+let extractTimeout = null;
+
 function play() {
     if (player.src == "") {
         next();
     } else {
+        player.onended = function() { next(); };
         player.play();
-        document.getElementById("playButton").className = "flatButton fa fa-pause fa-2x";
+        document.getElementById("playButton").className = "fa fa-pause fa-2x";
     }
 }
 
 function pause() {
     player.pause();
-    document.getElementById("playButton").className = "flatButton fa fa-play fa-2x";
+    document.getElementById("playButton").className = "fa fa-play fa-2x";
 }
 
 function playPause() {
