@@ -21,8 +21,8 @@ export default class Track {
 
     constructor(videoTitle, duration, artists, videoId) {
         let length = videoTitle.indexOf(" - ");
-        let artistName = (length < 0) ? title : title.substring(0, length);
-        let title = (length < 0) ? title : title.substring(length + 3, videoTitle.length);
+        let artistName = (length < 0) ? videoTitle : videoTitle.substring(0, length);
+        let title = (length < 0) ? videoTitle : videoTitle.substring(length + 3, videoTitle.length);
 
         this.id = ModelUtils.generateId();
         this.title = title;
