@@ -31,6 +31,12 @@ export default class ArtistAspect extends BaseAspect {
             this.artists._save();
         });
 
+        this.app.delete("/artist/:id", (request, response) => {
+            delete this.artists[request.params.id];
+            response.send(this.artists[request.params.id]);
+            this.artists._save();
+        });
+
         this.app.get("/artists/tracks", (request, response) => {
             let result = {};
             for (let i in this.artists) {
