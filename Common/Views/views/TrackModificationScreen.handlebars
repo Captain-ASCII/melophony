@@ -1,8 +1,8 @@
 <div id="modificationPage">
     <div id="modificationPageHeader">
-        <div id="backButton" class="button icon" onclick="hide()" ><i class="fa fa-times fa-2x icon"></i></div>
+        <div id="backButton" class="button icon" onclick="back()" ><i class="fa fa-times fa-2x icon"></i></div>
         <h2 id="modificationPageTitle">{{artist}} - {{track.title}}</h2>
-        <div id="saveButton" class="button raised" onclick="saveAndHide('{{track.id}}')" >Save</div>
+        <div id="saveButton" class="button raised" onclick="saveAndHide('track', '{{track.id}}')" >Save</div>
     </div>
     <div class="input">
         <i class="fa fa-music fa-2x icon"></i>
@@ -23,13 +23,23 @@
         <input type="text" class="form-data" id="duration" value="{{track.duration}}" />
     </div>
 
+    <div class="input">
+        <i class="fa fa-fingerprint fa-2x icon"></i>
+        <input type="text" disabled value="{{track.id}}" />
+    </div>
+    <div class="input">
+        <i class="fab fa-youtube fa-2x icon"></i>
+        <input type="text" class="form-data" id="videoId" value="{{track.videoId}}" />
+    </div>
+
     <div class="delimiter"></div>
 
     <div class="input">
         <div id="trackModificator"></div>
     </div>
     <div class="actions">
-        <div class="button raised" onclick="download('{{track.videoId}}')" >Download</div>
-        <div class="button raised alert" onclick="deleteTrack('{{track.videoId}}')" >Delete</div>
+        <div class="button raised" onclick="download('{{track.videoId}}')" >Get locally</div>
+        <div class="button raised warning" onclick="requestServerDownload('{{track.videoId}}')" >Download</div>
+        <div class="button raised alert" onclick="deleteItem('track', '{{track.videoId}}')" >Delete</div>
     </div>
 </div>

@@ -2,10 +2,10 @@
     {{#artists}}
         <div class="artistListItem">
             <div>
-                <p >{{name}}</p>
+                <p>{{name}}</p>
             </div>
             <div class="artistActions">
-                <i onclick="modifyArtist('{{id}}')" class="fa fa-pen icon"></i>
+                <i onclick="changeScreen('artist/modify/{{id}}')" class="fa fa-pen icon"></i>
             </div>
         </div>
     {{/artists}}

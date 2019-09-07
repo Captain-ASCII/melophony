@@ -6,24 +6,32 @@
 // function changeScreen(screen) {}
 // function filter(text) {}
 // function modifyTrack(id = currentTrack.id) {}
-// function createArtist() {}
-// function modifyArtist(id) {}
 
 // /* Track management */
 
 // function synchronize() {}
-// function download(videoId) {}
-// function requestServerDownload(videoId) {}
-// function erase(id) {}
 // function toast(text) {}
+
+/* Modification Screens */
+
+// function hide() {}
+// function saveAndHide(id) {}
 
 // /* Track Modification Screen */
 
 // function modifyTrackStart(id, value) {}
 // function modifyTrackEnd(id, value) {}
-// function hide() {}
-// function saveAndHide(id) {}
+// function download(videoId) {}
+// function requestServerDownload(videoId) {}
 // function deleteTrack(id) {}
+
+/* Artist Modification Screen */
+
+// function createArtist() {}
+// function modifyArtist(id) {}
+// function deleteArtist(id) {}
+
+/* Track player */
 
 // function startPlay(id) {}
 // function previous()

@@ -15,14 +15,33 @@ Object.filter = function (object, filter) {
     return result;
 }
 
-const Mustache = require("mustache-express");
+async function json(response) {
+    const body = await response.text();
+    try {
+        return JSON.parse(body);
+    } catch (err) {
+        console.error("Error:", err);
+        console.error("Response body:", body);
+
+        throw Error(response, err.message, 500);
+    }
+}
+
+const HandleBars = require("express-handlebars");
+
+var handlebars = HandleBars.create({
+    helpers: {
+        foo: function () { return 'FOO!'; },
+        bar: function () { return 'BAR!'; }
+    }
+});
 
 const App = Express();
 const commonPath = Path.join(__dirname, "..", "Common", "Views");
 
 const PORT = 1958;
 
-const SERVER_ADDRESS = "http://192.168.1.19:1789";
+const SERVER_ADDRESS = "https://melophony.ddns.net";
 const TRACKS = "data/tracks.json";
 const ARTISTS = "data/artists.json";
 const TRACKS_DIR = "tracks";
@@ -32,15 +51,19 @@ let tracks = {};
 let artists = {};
 
 try {
-    tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
-    artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
+    download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
+        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+    });
+    download(`${SERVER_ADDRESS}/artists`, ARTISTS, _ => {
+        artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
+    });
 } catch (error) {}
 
 App.use(Express.text());
 App.use(Express.json());
 
-App.engine("mustache", Mustache());
-App.set("view engine", "mustache");
+App.engine("handlebars", handlebars.engine);
+App.set("view engine", "handlebars");
 App.set("views", Path.join(commonPath, "views"));
 App.use("/public", Express.static(Path.join(commonPath, "public")));
 
@@ -64,32 +87,36 @@ App.get("/", (request, response) => {
     response.render("App", { artists: getTracksByArtist(tracks) });
 });
 
-App.put("/track/:id", async (request, response) => {
-    let data = await (await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, {
+App.put("/:type/:id", async (request, response) => {
+    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.type}/${request.params.id}`, {
         method: "PUT",
         body: JSON.stringify(request.body),
         headers: { "Content-Type": "application/json" }
-    })).json();
+    }));
 
-    tracks[request.params.id] = request.body;
-    save();
+    let collection = getCollection(request.params.type);
+
+    collection[request.params.id] = request.body;
     response.send({ "status": "done" });
+    save();
 });
 
-App.delete("/track/:id", async (request, response) => {
-    let data = await (await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, { method: "DELETE" })).json();
+App.delete("/:type/:id", async (request, response) => {
+    let data = await json(await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, { method: "DELETE" }));
 
-    delete tracks[request.params.id];
-    save();
+    let collection = getCollection(request.params.type);
+
+    delete collection[request.params.id];
     response.send({ "status": "done" });
+    save();
 });
 
 App.post("/artist", async (request, response) => {
-    let artist = await (await fetch(`${SERVER_ADDRESS}/artist`, {
+    let artist = await json(await fetch(`${SERVER_ADDRESS}/artist`, {
         method: "POST",
         body: JSON.stringify({ value: request.body }),
         headers: { "Content-Type": "application/json" }
-    })).json();
+    }));
 
     artists[artist.id] = artist;
     response.send(artist);
@@ -99,34 +126,40 @@ App.post("/artist", async (request, response) => {
 /* Redirect distant API calls */
 
 App.get("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`)).json();
+    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`));
     response.send(data);
 });
 
 App.put("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`, {
+    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(request.body)
-    })).json();
+    }));
     response.send(data);
 });
 
 App.delete("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await (await fetch(`${SERVER_ADDRESS}/${request.params.request}`, { method: "DELETE" })).json();
+    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, { method: "DELETE" }));
     response.send(data);
 });
 
 /* Screens */
 
-App.get("/screen/modify/track/:id", (request, response) => {
+App.get("/screen/track/modify/:id", (request, response) => {
     let track = tracks[request.params.id];
-    response.render("ModificationScreen", {
+    response.render("TrackModificationScreen", {
         track: track,
         artist: get(artists[track.artist], { name: "Unknown"}).name,
         artists: Object.values(artists)
+    });
+});
+
+App.get("/screen/artist/modify/:id", (request, response) => {
+    response.render("ArtistModificationScreen", {
+        artist: get(artists[request.params.id], { id: "", name: "Unknown"}),
     });
 });
 
@@ -146,6 +179,11 @@ App.get("/screen/tracks/filter/:text*?", (request, response) => {
 App.get("/screen/tracks", (request, response) => {
     response.render("TracksScreen", { artists: getTracksByArtist(tracks), duration: formatDuration });
 });
+
+App.get("/screen/tracks/t", (request, response) => {
+    response.send({ tracks: Object.values(tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)) });
+});
+
 
 App.get("/screen/artists", (request, response) => {
     response.render("ArtistsScreen", { artists: Object.values(artists).sort((a, b) => a.name.localeCompare(b.name)) });
@@ -185,6 +223,17 @@ App.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
 
 
 
+function getCollection(type) {
+    let collection;
+    switch (type) {
+        case "artist": { collection = artists; break } ;
+        case "track": { collection = tracks; break } ;
+        default: { collection = tracks; break } ;
+    }
+
+    return collection;
+}
+
 function formatDuration() {
     return function(t, render) {
         return `${parseInt(t)/60}:${parseInt(t)%60}`;
@@ -192,7 +241,8 @@ function formatDuration() {
 }
 
 function save() {
-    FileSystem.writeFileSync(TRACKS, JSON.stringify(tracks), "utf8");
+    FileSystem.writeFile(TRACKS, JSON.stringify(tracks), "utf8", _ => false);
+    FileSystem.writeFile(ARTISTS, JSON.stringify(artists), "utf8", _ => false);
 }
 
 function toArray(object) {

@@ -179,7 +179,6 @@ h1 {
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
 }
 
 #content > * {
@@ -192,10 +191,12 @@ h1 {
 }
 
 #tracks {
+    margin: 0;
     padding: 20px;
     align-self: stretch;
     display: flex;
     flex-wrap: wrap;
+    overflow-y: scroll;
 }
 
 #artists {
@@ -420,6 +421,10 @@ input[type="text"] {
     border-radius: 5px;
     background: #22252c;
     color: #FFF;
+}
+
+input[type="text"][disabled] {
+    color: #666;
 }
 
 input:-webkit-autofill,

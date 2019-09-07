@@ -1,6 +1,9 @@
 
 let EXTRACT_DURATION = 2000;
 
+let lastScreen = "";
+let currentScreen = "tracks";
+
 let tracks = {};
 let artists = {};
 let tracksArray = [];
@@ -19,7 +22,13 @@ function get(v, defaultValue) {
 }
 
 async function changeScreen(screen) {
+    lastScreen = currentScreen;
+    currentScreen = screen;
     document.getElementById("content").innerHTML = await (await fetch(`http://localhost:1958/screen/${screen}`)).text();
+}
+
+function back() {
+    changeScreen(lastScreen);
 }
 
 async function filter(text) {
@@ -32,7 +41,7 @@ async function modifyTrack(id) {
     }
 
     player.onended = function() {};
-    await changeScreen(`modify/track/${id}`);
+    await changeScreen(`track/modify/${id}`);
     new InputRange("trackModificator", document.getElementById("trackModificator"), tracks[id], "modifyTrackStart", "modifyTrackEnd");
 }
 
@@ -43,6 +52,14 @@ async function createArtist() {
         headers: { "Content-Type": "text/plain" }
     })).json();
     artists[artist.id] = artist;
+
+    let artistOption = document.createElement("option");
+    artistOption.value = artist.name;
+    let attribute = document.createAttribute("data-value");
+    attribute.value = artist.id;
+    artistOption.setAttributeNode(attribute);
+
+    document.getElementById("artistNames").appendChild(artistOption);
 }
 
 function modifyArtist() {
@@ -57,15 +74,16 @@ function download(id) {
     fetch(`http://localhost:1958/download/${id}`).then(data => toast("OK"));
 }
 
-function deleteTrack(id) {
-    fetch(`http://localhost:1958/track/${id}`, { method: "DELETE" }).then(data => {
-        changeScreen("tracks");
+function deleteItem(type, id) {
+    fetch(`http://localhost:1958/${type}/${id}`, { method: "DELETE" }).then(data => {
+        changeScreen(`${type}s`);
         toast("OK");
     });
 }
 
 function requestServerDownload(videoId) {
     fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("OK"));
+    changeScreen("tracks");
 }
 
 function toast(text) {
@@ -93,26 +111,27 @@ function modifyTrackEnd(id, value) {
     tracks[id].endTime = parseInt(value + (EXTRACT_DURATION / 1000));
 }
 
-function hide() {
-    changeScreen("tracks");
-}
+async function saveAndHide(type, id) {
+    let collection = (type === "artist") ? artists : tracks;
 
-async function saveAndHide(id) {
     let inputs = document.querySelectorAll(".form-data");
     for (let input of inputs) {
         if (input.list) {
-            console.warn(`${input.list.id} option[value='${input.value}']`)
-            tracks[id][input.id] = document.querySelector(`#${input.list.id} option[value='${input.value}']`).getAttribute("data-value");
+            let listElement = document.querySelector(`#${input.list.id} option[value='${input.value}']`);
+            if (listElement) {
+                collection[id][input.id] = listElement.getAttribute("data-value");
+            }
         } else {
-            tracks[id][input.id] = input.value;
+            collection[id][input.id] = input.value;
         }
     }
-    await fetch(`http://localhost:1958/track/${id}`, {
+
+    await fetch(`http://localhost:1958/${type}/${id}`, {
         method: "PUT",
-        body: JSON.stringify(tracks[id]),
+        body: JSON.stringify(collection[id]),
         headers: { 'Content-Type': 'application/json' }
     });
-    hide();
+    back();
 }
 
 function startPlay(id) {
