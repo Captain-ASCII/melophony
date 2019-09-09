@@ -1,24 +1,9 @@
-{{#artists}}
-    <div class="artist">
-        <h2>{{name}}</h2>
-        <div>
-            {{#tracks}}
-                <!-- <div class="trackContainer">
-                    <div onclick="startPlay('{{id}}')" style="background-image: url('/images/{{id}}.jpg')" class="track">
-                        <div class="trackInfo">
-                            <p>{{title}}</p>
-                            <p>{{artist}}</p>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="trackListItem">
-                    <div onclick="startPlay('{{id}}')">
-                        <p class="title" >{{title}}</p>
-                        <p class="duration" >{{#duration}}{{duration}}{{/duration}}</p>
-                    </div>
-                    <i onclick="modifyTrack('{{id}}')" class="fa fa-pen icon button"></i>
-                </div>
-            {{/tracks}}
+{{#tracks}}
+    <div class="trackListItem">
+        <div onclick="startPlay('{{id}}')">
+            <p class="title {{status}}" >{{title}}</p>
+            <p class="duration" >{{formatDuration duration}}</p>
         </div>
+        <i onclick="modifyTrack('{{id}}')" class="fa fa-pen icon button"></i>
     </div>
-{{/artists}}
+{{/tracks}}

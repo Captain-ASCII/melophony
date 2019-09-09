@@ -40,6 +40,8 @@
 /* Player */
 
 let extractTimeout = null;
+let currentDataType = "tracks";
+let currentDisplayType = "list";
 
 function play() {
     if (player.src == "") {
@@ -71,4 +73,14 @@ function playExtract(time) {
         clearTimeout(extractTimeout);
     }
     extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
+}
+
+
+
+/* Display */
+
+function changeTrackDisplay(dataType, displayType) {
+    currentDataType = dataType;
+    currentDisplayType = displayType;
+    changeScreen(dataType);
 }

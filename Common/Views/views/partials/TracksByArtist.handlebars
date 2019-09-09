@@ -1,0 +1,16 @@
+{{#artists}}
+    <div class="artist">
+        <h2>{{name}}</h2>
+        <div>
+            {{#tracks}}
+                <div class="trackListItem">
+                    <div onclick="startPlay('{{id}}')">
+                        <p class="title {{status}}" >{{title}}</p>
+                        <p class="duration" >{{#duration}}{{duration}}{{/duration}}</p>
+                    </div>
+                    <i onclick="modifyTrack('{{id}}')" class="fa fa-pen icon button"></i>
+                </div>
+            {{/tracks}}
+        </div>
+    </div>
+{{/artists}}

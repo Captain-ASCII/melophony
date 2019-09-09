@@ -1,0 +1,32 @@
+
+#contentHeader {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+#tracks {
+    margin: 20px;
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#artists {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+
+#artists > * {
+    margin: 5px;
+}
+
+.displayActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 20px;
+}

@@ -4,42 +4,65 @@
         <h2 id="modificationPageTitle">{{artist}} - {{track.title}}</h2>
         <div id="saveButton" class="button raised" onclick="saveAndHide('track', '{{track.id}}')" >Save</div>
     </div>
-    <div class="input">
-        <i class="fa fa-music fa-2x icon"></i>
-        <input type="text" class="form-data" id="title" value="{{track.title}}" />
-    </div>
-    <div class="input">
-        <i class="fa fa-male fa-2x icon"></i>
-        <input type="text" list="artistNames" class="form-data" id="artist" value="{{artist}}" />
-        <i class="fa fa-plus fa-1x icon button" onclick="createArtist()"></i>
-        <datalist id="artistNames">
-            {{#artists}}
-                <option data-value="{{id}}" value="{{name}}"/>
-            {{/artists}}
-        </datalist>
-    </div>
-    <div class="input">
-        <i class="fa fa-ruler fa-2x icon"></i>
-        <input type="text" class="form-data" id="duration" value="{{track.duration}}" />
-    </div>
+    <div class="columns">
+        <div>
+            <div class="input">
+                <i class="fa fa-music fa-2x icon"></i>
+                <input type="text" class="form-data" id="title" value="{{track.title}}" />
+            </div>
+            <div class="input">
+                <i class="fa fa-male fa-2x icon"></i>
+                <input type="text" list="artistNames" class="form-data" id="artist" value="{{artist}}" />
+                <i class="fa fa-plus fa-1x icon button" onclick="createArtist()"></i>
+                <datalist id="artistNames">
+                    {{#artists}}
+                        <option data-value="{{id}}" value="{{name}}"/>
+                    {{/artists}}
+                </datalist>
+            </div>
+            <div class="input">
+                <i class="fa fa-ruler fa-2x icon"></i>
+                <input type="text" class="form-data" id="duration" value="{{track.duration}}" />
+            </div>
 
-    <div class="input">
-        <i class="fa fa-fingerprint fa-2x icon"></i>
-        <input type="text" disabled value="{{track.id}}" />
-    </div>
-    <div class="input">
-        <i class="fab fa-youtube fa-2x icon"></i>
-        <input type="text" class="form-data" id="videoId" value="{{track.videoId}}" />
+            <div class="input">
+                <i class="fa fa-fingerprint fa-2x icon"></i>
+                <input type="text" disabled value="{{track.id}}" />
+            </div>
+            <div class="input">
+                <i class="fa fa-clock fa-2x icon"></i>
+                <input type="text" disabled value="{{track.creationDate}}" />
+            </div>
+            <div class="input">
+                <i class="fa fa-file-contract fa-2x icon"></i>
+                <input type="text" disabled class="{{track.status}}" value="{{track.status}}" />
+            </div>
+            <div class="input">
+                <i class="fab fa-youtube fa-2x icon"></i>
+                <input type="text" class="form-data" id="videoId" value="{{track.videoId}}" />
+            </div>
+        </div>
+        <div></div>
+        <div id="serverInformation">
+            <h2>Actions</h2>
+            <div class="actions">
+                <div class="button raised" onclick="download('{{track.videoId}}')" >Get locally</div>
+                <div class="button raised" onclick="requestServerDownload('{{track.videoId}}')" >Download</div>
+            </div>
+        </div>
     </div>
 
     <div class="delimiter"></div>
 
+    <h2 style="margin-left: 66px" >Modify track duration</h2>
     <div class="input">
+        <i class="fa fa-ruler fa-2x icon"></i>
         <div id="trackModificator"></div>
     </div>
+
+    <div class="delimiter"></div>
+
     <div class="actions">
-        <div class="button raised" onclick="download('{{track.videoId}}')" >Get locally</div>
-        <div class="button raised warning" onclick="requestServerDownload('{{track.videoId}}')" >Download</div>
         <div class="button raised alert" onclick="deleteItem('track', '{{track.videoId}}')" >Delete</div>
     </div>
 </div>

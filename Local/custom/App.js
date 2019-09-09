@@ -3,6 +3,7 @@ let EXTRACT_DURATION = 2000;
 
 let lastScreen = "";
 let currentScreen = "tracks";
+let currentTrackId = "";
 
 let tracks = {};
 let artists = {};
@@ -32,15 +33,12 @@ function back() {
 }
 
 async function filter(text) {
-    document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/tracks/filter/${text}`)).text();
+    document.getElementById("tracks").innerHTML = await (await fetch(`http://localhost:1958/screen/${currentDataType}/filter/${text}`)).text();
 }
 
-async function modifyTrack(id) {
-    if (!id) {
-        return;
-    }
-
+async function modifyTrack(id = currentTrackId) {
     player.onended = function() {};
+    player.ontimeupdate = function() {};
     await changeScreen(`track/modify/${id}`);
     new InputRange("trackModificator", document.getElementById("trackModificator"), tracks[id], "modifyTrackStart", "modifyTrackEnd");
 }
@@ -82,8 +80,7 @@ function deleteItem(type, id) {
 }
 
 function requestServerDownload(videoId) {
-    fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("OK"));
-    changeScreen("tracks");
+    fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("Download requested"));
 }
 
 function toast(text) {
@@ -108,7 +105,7 @@ function modifyTrackEnd(id, value) {
     player.src = `/tracks/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
-    tracks[id].endTime = parseInt(value + (EXTRACT_DURATION / 1000));
+    tracks[id].endTime = Math.max(0, parseInt(value + (EXTRACT_DURATION / 1000)));
 }
 
 async function saveAndHide(type, id) {
@@ -135,12 +132,20 @@ async function saveAndHide(type, id) {
 }
 
 function startPlay(id) {
+    currentTrackId = id;
     let track = tracks[id];
     currentTrack = track;
     let artist = artists[currentTrack.artist] || { name: "Unknown" };
 
     player.src = `/tracks/${track.videoId}.m4a`;
     player.currentTime = track.startTime;
+
+    player.ontimeupdate = function(event) {
+        // console.warn(player.currentTime, (track.duration - track.endTime));
+        // if (player.currentTime > track.endTime) {
+            // next();
+        // }
+    };
     document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${currentTrack.title}`;
     new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
 

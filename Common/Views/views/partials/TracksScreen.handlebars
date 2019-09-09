@@ -1,10 +1,20 @@
 <div id="contentHeader">
-    <h4 class="subTitle" ></h4>
+    <h1>Titres</h1>
     <div class="searchbar">
-        {{> TextInput}}
+        {{> TextInput id="trackSearch" icon="search"}}
     </div>
 </div>
+<div class="displayActions">
+    <i class="fa fa-list icon button" onclick="changeTrackDisplay('tracks', 'list')" title="Track list" ></i>
+    <i class="fa fa-th icon button" onclick="changeTrackDisplay('tracks', 'block')" title="Track blocks" ></i>
+    <i class="fa fa-stream icon button" onclick="changeTrackDisplay('artists/tracks', 'list')" title="Tracks for each artist" ></i>
+</div>
+<div class="delimiter"></div>
 <div id="tracks">
-    {{> Tracks}}
+    {{#if artists}}
+        {{> TracksByArtist}}
+    {{else}}
+        {{> Tracks}}
+    {{/if}}
 </div>
 <div class="button icon floating" onclick="changeScreen('track/add')"><i class="fa fa-plus icon"></i></div>

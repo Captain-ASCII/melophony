@@ -5,34 +5,12 @@ import FileSystem from "fs";
 import fetch from "node-fetch";
 import Path from "path";
 
-Object.filter = function (object, filter) {
-    let result = {};
-    for (let key in object) {
-        if (filter(object[key])) {
-            result[key] = object[key];
-        }
-    }
-    return result;
-}
-
-async function json(response) {
-    const body = await response.text();
-    try {
-        return JSON.parse(body);
-    } catch (err) {
-        console.error("Error:", err);
-        console.error("Response body:", body);
-
-        throw Error(response, err.message, 500);
-    }
-}
-
 const HandleBars = require("express-handlebars");
 
 var handlebars = HandleBars.create({
+    defaultLayout: false,
     helpers: {
-        foo: function () { return 'FOO!'; },
-        bar: function () { return 'BAR!'; }
+        formatDuration: function(t) { return `${Math.floor(parseInt(t)/60)}:${parseInt(t)%60}`; }
     }
 });
 
@@ -84,7 +62,7 @@ App.get("/artists/tracks", (request, response) => {
 });
 
 App.get("/", (request, response) => {
-    response.render("App", { artists: getTracksByArtist(tracks) });
+    response.render("App", { tracks: Object.values(tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)) });
 });
 
 App.put("/:type/:id", async (request, response) => {
@@ -163,27 +141,26 @@ App.get("/screen/artist/modify/:id", (request, response) => {
     });
 });
 
-App.get("/screen/tracks/filter/:text*?", (request, response) => {
+App.get("/screen/:type([^/]+/?[^/]+)/filter/:text*?", (request, response) => {
     let filteredTracks = tracks;
     if (request.params.text) {
         filteredTracks = Object.filter(tracks, track => {
             return `${get(artists[track.artist], { name: "Unknown"}).name}.${track.title}`.toUpperCase().indexOf(request.params.text.toUpperCase()) > -1;
         });
     }
-    // .map(track => {
-    //     return { ...track, artist: get(artists[track.artist], { name: "Unknown"}).name };
-    // });
-    response.render("Tracks", { artists: getTracksByArtist(filteredTracks), duration: formatDuration });
+    switch (request.params.type) {
+        case "artists/tracks": { response.render("partials/TracksByArtist", { artists: getTracksByArtist(filteredTracks) }); break; };
+        default: { response.render("partials/Tracks", { tracks: Object.values(filteredTracks) }); break; };
+    }
 });
 
 App.get("/screen/tracks", (request, response) => {
-    response.render("TracksScreen", { artists: getTracksByArtist(tracks), duration: formatDuration });
+    response.render("partials/TracksScreen", { tracks: Object.values(tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)) });
 });
 
-App.get("/screen/tracks/t", (request, response) => {
-    response.send({ tracks: Object.values(tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)) });
+App.get("/screen/artists/tracks", (request, response) => {
+    response.render("partials/TracksScreen", { artists: getTracksByArtist(tracks) });
 });
-
 
 App.get("/screen/artists", (request, response) => {
     response.render("ArtistsScreen", { artists: Object.values(artists).sort((a, b) => a.name.localeCompare(b.name)) });
@@ -222,6 +199,27 @@ App.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
 
 
 
+Object.filter = function (object, filter) {
+    let result = {};
+    for (let key in object) {
+        if (filter(object[key])) {
+            result[key] = object[key];
+        }
+    }
+    return result;
+}
+
+async function json(response) {
+    const body = await response.text();
+    try {
+        return JSON.parse(body);
+    } catch (err) {
+        console.error("Error:", err);
+        console.error("Response body:", body);
+
+        throw Error(response, err.message, 500);
+    }
+}
 
 function getCollection(type) {
     let collection;
@@ -232,12 +230,6 @@ function getCollection(type) {
     }
 
     return collection;
-}
-
-function formatDuration() {
-    return function(t, render) {
-        return `${parseInt(t)/60}:${parseInt(t)%60}`;
-    };
 }
 
 function save() {

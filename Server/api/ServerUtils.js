@@ -44,6 +44,7 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
                             return `Error: ${error}`;
                         }
                         files[videoId].state = Track.AVAILABLE;
+                        files[track.id].state = Track.AVAILABLE;
                         files._save();
                         console.log(`Download done for ${videoId}`);
                     });

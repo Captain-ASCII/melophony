@@ -37,7 +37,7 @@ export default class Track {
         this.status = "Unavailable";
         this.duration = parseInt(duration);
         this.startTime = 0;
-        this.endTime = 0;
+        this.endTime = parseInt(duration);
         this.lastPlay = "";
         this.playCount = 0;
         this.rating = 0;
