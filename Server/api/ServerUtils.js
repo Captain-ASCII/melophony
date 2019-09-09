@@ -8,53 +8,46 @@ import Track from "./../model/Track";
 const FILE_DIR = "files";
 
 function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
-    if (!files[videoId] || files[videoId].state == Track.DELETED) {
-        files[videoId] = {
-            id: videoId,
-            size: 1,
-            state: Track.UNAVAILABLE
-        };
+    files[videoId] = new File(videoId);
+    files._save();
+    console.log(`${videoId}: `, files[videoId]);
 
-        files._save();
-        console.log(`Add ${videoId} to files`);
+    YTDL.getInfo(`https://www.youtube.com/watch?v=${videoId}`, {}, (error, info) => {
+        if (error) {
+            console.log(`Error YTDL info: ${error}`);
+            return `Error: ${error}`;
+        }
 
-        YTDL.getInfo(`https://www.youtube.com/watch?v=${videoId}`, {}, (error, info) => {
-            if (error) {
-                console.log(`Error YTDL info: ${error}`);
-                return `Error: ${error}`;
-            }
+        for (let i in info.formats) {
+            if (info.formats[i].container == "m4a") {
+                let format = info.formats[i];
+                console.log(`Found information for ${videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`);
 
-            for (let i in info.formats) {
-                if (info.formats[i].container == "m4a") {
-                    let format = info.formats[i];
-                    console.log(`Found information for ${videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`);
+                files[videoId].size = format.clen;
+                files[videoId].state = Track.DOWNLOADING;
 
-                    files[videoId].size = format.clen;
-                    files[videoId].state = Track.DOWNLOADING;
-
+                if (!Object.values(tracks).find(t => t.videoId === videoId)) {
                     let track = new Track(info.player_response.videoDetails.title, info.player_response.videoDetails.lengthSeconds, artists, videoId);
                     tracks[track.id] = track;
                     modifiedTracks[track.id] = track;
-
-                    db.save();
-                    checkFilesDir();
-                    exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${videoId} > ${FILE_DIR}/${videoId}.m4a`, (error, stdout, stderr) => {
-                        if (error) {
-                            console.log(`Error YTDL download: ${error}`);
-                            return `Error: ${error}`;
-                        }
-                        files[videoId].state = Track.AVAILABLE;
-                        files[track.id].state = Track.AVAILABLE;
-                        files._save();
-                        console.log(`Download done for ${videoId}`);
-                    });
                 }
+
+                db.save();
+                checkFilesDir();
+                exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${videoId} > ${FILE_DIR}/${videoId}.m4a`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.log(`Error YTDL download: ${error}`);
+                        return `Error: ${error}`;
+                    }
+                    files[videoId].state = Track.AVAILABLE;
+                    tracks[track.id].state = Track.AVAILABLE;
+                    db.save();
+                    console.log(`Download done for ${videoId}`);
+                });
             }
-        });
-        return { added: videoId };
-    } else {
-        return { status: `already added`, track: Object.values(tracks).find(track => track.videoId == videoId) };
-    }
+        }
+    });
+    return { added: videoId };
 }
 
 function deleteFile(id) {
