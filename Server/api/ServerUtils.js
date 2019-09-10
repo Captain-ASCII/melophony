@@ -3,11 +3,13 @@ import FileSystem from "fs";
 import YTDL from "ytdl-core";
 import { exec } from "child_process";
 
+import File from "./../model/File";
 import Track from "./../model/Track";
 
 const FILE_DIR = "files";
 
 function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
+    deleteFile(videoId);
     files[videoId] = new File(videoId);
     files._save();
     console.log(`${videoId}: `, files[videoId]);
@@ -26,8 +28,9 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
                 files[videoId].size = format.clen;
                 files[videoId].state = Track.DOWNLOADING;
 
+                let track = false;
                 if (!Object.values(tracks).find(t => t.videoId === videoId)) {
-                    let track = new Track(info.player_response.videoDetails.title, info.player_response.videoDetails.lengthSeconds, artists, videoId);
+                    track = new Track(info.player_response.videoDetails.title, info.player_response.videoDetails.lengthSeconds, artists, videoId);
                     tracks[track.id] = track;
                     modifiedTracks[track.id] = track;
                 }
@@ -40,7 +43,9 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
                         return `Error: ${error}`;
                     }
                     files[videoId].state = Track.AVAILABLE;
-                    tracks[track.id].state = Track.AVAILABLE;
+                    if (track) {
+                        tracks[track.id].state = Track.AVAILABLE;
+                    }
                     db.save();
                     console.log(`Download done for ${videoId}`);
                 });

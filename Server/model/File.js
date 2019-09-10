@@ -1,12 +1,11 @@
 
-import Track from "Track";
-import * as ModelUtils from "./ModelUtils";
+import Track from "./Track";
 
 export default class File {
 
     constructor(videoId) {
         this.id = videoId;
-        this.size = size;
+        this.size = 1;
         this.state = Track.UNAVAILABLE;
     }
 }
