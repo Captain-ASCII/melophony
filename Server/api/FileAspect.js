@@ -31,14 +31,10 @@ export default class FileAspect extends BaseAspect {
             let progress = 0;
 
             if (this.files[request.params.videoId]) {
-                if (FileSystem.existsSync(`${ServerUtils.FILE_DIR}/${request.params.videoId}.m4a`)) {
-                    const fileSize = FileSystem.statSync(`${ServerUtils.FILE_DIR}/${request.params.videoId}.m4a`).size;
-                    progress = fileSize / this.files[request.params.videoId].size;
-                }
                 response.send({
                     id: this.files[request.params.videoId].id,
                     state: this.files[request.params.videoId].state,
-                    progress: Math.round(progress * 100)
+                    progress: Math.round(ServerUtils.getDownloadProgress(request.params.videoId, this.files))
                 });
             } else {
                 response.send({ error: "id not found" });

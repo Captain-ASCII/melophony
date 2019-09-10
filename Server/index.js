@@ -3,6 +3,7 @@ import Express from "express";
 import HTTPS from "https";
 import FileSystem from "fs";
 
+import EventListener from "./utils/EventListener";
 import JsonDatabase from "./model/JsonDatabase";
 
 import ArtistAspect from "./api/ArtistAspect";
@@ -38,6 +39,8 @@ App.use(function(request, response, next) {
 const PORT = 1789;
 const HTTPS_PORT = 1804;
 
+const EventListener = new EventListener();
+
 const db = new JsonDatabase(
     BaseAspect.USERS,
     BaseAspect.ARTISTS,
@@ -58,6 +61,17 @@ new FileAspect(App, db);
 
 App.get("/*", (request, response) => {
     response.send({ status: "Nothing to do" });
+});
+
+const Wss = new WebSocket.Server({ server });
+
+Wss.on("connection", ws => {
+
+    ws.on("message", message => {
+        EventListener.on("downloadProgress", value => ws.send(value));
+    });
+
+    ws.send("Hi there, I am a WebSocket server");
 });
 
 if (configuration.DEBUG) {
