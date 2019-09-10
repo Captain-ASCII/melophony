@@ -49,10 +49,23 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
                     db.save();
                     console.log(`Download done for ${videoId}`);
                 });
+
+                setInterval(_ => {
+                    const progress = getDownloadProgress(videoId, files);
+                    EventListener.notify("downloadProgress", [ progress ]);
+                }, 2000);
             }
         }
     });
     return { added: videoId };
+}
+
+function getDownloadProgress(videoId, files) {
+    if (FileSystem.existsSync(`${ServerUtils.FILE_DIR}/${videoId}.m4a`)) {
+        const fileSize = FileSystem.statSync(`${ServerUtils.FILE_DIR}/${videoId}.m4a`).size;
+        return 100 * (fileSize / files[videoId].size);
+    }
+    return 0;
 }
 
 function deleteFile(id) {
