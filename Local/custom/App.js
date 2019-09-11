@@ -105,7 +105,8 @@ function modifyTrackEnd(id, value) {
     player.src = `/tracks/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
-    tracks[id].endTime = Math.max(0, parseInt(value + (EXTRACT_DURATION / 1000)));
+    console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
+    tracks[id].endTime = Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000));
 }
 
 async function saveAndHide(type, id) {
@@ -141,10 +142,9 @@ function startPlay(id) {
     player.currentTime = track.startTime;
 
     player.ontimeupdate = function(event) {
-        // console.warn(player.currentTime, (track.duration - track.endTime));
-        // if (player.currentTime > track.endTime) {
-            // next();
-        // }
+        if (player.currentTime > track.endTime) {
+            next();
+        }
     };
     document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${currentTrack.title}`;
     new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
