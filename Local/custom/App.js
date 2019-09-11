@@ -8,12 +8,14 @@ let currentTrackId = "";
 let tracks = {};
 let artists = {};
 let tracksArray = [];
+let currentIndex = -1;
 let player = null;
 
 async function start() {
     tracks = await (await fetch("http://localhost:1958/availableTracks")).json();
     artists = await (await fetch("http://localhost:1958/artists")).json();
     tracksArray = Object.values(tracks);
+    tracksArray.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
 
     player = document.getElementById("player");
 };
@@ -132,8 +134,10 @@ async function saveAndHide(type, id) {
     back();
 }
 
-function startPlay(id) {
+function startPlay(id, index) {
+    currentIndex = index;
     currentTrackId = id;
+
     let track = tracks[id];
     currentTrack = track;
     let artist = artists[currentTrack.artist] || { name: "Unknown" };
@@ -153,10 +157,11 @@ function startPlay(id) {
 }
 
 function previous() {
-
+    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex - 1) % tracksArray.length;
+    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
 }
 
 function next() {
-    let index = Math.floor(Math.random() * tracksArray.length);
-    startPlay(`${tracksArray[index].id}`);
+    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex + 1) % tracksArray.length;
+    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
 }

@@ -373,6 +373,13 @@ h1 {
     padding: 0px;
 }
 
+.button.icon.active {
+    border: 1px solid var(--primary-bg);
+    color: var(--primary-bg);
+    height: 34px;
+    width: 34px;
+}
+
 .button.raised {
     margin: 5px;
     color: var(--button-color);

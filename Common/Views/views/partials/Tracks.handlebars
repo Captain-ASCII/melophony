@@ -1,6 +1,6 @@
 {{#tracks}}
     <div class="trackListItem">
-        <div onclick="startPlay('{{id}}')">
+        <div onclick="startPlay('{{id}}', {{@index}})">
             <p class="title {{status}}" >{{title}}</p>
             <p class="duration" >{{formatDuration duration}}</p>
         </div>
