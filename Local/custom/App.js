@@ -8,6 +8,7 @@ let currentTrackId = "";
 let tracks = {};
 let artists = {};
 let tracksArray = [];
+let currentIndex = -1;
 let player = null;
 
 const connection = new WebSocket("wss://melophony.ddns.net");
@@ -32,6 +33,7 @@ async function start() {
     tracks = await (await fetch("http://localhost:1958/availableTracks")).json();
     artists = await (await fetch("http://localhost:1958/artists")).json();
     tracksArray = Object.values(tracks);
+    tracksArray.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
 
     player = document.getElementById("player");
 };
@@ -123,7 +125,8 @@ function modifyTrackEnd(id, value) {
     player.src = `/tracks/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
-    tracks[id].endTime = Math.max(0, parseInt(value + (EXTRACT_DURATION / 1000)));
+    console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
+    tracks[id].endTime = Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000));
 }
 
 async function saveAndHide(type, id) {
@@ -149,8 +152,10 @@ async function saveAndHide(type, id) {
     back();
 }
 
-function startPlay(id) {
+function startPlay(id, index) {
+    currentIndex = index;
     currentTrackId = id;
+
     let track = tracks[id];
     currentTrack = track;
     let artist = artists[currentTrack.artist] || { name: "Unknown" };
@@ -159,10 +164,9 @@ function startPlay(id) {
     player.currentTime = track.startTime;
 
     player.ontimeupdate = function(event) {
-        // console.warn(player.currentTime, (track.duration - track.endTime));
-        // if (player.currentTime > track.endTime) {
-            // next();
-        // }
+        if (player.currentTime > track.endTime) {
+            next();
+        }
     };
     document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${currentTrack.title}`;
     new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
@@ -171,10 +175,11 @@ function startPlay(id) {
 }
 
 function previous() {
-
+    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex - 1) % tracksArray.length;
+    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
 }
 
 function next() {
-    let index = Math.floor(Math.random() * tracksArray.length);
-    startPlay(`${tracksArray[index].id}`);
+    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex + 1) % tracksArray.length;
+    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
 }

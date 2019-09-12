@@ -1,6 +1,6 @@
 {{#tracks}}
     <div class="trackListItem">
-        <div onclick="startPlay('{{id}}')">
+        <div onclick="startPlay('{{id}}', {{@index}})">
             <p class="title {{status}}" >{{title}}</p>
             <div style="width: 100px; margin: 0 20px">
                 <div id="{{videoId}}Progress" class="progressBar"></div>
