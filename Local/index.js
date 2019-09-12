@@ -1,9 +1,11 @@
 
+import HTTP from "http";
 import HTTPS from "https";
 import Express from "express";
 import FileSystem from "fs";
 import fetch from "node-fetch";
 import Path from "path";
+import WebSocket from "ws";
 
 const HandleBars = require("express-handlebars");
 
@@ -58,7 +60,7 @@ App.get("/artists", (request, response) => {
 });
 
 App.get("/artists/tracks", (request, response) => {
-    response.send(getTracksByArtist(tracks));
+    response.send(Object.values(getTracksByArtist(tracks)));
 });
 
 App.get("/", (request, response) => {
@@ -89,6 +91,12 @@ App.delete("/:type/:id", async (request, response) => {
     save();
 });
 
+App.post("/file/:videoId", async (request, response) => {
+    fetch(`${SERVER_ADDRESS}/file/${request.params.videoId}`, { method: "POST" });
+
+    response.send({ "status": "done" });
+});
+
 App.post("/artist", async (request, response) => {
     let artist = await json(await fetch(`${SERVER_ADDRESS}/artist`, {
         method: "POST",
@@ -103,26 +111,26 @@ App.post("/artist", async (request, response) => {
 
 /* Redirect distant API calls */
 
-App.get("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`));
-    response.send(data);
-});
+// App.get("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
+//     let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`));
+//     response.send(data);
+// });
 
-App.put("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request.body)
-    }));
-    response.send(data);
-});
+// App.put("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
+//     let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, {
+//         method: "PUT",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(request.body)
+//     }));
+//     response.send(data);
+// });
 
-App.delete("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
-    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, { method: "DELETE" }));
-    response.send(data);
-});
+// App.delete("/api/:request((([^/]+/)*[^/]+))", async (request, response) => {
+//     let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.request}`, { method: "DELETE" }));
+//     response.send(data);
+// });
 
 /* Screens */
 
@@ -132,6 +140,13 @@ App.get("/screen/track/modify/:id", (request, response) => {
         track: track,
         artist: get(artists[track.artist], { name: "Unknown"}).name,
         artists: Object.values(artists)
+    });
+});
+
+App.get("/screen/artist/:id", (request, response) => {
+    response.render("ArtistScreen", {
+        artist: get(artists[request.params.id], { id: "", name: "Unknown"}),
+        tracks: getTracksByArtist()[request.params.id].tracks
     });
 });
 
@@ -149,7 +164,7 @@ App.get("/screen/:type([^/]+/?[^/]+)/filter/:text*?", (request, response) => {
         });
     }
     switch (request.params.type) {
-        case "artists/tracks": { response.render("partials/TracksByArtist", { artists: getTracksByArtist(filteredTracks) }); break; };
+        case "artists/tracks": { response.render("partials/TracksByArtist", { artists: Object.values(getTracksByArtist(filteredTracks)) }); break; };
         default: { response.render("partials/Tracks", { tracks: Object.values(filteredTracks) }); break; };
     }
 });
@@ -159,7 +174,7 @@ App.get("/screen/tracks", (request, response) => {
 });
 
 App.get("/screen/artists/tracks", (request, response) => {
-    response.render("partials/TracksScreen", { artists: getTracksByArtist(tracks) });
+    response.render("partials/TracksScreen", { artists: Object.values(getTracksByArtist(tracks)) });
 });
 
 App.get("/screen/artists", (request, response) => {
@@ -182,7 +197,7 @@ App.get("/synchronize", (request, response) => {
 
 App.get("/download/:videoId", (request, response) => {
     download(
-        `${SERVER_ADDRESS}/get/${request.params.videoId}`,
+        `${SERVER_ADDRESS}/file/${request.params.videoId}`,
         `tracks/${request.params.videoId}.m4a`,
         _ => response.send("ok")
     );
@@ -193,7 +208,22 @@ App.get("/download/:videoId", (request, response) => {
 
 /* Start API */
 
-App.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
+const server = HTTP.createServer(App);
+const wsServer = new WebSocket.Server({ server });
+
+wsServer.on("connection", ws => {
+    const connection = new WebSocket("wss://melophony.ddns.net");
+
+    connection.onmessage = function (event) {
+        let data = JSON.parse(event.data);
+        if (data.event == "trackAdded") {
+            tracks[data.track.id] = data.track;
+        }
+        ws.send(event.data);
+    };
+});
+
+server.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
 
 
 
@@ -268,7 +298,7 @@ function getTracksByArtist(currentTracks = tracks) {
             result["unknown"].tracks.push(currentTracks[i]);
         }
     }
-    return Object.values(result);
+    return result;
 }
 
 function download(url, fileName, callback) {

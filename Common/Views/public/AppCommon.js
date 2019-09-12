@@ -42,6 +42,7 @@
 let extractTimeout = null;
 let currentDataType = "tracks";
 let currentDisplayType = "list";
+let shuffleMode = false;
 
 function play() {
     if (player.src == "") {
@@ -75,7 +76,14 @@ function playExtract(time) {
     extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
 }
 
-
+function switchTrackMode(element) {
+    if (shuffleMode) {
+        element.classList.remove("active");
+    } else {
+        element.classList.add("active");
+    }
+    shuffleMode = !shuffleMode;
+}
 
 /* Display */
 
@@ -83,4 +91,11 @@ function changeTrackDisplay(dataType, displayType) {
     currentDataType = dataType;
     currentDisplayType = displayType;
     changeScreen(dataType);
+}
+
+function progress(videoId, progressValue) {
+    const downloadProgressBar = document.getElementById(`${videoId}Progress`);
+
+    downloadProgressBar.firstElementChild.style.width = `${progressValue}%`;
+    downloadProgressBar.lastElementChild.innerHTML = `${progressValue}%`;
 }
