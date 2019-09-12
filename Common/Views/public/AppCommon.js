@@ -94,9 +94,8 @@ function changeTrackDisplay(dataType, displayType) {
 }
 
 function progress(videoId, progressValue) {
-    console.warn(`${videoId}Progress`)
     const downloadProgressBar = document.getElementById(`${videoId}Progress`);
 
-    downloadProgressBar.style.width = `${progressValue}%`;
-    downloadProgressBar.innerHTML = `${progressValue}%`;
+    downloadProgressBar.firstElementChild.style.width = `${progressValue}%`;
+    downloadProgressBar.lastElementChild.innerHTML = `${progressValue}%`;
 }

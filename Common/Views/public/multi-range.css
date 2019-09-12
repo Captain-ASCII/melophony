@@ -17,6 +17,11 @@ input[type=range]::-webkit-slider-runnable-track {
     border-radius: 3px !important;
 }
 
+input[type=range].rangeDeactivate::-webkit-slider-runnable-track {
+    /*pointer-events: none;*/
+    visibility: hidden !important;
+}
+
 input[type=range]::-webkit-slider-thumb {
     transform: translateY(-3px);
     transition: width 0.2s, height 0.2s, transform 0.2s;
@@ -27,6 +32,7 @@ input[type=range]::-webkit-slider-thumb {
     border-radius: 10px;
     background: #3c94FF;
     border-radius: 100px;
+    visibility: visible;
 }
 
 input[type=range]::-webkit-slider-thumb:hover {

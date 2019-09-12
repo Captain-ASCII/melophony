@@ -1,7 +1,7 @@
 <div id="artists">
     {{#artists}}
-        <div class="artistListItem">
-            <div>
+        <div class="artistListItem" onclick="changeScreen('artist/{{id}}')">
+            <div class="name">
                 <p>{{name}}</p>
             </div>
             <div class="artistActions">

@@ -11,13 +11,17 @@ let tracksArray = [];
 let currentIndex = -1;
 let player = null;
 
-const connection = new WebSocket("wss://melophony.ddns.net");
+const connection = new WebSocket("ws://localhost:1958");
 
 connection.onmessage = function (event) {
     console.warn(event.data)
     let data = JSON.parse(event.data);
 
     switch (data.event) {
+        case "trackAdded": {
+            changeScreen("tracks");
+            break;
+        };
         case "progress": {
             if (data.progress == 100) {
                 toast(`Done downloading ${data.id}`);
@@ -100,7 +104,10 @@ function deleteItem(type, id) {
 }
 
 function requestServerDownload(videoId) {
-    fetch(`https://melophony.ddns.net/${videoId}`, { method: "PUT" }).then(data => toast("Download requested"));
+    fetch(`http://localhost:1958/file/${videoId}`, { method: "POST" }).then(data => {
+        changeScreen("tracks");
+        toast("Download requested");
+    });
 }
 
 function toast(text) {
