@@ -16,7 +16,7 @@ export default class FileAspect extends BaseAspect {
         this.modifiedTracks = db.get(BaseAspect.MODIFIED_TRACKS);
         this.artists = db.get(BaseAspect.ARTISTS);
 
-        this.app.put('/:videoId', (request, response) => {
+        this.app.post('/file/:videoId', (request, response) => {
             response.send(ServerUtils.downloadTrack(
                 request.params.videoId,
                 this.files,
@@ -41,13 +41,13 @@ export default class FileAspect extends BaseAspect {
             }
         });
 
-        this.app.get("/status/:videoId", (request, response) => {
-            response.send({
-                state: (!this.files[request.params.videoId] || this.files[request.params.videoId].state != Track.AVAILABLE) ? Track.UNAVAILABLE : Track.AVAILABLE
-            });
-        });
+        // this.app.get("/status/:videoId", (request, response) => {
+        //     response.send({
+        //         state: (!this.files[request.params.videoId] || this.files[request.params.videoId].state != Track.AVAILABLE) ? Track.UNAVAILABLE : Track.AVAILABLE
+        //     });
+        // });
 
-        this.app.use("/get/:videoId", (request, response) => {
+        this.app.get("/file/:videoId", (request, response) => {
             if (FileSystem.existsSync(Path.join(__dirname, "..", ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`))) {
                 response.sendFile(Path.join(__dirname, "..", ServerUtils.FILE_DIR, `${request.params.videoId}.m4a`));
             } else {

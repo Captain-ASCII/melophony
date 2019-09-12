@@ -1,4 +1,5 @@
 
+import Artist from "./Artist";
 import * as ModelUtils from "./ModelUtils";
 
 function getArtistId(newArtistName, artists) {
@@ -7,8 +8,8 @@ function getArtistId(newArtistName, artists) {
             return artistId;
         }
     }
-    let newArtistId = ModelUtils.generateId();
-    artists[newArtistId] = { name: newArtistName };
+    let artist = new Artist(newArtistName);
+    artists[artist.id] = artist;
     return newArtistId;
 }
 

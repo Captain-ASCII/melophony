@@ -2,6 +2,7 @@
 import Express from "express";
 import HTTPS from "https";
 import FileSystem from "fs";
+import WebSocket from "ws";
 
 import EventListener from "./utils/EventListener";
 import JsonDatabase from "./model/JsonDatabase";
@@ -39,7 +40,7 @@ App.use(function(request, response, next) {
 const PORT = 1789;
 const HTTPS_PORT = 1804;
 
-const EventListener = new EventListener();
+global.eventListener = new EventListener();
 
 const db = new JsonDatabase(
     BaseAspect.USERS,
@@ -63,23 +64,20 @@ App.get("/*", (request, response) => {
     response.send({ status: "Nothing to do" });
 });
 
-const Wss = new WebSocket.Server({ server });
-
-Wss.on("connection", ws => {
-
-    ws.on("message", message => {
-        EventListener.on("downloadProgress", value => ws.send(value));
-    });
-
-    ws.send("Hi there, I am a WebSocket server");
-});
-
 if (configuration.DEBUG) {
-    App.listen(PORT, function () {
+    server.listen(PORT, function () {
         console.log(`Example app listening on port ${PORT}`)
     });
 } else {
-    HTTPS.createServer(credentials, App).listen(HTTPS_PORT, function () {
+    const server = HTTPS.createServer(credentials, App);
+    const wsServer = new WebSocket.Server({ server });
+
+    wsServer.on("connection", ws => {
+        global.eventListener.on("trackAdded", track => ws.send(JSON.stringify({ event: "trackAdded", track: track })));
+        global.eventListener.on("downloadProgress", (id, value) => ws.send(JSON.stringify({ event: "progress", id: id, progress: value })));
+    });
+
+    server.listen(HTTPS_PORT, function () {
         console.log(`Example app listening on port ${HTTPS_PORT}`)
     });
 }
