@@ -10,6 +10,24 @@ let artists = {};
 let tracksArray = [];
 let player = null;
 
+const connection = new WebSocket("wss://melophony.ddns.net");
+
+connection.onmessage = function (event) {
+    console.warn(event.data)
+    let data = JSON.parse(event.data);
+
+    switch (data.event) {
+        case "progress": {
+            if (data.progress == 100) {
+                toast(`Done downloading ${data.id}`);
+                download(data.id);
+            }
+            progress(data.id, data.progress);
+            break;
+        };
+    }
+};
+
 async function start() {
     tracks = await (await fetch("http://localhost:1958/availableTracks")).json();
     artists = await (await fetch("http://localhost:1958/artists")).json();

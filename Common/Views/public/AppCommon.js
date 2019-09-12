@@ -84,3 +84,11 @@ function changeTrackDisplay(dataType, displayType) {
     currentDisplayType = displayType;
     changeScreen(dataType);
 }
+
+function progress(videoId, progressValue) {
+    console.warn(`${videoId}Progress`)
+    const downloadProgressBar = document.getElementById(`${videoId}Progress`);
+
+    downloadProgressBar.style.width = `${progressValue}%`;
+    downloadProgressBar.innerHTML = `${progressValue}%`;
+}

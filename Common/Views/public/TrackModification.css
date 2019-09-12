@@ -37,3 +37,12 @@
     flex-direction: column;
     align-items: flex-end;
 }
+
+#modificationDownloadProgress {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #22252c;
+    border-radius: 3px;
+}

@@ -56,8 +56,8 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
 }
 
 function getDownloadProgress(videoId, files) {
-    if (FileSystem.existsSync(`${ServerUtils.FILE_DIR}/${videoId}.m4a`)) {
-        const fileSize = FileSystem.statSync(`${ServerUtils.FILE_DIR}/${videoId}.m4a`).size;
+    if (FileSystem.existsSync(`${FILE_DIR}/${videoId}.m4a`)) {
+        const fileSize = FileSystem.statSync(`${FILE_DIR}/${videoId}.m4a`).size;
         return 100 * (fileSize / files[videoId].size);
     }
     return 0;

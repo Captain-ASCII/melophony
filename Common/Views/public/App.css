@@ -451,3 +451,11 @@ input:-webkit-autofill {
     flex-grow: 1;
     min-width: 350px;
 }
+
+.progressBar {
+    background-color: #2ecc71;
+    height: 10px;
+    border-radius: 3px;
+    transition: width 0.2s;
+    width: 0%;
+}

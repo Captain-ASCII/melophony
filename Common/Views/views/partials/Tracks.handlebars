@@ -2,6 +2,9 @@
     <div class="trackListItem">
         <div onclick="startPlay('{{id}}')">
             <p class="title {{status}}" >{{title}}</p>
+            <div style="width: 100px; margin: 0 20px">
+                <div id="{{videoId}}Progress" class="progressBar"></div>
+            </div>
             <p class="duration" >{{formatDuration duration}}</p>
         </div>
         <i onclick="modifyTrack('{{id}}')" class="fa fa-pen icon button"></i>
