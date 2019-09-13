@@ -64,14 +64,14 @@ function switchTrackMode(element) {
 }
 
 function modifyTrackStart(id, value) {
-    player.src = `/tracks/${tracks[id].videoId}.m4a`;
+    player.src = `/files/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.left = `calc(${getPercentage(id, value)}% + 10px)`;
     tracks[id].startTime = parseInt(value);
 }
 
 function modifyTrackEnd(id, value) {
-    player.src = `/tracks/${tracks[id].videoId}.m4a`;
+    player.src = `/files/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
     console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
@@ -177,7 +177,7 @@ function startPlay(id, index) {
     currentTrack = track;
     let artist = artists[currentTrack.artist] || { name: "Unknown" };
 
-    player.src = `/tracks/${track.videoId}.m4a`;
+    player.src = `/files/${track.videoId}.m4a`;
     player.currentTime = track.startTime;
 
     player.ontimeupdate = function(event) {

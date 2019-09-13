@@ -1,4 +1,5 @@
 
+import Express from "express";
 import FileSystem from "fs";
 import Path from "path";
 import Track from "./../model/Track";
@@ -15,6 +16,8 @@ export default class FileAspect extends BaseAspect {
         this.tracks = db.get(BaseAspect.TRACKS);
         this.modifiedTracks = db.get(BaseAspect.MODIFIED_TRACKS);
         this.artists = db.get(BaseAspect.ARTISTS);
+
+        this.app.use("/files", Express.static("files"));
 
         this.app.post('/file/:videoId', (request, response) => {
             response.send(ServerUtils.downloadTrack(
