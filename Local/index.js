@@ -52,7 +52,7 @@ App.use("/public", Express.static(Path.join(commonPath, "public")));
 
 App.use("/custom", Express.static("custom"));
 App.use("/images", Express.static("images"));
-App.use("/tracks", Express.static("tracks"));
+App.use("/files", Express.static("files"));
 
 App.get("/configuration", (request, response) => {
     response.send(configuration);
@@ -89,7 +89,7 @@ App.put("/:type/:id", async (request, response) => {
 });
 
 App.delete("/:type/:id", async (request, response) => {
-    let data = await json(await fetch(`${SERVER_ADDRESS}/track/${request.params.id}`, { method: "DELETE" }));
+    let data = await json(await fetch(`${SERVER_ADDRESS}/${request.params.type}/${request.params.id}`, { method: "DELETE" }));
 
     let collection = getCollection(request.params.type);
 
