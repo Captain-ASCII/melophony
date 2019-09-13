@@ -29,6 +29,9 @@ const IMAGES_DIR = "images";
 
 let tracks = {};
 let artists = {};
+let configuration = {
+    localMode: true
+};
 
 try {
     download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
@@ -50,6 +53,10 @@ App.use("/public", Express.static(Path.join(commonPath, "public")));
 App.use("/custom", Express.static("custom"));
 App.use("/images", Express.static("images"));
 App.use("/tracks", Express.static("tracks"));
+
+App.get("/configuration", (request, response) => {
+    response.send(configuration);
+});
 
 App.get("/availableTracks", (request, response) => {
     response.send(tracks);
@@ -212,15 +219,17 @@ const server = HTTP.createServer(App);
 const wsServer = new WebSocket.Server({ server });
 
 wsServer.on("connection", ws => {
-    const connection = new WebSocket("wss://melophony.ddns.net");
+    if (!configuration.localMode) {
+        const connection = new WebSocket("wss://melophony.ddns.net");
 
-    connection.onmessage = function (event) {
-        let data = JSON.parse(event.data);
-        if (data.event == "trackAdded") {
-            tracks[data.track.id] = data.track;
-        }
-        ws.send(event.data);
-    };
+        connection.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            if (data.event == "trackAdded") {
+                tracks[data.track.id] = data.track;
+            }
+            ws.send(event.data);
+        };
+    }
 });
 
 server.listen(PORT, _ => console.log(`App started [Port: ${PORT}]`));
