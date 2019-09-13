@@ -6,9 +6,9 @@
 </div>
 <div class="displayActions">
     <i class="fa fa-random icon button" onclick="switchTrackMode(this)" title="Switch track playing mode" ></i>
-    <i class="fa fa-list icon button" onclick="changeTrackDisplay('tracks', 'list')" title="Track list" ></i>
-    <i class="fa fa-th icon button" onclick="changeTrackDisplay('tracks', 'block')" title="Track blocks" ></i>
-    <i class="fa fa-stream icon button" onclick="changeTrackDisplay('artists/tracks', 'list')" title="Tracks for each artist" ></i>
+    <i class="fa fa-list icon button" onclick="changeTrackDisplay('tracks')" title="Track list" ></i>
+    <i class="fa fa-th icon button" onclick="changeTrackDisplay('tracks')" title="Track blocks" ></i>
+    <i class="fa fa-stream icon button" onclick="changeTrackDisplay('artists/tracks')" title="Tracks for each artist" ></i>
 </div>
 <div class="delimiter"></div>
 <div id="tracks">
@@ -18,4 +18,4 @@
         {{> Tracks}}
     {{/if}}
 </div>
-<div class="button icon floating" onclick="changeScreen('track/add')"><i class="fa fa-plus icon"></i></div>
+<div class="button icon floating" onclick="displayScreen('track/add')"><i class="fa fa-plus icon"></i></div>

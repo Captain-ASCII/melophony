@@ -1,8 +1,7 @@
 
 let extractTimeout = null;
 
-let currentDataType = "tracks";
-let currentDisplayType = "list";
+let currentDisplayType = "tracks";
 let shuffleMode = false;
 
 let lastScreen = "";
@@ -64,14 +63,14 @@ function switchTrackMode(element) {
 }
 
 function modifyTrackStart(id, value) {
-    player.src = `/tracks/${tracks[id].videoId}.m4a`;
+    player.src = `/files/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.left = `calc(${getPercentage(id, value)}% + 10px)`;
     tracks[id].startTime = parseInt(value);
 }
 
 function modifyTrackEnd(id, value) {
-    player.src = `/tracks/${tracks[id].videoId}.m4a`;
+    player.src = `/files/${tracks[id].videoId}.m4a`;
     playExtract(value);
     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
     console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
@@ -80,20 +79,23 @@ function modifyTrackEnd(id, value) {
 
 /* Display */
 
-async function changeScreen(screen) {
+async function displayScreen(screen) {
     lastScreen = currentScreen;
     currentScreen = screen;
     document.getElementById("content").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${screen}`)).text();
 }
 
+async function displayTrackScreen() {
+    displayScreen(currentDisplayType);
+}
+
 function back() {
-    changeScreen(lastScreen);
+    displayScreen(lastScreen);
 }
 
 async function modifyTrack(id = currentTrackId) {
     player.onended = function() {};
-    player.ontimeupdate = function() {};
-    await changeScreen(`track/modify/${id}`);
+    await displayScreen(`track/modify/${id}`);
     new InputRange("trackModificator", document.getElementById("trackModificator"), tracks[id], "modifyTrackStart", "modifyTrackEnd");
 }
 
@@ -114,14 +116,13 @@ async function createArtist() {
     document.getElementById("artistNames").appendChild(artistOption);
 }
 
-function changeTrackDisplay(dataType, displayType) {
-    currentDataType = dataType;
+function changeTrackDisplay(displayType) {
     currentDisplayType = displayType;
-    changeScreen(dataType);
+    displayScreen(displayType);
 }
 
 async function filter(text) {
-    document.getElementById("tracks").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${currentDataType}/filter/${text}`)).text();
+    document.getElementById("tracks").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${currentDisplayType}/filter/${text}`)).text();
 }
 
 function progress(videoId, progressValue) {
@@ -177,7 +178,7 @@ function startPlay(id, index) {
     currentTrack = track;
     let artist = artists[currentTrack.artist] || { name: "Unknown" };
 
-    player.src = `/tracks/${track.videoId}.m4a`;
+    player.src = `/files/${track.videoId}.m4a`;
     player.currentTime = track.startTime;
 
     player.ontimeupdate = function(event) {
@@ -203,14 +204,14 @@ function next() {
 
 function deleteItem(type, id) {
     fetch(`${SERVER_ADDRESS}/${type}/${id}`, { method: "DELETE" }).then(data => {
-        changeScreen(`${type}s`);
+        displayScreen(`${type}s`);
         toast("OK");
     });
 }
 
 function requestServerDownload(videoId) {
     fetch(`${SERVER_ADDRESS}/file/${videoId}`, { method: "POST" }).then(data => {
-        changeScreen("tracks");
+        displayScreen("tracks");
         toast("Download requested");
     });
 }

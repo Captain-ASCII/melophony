@@ -1,11 +1,11 @@
 <div id="artists">
     {{#artists}}
-        <div class="artistListItem" onclick="changeScreen('artist/{{id}}')">
+        <div class="artistListItem" onclick="displayScreen('artist/{{id}}')">
             <div class="name">
                 <p>{{name}}</p>
             </div>
             <div class="artistActions">
-                <i onclick="changeScreen('artist/modify/{{id}}')" class="fa fa-pen icon"></i>
+                <i onclick="displayScreen('artist/modify/{{id}}')" class="fa fa-pen icon"></i>
             </div>
         </div>
     {{/artists}}
