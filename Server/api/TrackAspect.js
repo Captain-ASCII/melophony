@@ -39,9 +39,9 @@ export default class TrackAspect extends BaseAspect {
             if (this.tracks[request.params.id]) {
                 let videoId = this.tracks[request.params.id].videoId;
 
-                deleteFile(videoId);
-                // files[request.params.id].state = Track.DELETED;
+                ServerUtils.deleteFile(videoId);
 
+                delete this.files[videoId];
                 delete this.tracks[request.params.id];
                 this.modifiedTracks[request.params.id] = { deleted: true };
             }
