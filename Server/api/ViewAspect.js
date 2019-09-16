@@ -62,6 +62,10 @@ export default class ViewAspect extends BaseAspect {
         this.app.get("/screen/artists", (request, response) => {
             response.render("ArtistsScreen", { artists: Object.values(this.artists).sort((a, b) => a.name.localeCompare(b.name)) });
         });
+
+        this.app.get("/screen/track/add", (request, response) => {
+            response.render("AddTrackScreen", {});
+        });
     }
 
     getTracksByArtist(currentTracks = this.tracks) {
