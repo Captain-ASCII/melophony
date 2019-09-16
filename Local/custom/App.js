@@ -1,32 +1,12 @@
 
 const EXTRACT_DURATION = 2000;
-const SERVER_ADDRESS = "http://localhost:1958";
+const DOMAIN = "localhost:1958";
+const SERVER_ADDRESS = `http://${DOMAIN}`;
+const WS_PROTOCOL = "ws";
 
 async function start() {
-    tracks = await (await fetch("http://localhost:1958/availableTracks")).json();
-    artists = await (await fetch("http://localhost:1958/artists")).json();
-
-    const connection = new WebSocket("ws://localhost:1958");
-
-    connection.onmessage = function (event) {
-        console.warn(event.data)
-        let data = JSON.parse(event.data);
-
-        switch (data.event) {
-            case "trackAdded": {
-                changeScreen("tracks");
-                break;
-            };
-            case "progress": {
-                if (data.progress == 100) {
-                    toast(`Done downloading ${data.id}`);
-                    download(data.id);
-                }
-                progress(data.id, data.progress);
-                break;
-            };
-        }
-    };
+    tracks = await (await fetch(`${SERVER_ADDRESS}/availableTracks`)).json();
+    artists = await (await fetch(`${SERVER_ADDRESS}/artists`)).json();
 
     commonStart();
 };

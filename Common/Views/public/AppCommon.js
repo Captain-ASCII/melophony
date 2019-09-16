@@ -19,6 +19,28 @@ function commonStart() {
     tracksArray.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
 
     player = document.getElementById("player");
+
+    const connection = new WebSocket(`${WS_PROTOCOL}://${DOMAIN}`);
+
+    connection.onmessage = function (event) {
+        console.warn(event.data)
+        let data = JSON.parse(event.data);
+
+        switch (data.event) {
+            case "trackAdded": {
+                changeScreen("tracks");
+                break;
+            };
+            case "progress": {
+                progress(data.id, data.progress);
+                if (data.progress == 100) {
+                    toast(`Done downloading ${data.id}`);
+                    download(data.id);
+                }
+                break;
+            };
+        }
+    };
 }
 
 function play() {

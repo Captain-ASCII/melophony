@@ -10,7 +10,7 @@ function getArtistId(newArtistName, artists) {
     }
     let artist = new Artist(newArtistName);
     artists[artist.id] = artist;
-    return newArtistId;
+    return artist.id;
 }
 
 export default class Track {
