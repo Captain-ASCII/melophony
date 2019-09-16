@@ -523,13 +523,23 @@ input:-webkit-autofill {
 }
 
 .progressBar {
-    background-color: #2ecc71;
+    width: 100px;
+    margin: 0 20px;
+    position: relative;
+}
+
+.progressBar > div {
     height: 20px;
+    background-color: #2ecc71;
     border-radius: 3px;
     transition: width 0.2s;
     width: 0%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
+
+.progressBar > p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
     font-weight: bold;
 }
