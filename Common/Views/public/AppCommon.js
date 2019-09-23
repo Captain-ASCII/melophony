@@ -75,12 +75,16 @@ function playExtract(time) {
     extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
 }
 
-function switchTrackMode(element) {
+function switchButton(element) {
     if (shuffleMode) {
         element.classList.remove("active");
     } else {
         element.classList.add("active");
     }
+}
+
+function switchTrackMode(element) {
+    switchButton(element);
     shuffleMode = !shuffleMode;
 }
 
