@@ -5,8 +5,15 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import TracksScreen from "./screens/TracksScreen";
 import ArtistsScreen from "./screens/ArtistsScreen";
+import TrackModificationScreen from "./screens/TrackModificationScreen";
+
+import InputRange from "./components/utils/InputRange";
 
 class App extends Component {
+
+    componentDidMount() {
+        global.mediaManager.setPlayer();
+    }
 
     render() {
         return(
@@ -22,9 +29,10 @@ class App extends Component {
                         </div>
                         <div id="content">
                             <Switch>
-                                <Route path="/tracks"><TracksScreen /></Route>
-                                <Route path="/artists"><ArtistsScreen /></Route>
-                                <Route path="/"><TracksScreen /></Route>
+                                <Route path="/tracks" component={TracksScreen} />
+                                <Route path="/track/modify/:id" component={TrackModificationScreen} />
+                                <Route path="/artists" component={ArtistsScreen} />
+                                <Route path="/" component={TracksScreen} />
                             </Switch>
                         </div>
                         <div class="sidebar right" >
@@ -52,12 +60,12 @@ class App extends Component {
                             <p>If you are reading this, it is because your browser does not support the audio element.</p>
                         </audio>
                         <div id="controls">
-                            <div class="button icon" onClick={global.mediaManager.previous} ><i class="fa fa-backward fa-2x" ></i></div>
-                            <div class="button icon" onClick={global.mediaManager.playPause} ><i id="playButton" class="fa fa-play fa-2x" tabIndex="-1" ></i></div>
-                            <div class="button icon" onClick={global.mediaManager.next} ><i class="fa fa-forward fa-2x" ></i></div>
+                            <div class="button icon" onClick={ _ => global.mediaManager.previous() } ><i class="fa fa-backward fa-2x" ></i></div>
+                            <div class="button icon" onClick={ _ => global.mediaManager.playPause() } ><i id="playButton" class="fa fa-play fa-2x" tabIndex="-1" ></i></div>
+                            <div class="button icon" onClick={ _ => global.mediaManager.next() } ><i class="fa fa-forward fa-2x" ></i></div>
                         </div>
                         <div id="currentTrackInfo" onClick={this.modifyTrack} ></div>
-                        <div id="tracker"></div>
+                        <InputRange asReader />
                     </div>
                 </div>
             </Router>

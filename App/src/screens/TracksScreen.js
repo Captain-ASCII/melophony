@@ -18,12 +18,12 @@ export default class TracksScreen extends Component {
                     <div class="searchbar">
                         {/*{> TextInput id="trackSearch" icon="search"}*/}
                     </div>
-                </div>
-                <div class="displayActions">
-                    <i class="fa fa-random icon button" onClick={ _ => this.switchTrackMode(this) } title="Switch track playing mode" ></i>
-                    <i class="fa fa-list icon button" onClick={ _ => this.changeTrackDisplay('tracks') } title="Track list" ></i>
-                    <i class="fa fa-th icon button" onClick={ _ => this.changeTrackDisplay('tracks') } title="Track blocks" ></i>
-                    <i class="fa fa-stream icon button" onClick={ _ => this.changeTrackDisplay('artists/tracks') } title="Tracks for each artist" ></i>
+                    <div class="displayActions">
+                        <i class="fa fa-random icon button" onClick={ _ => this.switchTrackMode(this) } title="Switch track playing mode" ></i>
+                        <i class="fa fa-list icon button" onClick={ _ => this.changeTrackDisplay('tracks') } title="Track list" ></i>
+                        <i class="fa fa-th icon button" onClick={ _ => this.changeTrackDisplay('tracks') } title="Track blocks" ></i>
+                        <i class="fa fa-stream icon button" onClick={ _ => this.changeTrackDisplay('artists/tracks') } title="Tracks for each artist" ></i>
+                    </div>
                 </div>
                 <div class="delimiter"></div>
                 <div id="tracks">

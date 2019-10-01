@@ -3,10 +3,12 @@
     display: flex;
     justify-content: space-between;
     margin: 20px;
+    height: 40px;
 }
 
 #tracks {
-    margin: 20px;
+    height: calc(100% - 91px);
+    margin-left: 20px;
     align-self: stretch;
     display: flex;
     flex-wrap: wrap;

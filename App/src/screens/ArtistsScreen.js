@@ -3,17 +3,9 @@ import { Link } from "react-router-dom";
 
 export default class ArtistsScreen extends Component {
 
-    test() {
-        return [
-            { "id": "0MIDU7cv", "name": "The Pirouettes" },
-            { "id": "bglHPYWF", "name": "Darius" },
-            { "id": "GPjxprv3", "name": "Tom Misch" },
-            { "id": "ZgNq1AOu", "name": "Tame Impala" }
-        ];
-    }
-
     render() {
-        let artists = this.test().map(artist => {
+        let artists = global.dataStorage.getAsArray("artists").map(artist => {
+            console.warn(artist.id, artist.name)
             return (
                 <div class="artistListItem" key={ artist.id } >
                     <Link to={`/artist/${artist.id}`}>
