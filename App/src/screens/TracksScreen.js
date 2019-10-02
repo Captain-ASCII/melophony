@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import { Link } from "react-router-dom";
+
 import TrackList from "./../components/tracks/TrackList";
 
 export default class TracksScreen extends Component {
@@ -29,7 +31,7 @@ export default class TracksScreen extends Component {
                 <div id="tracks">
                     <TrackList />
                 </div>
-                <div class="button icon floating" onClick={ _ => displayScreen('track/add') }><i class="fa fa-plus icon"></i></div>
+                <Link to={"/track/create"} ><div class="button icon floating"><i class="fa fa-plus icon"></i></div></Link>
             </div>
         );
     }

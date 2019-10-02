@@ -68,7 +68,8 @@ export default class MediaManager {
         this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex);
     }
 
-    playExtract(time) {
+    playExtract(track, time) {
+        this.player.src = `${configuration.serverAddress}/files/${track.videoId}.m4a`;
         this.player.currentTime = time;
         this.player.play();
         if (extractTimeout) {

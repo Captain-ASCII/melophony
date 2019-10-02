@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import { useHistory } from "react-router-dom";
 
-function CloseButton() {
-    let history = useHistory();
-
-    return (<div id="backButton" class="button icon" onClick={ _ => history.goBack() } ><i class="fa fa-times fa-2x icon"></i></div>);
-}
+import CloseButton from "../components/utils/CloseButton";
+import InputRange from "../components/utils/InputRange";
 
 export default class TrackModificationScreen extends Component {
 
@@ -15,7 +11,6 @@ export default class TrackModificationScreen extends Component {
         this.artistsNames = dataStorage.getAsArray("artists").map(artist => <option data-value={ artist.id } value={ artist.name } />);
         this.track = dataStorage.get(`/tracks/${this.props.match.params.id}`);
         this.artist = dataStorage.get(`/artists/${this.track.artist}`);
-        console.warn(this.track, this.artist)
     }
 
     render() {
@@ -78,7 +73,7 @@ export default class TrackModificationScreen extends Component {
                 <h2 style={{ marginLeft: 66 }} >Modify track duration</h2>
                 <div class="input">
                     <i class="fa fa-ruler fa-2x icon"></i>
-                    <div id="trackModificator"></div>
+                    <InputRange multiRange />
                 </div>
 
                 <div class="delimiter"></div>
