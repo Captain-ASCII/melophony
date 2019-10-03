@@ -5,15 +5,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
 
-import MediaManager from "./utils/MediaManager";
-import DataStorage from "./utils/DataStorage";
 import ActionManager from "./utils/ActionManager";
+import ConfigurationManager from "./utils/ConfigurationManager";
+import DataStorage from "./utils/DataStorage";
+import MediaManager from "./utils/MediaManager";
 
 const SERVER_ADDRESS = "https://192.168.1.18:1804";
 
+global.actionManager = new ActionManager();
+global.configurationManager = new ConfigurationManager();
 global.dataStorage = new DataStorage();
 global.mediaManager = new MediaManager(global.dataStorage);
-global.actionManager = new ActionManager();
 
 global.configuration = {
     serverAddress: "https://192.168.1.18:1804",

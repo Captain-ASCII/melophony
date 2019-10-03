@@ -3,7 +3,6 @@ export default class MediaManager {
 
     constructor() {
         this.currentIndex = 0;
-        console.warn(this.currentIndex)
     }
 
     setPlayer() {
@@ -18,7 +17,7 @@ export default class MediaManager {
         let track = dataStorage.get("tracks")[id];
         let artist = dataStorage.get("artists")[track.artist] || { name: "Unknown" };
 
-        this.player.src = `${configuration.serverAddress}/files/${track.videoId}.m4a`;
+        this.player.src = `${configurationManager.get("serverAddress")}/files/${track.videoId}.m4a`;
         this.player.currentTime = track.startTime;
 
         this.player.ontimeupdate = (event) => {
@@ -35,7 +34,7 @@ export default class MediaManager {
 
     previous() {
         let tracksArray = dataStorage.getAsArray("tracks");
-        this.currentIndex = configuration.shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex - 1) % tracksArray.length;
+        this.currentIndex = configurationManager.get("shuffleMode") ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex - 1) % tracksArray.length;
         this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex);
     }
 
@@ -64,11 +63,12 @@ export default class MediaManager {
 
     next() {
         let tracksArray = dataStorage.getAsArray("tracks");
-        this.currentIndex = configuration.shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length;
+        this.currentIndex = configurationManager.get("shuffleMode") ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length;
         this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex);
     }
 
-    playExtract(time) {
+    playExtract(track, time) {
+        this.player.src = `${configurationManager.get("serverAddress")}/files/${track.videoId}.m4a`;
         this.player.currentTime = time;
         this.player.play();
         if (extractTimeout) {

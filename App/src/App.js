@@ -5,7 +5,10 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import TracksScreen from "./screens/TracksScreen";
 import ArtistsScreen from "./screens/ArtistsScreen";
+
+import TrackCreationScreen from "./screens/TrackCreationScreen";
 import TrackModificationScreen from "./screens/TrackModificationScreen";
+import ArtistOverviewScreen from "./screens/ArtistOverviewScreen";
 
 import InputRange from "./components/utils/InputRange";
 
@@ -31,7 +34,9 @@ class App extends Component {
                             <Switch>
                                 <Route path="/tracks" component={TracksScreen} />
                                 <Route path="/track/modify/:id" component={TrackModificationScreen} />
+                                <Route path="/track/create" component={TrackCreationScreen} />
                                 <Route path="/artists" component={ArtistsScreen} />
+                                <Route path="/artist/:id" component={ArtistOverviewScreen} />
                                 <Route path="/" component={TracksScreen} />
                             </Switch>
                         </div>

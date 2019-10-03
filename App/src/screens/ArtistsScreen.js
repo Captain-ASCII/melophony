@@ -5,7 +5,6 @@ export default class ArtistsScreen extends Component {
 
     render() {
         let artists = global.dataStorage.getAsArray("artists").map(artist => {
-            console.warn(artist.id, artist.name)
             return (
                 <div class="artistListItem" key={ artist.id } >
                     <Link to={`/artist/${artist.id}`}>
@@ -21,7 +20,7 @@ export default class ArtistsScreen extends Component {
         });
 
         return (
-            <div id="artists">{ artists }</div>
+            <div id="itemBlocks">{ artists }</div>
         );
     }
 }

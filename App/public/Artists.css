@@ -1,17 +1,4 @@
 
-.artistListItem {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    position: relative;
-    height: 50px;
-    min-width: 200px;
-    max-width: 400px;
-    flex: 1;
-    border-radius: 5px;
-    background: #222;
-}
-
 .artistListItem > .name {
     max-width: 70%;
 }

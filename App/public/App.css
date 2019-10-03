@@ -1,7 +1,9 @@
 @import url("Artists.css");
 @import url("TrackModification.css");
 @import url("ListScreen.css");
+@import url("Items.css");
 @import url("Status.css");
+@import url("ProgressBars.css");
 
 
 
@@ -43,6 +45,10 @@
     --main-dark-bg: #BBB;
     --disabled-color: #666;
 }*/
+
+* {
+    box-sizing: border-box;
+}
 
 
 html, body, #root {
@@ -174,6 +180,7 @@ h1 {
     z-index: 999;
     height: 100%;
     width: 15%;
+    padding: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     position: relative;
 }
@@ -242,19 +249,14 @@ h1 {
 #content {
     width: 100%;
     height: 100%;
-    position: relative;
     display: flex;
     flex-direction: column;
+    padding: 20px 20px 0 20px;
 }
 
-.artist {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-}
-
-.artist > h2 {
-    margin-bottom: 10px;
+#content > div {
+    position: relative;
+    height: 100%;
 }
 
 .trackContainer {
@@ -282,35 +284,6 @@ h1 {
     bottom: 0;
     width: 100%;
     background-color: var(--main-hover-bg);
-}
-
-.trackListItem {
-    width: 100%;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 14px;
-    font-family: "MontSerrat";
-    display: flex;
-    align-items: center;
-    padding: 3px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
-
-.trackListItem:hover {
-    background-color: var(--main-hover-bg);
-}
-
-.trackListItem > div {
-    width: calc(100% - 50px);
-    display: flex;
-    padding: 3px 0;
-}
-
-.trackListItem > * {
-    text-overflow: ellipsis;
-    display: flex;
-    align-items: center;
 }
 
 /* Artist List Item */
@@ -520,26 +493,4 @@ input:-webkit-autofill {
 .columns > div {
     flex-grow: 1;
     min-width: 350px;
-}
-
-.progressBar {
-    width: 100px;
-    margin: 0 20px;
-    position: relative;
-}
-
-.progressBar > div {
-    height: 20px;
-    background-color: #2ecc71;
-    border-radius: 3px;
-    transition: width 0.2s;
-    width: 0%;
-}
-
-.progressBar > p {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    font-weight: bold;
 }
