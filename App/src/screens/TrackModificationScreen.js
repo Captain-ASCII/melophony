@@ -13,6 +13,18 @@ export default class TrackModificationScreen extends Component {
         this.artist = dataStorage.get(`/artists/${this.track.artist}`);
     }
 
+    download() {
+        apiManager.get(`download/${this.track.videoId}`, _ => false);
+    }
+
+    requestServerDownload() {
+
+    }
+
+    deleteItem() {
+
+    }
+
     render() {
         return (
             <div id="modificationPage">
@@ -62,8 +74,8 @@ export default class TrackModificationScreen extends Component {
                     <div id="serverInformation">
                         <h2>Actions</h2>
                         <div class="actions">
-                            <div class="button raised" onClick={ _ => this.download(this.track.videoId) } >Get locally</div>
-                            <div class="button raised" onClick={ _ => this.requestServerDownload(this.track.videoId) } >Download</div>
+                            <div class="button raised" onClick={ _ => this.download() } >Get locally</div>
+                            <div class="button raised" onClick={ _ => this.requestServerDownload() } >Download</div>
                         </div>
                     </div>
                 </div>
@@ -73,13 +85,13 @@ export default class TrackModificationScreen extends Component {
                 <h2 style={{ marginLeft: 66 }} >Modify track duration</h2>
                 <div class="input">
                     <i class="fa fa-ruler fa-2x icon"></i>
-                    <InputRange multiRange />
+                    <InputRange track={this.track} multiRange />
                 </div>
 
                 <div class="delimiter"></div>
 
                 <div class="actions">
-                    <div class="button raised alert" onClick={ _ => this.deleteItem("track", this.track.id) } >Delete</div>
+                    <div class="button raised alert" onClick={ _ => this.deleteItem("track") } >Delete</div>
                 </div>
             </div>
         );

@@ -11,11 +11,17 @@ import TrackModificationScreen from "./screens/TrackModificationScreen";
 import ArtistOverviewScreen from "./screens/ArtistOverviewScreen";
 
 import InputRange from "./components/utils/InputRange";
+import SwitchButton from "./components/utils/Switch";
 
 class App extends Component {
 
     componentDidMount() {
         global.mediaManager.setPlayer();
+    }
+
+    switchNetwork(enabled) {
+        configurationManager.set("serverAddress", (enabled ? "https://melophony.ddns.net" : "http://localhost:1958"));
+        console.warn(configurationManager.get("serverAddress"))
     }
 
     render() {
@@ -58,6 +64,8 @@ class App extends Component {
                         </Link>
                         <div id="headerActions">
                             <i onClick={this.synchronize} class="fa fa-download icon button"></i>
+                            <SwitchButton icon="network-wired" title="Should connect to network for data"
+                                          configurationSwitch="networkEnabled" onSwitch={this.switchNetwork} />
                         </div>
                     </div>
                     <div id="footer">

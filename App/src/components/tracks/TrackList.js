@@ -11,7 +11,9 @@ export default class TrackList extends Component {
 
         this.tracksCopy = [...tracks];
         for (let track of this.tracksCopy) {
-            track.artistName = artists[track.artist].name;
+            if (artists[track.artist]) {
+                track.artistName = artists[track.artist].name;
+            }
         }
     }
 

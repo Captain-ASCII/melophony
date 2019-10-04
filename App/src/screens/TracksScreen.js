@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import TrackList from "./../components/tracks/TrackList";
 import TextInput from "./../components/utils/TextInput";
+import Switch from "./../components/utils/Switch";
 
 export default class TracksScreen extends Component {
 
@@ -20,13 +21,7 @@ export default class TracksScreen extends Component {
     }
 
     switchTrackMode() {
-        let shuffleMode = configurationManager.get("shuffleMode");
-        if (shuffleMode) {
-            this.shuffleButton.current.classList.remove("active");
-        } else {
-            this.shuffleButton.current.classList.add("active");
-        }
-        configurationManager.set("shuffleMode", !shuffleMode);
+        configurationManager.set("shuffleMode", !configurationManager.get("shuffleMode"));
     }
 
     changeTrackDisplay(type) {
@@ -47,8 +42,7 @@ export default class TracksScreen extends Component {
                         <TextInput id="trackSearch" icon="search" onInput={ text => this.filter(text) } />
                     </div>
                     <div class="displayActions">
-                        <i ref={this.shuffleButton} class={`fa fa-random icon button ${ configurationManager.get("shuffleMode") ? "active" : "" }`}
-                           onClick={ _ => this.switchTrackMode() } title="Switch track playing mode" ></i>
+                        <Switch icon="random" title="Switch track playing mode" active={configurationManager.get("shuffleMode")} configurationSwitch="shuffleMode" />
                         <i class="fa fa-list icon button" onClick={ _ => this.changeTrackDisplay("itemList") } title="Track list" ></i>
                         <i class="fa fa-th icon button" onClick={ _ => this.changeTrackDisplay("itemBlocks") } title="Track blocks" ></i>
                         <i class="fa fa-stream icon button" onClick={ _ => this.changeTrackDisplay("groupedItems") } title="Tracks for each artist" ></i>

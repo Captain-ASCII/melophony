@@ -2,13 +2,12 @@
 #contentHeader {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    margin: 10px;
     height: 40px;
 }
 
 #itemList {
     height: calc(100% - 91px);
-    margin-left: 20px;
     align-self: stretch;
     overflow-x: hidden;
     overflow-y: scroll;

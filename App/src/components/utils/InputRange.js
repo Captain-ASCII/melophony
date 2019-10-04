@@ -5,7 +5,7 @@ export default class InputRange extends Component {
     constructor(props, name, element, track, multiRange = false) {
         super(props);
 
-        this.state = { track: null };
+        this.state = { track: this.props.track };
 
         this.tracker = React.createRef();
         this.trackBar = React.createRef();
