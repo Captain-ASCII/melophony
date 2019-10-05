@@ -4,7 +4,8 @@
 @import url("Items.css");
 @import url("Status.css");
 @import url("ProgressBars.css");
-
+@import url("Splash.css");
+@import url("Footer.css");
 
 
 :root {
@@ -209,40 +210,6 @@ h1 {
 
 #toaster > * {
     margin: 20px;
-}
-
-
-/* Footer */
-
-#footer > * {
-    margin: 0 20px;
-}
-
-#controls {
-    width: 10%;
-    display: flex;
-    align-items: center;
-}
-
-#controls > * {
-    margin: 5px;
-}
-
-#currentTrackInfo {
-    width: 20%;
-    font-size: 20px;
-    transition: background-color 0.3s;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-}
-
-#currentTrackInfo:hover {
-    background-color: var(--main-hover-bg);
-}
-
-#tracker {
-    width: 70%;
 }
 
 /* Content */

@@ -44,9 +44,11 @@
 
 
 #itemBlocks {
+    height: calc(100% - 91px);
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+    overflow-y: scroll;
 }
 
 #itemBlocks > div {
@@ -61,7 +63,7 @@
     flex: 1;
     border-radius: 5px;
     background: #222;
-    margin: 10px;
+    margin: 5px 10px;
 }
 
 .displayActions {

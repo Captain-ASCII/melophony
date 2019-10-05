@@ -13,10 +13,11 @@ export default class ConfigurationManager {
         };
 
         try {
-            this.#configuration = JSON.parse(localStorage.getItem("configuration"));
+            this.#configuration = JSON.parse(localStorage.getItem("configuration")) || defaultConfig;
         } catch (ex) {
             this.#configuration = defaultConfig;
         }
+        console.warn(this.#configuration)
 
         this.#save();
     }

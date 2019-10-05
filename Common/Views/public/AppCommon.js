@@ -75,17 +75,17 @@ function playExtract(time) {
     extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
 }
 
-function switchButton(element) {
-    if (shuffleMode) {
-        element.classList.remove("active");
-    } else {
+function switchButton(element, value) {
+    if (value) {
         element.classList.add("active");
+    } else {
+        element.classList.remove("active");
     }
 }
 
 function switchTrackMode(element) {
-    switchButton(element);
     shuffleMode = !shuffleMode;
+    switchButton(element, shuffleMode);
 }
 
 function modifyTrackStart(id, value) {

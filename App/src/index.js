@@ -4,6 +4,7 @@ import "regenerator-runtime/runtime";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
+import SplashScreen from "./screens/SplashScreen.js";
 
 import ActionManager from "./utils/ActionManager";
 import ConfigurationManager from "./utils/ConfigurationManager";
@@ -17,14 +18,9 @@ global.configurationManager = new ConfigurationManager();
 global.dataStorage = new DataStorage();
 global.mediaManager = new MediaManager(global.dataStorage);
 
-global.configuration = {
-    serverAddress: "https://192.168.1.18:1804",
-    shuffleMode: true
-};
-
 async function start() {
-    let tracks = await (await fetch(`${SERVER_ADDRESS}/tracks`)).json();
-    let artists = await (await fetch(`${SERVER_ADDRESS}/artists`)).json();
+    let tracks = await (await fetch(`${global.configurationManager.get("serverAddress")}/tracks`)).json();
+    let artists = await (await fetch(`${global.configurationManager.get("serverAddress")}/artists`)).json();
 
     global.dataStorage.set("tracks", tracks);
     global.dataStorage.set("artists", artists);
@@ -33,3 +29,4 @@ async function start() {
 }
 
 start();
+ReactDOM.render(<SplashScreen />, document.getElementById("root"));

@@ -22,6 +22,7 @@ export default class ViewAspect extends BaseAspect {
 
         this.tracks = db.get(BaseAspect.TRACKS);
         this.artists = db.get(BaseAspect.ARTISTS);
+        this.users = db.get(BaseAspect.USERS);
 
         this.app.engine("handlebars", handlebars.engine);
         this.app.set("view engine", "handlebars");
@@ -31,7 +32,10 @@ export default class ViewAspect extends BaseAspect {
         this.app.use("/public", Express.static(Path.join(commonPath, "public")));
 
         this.app.get("/screen/home", (request, response) => {
-            response.render("App", { tracks: Object.values(this.tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)) });
+            response.render("App", {
+                tracks: Object.values(this.tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)),
+                configuration: this.users[0].configuration
+            });
         });
 
         this.app.get("/screen/modify/track/:id", (request, response) => {

@@ -77,7 +77,9 @@ class App extends Component {
                             <div class="button icon" onClick={ _ => global.mediaManager.playPause() } ><i id="playButton" class="fa fa-play fa-2x" tabIndex="-1" ></i></div>
                             <div class="button icon" onClick={ _ => global.mediaManager.next() } ><i class="fa fa-forward fa-2x" ></i></div>
                         </div>
-                        <div id="currentTrackInfo" onClick={this.modifyTrack} ></div>
+                        <Link to={`track/modify/${ mediaManager.getCurrentTrack().id }`} id="currentTrackInfoLink" >
+                            <div id="currentTrackInfo" ></div>
+                        </Link>
                         <InputRange asReader />
                     </div>
                 </div>

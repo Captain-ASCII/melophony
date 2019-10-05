@@ -11,6 +11,10 @@ export default class MediaManager {
         }
     }
 
+    getCurrentTrack() {
+        return dataStorage.getAsArray("tracks")[this.currentIndex];
+    }
+
     startPlay(id, index) {
         this.currentIndex = index;
 
