@@ -2,8 +2,13 @@ import React from "react";
 
 import { useHistory } from "react-router-dom";
 
-export default function CloseButton() {
+export default function CloseButton({ icon, additionalClass }) {
     let history = useHistory();
 
-    return (<div id="backButton" class="button icon" onClick={ _ => history.goBack() } ><i class="fa fa-times fa-2x icon"></i></div>);
+    if (!icon) {
+        icon = "times";
+    }
+
+    return (<div id="backButton" class={`button icon ${ additionalClass ? additionalClass : "" }`}
+                 onClick={ _ => history.goBack() } ><i class={`fa fa-${icon} fa-2x icon`}></i></div>);
 }

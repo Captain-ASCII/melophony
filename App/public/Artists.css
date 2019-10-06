@@ -1,6 +1,10 @@
 
-.artistListItem > .name {
-    max-width: 70%;
+.artistListItem > .link {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    padding: 10px;
 }
 
 .artistActions {
@@ -15,10 +19,7 @@
 
 /* Artist screen */
 
-#artistScreen {
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
+#artistScreen {}
 
 #artistScreenHeader {
     height: 200px;
@@ -34,4 +35,8 @@
 
 #artistTracks {
     padding: 20px;
+}
+
+.trackListItem .artist:hover {
+    text-decoration: underline;
 }

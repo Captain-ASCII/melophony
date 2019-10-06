@@ -1,20 +1,27 @@
 import React, { Component } from "react";
 
-import CloseButton from "../components/utils/CloseButton";
 import InputRange from "../components/utils/InputRange";
 
-export default class TrackModificationScreen extends Component {
+import AbstractModificationScreen from "./AbstractModificationScreen";
+
+export default class TrackModificationScreen extends AbstractModificationScreen {
 
     constructor(props) {
         super(props);
 
+
         this.artistsNames = dataStorage.getAsArray("artists").map(artist => <option data-value={ artist.id } value={ artist.name } />);
-        this.track = dataStorage.get(`/tracks/${this.props.match.params.id}`);
-        this.artist = dataStorage.get(`/artists/${this.track.artist}`);
+        this.data = dataStorage.get(`/tracks/${this.props.match.params.id}`);
+        this.artist = dataStorage.get(`/artists/${this.data.artist}`);
+
+        this.type = "track";
+        this.title = `${ this.artist.name } - ${ this.data.title }`;
+
+        this.state = { artistName: this.artist.name };
     }
 
     download() {
-        apiManager.get(`download/${this.track.videoId}`, _ => false);
+        apiManager.get(`download/${this.data.videoId}`, _ => false);
     }
 
     requestServerDownload() {
@@ -25,73 +32,64 @@ export default class TrackModificationScreen extends Component {
 
     }
 
-    render() {
+    createArtist() {
+        apiManager.post("artist", this.state.artistName);
+    }
+
+    renderForm() {
         return (
-            <div id="modificationPage">
-                <div id="modificationPageHeader">
-                    <CloseButton />
-                    <h2 id="modificationPageTitle">{ this.artist.name } - { this.track.title }</h2>
-                    <div id="saveButton" class="button raised" onClick={ _ => this.saveAndHide("track", this.track.id) } >Save</div>
-                </div>
-                <div id="modificationDownloadProgress">
-                    <div id={`${this.track.videoId}Progress`} class="progressBar"></div>
-                </div>
+            <div>
                 <div class="columns">
                     <div>
                         <div class="input">
                             <i class="fa fa-music fa-2x icon"></i>
-                            <input type="text" class="form-data" id="title" defaultValue={ this.track.title } />
+                            <input type="text" class="form-data" id="title" defaultValue={ this.data.title } />
                         </div>
                         <div class="input">
                             <i class="fa fa-male fa-2x icon"></i>
-                            <input type="text" list="artistNames" class="form-data" id="artist" defaultValue={ this.artist.name } />
+                            <input type="text" list="artistNames" class="form-data" id="artist"
+                                   autoComplete="off" onInput={ e => this.setState({ artistName: e.target.value }) } defaultValue={ this.artist.name } />
                             <i class="fa fa-plus fa-1x icon button" onClick={ _ => this.createArtist() }></i>
-                            <datalist id="artistNames">{ this.artistNames }</datalist>
+                            <datalist id="artistNames">{ this.artistsNames }</datalist>
                         </div>
                         <div class="input">
                             <i class="fa fa-ruler fa-2x icon"></i>
-                            <input type="text" class="form-data" id="duration" defaultValue={ this.track.duration } />
+                            <input type="text" class="form-data" id="duration" defaultValue={ this.data.duration } />
                         </div>
 
                         <div class="input">
                             <i class="fa fa-fingerprint fa-2x icon"></i>
-                            <input type="text" disabled defaultValue={ this.track.id } />
+                            <input type="text" disabled defaultValue={ this.data.id } />
                         </div>
                         <div class="input">
                             <i class="fa fa-clock fa-2x icon"></i>
-                            <input type="text" disabled defaultValue={ this.track.creationDate } />
+                            <input type="text" disabled defaultValue={ this.data.creationDate } />
                         </div>
                         <div class="input">
                             <i class="fa fa-file-contract fa-2x icon"></i>
-                            <input type="text" disabled class={ this.track.status } defaultValue={ this.track.status } />
+                            <input type="text" disabled class={ this.data.status } defaultValue={ this.data.status } />
                         </div>
                         <div class="input">
                             <i class="fab fa-youtube fa-2x icon"></i>
-                            <input type="text" class="form-data" id="videoId" defaultValue={ this.track.videoId } />
+                            <input type="text" class="form-data" id="videoId" defaultValue={ this.data.videoId } />
                         </div>
                     </div>
-                    <div></div>
                     <div id="serverInformation">
-                        <h2>Actions</h2>
+                        <h2 style={{ marginLeft: 5 }} >Actions</h2>
                         <div class="actions">
                             <div class="button raised" onClick={ _ => this.download() } >Get locally</div>
                             <div class="button raised" onClick={ _ => this.requestServerDownload() } >Download</div>
+                            <div class="button raised alert" onClick={ _ => this.deleteItem("track") } >Delete</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="delimiter"></div>
 
-                <h2 style={{ marginLeft: 66 }} >Modify track duration</h2>
+                <h2 class="centeredTitle" >Modify track duration</h2>
                 <div class="input">
                     <i class="fa fa-ruler fa-2x icon"></i>
-                    <InputRange track={this.track} multiRange />
-                </div>
-
-                <div class="delimiter"></div>
-
-                <div class="actions">
-                    <div class="button raised alert" onClick={ _ => this.deleteItem("track") } >Delete</div>
+                    <InputRange track={this.data} multiRange />
                 </div>
             </div>
         );

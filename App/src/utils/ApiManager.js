@@ -14,27 +14,27 @@ export default class ApiManager {
 
     get(path) {
         this.#request = new ApiRequest("GET", path);
-        this.sendRequest();
+        return this.sendRequest();
     }
 
     post(path, body) {
         this.#request = new ApiRequest("POST", path).withBody(body);
-        this.sendRequest();
+        return this.sendRequest();
     }
 
     put(path, body) {
         this.#request = new ApiRequest("PUT", path).withBody(body);
-        this.sendRequest();
+        return this.sendRequest();
     }
 
     delete(path) {
         this.#request = new ApiRequest("DELETE", path);
-        this.sendRequest();
+        return this.sendRequest();
     }
 
     async sendRequest() {
         console.warn(`${this.#request.getBaseUrl()}/${this.#request.getPath()}`, this.#request.getParams());
-        // return await (await fetch(`${this.#request.getBaseUrl()}/${this.#request.getPath()}`, this.#request.getParams())).json();
+        return await (await fetch(`${this.#request.getBaseUrl()}/${this.#request.getPath()}`, this.#request.getParams())).json();
     }
 }
 

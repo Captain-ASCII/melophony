@@ -7,13 +7,13 @@ export default class ActionManager {
         this.#actionListeners = {};
     }
 
-    expose(id, component, action) {
-        this.#actionListeners[id] = { component: component, action: action };
+    expose(id, component, action, actionId = "none") {
+        this.#actionListeners[id] = { component: component, action: action, actionId: actionId };
     }
 
-    do(id, ...parameters) {
-        for (let currentId in this.#actionListeners) {
-            if (currentId === id) {
+    do(id, actionId, ...parameters) {
+        if (this.#actionListeners[id]) {
+            if (this.#actionListeners[id]["actionId"] == "none" || actionId === this.#actionListeners[id]["actionId"]) {
                 this.#actionListeners[id].action.call(this.#actionListeners[id].component, ...parameters);
             }
         }

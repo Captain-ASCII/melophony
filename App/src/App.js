@@ -3,13 +3,14 @@ import React, { Component } from "react";
 import { hot } from "react-hot-loader";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import TracksScreen from "./screens/TracksScreen";
+import ArtistModificationScreen from "./screens/ArtistModificationScreen";
+import ArtistOverviewScreen from "./screens/ArtistOverviewScreen";
 import ArtistsScreen from "./screens/ArtistsScreen";
-
 import TrackCreationScreen from "./screens/TrackCreationScreen";
 import TrackModificationScreen from "./screens/TrackModificationScreen";
-import ArtistOverviewScreen from "./screens/ArtistOverviewScreen";
+import TracksScreen from "./screens/TracksScreen";
 
+import ConfirmOverlay from "./components/utils/ConfirmOverlay";
 import InputRange from "./components/utils/InputRange";
 import SwitchButton from "./components/utils/Switch";
 
@@ -42,6 +43,7 @@ class App extends Component {
                                 <Route path="/track/modify/:id" component={TrackModificationScreen} />
                                 <Route path="/track/create" component={TrackCreationScreen} />
                                 <Route path="/artists" component={ArtistsScreen} />
+                                <Route path="/artist/modify/:id" component={ArtistModificationScreen} />
                                 <Route path="/artist/:id" component={ArtistOverviewScreen} />
                                 <Route path="/" component={TracksScreen} />
                             </Switch>
@@ -77,11 +79,12 @@ class App extends Component {
                             <div class="button icon" onClick={ _ => global.mediaManager.playPause() } ><i id="playButton" class="fa fa-play fa-2x" tabIndex="-1" ></i></div>
                             <div class="button icon" onClick={ _ => global.mediaManager.next() } ><i class="fa fa-forward fa-2x" ></i></div>
                         </div>
-                        <Link to={`track/modify/${ mediaManager.getCurrentTrack().id }`} id="currentTrackInfoLink" >
+                        <Link to={`/track/modify/${ mediaManager.getCurrentTrack().id }`} id="currentTrackInfoLink" >
                             <div id="currentTrackInfo" ></div>
                         </Link>
                         <InputRange asReader />
                     </div>
+                    <ConfirmOverlay />
                 </div>
             </Router>
         );

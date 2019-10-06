@@ -1,11 +1,17 @@
 @import url("Artists.css");
-@import url("TrackModification.css");
-@import url("ListScreen.css");
-@import url("Items.css");
-@import url("Status.css");
-@import url("ProgressBars.css");
-@import url("Splash.css");
+@import url("ColumnLayout.css");
+@import url("CustomSelect.css");
 @import url("Footer.css");
+@import url("Header.css");
+@import url("Items.css");
+@import url("ListScreen.css");
+@import url("Overlays.css");
+@import url("ProgressBars.css");
+@import url("Screens.css");
+@import url("Splash.css");
+@import url("Status.css");
+@import url("TrackModification.css");
+@import url("Tracks.css");
 
 
 :root {
@@ -119,67 +125,14 @@ h1 {
     font-size: 30px;
 }
 
-/* Header */
-
-#header, #footer {
-    background-color: var(--main-bg-color);
-    width: 100%;
-    height: 80px;
-    display: flex;
-    box-shadow: 0 0px 10px rgba(0,0,0,0.3);
-    align-items: center;
-    position: fixed;
-    justify-content: space-between;
+.centeredTitle {
+    display: inline;
+    text-align: center;
 }
-
-#header {
-    padding: 0 20px;
-    top: 0;
-}
-
-#footer  {
-    bottom: 0;
-}
-
-#AppHeader {
-    height: 100%;
-    display: flex;
-    flex: 1;
-}
-
-#headerActions {
-    margin: 0 10px;
-}
-
-#header > .centeredTitle {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#header > div {
-    padding: 0 20px;
-}
-
-.logo {
-    height: 100%;
-    padding-right: 15px;
-}
-
-.header .searchbar {
-    width: 15%;
-}
-
-.header .border {
-    height: 60%;
-    top: 20%;
-}
-
 
 /* Sidebar */
 
 .sidebar.left {
-    z-index: 999;
     height: 100%;
     width: 15%;
     padding: 15px;
@@ -219,7 +172,6 @@ h1 {
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 20px 20px 0 20px;
 }
 
 #content > div {
@@ -372,6 +324,12 @@ h1 {
     box-shadow: 0 6px 10px 2px rgba(0,0,0,0.3);
 }
 
+.button.icon.floating.mini {
+    height: 36px;
+    width: 36px;
+    font-size: 1em !important;
+}
+
 .button.icon.floating.top {
     top: 15px;
     left: 15px;
@@ -444,21 +402,19 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #2ecc71 !important;
 }
 
+select {
+    background: var(--main-dark-bg);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: var(--main-color);
+    outline: none !important;
+}
+
 .delimiter {
     width: 100%;
     height: 1px;
     background: var(--disabled-color);
     margin: 5px 10px;
     flex-shrink: 0;
-}
-
-.columns {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.columns > div {
-    flex-grow: 1;
-    min-width: 350px;
 }

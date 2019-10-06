@@ -6,6 +6,11 @@
     height: 40px;
 }
 
+#sortBar {
+    display: flex;
+    align-items: center;
+}
+
 #itemList {
     height: calc(100% - 91px);
     align-self: stretch;
@@ -55,7 +60,6 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    padding: 10px;
     position: relative;
     height: 50px;
     min-width: 200px;
@@ -73,3 +77,7 @@
     margin: 20px;
 }
 
+.searchbar {
+    position: absolute;
+    left: 20%;
+}

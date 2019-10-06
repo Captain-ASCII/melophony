@@ -15,7 +15,7 @@ export default class ArtistAspect extends BaseAspect {
         });
 
         this.app.get("/artist/:id", (request, response) => {
-            response.send(this.artists[request.params.id]);
+            response.send(this.artists[request.params.id] || {});
         });
 
         this.app.post("/artist", (request, response) => {
@@ -32,8 +32,8 @@ export default class ArtistAspect extends BaseAspect {
         });
 
         this.app.delete("/artist/:id", (request, response) => {
-            delete this.artists[request.params.id];
             response.send(this.artists[request.params.id]);
+            delete this.artists[request.params.id];
             this.artists._save();
         });
 

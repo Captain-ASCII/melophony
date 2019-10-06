@@ -8,6 +8,7 @@ export default class ConfigurationManager {
         let defaultConfig = {
             serverAddress: "https://melophony.ddns.net",
             shuffleMode: true,
+            sortDesc: true,
             networkEnabled: true,
             displayType: "itemList"
         };
@@ -17,7 +18,6 @@ export default class ConfigurationManager {
         } catch (ex) {
             this.#configuration = defaultConfig;
         }
-        console.warn(this.#configuration)
 
         this.#save();
     }

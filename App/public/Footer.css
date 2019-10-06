@@ -1,4 +1,10 @@
 
+/* Common styles are in Header.css */
+
+#footer  {
+    bottom: 0;
+}
+
 #footer > * {
     margin: 0 10px;
 }
@@ -30,5 +36,9 @@
 }
 
 #tracker {
+    flex: 1;
+}
+
+#footer #tracker {
     width: 60%;
 }
