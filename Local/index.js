@@ -205,7 +205,7 @@ App.get("/synchronize", (request, response) => {
 App.get("/download/:videoId", (request, response) => {
     download(
         `${SERVER_ADDRESS}/file/${request.params.videoId}`,
-        `tracks/${request.params.videoId}.m4a`,
+        `files/${request.params.videoId}.m4a`,
         _ => response.send("ok")
     );
 });

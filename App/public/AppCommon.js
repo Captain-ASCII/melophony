@@ -43,77 +43,77 @@ function commonStart() {
     };
 }
 
-function play() {
-    if (player.src == "") {
-        next();
-    } else {
-        player.onended = function() { next(); };
-        player.play();
-        document.getElementById("playButton").className = "fa fa-pause fa-2x";
-    }
-}
+// function play() {
+//     if (player.src == "") {
+//         next();
+//     } else {
+//         player.onended = function() { next(); };
+//         player.play();
+//         document.getElementById("playButton").className = "fa fa-pause fa-2x";
+//     }
+// }
 
-function pause() {
-    player.pause();
-    document.getElementById("playButton").className = "fa fa-play fa-2x";
-}
+// function pause() {
+//     player.pause();
+//     document.getElementById("playButton").className = "fa fa-play fa-2x";
+// }
 
-function playPause() {
-    if (player.paused) {
-        play();
-    } else {
-        pause();
-    }
-}
+// function playPause() {
+//     if (player.paused) {
+//         play();
+//     } else {
+//         pause();
+//     }
+// }
 
-function playExtract(time) {
-    player.currentTime = time;
-    player.play();
-    if (extractTimeout) {
-        clearTimeout(extractTimeout);
-    }
-    extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
-}
+// function playExtract(time) {
+//     player.currentTime = time;
+//     player.play();
+//     if (extractTimeout) {
+//         clearTimeout(extractTimeout);
+//     }
+//     extractTimeout = setTimeout(_ => player.pause(), EXTRACT_DURATION);
+// }
 
-function switchTrackMode(element) {
-    if (shuffleMode) {
-        element.classList.remove("active");
-    } else {
-        element.classList.add("active");
-    }
-    shuffleMode = !shuffleMode;
-}
+// function switchTrackMode(element) {
+//     if (shuffleMode) {
+//         element.classList.remove("active");
+//     } else {
+//         element.classList.add("active");
+//     }
+//     shuffleMode = !shuffleMode;
+// }
 
-function modifyTrackStart(id, value) {
-    player.src = `/files/${tracks[id].videoId}.m4a`;
-    playExtract(value);
-    document.querySelector("#trackModificator > .trackBar").style.left = `calc(${getPercentage(id, value)}% + 10px)`;
-    tracks[id].startTime = parseInt(value);
-}
+// function modifyTrackStart(id, value) {
+//     player.src = `/files/${tracks[id].videoId}.m4a`;
+//     playExtract(value);
+//     document.querySelector("#trackModificator > .trackBar").style.left = `calc(${getPercentage(id, value)}% + 10px)`;
+//     tracks[id].startTime = parseInt(value);
+// }
 
-function modifyTrackEnd(id, value) {
-    player.src = `/files/${tracks[id].videoId}.m4a`;
-    playExtract(value);
-    document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
-    console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
-    tracks[id].endTime = Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000));
-}
+// function modifyTrackEnd(id, value) {
+//     player.src = `/files/${tracks[id].videoId}.m4a`;
+//     playExtract(value);
+//     document.querySelector("#trackModificator > .trackBar").style.right = `calc(${100 - getPercentage(id, value)}% + 10px)`;
+//     console.warn(value, Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000)));
+//     tracks[id].endTime = Math.max(0, parseInt(value) + (EXTRACT_DURATION / 1000));
+// }
 
 /* Display */
 
-async function displayScreen(screen) {
-    lastScreen = currentScreen;
-    currentScreen = screen;
-    document.getElementById("content").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${screen}`)).text();
-}
+// async function displayScreen(screen) {
+//     lastScreen = currentScreen;
+//     currentScreen = screen;
+//     document.getElementById("content").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${screen}`)).text();
+// }
 
-async function displayTrackScreen() {
-    displayScreen(currentDisplayType);
-}
+// async function displayTrackScreen() {
+//     displayScreen(currentDisplayType);
+// }
 
-function back() {
-    displayScreen(lastScreen);
-}
+// function back() {
+//     displayScreen(lastScreen);
+// }
 
 async function modifyTrack(id = currentTrackId) {
     player.onended = function() {};
@@ -138,14 +138,14 @@ async function createArtist() {
     document.getElementById("artistNames").appendChild(artistOption);
 }
 
-function changeTrackDisplay(displayType) {
-    currentDisplayType = displayType;
-    displayScreen(displayType);
-}
+// function changeTrackDisplay(displayType) {
+//     currentDisplayType = displayType;
+//     displayScreen(displayType);
+// }
 
-async function filter(text) {
-    document.getElementById("tracks").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${currentDisplayType}/filter/${text}`)).text();
-}
+// async function filter(text) {
+//     document.getElementById("tracks").innerHTML = await (await fetch(`${SERVER_ADDRESS}/screen/${currentDisplayType}/filter/${text}`)).text();
+// }
 
 function progress(videoId, progressValue) {
     const downloadProgressBar = document.getElementById(`${videoId}Progress`);
@@ -192,37 +192,37 @@ async function saveAndHide(type, id) {
     back();
 }
 
-function startPlay(id, index) {
-    currentIndex = index;
-    currentTrackId = id;
+// function startPlay(id, index) {
+//     currentIndex = index;
+//     currentTrackId = id;
 
-    let track = tracks[id];
-    currentTrack = track;
-    let artist = artists[currentTrack.artist] || { name: "Unknown" };
+//     let track = tracks[id];
+//     currentTrack = track;
+//     let artist = artists[currentTrack.artist] || { name: "Unknown" };
 
-    player.src = `/files/${track.videoId}.m4a`;
-    player.currentTime = track.startTime;
+//     player.src = `/files/${track.videoId}.m4a`;
+//     player.currentTime = track.startTime;
 
-    player.ontimeupdate = function(event) {
-        if (player.currentTime > track.endTime) {
-            next();
-        }
-    };
-    document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${currentTrack.title}`;
-    new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
+//     player.ontimeupdate = function(event) {
+//         if (player.currentTime > track.endTime) {
+//             next();
+//         }
+//     };
+//     document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${currentTrack.title}`;
+//     new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
 
-    play();
-}
+//     play();
+// }
 
-function previous() {
-    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex - 1) % tracksArray.length;
-    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
-}
+// function previous() {
+//     currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex - 1) % tracksArray.length;
+//     startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
+// }
 
-function next() {
-    currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex + 1) % tracksArray.length;
-    startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
-}
+// function next() {
+//     currentIndex = shuffleMode ? Math.floor(Math.random() * tracksArray.length) : (currentIndex + 1) % tracksArray.length;
+//     startPlay(`${tracksArray[currentIndex].id}`, currentIndex);
+// }
 
 function deleteItem(type, id) {
     fetch(`${SERVER_ADDRESS}/${type}/${id}`, { method: "DELETE" }).then(data => {
