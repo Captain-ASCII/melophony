@@ -26,7 +26,6 @@
     font-size: 14px;
     font-family: "MontSerrat";
     display: flex;
-    align-items: center;
     padding: 3px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 3px;
@@ -36,8 +35,9 @@
     background-color: var(--main-hover-bg);
 }
 
-#itemList > div > div {
+#itemList > div > div > div {
     display: flex;
+    align-items: center;
     padding: 3px 0;
 }
 
@@ -61,13 +61,14 @@
     display: flex;
     align-items: center;
     position: relative;
-    height: 50px;
-    min-width: 200px;
-    max-width: 400px;
-    flex: 1;
+    flex-basis: calc(100% / 4);
     border-radius: 5px;
     background: #222;
-    margin: 5px 10px;
+}
+
+#itemBlocks > .trackListItem {
+    background-size: cover;
+    background-position: center;
 }
 
 .displayActions {

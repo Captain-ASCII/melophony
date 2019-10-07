@@ -30,5 +30,5 @@ async function start() {
     ReactDOM.render(<App />, document.getElementById("root"));
 }
 
-start();
 ReactDOM.render(<SplashScreen />, document.getElementById("root"));
+start();

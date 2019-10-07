@@ -14,8 +14,8 @@ export default class TracksScreen extends Component {
 
         this.state = {
             filter: "",
-            sortType: "date",
-            sortOrder: "ASC",
+            sortType: configurationManager.get("sortType"),
+            sortOrder: configurationManager.get("sortOrder"),
             groupByArtist: false,
             displayType: configurationManager.get("displayType"),
             tracks: global.dataStorage.getAsArray("tracks")
@@ -47,20 +47,18 @@ export default class TracksScreen extends Component {
                 sortFct = (a, b) => new Date(a.creationDate) - new Date(b.creationDate);
                 break
             case "title":
-                sortFct = (a, b) => a.title.localeCompare(b.title);
+                sortFct = (a, b) => b.title.localeCompare(a.title);
                 break
         }
 
         let tracks = this.state.tracks.sort((a, b) => sortFct(a, b));
-        if (this.state.sortOrder == "ASC") {
-            tracks = tracks.reverse();
-        }
 
         this.setState({ sortType: type, tracks: tracks });
     }
 
-    switchOrder(enabled) {
-        this.setState({ sortOrder: enabled ? "DESC" : "ASC" }, _ => this.sort(this.state.sortType));
+    switchOrder(value) {
+        this.state.tracks.reverse();
+        this.setState({ sortOrder: value });
     }
 
     render() {
@@ -76,8 +74,8 @@ export default class TracksScreen extends Component {
                             <option value="title">By title</option>
                             <option value="date">By date of download</option>
                         </CustomSelect>
-                        <Switch icon="arrow-alt-circle-up" icon2="arrow-alt-circle-down" doubleState
-                                onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortDesc" />
+                        <Switch enabledState={{ value: "ASC", icon: "arrow-alt-circle-up" }} disabledState={{ value: "DESC", icon: "arrow-alt-circle-down" }}
+                                doubleState onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortOrder" />
                     </div>
                     <div class="displayActions">
                         <Switch icon="random" title="Switch track playing mode" active={configurationManager.get("shuffleMode")} configurationSwitch="shuffleMode" />

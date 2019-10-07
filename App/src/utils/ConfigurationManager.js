@@ -8,13 +8,15 @@ export default class ConfigurationManager {
         let defaultConfig = {
             serverAddress: "https://melophony.ddns.net",
             shuffleMode: true,
-            sortDesc: true,
+            sortType: "date",
+            sortOrder: "ASC",
             networkEnabled: true,
             displayType: "itemList"
         };
 
         try {
-            this.#configuration = JSON.parse(localStorage.getItem("configuration")) || defaultConfig;
+            // this.#configuration = JSON.parse(localStorage.getItem("configuration")) || defaultConfig;
+            this.#configuration = defaultConfig;
         } catch (ex) {
             this.#configuration = defaultConfig;
         }
@@ -23,7 +25,7 @@ export default class ConfigurationManager {
     }
 
     get(key, defaultValue) {
-        return this.#configuration[key] || defaultValue;
+        return this.#configuration[key];
     }
 
     set(key, newValue) {

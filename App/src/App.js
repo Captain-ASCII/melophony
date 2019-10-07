@@ -59,7 +59,7 @@ class App extends Component {
                         <Link to="/" >
                             <div id="AppHeader">
                                 <div class="logo" >
-                                    <img src="/melophony.png" style={{ height: "100%" }}/>
+                                    <img src="/img/melophony.png" style={{ height: "100%" }}/>
                                 </div>
                                 <h1>Melophony</h1>
                             </div>

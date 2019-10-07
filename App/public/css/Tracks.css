@@ -1,0 +1,8 @@
+
+.trackListItem {
+    padding: 10px;
+}
+
+.trackListItem > div {
+    flex: 1;
+}
