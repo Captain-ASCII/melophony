@@ -66,16 +66,18 @@ export default class TracksScreen extends Component {
             <div id="trackScreen" >
                 <div id="contentHeader">
                     <h1>Titres</h1>
-                    {/*<div class="searchbar">
-                        <TextInput id="trackSearch" icon="search" onInput={ text => this.filter(text) } />
-                    </div>*/}
-                    <div id="sortBar" >
-                        <CustomSelect onSelection={ sortType => this.sort(sortType) } >
-                            <option value="title">By title</option>
-                            <option value="date">By date of download</option>
-                        </CustomSelect>
-                        <Switch enabledState={{ value: "ASC", icon: "arrow-alt-circle-up" }} disabledState={{ value: "DESC", icon: "arrow-alt-circle-down" }}
-                                doubleState onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortOrder" />
+                    <div id="toolBar">
+                        <div class="searchbar">
+                            <TextInput id="trackSearch" icon="search" onInput={ text => this.filter(text) } />
+                        </div>
+                        <div id="sortBar" >
+                            <CustomSelect onSelection={ sortType => this.sort(sortType) } >
+                                <option value="title">By title</option>
+                                <option value="date">By date of download</option>
+                            </CustomSelect>
+                            <Switch enabledState={{ value: "ASC", icon: "arrow-alt-circle-up" }} disabledState={{ value: "DESC", icon: "arrow-alt-circle-down" }}
+                                    doubleState onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortOrder" />
+                        </div>
                     </div>
                     <div class="displayActions">
                         <Switch icon="random" title="Switch track playing mode" active={configurationManager.get("shuffleMode")} configurationSwitch="shuffleMode" />

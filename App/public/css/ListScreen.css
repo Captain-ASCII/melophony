@@ -3,7 +3,11 @@
     display: flex;
     justify-content: space-between;
     margin: 10px;
-    height: 40px;
+    flex-wrap: wrap;
+}
+
+#contentHeader > * {
+    margin: 5px 0;
 }
 
 #sortBar {
@@ -20,7 +24,6 @@
 
 #itemList > div {
     width: 100%;
-    height: 40px;
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 14px;
@@ -35,10 +38,9 @@
     background-color: var(--main-hover-bg);
 }
 
-#itemList > div > div > div {
+#itemList .stretchBox {
+    flex: 1;
     display: flex;
-    align-items: center;
-    padding: 3px 0;
 }
 
 #itemList > div > * {
@@ -57,28 +59,50 @@
 }
 
 #itemBlocks > div {
-    cursor: pointer;
     display: flex;
     align-items: center;
     position: relative;
     flex-basis: calc(100% / 4);
-    border-radius: 5px;
-    background: #222;
-}
-
-#itemBlocks > .trackListItem {
-    background-size: cover;
-    background-position: center;
 }
 
 .displayActions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin: 20px;
 }
 
-.searchbar {
+#toolBar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#toolBar > * {
+    margin: 5px;
+}
+
+#itemBlocks .ratioContainer {
+    padding-top: 56.25%;
+    position: relative;
+    cursor: pointer;
+}
+
+#itemBlocks .stretchBox {
     position: absolute;
-    left: 20%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#itemBlocks .blockBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: brightness(45%);
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
 }

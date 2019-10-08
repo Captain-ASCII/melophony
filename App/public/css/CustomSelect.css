@@ -1,17 +1,18 @@
 
 .select {
     min-width: 200px;
-    height: 32px;
+    height: 36px;
 }
 
 .commonSelect {
     background: var(--main-dark-bg);
     padding: 8px;
     font-size: 12px;
+    height: 36px;
 }
 
 .selectCurrent {
-    border-radius: 3px;
+    border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,12 +22,17 @@
     z-index: 999;
     position: relative;
     top: -3px;
-    background: var(--main-dark-bg);
+    background-color: var(--main-dark-bg);
     display: none;
     border-radius: 0 0 5px 5px;
 }
 
 .option {
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
+    transition: background-color 0.3s
+}
+
+.option:hover {
+    background-color: var(--main-hover-bg);
 }
