@@ -14,16 +14,16 @@ export default class InputRange extends Component {
     }
 
     setTrack(track) {
-        this.setState({ track: track });
+        this.setState({ track: track }, _ => {
+            if (this.props.asReader) {
+                this.asReader();
+            }
+        });
 
         this.trackBarStyle = {
             left: `${this.props.multiRange ? this.state.track.startTime * 100 / this.state.track.duration : 0}%`,
             right: `${this.props.multiRange ? 100 *  (1 - this.state.track.endTime / this.state.track.duration) : 100 }%`
         };
-
-        if (this.props.asReader) {
-            setTimeout(_ => this.asReader(), 10);
-        }
     }
 
     asReader() {

@@ -219,10 +219,6 @@ h1 {
     height: 36px;
 }
 
-.title {
-    flex: 1;
-}
-
 .artistName {
     width: 20%;
 }

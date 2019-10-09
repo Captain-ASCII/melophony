@@ -45,6 +45,13 @@ try {
 App.use(Express.text());
 App.use(Express.json());
 
+App.use(function(request, response, next) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    next();
+});
+
 App.engine("handlebars", handlebars.engine);
 App.set("view engine", "handlebars");
 App.set("views", Path.join(commonPath, "views"));
@@ -58,7 +65,7 @@ App.get("/configuration", (request, response) => {
     response.send(configuration);
 });
 
-App.get("/availableTracks", (request, response) => {
+App.get("/tracks", (request, response) => {
     response.send(tracks);
 });
 

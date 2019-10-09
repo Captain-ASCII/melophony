@@ -15,8 +15,7 @@ export default class ConfigurationManager {
         };
 
         try {
-            // this.#configuration = JSON.parse(localStorage.getItem("configuration")) || defaultConfig;
-            this.#configuration = defaultConfig;
+            this.#configuration = JSON.parse(localStorage.getItem("configuration")) || defaultConfig;
         } catch (ex) {
             this.#configuration = defaultConfig;
         }

@@ -21,6 +21,13 @@ export default class MediaManager {
         let track = dataStorage.get("tracks")[id];
         let artist = dataStorage.get("artists")[track.artist] || { name: "Unknown" };
 
+        this.player.addEventListener("error", event => {
+            if (event.target.error.code == 4) {
+                this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`;
+                this.player.load();
+            }
+        })
+
         this.player.src = `${configurationManager.get("serverAddress")}/files/${track.videoId}.m4a`;
         this.player.currentTime = track.startTime;
 
@@ -31,7 +38,7 @@ export default class MediaManager {
         };
         document.getElementById("currentTrackInfo").innerHTML = `${artist.name} - ${track.title}`;
         // new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
-        actionManager.do("setTrack", track);
+        actionManager.do("setTrack", "", track);
 
         this.play();
     }

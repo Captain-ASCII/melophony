@@ -43,6 +43,21 @@
     display: flex;
 }
 
+#itemList .title {
+    flex: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #itemList > div > * {
     text-overflow: ellipsis;
     display: flex;
@@ -62,7 +77,9 @@
     display: flex;
     align-items: center;
     position: relative;
-    flex-basis: calc(100% / 4);
+    flex-grow: 1;
+    min-width: 250px;
+    max-width: 500px;
 }
 
 .displayActions {
@@ -93,6 +110,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    display: flex;
 }
 
 #itemBlocks .blockBackground {
@@ -105,4 +123,19 @@
     border-radius: 5px;
     background-size: cover;
     background-position: center;
+}
+
+#itemBlocks .itemInfo {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#itemBlocks .itemActions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
