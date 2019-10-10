@@ -42,7 +42,7 @@ export default class Switch extends Component {
             configurationManager.set(this.props.configurationSwitch, value);
         }
         if (this.props.onSwitch) {
-            this.props.onSwitch(!this.state.active);
+            this.props.onSwitch(value);
         }
         this.setState({ active: !this.state.active, iconState: iconState });
     }

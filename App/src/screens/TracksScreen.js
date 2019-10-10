@@ -16,12 +16,11 @@ export default class TracksScreen extends Component {
             filter: "",
             sortType: configurationManager.get("sortType"),
             sortOrder: configurationManager.get("sortOrder"),
-            groupByArtist: false,
             displayType: configurationManager.get("displayType"),
             tracks: global.dataStorage.getAsArray("tracks")
         };
 
-        this.sort(this.state.sortType);
+        this._sort(this.state.sortType);
 
         this.shuffleButton = React.createRef();
     }
@@ -39,7 +38,7 @@ export default class TracksScreen extends Component {
         this.setState({ filter: value });
     }
 
-    sort(type) {
+    _sort(type) {
         let sortFct = (a, b) => -1;
 
         switch (type) {
@@ -47,18 +46,24 @@ export default class TracksScreen extends Component {
                 sortFct = (a, b) => new Date(a.creationDate) - new Date(b.creationDate);
                 break
             case "title":
-                sortFct = (a, b) => b.title.localeCompare(a.title);
+                sortFct = (a, b) => a.title.localeCompare(b.title);
                 break
         }
 
         let tracks = this.state.tracks.sort((a, b) => sortFct(a, b));
+        if (this.state.sortOrder == "ASC") {
+            tracks.reverse();
+        }
+        return tracks;
+    }
 
-        this.setState({ sortType: type, tracks: tracks });
+    sort(type) {
+        this.setState({ sortType: type, tracks: this._sort(type) });
     }
 
     switchOrder(value) {
         this.state.tracks.reverse();
-        this.setState({ sortOrder: value });
+        this.setState({ sortOrder: value }, _ => console.warn(this.state));
     }
 
     render() {
@@ -71,11 +76,11 @@ export default class TracksScreen extends Component {
                             <TextInput id="trackSearch" icon="search" onInput={ text => this.filter(text) } />
                         </div>
                         <div id="sortBar" >
-                            <CustomSelect onSelection={ sortType => this.sort(sortType) } >
+                            <CustomSelect onSelection={ sortType => this.sort(sortType) } icon="" placeholder="Order" >
                                 <option value="title">By title</option>
                                 <option value="date">By date of download</option>
                             </CustomSelect>
-                            <Switch enabledState={{ value: "ASC", icon: "arrow-alt-circle-up" }} disabledState={{ value: "DESC", icon: "arrow-alt-circle-down" }}
+                            <Switch enabledState={{ value: "ASC", icon: "sort-amount-up" }} disabledState={{ value: "DESC", icon: "sort-amount-down" }}
                                     doubleState onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortOrder" />
                         </div>
                     </div>

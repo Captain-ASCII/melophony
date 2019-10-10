@@ -10,7 +10,7 @@ export default class TrackModificationScreen extends AbstractModificationScreen 
         super(props);
 
 
-        this.artistsNames = dataStorage.getAsArray("artists").map(artist => <option data-value={ artist.id } value={ artist.name } />);
+        this.artistsNames = dataStorage.getAsArray("artists").map(artist => <option key={ artist.id } data-value={ artist.id } value={ artist.name } />);
         this.data = dataStorage.get(`/tracks/${this.props.match.params.id}`);
         this.artist = dataStorage.get(`/artists/${this.data.artist}`);
 

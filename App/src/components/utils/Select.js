@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import Utils from "../../utils/Utils";
+
 export default class Select extends Component {
 
     constructor(props) {
@@ -10,9 +12,9 @@ export default class Select extends Component {
                  class="commonSelect option" onClick={ e => this.choose(e) } >{ option.props.children }</div>
         );
 
-        this.dropDown = React.createRef();
+        this.optionsId = Utils.generateId();
 
-        this.state = { selected: "", selectedName: "Please choose" };
+        this.state = { selected: "", selectedName: this.props.placeholder || "..." };
 
         document.addEventListener("click", _ => this.closeDropDown());
     }
@@ -29,11 +31,17 @@ export default class Select extends Component {
 
     openDropDown(event) {
         event.nativeEvent.stopImmediatePropagation();
-        this.dropDown.current.style.display = "block";
+        let options = document.getElementById(this.optionsId);
+        if (options) {
+            options.style.display = "block";
+        }
     }
 
     closeDropDown() {
-        this.dropDown.current.style.display = "none";
+        let options = document.getElementById(this.optionsId);
+        if (options) {
+            options.style.display = "none";
+        }
     }
 
     render() {
@@ -41,10 +49,11 @@ export default class Select extends Component {
             <div class="select" >
                 <select style={{ display: "none" }} >{ this.props.children }</select>
                 <div class="commonSelect selectCurrent" onClick={ e => this.openDropDown(e) } >
+                    { this.props.icon ? <i class={`fa fa-${this.props.icon}`} ></i> : false }
                     { this.state.selectedName }
                     <i class="fa fa-chevron-down" ></i>
                 </div>
-                <div ref={this.dropDown} class="options" >{ this.options }</div>
+                <div id={this.optionsId} class="options" >{ this.options }</div>
             </div>
         );
     }
