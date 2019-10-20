@@ -1,5 +1,6 @@
 
 import Express from "express";
+import HTTP from "http";
 import HTTPS from "https";
 import FileSystem from "fs";
 import WebSocket from "ws";
@@ -65,6 +66,7 @@ App.get("/*", (request, response) => {
 });
 
 if (configuration.DEBUG) {
+    const server = HTTP.createServer(App);
     server.listen(PORT, function () {
         console.log(`Example app listening on port ${PORT}`)
     });
