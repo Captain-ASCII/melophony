@@ -34,7 +34,6 @@ export default class ViewAspect extends BaseAspect {
         this.app.get("/screen/home", (request, response) => {
             response.render("App", {
                 tracks: Object.values(this.tracks).sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate)),
-                configuration: this.users[0].configuration
             });
         });
 
