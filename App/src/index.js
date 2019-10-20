@@ -36,11 +36,11 @@ async function start() {
     //     "bglHPYWF":{"id":"bglHPYWF","name":"Darius","tracks":[{"id":"b7NSfwpY","title":"Hot Hands","artist":"bglHPYWF","album":"Unknown","imageSrc":{"uri":"https://i.ytimg.com/vi/qZvQiOxddT8/mqdefault.jpg"},"imageExtension":"jpg","creationDate":"2019-07-13T21:07:06.885Z","status":"Available","duration":254,"startTime":0,"endTime":254,"lastPlay":"","playCount":0,"rating":0,"progress":0,"videoId":"qZvQiOxddT8"},{"id":"0f9FGcb9","title":"Espoir","artist":"bglHPYWF","album":"Unknown","imageSrc":{"uri":"https://i.ytimg.com/vi/6c9ZlkEzc6M/mqdefault.jpg"},"imageExtension":"jpg","creationDate":"2019-07-13T21:07:06.885Z","status":"Available","duration":243,"startTime":0,"endTime":243,"lastPlay":"","playCount":0,"rating":0,"progress":0,"videoId":"6c9ZlkEzc6M"},{"id":"zSEd5ubT","title":"Mountains","artist":"bglHPYWF","album":"Unknown","imageSrc":{"uri":"https://i.ytimg.com/vi/l0e_flmOsAc/mqdefault.jpg"},"imageExtension":"jpg","creationDate":"2019-07-13T21:07:06.885Z","status":"Available","duration":323,"startTime":0,"endTime":323,"lastPlay":"","playCount":0,"rating":0,"progress":0,"videoId":"l0e_flmOsAc"},{"id":"gl3v40jv","title":"Helios","artist":"bglHPYWF","album":"Unknown","imageSrc":{"uri":"https://i.ytimg.com/vi/A6efjoY8_m8/mqdefault.jpg"},"imageExtension":"jpg","creationDate":"2019-07-13T21:07:06.885Z","status":"Available","duration":199,"startTime":0,"endTime":199,"lastPlay":"","playCount":0,"rating":0,"progress":0,"videoId":"A6efjoY8_m8"}]}
     // };
 
-    global.dataStorage.set("tracks", tracks);
-    global.dataStorage.set("artists", artists);
+    global.dataStorage.set("/tracks", tracks);
+    global.dataStorage.set("/artists", artists);
 
     ReactDOM.render(<App />, document.getElementById("root"));
 }
 
-ReactDOM.render(<SplashScreen />, document.getElementById("root"));
+ReactDOM.render(<SplashScreen getRequiredData={ _ => start() } />, document.getElementById("root"));
 start();

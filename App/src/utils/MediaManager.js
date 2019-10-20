@@ -1,8 +1,13 @@
 
 export default class MediaManager {
 
+    static EXTRACT_DURATION = 2000;
+
     constructor() {
         this.currentIndex = 0;
+
+        this.isPlayingExtract = false;
+        this.extractTimeout = null;
     }
 
     setPlayer() {
@@ -79,12 +84,17 @@ export default class MediaManager {
     }
 
     playExtract(track, time) {
-        this.player.src = `${configurationManager.get("serverAddress")}/files/${track.videoId}.m4a`;
+        this.player.onended = _ => false;
+
+        if (!this.isPlayingExtract) {
+            this.player.src = `${configurationManager.get("serverAddress")}/files/${track.videoId}.m4a`;
+            this.isPlayingExtract = true;
+        }
         this.player.currentTime = time;
         this.player.play();
-        if (extractTimeout) {
-            clearTimeout(extractTimeout);
+        if (this.extractTimeout) {
+            clearTimeout(this.extractTimeout);
         }
-        extractTimeout = setTimeout(_ => this.player.pause(), EXTRACT_DURATION);
+        this.extractTimeout = setTimeout(_ => this.player.pause(), MediaManager.EXTRACT_DURATION);
     }
 }

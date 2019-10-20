@@ -10,13 +10,17 @@ export default class TrackCreationScreen extends Component {
         this.videoIdInput = React.createRef();
     }
 
+    requestServerDownload() {
+        apiManager.post(`file/${this.videoIdInput.current.value}`);
+    }
+
     render() {
         return (
             <div id="AddTrackScreen" >
                 <div id="modificationPageHeader">
                     <CloseButton />
                     <h2 id="modificationPageTitle">Add a new track</h2>
-                    <div class="button raised" onClick={ _ => this.requestServerDownload(this.videoIdInput.current.value) } >Download</div>
+                    <div class="button raised" onClick={ _ => this.requestServerDownload() } >Download</div>
                 </div>
                 <div class="input">
                     <i class="fab fa-youtube fa-2x icon"></i>
