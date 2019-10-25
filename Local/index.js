@@ -34,12 +34,7 @@ let configuration = {
 };
 
 try {
-    download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
-        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
-    });
-    download(`${SERVER_ADDRESS}/artists`, ARTISTS, _ => {
-        artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
-    });
+    synchronize();
 } catch (error) {}
 
 App.use(Express.text());
@@ -203,10 +198,7 @@ App.get("/screen/track/add", (request, response) => {
 /* Synchronization */
 
 App.get("/synchronize", (request, response) => {
-    download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
-        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
-        response.send("ok");
-    });
+    synchronize();
 });
 
 App.get("/download/:videoId", (request, response) => {
@@ -315,6 +307,15 @@ function getTracksByArtist(currentTracks = tracks) {
         }
     }
     return result;
+}
+
+function synchronize() {
+    download(`${SERVER_ADDRESS}/tracks`, TRACKS, _ => {
+        tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+    });
+    download(`${SERVER_ADDRESS}/artists`, ARTISTS, _ => {
+        artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
+    });
 }
 
 function download(url, fileName, callback) {

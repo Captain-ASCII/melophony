@@ -25,6 +25,10 @@ class App extends Component {
         console.warn(configurationManager.get("serverAddress"))
     }
 
+    synchronize() {
+        apiManager.get("synchronize");
+    }
+
     render() {
         return(
             <Router>
