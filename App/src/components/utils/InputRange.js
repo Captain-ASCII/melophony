@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import MediaManager from "../../utils/MediaManager";
+
 export default class InputRange extends Component {
 
     constructor(props, name, element, track, multiRange = false) {
@@ -65,7 +67,7 @@ export default class InputRange extends Component {
     modifyTrackEnd(value) {
         mediaManager.playExtract(this.state.track, value);
         this.trackBar.current.style.right = `calc(${100 - this.getPercentage(value)}% + 10px)`;
-        this.state.track.endTime = Math.max(0, parseInt(value) + (mediaManager.EXTRACT_DURATION / 1000));
+        this.state.track.endTime = Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000));
     }
 
     render() {
