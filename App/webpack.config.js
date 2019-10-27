@@ -26,12 +26,15 @@ module.exports = {
         filename: "bundle.js"
     },
     devServer: {
+        historyApiFallback: true,
         https: {
             key: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/privkey.pem"),
             cert: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/cert.pem"),
             ca: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/chain.pem"),
         },
         contentBase: path.join(__dirname, "public/"),
+        publicPath: "https://localhost:1951/dist/",
+        host: "0.0.0.0",
         port: 1951,
         hotOnly: true
     },
