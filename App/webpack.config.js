@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const fs = require("fs");
 
 module.exports = {
     entry: "./src/index.js",
@@ -25,9 +26,13 @@ module.exports = {
         filename: "bundle.js"
     },
     devServer: {
+        https: {
+            key: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/privkey.pem"),
+            cert: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/cert.pem"),
+            ca: fs.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/chain.pem"),
+        },
         contentBase: path.join(__dirname, "public/"),
         port: 1951,
-        publicPath: "http://localhost:3000/dist/",
         hotOnly: true
     },
     plugins: [new webpack.HotModuleReplacementPlugin()]
