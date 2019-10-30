@@ -8,6 +8,15 @@ export default class MediaManager {
 
         this.isPlayingExtract = false;
         this.extractTimeout = null;
+
+        window.addEventListener("keydown", e => this.onKeyDown(e.keyCode));
+        console.warn("add")
+    }
+
+    onKeyDown(code) {
+        if (code == 32) {
+            this.playPause();
+        }
     }
 
     setPlayer() {
@@ -17,7 +26,7 @@ export default class MediaManager {
     }
 
     getCurrentTrack() {
-        return dataStorage.getAsArray("tracks")[this.currentIndex];
+        return dataStorage.getAsArray("tracks")[this.currentIndex] || { id: "" };
     }
 
     startPlay(id, index) {
