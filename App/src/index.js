@@ -12,8 +12,6 @@ import ConfigurationManager from "./utils/ConfigurationManager";
 import DataStorage from "./utils/DataStorage";
 import MediaManager from "./utils/MediaManager";
 
-const SERVER_ADDRESS = "https://192.168.1.18:1804";
-
 global.actionManager = new ActionManager();
 global.apiManager = new ApiManager();
 global.configurationManager = new ConfigurationManager();

@@ -6,3 +6,6 @@ data
 images
 melophony.ddns.net
 .well-known
+npm-debug.log
+v8-compile-cache*
+dist

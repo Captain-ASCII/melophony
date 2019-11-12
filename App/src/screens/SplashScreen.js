@@ -23,7 +23,7 @@ export default class SplashScreen extends Component {
                     <Select id="serverUrl" placeholder="Network configuration" icon="network-wired"
                             onSelection={ value => this.configureNetwork(value) } >
                         <option value="https://melophony.ddns.net" >Online</option>
-                        <option value="https://192.168.1.18:1804" >Offline</option>
+                        <option value="https://192.168.1.18:1951" >Offline</option>
                         <option value="http://localhost:1958" >Local</option>
                     </Select>
                 </div>
