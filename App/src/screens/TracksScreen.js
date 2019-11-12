@@ -66,6 +66,22 @@ export default class TracksScreen extends Component {
         this.setState({ sortOrder: value }, _ => console.warn(this.state));
     }
 
+    componentDidMount() {
+        if (window.innerWidth <= 768) {
+            this.prevScrollpos = document.getElementById("itemList").scrollTop;
+
+            document.getElementById("itemList").onscroll = function() {
+                this.currentScrollPos = document.getElementById("itemList").scrollTop;
+                if (this.prevScrollpos > this.currentScrollPos) {
+                    document.getElementById("contentHeader").style.top = "0";
+                } else {
+                    document.getElementById("contentHeader").style.top = "-200px";
+                }
+                this.prevScrollpos = this.currentScrollPos;
+            }
+        }
+    }
+
     render() {
         return (
             <div id="trackScreen" >
@@ -83,12 +99,12 @@ export default class TracksScreen extends Component {
                             <Switch enabledState={{ value: "ASC", icon: "sort-amount-up" }} disabledState={{ value: "DESC", icon: "sort-amount-down" }}
                                     doubleState onSwitch={ e => this.switchOrder(e) } configurationSwitch="sortOrder" />
                         </div>
-                    </div>
-                    <div class="displayActions">
-                        <Switch icon="random" title="Switch track playing mode" active={configurationManager.get("shuffleMode")} configurationSwitch="shuffleMode" />
-                        <i class="fa fa-list icon button" onClick={ _ => this.changeTrackDisplay("itemList") } title="Track list" ></i>
-                        <i class="fa fa-th icon button" onClick={ _ => this.changeTrackDisplay("itemBlocks") } title="Track blocks" ></i>
-                        <i class="fa fa-stream icon button" onClick={ _ => this.changeTrackDisplay("groupedItems") } title="Tracks for each artist" ></i>
+                        <div class="displayActions">
+                            <Switch icon="random" title="Switch track playing mode" active={configurationManager.get("shuffleMode")} configurationSwitch="shuffleMode" />
+                            <i class="fa fa-list icon button" onClick={ _ => this.changeTrackDisplay("itemList") } title="Track list" ></i>
+                            <i class="fa fa-th icon button" onClick={ _ => this.changeTrackDisplay("itemBlocks") } title="Track blocks" ></i>
+                            <i class="fa fa-stream icon button" onClick={ _ => this.changeTrackDisplay("groupedItems") } title="Tracks for each artist" ></i>
+                        </div>
                     </div>
                 </div>
                 <div class="delimiter"></div>
