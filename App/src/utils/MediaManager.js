@@ -9,12 +9,13 @@ export default class MediaManager {
         this.isPlayingExtract = false;
         this.extractTimeout = null;
 
-        window.addEventListener("keydown", e => this.onKeyDown(e.keyCode));
+        window.addEventListener("keydown", e => this.onKeyDown(e));
         console.warn("add")
     }
 
-    onKeyDown(code) {
-        if (code == 32) {
+    onKeyDown(event) {
+        let tag = event.target.tagName.toLowerCase();
+        if (event.keyCode == 32 && tag != "input" && tag != "textarea") {
             this.playPause();
         }
     }
