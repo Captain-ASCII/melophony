@@ -19,16 +19,26 @@
 
     #contentHeader {
         position: absolute;
+        width: 100%;
         top: 0;
+        margin: 0;
         transition: top 0.4s ease-in-out;
     }
 
     #toolBar {
         height: 50px;
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
         border-radius: 10px;
         background-color: #222;
         margin: 10px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #toolBar > * {
+        margin: 0;
     }
 
     .delimiter {
@@ -40,8 +50,54 @@
         height: 100%;
     }
 
+    .trackListItem {
+        height: 45px;
+    }
+
+    .itemActions, .progressBar,.duration,
+    .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream,
+    #sortBar {
+        display: none !important;
+    }
+
     ::-webkit-scrollbar {
       width: 0px !important;
     }
 
+    #toolBar input[type="text"] {
+        background: none !important;
+    }
+
+    #footer {
+        flex-wrap: wrap;
+    }
+
+    #controls {
+        width: 30%;
+        margin: 1%;
+    }
+
+    #currentTrackInfoLink {
+        display: flex;
+        align-items: center;
+        margin: 1%;
+        width: 65%;
+        height: 48px;
+        white-space: nowrap;
+    }
+
+    #currentTrackInfo {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #footer #tracker {
+        flex-shrink: 0;
+        width: 100%;
+    }
+
+    .input > * {
+        margin: 10px 5px;
+    }
 }

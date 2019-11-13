@@ -1,12 +1,22 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
-export default class TrackList extends Component {
+export class TrackList extends Component {
 
     formatDuration(duration) {
         let minutes = "0" + Math.round(duration / 60);
         let seconds = "0" + (duration % 60);
         return `${minutes.substr(-2)} : ${seconds.substr(-2)}`;
+    }
+
+    press(id) {
+        this.buttonPressTimer = setTimeout(_ => {
+            this.props.history.push(`/track/modify/${ id }`);
+        }, 500);
+    }
+
+    release() {
+        clearTimeout(this.buttonPressTimer);
     }
 
     render() {
@@ -30,7 +40,8 @@ export default class TrackList extends Component {
                     <div class="ratioContainer" >
                         <div class="blockBackground" style={blockStyle} />
                         <div class="stretchBox">
-                            <div class="itemInfo" onClick={ _ => global.mediaManager.startPlay(track.id, index) }>
+                            <div class="itemInfo" onClick={ _ => global.mediaManager.startPlay(track.id, index) }
+                             onTouchStart={ _ => this.press(track.id) } onTouchEnd={ _ => this.release() } >
                                 <p class="title " >{ track.title }</p>
                                     { this.props.withArtist ?
                                         (<Link to={`/artist/${ track.artist }`} onClick={ e => e.stopPropagation() }>
@@ -52,3 +63,5 @@ export default class TrackList extends Component {
         });
     }
 }
+
+export default withRouter(TrackList);

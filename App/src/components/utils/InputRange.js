@@ -60,13 +60,13 @@ export default class InputRange extends Component {
 
     modifyTrackStart(value) {
         mediaManager.playExtract(this.state.track, value);
-        this.startTracker.current.style.left = `calc(${this.getPercentage(value)}% + 10px)`;
+        this.startTracker.current.style.left = `${this.getPercentage(value)}%`;
         this.state.track.startTime = parseInt(value);
     }
 
     modifyTrackEnd(value) {
         mediaManager.playExtract(this.state.track, value);
-        this.trackBar.current.style.right = `calc(${100 - this.getPercentage(value)}% + 10px)`;
+        this.trackBar.current.style.right = `${100 - this.getPercentage(value)}%`;
         this.state.track.endTime = Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000));
     }
 
@@ -84,7 +84,7 @@ export default class InputRange extends Component {
 
         return (
             <div id="tracker" class="multi-range" >
-                <div class="trackSlider" style={{ left: "calc(0% + 10px)", right: "calc(0% + 10px)" }} ></div>
+                <div class="trackSlider" style={{ left: "0%", right: "0%" }} ></div>
                 { secondRange }
                 <input ref={this.tracker} class={ `mainRange ${this.props.multiRange ? "rangeDeactivate" : ""}` } type='range'
                        min={ this.state.min } max={ this.state.max } defaultValue={ this.state.track.endTime } step="0.5"
