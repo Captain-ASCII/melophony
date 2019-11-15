@@ -10,7 +10,6 @@ export default class MediaManager {
         this.extractTimeout = null;
 
         window.addEventListener("keydown", e => this.onKeyDown(e));
-        console.warn("add")
     }
 
     onKeyDown(event) {
@@ -27,7 +26,7 @@ export default class MediaManager {
     }
 
     getCurrentTrack() {
-        return dataStorage.getAsArray("tracks")[this.currentIndex] || { id: "" };
+        return dataStorage.getAsArray("sortedTracks")[this.currentIndex] || { id: "" };
     }
 
     startPlay(id, index) {
@@ -37,7 +36,7 @@ export default class MediaManager {
         let artist = dataStorage.get("artists")[track.artist] || { name: "Unknown" };
 
         this.player.addEventListener("error", event => {
-            if (event.target.error.code == 4) {
+            if (event.target.error && event.target.error.code == 4) {
                 this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`;
                 this.player.load();
             }
@@ -59,8 +58,8 @@ export default class MediaManager {
     }
 
     previous() {
-        let tracksArray = dataStorage.getAsArray("tracks");
-        this.currentIndex = configurationManager.get("shuffleMode") ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex - 1) % tracksArray.length;
+        let tracksArray = dataStorage.getAsArray("sortedTracks");
+        this.currentIndex = (this.currentIndex - 1) % tracksArray.length;
         this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex);
     }
 
@@ -88,7 +87,7 @@ export default class MediaManager {
     }
 
     next() {
-        let tracksArray = dataStorage.getAsArray("tracks");
+        let tracksArray = dataStorage.getAsArray("sortedTracks");
         this.currentIndex = configurationManager.get("shuffleMode") ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length;
         this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex);
     }

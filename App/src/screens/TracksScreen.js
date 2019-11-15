@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import { Link } from "react-router-dom";
 
+import Arrays from "../utils/Arrays";
+
 import TrackList from "../components/tracks/TrackList";
 import TextInput from "../components/utils/TextInput";
 import Switch from "../components/utils/Switch";
@@ -17,10 +19,12 @@ export default class TracksScreen extends Component {
             sortType: configurationManager.get("sortType"),
             sortOrder: configurationManager.get("sortOrder"),
             displayType: configurationManager.get("displayType"),
-            tracks: global.dataStorage.getAsArray("tracks")
+            tracks: this._sort(
+                global.dataStorage.getAsArray("tracks"),
+                configurationManager.get("sortOrder"),
+                configurationManager.get("sortType")
+            )
         };
-
-        this._sort(this.state.sortType);
 
         this.shuffleButton = React.createRef();
     }
@@ -38,7 +42,7 @@ export default class TracksScreen extends Component {
         this.setState({ filter: value });
     }
 
-    _sort(type) {
+    _sort(providedTracks, sortOrder, type) {
         let sortFct = (a, b) => -1;
 
         switch (type) {
@@ -50,20 +54,25 @@ export default class TracksScreen extends Component {
                 break
         }
 
-        let tracks = this.state.tracks.sort((a, b) => sortFct(a, b));
-        if (this.state.sortOrder == "ASC") {
+        let tracks = Arrays.copy(providedTracks);
+        tracks.sort((a, b) => sortFct(a, b));
+
+        if (sortOrder == "ASC") {
             tracks.reverse();
         }
+
+        dataStorage.set("sortedTracks", tracks);
+
         return tracks;
     }
 
     sort(type) {
-        this.setState({ sortType: type, tracks: this._sort(type) });
+        this.setState({ sortType: type, tracks: this._sort(this.state.tracks, this.state.sortOrder, type) });
     }
 
     switchOrder(value) {
         this.state.tracks.reverse();
-        this.setState({ sortOrder: value }, _ => console.warn(this.state));
+        this.setState({ sortOrder: value });
     }
 
     componentDidMount() {
