@@ -4,7 +4,7 @@
   "description": "Simple project to access Melophony files from web",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js -e js,mustache -w index.js -w ../Common/Views -V --exec babel-node --presets @babel/preset-env",
+    "start": "nodemon index.js -w index.js -V --exec babel-node --presets @babel/preset-env",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Daniel Ben-Lulu",
