@@ -33,7 +33,11 @@ export default class DataStorage {
     }
 
     #pathLevel(path) {
-        return path.toString().match(/\//g).length;
+      let n = path.toString().match(/\//g)
+      if (n != null) {
+        return n.length
+      }
+      return 0
     }
 
     #find(path, callback=false, defaultValue=false) {

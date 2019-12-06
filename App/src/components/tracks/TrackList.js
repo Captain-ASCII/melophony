@@ -1,67 +1,119 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { useCallback } from 'react'
+import { useSelector } from 'react-redux'
+import { Link, useHistory } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import MediaManager from '../../utils/MediaManager'
 
-export class TrackList extends Component {
+const stopPropagation = e => e.stopPropagation()
 
-    formatDuration(duration) {
-        let minutes = "0" + Math.round(duration / 60);
-        let seconds = "0" + (duration % 60);
-        return `${minutes.substr(-2)} : ${seconds.substr(-2)}`;
-    }
+const Track = ({ mediaManager, id, index, hasScrolled, children }) => {
+  const history = useHistory()
 
-    press(id) {
-        this.buttonPressTimer = setTimeout(_ => {
-            this.props.history.push(`/track/modify/${ id }`);
-        }, 500);
-    }
+  let buttonPressTimer = null
+  
+  const startPlay = useCallback(() => mediaManager.startPlay(id, index))
+    
+  const press = useCallback(() => {
+    buttonPressTimer = setTimeout(() => {
+      if (!hasScrolled()) {
+        history.push(`/track/modify/${id}`)
+      }
+    }, 500)
+  })
+  
+  const release = useCallback(() => clearTimeout(buttonPressTimer))
 
-    release() {
-        clearTimeout(this.buttonPressTimer);
-    }
-
-    render() {
-        let artists = global.dataStorage.get("artists");
-
-        this.tracksCopy = this.props.tracks.map(track => { return { ...track } });
-        for (let track of this.tracksCopy) {
-            if (artists[track.artist]) {
-                track.artistName = artists[track.artist].name;
-            }
-        }
-
-        let filtered = this.tracksCopy.filter(track => `${track.artistName}${track.title}`.toUpperCase().indexOf(this.props.filter.toUpperCase()) > -1);
-        return filtered.map((track, index) => {
-            let blockStyle = {};
-            if (this.props.displayType == "itemBlocks") {
-                blockStyle = { backgroundImage: `url(${track.imageSrc.uri}` };
-            }
-            return (
-                <div class="trackListItem" key={ track.id } >
-                    <div class="ratioContainer" >
-                        <div class="blockBackground" style={blockStyle} />
-                        <div class="stretchBox">
-                            <div class="itemInfo" onClick={ _ => global.mediaManager.startPlay(track.id, index) }
-                             onTouchStart={ _ => this.press(track.id) } onTouchEnd={ _ => this.release() } >
-                                <p class="title " >{ track.title }</p>
-                                    { this.props.withArtist ?
-                                        (<Link to={`/artist/${ track.artist }`} onClick={ e => e.stopPropagation() }>
-                                            <p class="artist" >{ track.artistName }</p>
-                                        </Link>) : null
-                                    }
-                                <div id={`${ track.videoId }Progress`} class={ this.props.displayType == "itemList" ? "progressBar" : "" } >
-                                    <div></div> <p></p>
-                                </div>
-                                <p class="duration" >{ this.formatDuration(track.duration) }</p>
-                            </div>
-                            <div class="itemActions">
-                                <Link to={`/track/modify/${ track.id }`} ><i class="fa fa-pen icon button"></i></Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        });
-    }
+  return (
+    <div
+      className="itemInfo"
+      onClick={startPlay} onTouchStart={press} onTouchEnd={release}
+    >
+      {children}
+    </div>
+  )
 }
 
-export default withRouter(TrackList);
+Track.propTypes = {
+  mediaManager: PropTypes.instanceOf(MediaManager),
+  id: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  hasScrolled: PropTypes.func.isRequired,
+  children: PropTypes.node
+}
+
+const TrackList = ({ tracks, filter, displayType, withArtist }) => {
+  let hasScrolled = false
+  let scrollTimeout = null
+
+  const mediaManager = useSelector(state => state.media.manager)
+
+  const scroll = useCallback(() => {
+    hasScrolled = true
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout)
+    }
+    scrollTimeout = setTimeout(() => hasScrolled = false, 1000)
+  })
+  const getScrollStatus = useCallback(() => hasScrolled)
+
+  const formatDuration = (duration) => {
+    let minutes = '0' + Math.round(duration / 60)
+    let seconds = '0' + (duration % 60)
+    return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
+  }
+  
+  let artists = global.dataStorage.get('artists')
+  
+  let tracksCopy = tracks.map(track => { return { ...track } })
+  for (let track of tracksCopy) {
+    if (artists[track.artist]) {
+      track.artistName = artists[track.artist].name
+    }
+  }
+  
+  let filtered = tracksCopy.filter(track => `${track.artistName}${track.title}`.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+
+  return (
+    <div id={displayType} onScroll={scroll} >
+      {
+        filtered.map((track, index) => {
+          let blockStyle = {}
+      
+          if (displayType == 'itemBlocks') {
+            blockStyle = { backgroundImage: `url(${track.imageSrc.uri}` }
+          }
+      
+          return (
+            <div className="trackListItem" key={track.id} >
+              <div className="ratioContainer" >
+                <div className="blockBackground" style={blockStyle} />
+                <div className="stretchBox" >
+                  <Track
+                    mediaManager={mediaManager} id={track.id} index={index}
+                    hasScrolled={getScrollStatus}
+                  >
+                    <p className="title " >{ track.title }</p>
+                    { withArtist ?
+                      (<Link to={`/artist/${ track.artist }`} onClick={stopPropagation}>
+                        <p className="artist" >{ track.artistName }</p>
+                      </Link>) : null
+                    }
+                    <div id={`${ track.videoId }Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
+                      <div /> <p />
+                    </div>
+                    <p className="duration" >{formatDuration(track.duration)}</p>
+                  </Track>
+                  <div className="itemActions">
+                    <Link to={`/track/modify/${ track.id }`} ><i className="fa fa-pen icon button" /></Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        }) 
+      }
+    </div>
+  )
+}
+  
+export default TrackList

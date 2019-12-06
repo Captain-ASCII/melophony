@@ -22,11 +22,11 @@ global.actionManager = new ActionManager()
 global.apiManager = new ApiManager()
 global.configurationManager = new ConfigurationManager()
 global.dataStorage = new DataStorage()
-global.mediaManager = new MediaManager()
+// global.mediaManager = new MediaManager()
 
 async function getData() {
-  // let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json();
-  // let artists = await (await fetch(`${global.configurationManager.get('serverAddress')}/artists`)).json();
+  let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json()
+  let artists = await (await fetch(`${global.configurationManager.get('serverAddress')}/artists`)).json()
   
   // let tracks = {
   //     'hello1':{'id':'hello1','title':'Ça ira, ça ira','artist':'0MIDU7cv','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/N831j0zt0jE/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':214,'startTime':0,'endTime':214,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'N831j0zt0jE'},
@@ -60,10 +60,15 @@ async function getData() {
   //     'bglHPYWF':{'id':'bglHPYWF','name':'Darius','tracks':[{'id':'b7NSfwpY','title':'Hot Hands','artist':'bglHPYWF','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/qZvQiOxddT8/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':254,'startTime':0,'endTime':254,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'qZvQiOxddT8'},{'id':'0f9FGcb9','title':'Espoir','artist':'bglHPYWF','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/6c9ZlkEzc6M/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':243,'startTime':0,'endTime':243,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'6c9ZlkEzc6M'},{'id':'zSEd5ubT','title':'Mountains','artist':'bglHPYWF','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/l0e_flmOsAc/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':323,'startTime':0,'endTime':323,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'l0e_flmOsAc'},{'id':'gl3v40jv','title':'Helios','artist':'bglHPYWF','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/A6efjoY8_m8/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':199,'startTime':0,'endTime':199,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'A6efjoY8_m8'}]}
   // };
   
-  // global.dataStorage.set('/tracks', tracks);
-  // global.dataStorage.set('/artists', artists);
+  global.dataStorage.set('/tracks', tracks)
+  global.dataStorage.set('/artists', artists)
   
-  ReactDOM.render(<App />, document.getElementById('root'))
+  ReactDOM.render(
+    <Provider store={store} >
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  )
 }
 
 const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())

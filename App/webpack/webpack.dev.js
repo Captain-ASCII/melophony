@@ -8,7 +8,8 @@ module.exports = merge(common, {
       extensions: ['*', '.js', '.jsx'],
       alias: {
         actions: path.resolve(__dirname, '../src/actions/'),
-        reducers: path.resolve(__dirname, '../src/reducers/')
+        reducers: path.resolve(__dirname, '../src/reducers/'),
+        utils: path.resolve(__dirname, '../src/utils/')
       }
     },
     devServer: {

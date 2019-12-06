@@ -90,9 +90,12 @@
     },
     "globals": {
       "__dirname": "readonly",
+      "clearTimeout": "readonly",
       "document": "readonly",
+      "global": "writable",
       "module": "writable",
       "require": "readonly",
+      "setTimeout": "readonly",
       "window": "writable"
     }
   }
