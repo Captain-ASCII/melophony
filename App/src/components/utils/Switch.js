@@ -1,56 +1,66 @@
-import React, { Component } from "react";
+import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 
-export default class Switch extends Component {
+export class SwitchState {
+  constructor(icon, value) {
+    this.icon = icon
+    this.value = value
+  }
 
-    constructor(props) {
-        super(props);
-
-        let enabled = !!this.props.active || false;
-        let compareValue = true;
-
-        if (this.props.enabledState) {
-            compareValue = this.props.enabledState.value;
-        }
-        if (this.props.configurationSwitch) {
-            enabled = configurationManager.get(this.props.configurationSwitch) == compareValue;
-        }
-
-        let iconState = "";
-        if (this.props.doubleState) {
-            iconState = enabled ? `fa-${this.props.enabledState.icon}` : `fa-${this.props.disabledState.icon}`;
-        } else {
-            iconState = enabled ? `fa-${this.props.icon} active` : `fa-${this.props.icon}`;
-        }
-
-        this.state = { active: enabled, iconState: iconState };
-
-        this.shuffleButton = React.createRef();
-    }
-
-    onSwitch() {
-        let iconState = "", value = "";
-
-        if (this.props.doubleState) {
-            iconState = this.state.active ? `fa-${this.props.disabledState.icon}` : `fa-${this.props.enabledState.icon}`;
-            value = this.state.active ? this.props.disabledState.value : this.props.enabledState.value;
-        } else {
-            iconState = this.state.active ? `fa-${this.props.icon}` : `fa-${this.props.icon} active`;
-            value = !this.state.active;
-        }
-
-        if (this.props.configurationSwitch) {
-            configurationManager.set(this.props.configurationSwitch, value);
-        }
-        if (this.props.onSwitch) {
-            this.props.onSwitch(value);
-        }
-        this.setState({ active: !this.state.active, iconState: iconState });
-    }
-
-    render() {
-        return (
-            <i ref={this.shuffleButton} class={`fa ${ this.state.iconState } icon button`}
-               onClick={ _ => this.onSwitch() } title={ this.props.title } ></i>
-        );
-    }
+  static NULL = new SwitchState('', '')
 }
+
+const Switch = ({ isActive, onSwitch, title, enabledState, disabledState }) => {
+  const [ active, setActive ] = useState(isActive)
+  const [ iconState, setIconState ] = useState(isActive ? `fa-${enabledState.icon}` : `fa-${disabledState.icon}`)
+ 
+  const handleSwitch = useCallback(() => {
+    const iconState = active ? `fa-${disabledState.icon}` : `fa-${enabledState.icon}`
+    const value = active ? disabledState.value : enabledState.value
+
+    onSwitch(value)
+    setActive(prevActive => !prevActive)
+    setIconState(iconState)
+  })
+  
+  return (
+    <i
+      className={`fa ${iconState} icon button`}
+      onClick={handleSwitch} title={title}
+    />
+  )
+}
+
+Switch.propTypes = {
+  isActive: PropTypes.bool,
+  onSwitch: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  enabledState: PropTypes.instanceOf(SwitchState).isRequired,
+  disabledState: PropTypes.instanceOf(SwitchState).isRequired,
+}
+
+
+
+const SimpleSwitch = ({ icon, isActive, onSwitch, title, configurationSwitch }) => {
+  return (
+    <Switch
+      isActive={isActive}
+      onSwitch={onSwitch}
+      title={title}
+      configurationSwitch={configurationSwitch}
+      enabledState={new SwitchState(icon, true)} disabledState={new SwitchState(icon, false)}
+    />
+  )        
+}
+
+SimpleSwitch.propTypes = {
+  icon: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
+  onSwitch: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  configurationSwitch: PropTypes.string,
+}
+  
+export { SimpleSwitch }
+
+export default Switch

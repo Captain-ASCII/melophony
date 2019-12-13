@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
@@ -11,22 +11,23 @@ import TrackCreationScreen from './screens/TrackCreationScreen'
 import TrackModificationScreen from './screens/TrackModificationScreen'
 import TracksScreen from './screens/TracksScreen'
 
-import { setMediaManager } from './actions/media'
+import { setApiManager, setMediaManager } from './actions/Managers'
 
+import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
 import ConfirmOverlay from './components/utils/ConfirmOverlay'
 import InputRange from './components/utils/InputRange'
-import SwitchButton from './components/utils/Switch'
+import { SimpleSwitch } from './components/utils/Switch'
 
 const App = () => {
   const dispatch = useDispatch()
+  const mediaManager = useSelector(state => state.managers.mediaManager)
+  const apiManager = useSelector(state => state.managers.apiManager)
 
-  let mediaManager = null
-  
   useEffect(() => { 
-    mediaManager = new MediaManager()
-    dispatch(setMediaManager(mediaManager))
+    dispatch(setMediaManager(new MediaManager()))
+    dispatch(setApiManager(new ApiManager()))
   }, [])
 
   const switchNetwork = useCallback((enabled) => {
@@ -80,7 +81,7 @@ const App = () => {
           </Link>
           <div id="headerActions">
             <i onClick={synchronize} className="fa fa-download icon button" />
-            <SwitchButton
+            <SimpleSwitch
               icon="network-wired" title="Should connect to network for data"
               configurationSwitch="networkEnabled" onSwitch={switchNetwork}
             />

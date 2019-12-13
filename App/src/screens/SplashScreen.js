@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { configure } from 'actions/configuration'
+import { configure } from 'actions/Configuration'
 
 import Select from '../components/utils/Select'
 

@@ -1,4 +1,4 @@
-import { SET_CONFIGURATION } from 'actions/configuration'
+import { SET_CONFIGURATION } from 'actions/Configuration'
 
 const configuration = (state = {}, action) => {
   switch (action.type) {

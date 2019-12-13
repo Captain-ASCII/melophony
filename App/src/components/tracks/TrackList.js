@@ -6,46 +6,62 @@ import MediaManager from '../../utils/MediaManager'
 
 const stopPropagation = e => e.stopPropagation()
 
-const Track = ({ mediaManager, id, index, hasScrolled, children }) => {
+const formatDuration = (duration) => {
+  let minutes = '0' + Math.round(duration / 60)
+  let seconds = '0' + (duration % 60)
+  return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
+}
+
+const Track = ({ mediaManager, track, index, hasScrolled, displayType, withArtist }) => {
   const history = useHistory()
 
-  let buttonPressTimer = null
+  const startPlay = useCallback(() => mediaManager.startPlay(track.id, index))
   
-  const startPlay = useCallback(() => mediaManager.startPlay(id, index))
+  let buttonPressTimer = null
     
   const press = useCallback(() => {
     buttonPressTimer = setTimeout(() => {
       if (!hasScrolled()) {
-        history.push(`/track/modify/${id}`)
+        history.push(`/track/modify/${track.id}`)
       }
     }, 500)
   })
   
   const release = useCallback(() => clearTimeout(buttonPressTimer))
-
+  
   return (
     <div
       className="itemInfo"
       onClick={startPlay} onTouchStart={press} onTouchEnd={release}
     >
-      {children}
+      <p className="title " >{ track.title }</p>
+      { withArtist ?
+            (<Link to={`/artist/${ track.artist }`} onClick={stopPropagation}>
+              <p className="artist" >{ track.artistName }</p>
+            </Link>) : null
+          }
+      <div id={`${ track.videoId }Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
+        <div /> <p />
+      </div>
+      <p className="duration" >{formatDuration(track.duration)}</p>
     </div>
   )
 }
 
 Track.propTypes = {
   mediaManager: PropTypes.instanceOf(MediaManager),
-  id: PropTypes.string.isRequired,
+  // track: PropTypes.instanceOf(Track),
   index: PropTypes.number.isRequired,
   hasScrolled: PropTypes.func.isRequired,
-  children: PropTypes.node
+  displayType: PropTypes.string.isRequired,
+  withArtist: PropTypes.bool.isRequired,
 }
 
-const TrackList = ({ tracks, filter, displayType, withArtist }) => {
+const TrackList = ({ tracks, displayType, withArtist }) => {
   let hasScrolled = false
   let scrollTimeout = null
 
-  const mediaManager = useSelector(state => state.media.manager)
+  const mediaManager = useSelector(state => state.managers.mediaManager)
 
   const scroll = useCallback(() => {
     hasScrolled = true
@@ -56,12 +72,6 @@ const TrackList = ({ tracks, filter, displayType, withArtist }) => {
   })
   const getScrollStatus = useCallback(() => hasScrolled)
 
-  const formatDuration = (duration) => {
-    let minutes = '0' + Math.round(duration / 60)
-    let seconds = '0' + (duration % 60)
-    return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
-  }
-  
   let artists = global.dataStorage.get('artists')
   
   let tracksCopy = tracks.map(track => { return { ...track } })
@@ -71,16 +81,14 @@ const TrackList = ({ tracks, filter, displayType, withArtist }) => {
     }
   }
   
-  let filtered = tracksCopy.filter(track => `${track.artistName}${track.title}`.toUpperCase().indexOf(filter.toUpperCase()) > -1)
-
   return (
     <div id={displayType} onScroll={scroll} >
       {
-        filtered.map((track, index) => {
+        tracks.map((track, index) => {
           let blockStyle = {}
       
           if (displayType == 'itemBlocks') {
-            blockStyle = { backgroundImage: `url(${track.imageSrc.uri}` }
+            blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
           }
       
           return (
@@ -89,20 +97,9 @@ const TrackList = ({ tracks, filter, displayType, withArtist }) => {
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
                   <Track
-                    mediaManager={mediaManager} id={track.id} index={index}
-                    hasScrolled={getScrollStatus}
-                  >
-                    <p className="title " >{ track.title }</p>
-                    { withArtist ?
-                      (<Link to={`/artist/${ track.artist }`} onClick={stopPropagation}>
-                        <p className="artist" >{ track.artistName }</p>
-                      </Link>) : null
-                    }
-                    <div id={`${ track.videoId }Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
-                      <div /> <p />
-                    </div>
-                    <p className="duration" >{formatDuration(track.duration)}</p>
-                  </Track>
+                    mediaManager={mediaManager} track={track} index={index}
+                    hasScrolled={getScrollStatus} displayType={displayType} withArtist={withArtist}
+                  />
                   <div className="itemActions">
                     <Link to={`/track/modify/${ track.id }`} ><i className="fa fa-pen icon button" /></Link>
                   </div>
@@ -114,6 +111,12 @@ const TrackList = ({ tracks, filter, displayType, withArtist }) => {
       }
     </div>
   )
+}
+
+TrackList.propTypes = {
+  tracks: PropTypes.array,
+  displayType: PropTypes.string.isRequired,
+  withArtist: PropTypes.bool.isRequired,
 }
   
 export default TrackList

@@ -16,13 +16,11 @@ import ActionManager from './utils/ActionManager'
 import ApiManager from './utils/ApiManager'
 import ConfigurationManager from './utils/ConfigurationManager'
 import DataStorage from './utils/DataStorage'
-import MediaManager from './utils/MediaManager'
 
 global.actionManager = new ActionManager()
-global.apiManager = new ApiManager()
+global.apiManager = new ApiManager('http://localhost:1958')
 global.configurationManager = new ConfigurationManager()
 global.dataStorage = new DataStorage()
-// global.mediaManager = new MediaManager()
 
 async function getData() {
   let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json()

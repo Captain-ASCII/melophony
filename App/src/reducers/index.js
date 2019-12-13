@@ -1,9 +1,9 @@
 
 import { combineReducers } from 'redux'
-import configuration from 'reducers/configuration'
-import media from 'reducers/media'
+import configuration from 'reducers/Configuration'
+import managers from 'reducers/Managers'
 
 export const reducer = combineReducers({
   configuration,
-  media
+  managers
 })

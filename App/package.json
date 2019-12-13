@@ -92,6 +92,7 @@
       "__dirname": "readonly",
       "clearTimeout": "readonly",
       "document": "readonly",
+      "fetch": "readonly",
       "global": "writable",
       "module": "writable",
       "require": "readonly",

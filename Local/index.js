@@ -7,15 +7,6 @@ import fetch from "node-fetch";
 import Path from "path";
 import WebSocket from "ws";
 
-const HandleBars = require("express-handlebars");
-
-var handlebars = HandleBars.create({
-    defaultLayout: false,
-    helpers: {
-        formatDuration: function(t) { return `${Math.floor(parseInt(t)/60)}:${parseInt(t)%60}`; }
-    }
-});
-
 const App = Express();
 const commonPath = Path.join(__dirname, "..", "Common", "Views");
 
@@ -29,13 +20,17 @@ const IMAGES_DIR = "images";
 
 let tracks = {};
 let artists = {};
-let configuration = {
-    localMode: true
-};
 
 try {
+    tracks = JSON.parse(FileSystem.readFileSync(TRACKS, "utf8"));
+    artists = JSON.parse(FileSystem.readFileSync(ARTISTS, "utf8"));
+
+    if (Object.entries(tracks).length === 0) {
+        synchronize();
+    }
+} catch (error) {
     synchronize();
-} catch (error) {}
+}
 
 App.use(Express.text());
 App.use(Express.json());
@@ -47,12 +42,9 @@ App.use(function(request, response, next) {
     next();
 });
 
-App.engine("handlebars", handlebars.engine);
-App.set("view engine", "handlebars");
 App.set("views", Path.join(commonPath, "views"));
 App.use("/public", Express.static(Path.join(commonPath, "public")));
 
-App.use("/custom", Express.static("custom"));
 App.use("/images", Express.static("images"));
 App.use("/files", Express.static("files"));
 
