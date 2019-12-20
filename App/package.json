@@ -4,7 +4,7 @@
   "description": "The frontEnd application with React",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack/webpack.dev.js",
+    "start": "webpack-dev-server --config webpack/webpack.dev.js",
     "build": "webpack-dev-server --config webpack/webpack.prod.js"
   },
   "author": "Daniel Ben-Lulu",

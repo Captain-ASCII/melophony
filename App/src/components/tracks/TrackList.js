@@ -2,6 +2,11 @@ import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
+
+import { selectArtist } from 'selectors/Artist'
+
+import Track, {TrackPropTypes } from 'models/Track'
+
 import MediaManager from '../../utils/MediaManager'
 
 const stopPropagation = e => e.stopPropagation()
@@ -12,17 +17,19 @@ const formatDuration = (duration) => {
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const Track = ({ mediaManager, track, index, hasScrolled, displayType, withArtist }) => {
+const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArtist }) => {
   const history = useHistory()
 
-  const startPlay = useCallback(() => mediaManager.startPlay(track.id, index))
+  const artist = selectArtist(track.getArtistId())
+
+  const startPlay = useCallback(() => mediaManager.startPlay(track.getId(), index))
   
   let buttonPressTimer = null
     
   const press = useCallback(() => {
     buttonPressTimer = setTimeout(() => {
       if (!hasScrolled()) {
-        history.push(`/track/modify/${track.id}`)
+        history.push(`/track/modify/${track.getId()}`)
       }
     }, 500)
   })
@@ -34,34 +41,38 @@ const Track = ({ mediaManager, track, index, hasScrolled, displayType, withArtis
       className="itemInfo"
       onClick={startPlay} onTouchStart={press} onTouchEnd={release}
     >
-      <p className="title " >{ track.title }</p>
+      <p className="title " >{track.getTitle()}</p>
       { withArtist ?
-            (<Link to={`/artist/${ track.artist }`} onClick={stopPropagation}>
-              <p className="artist" >{ track.artistName }</p>
+            (<Link to={`/artist/${artist.getId()}`} onClick={stopPropagation}>
+              <p className="artist" >{artist.getName()}</p>
             </Link>) : null
           }
-      <div id={`${ track.videoId }Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
+      <div id={`${track.getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
         <div /> <p />
       </div>
-      <p className="duration" >{formatDuration(track.duration)}</p>
+      <p className="duration" >{formatDuration(track.getDuration())}</p>
     </div>
   )
 }
 
 Track.propTypes = {
   mediaManager: PropTypes.instanceOf(MediaManager),
-  // track: PropTypes.instanceOf(Track),
+  track: PropTypes.shape(TrackPropTypes),
   index: PropTypes.number.isRequired,
   hasScrolled: PropTypes.func.isRequired,
   displayType: PropTypes.string.isRequired,
   withArtist: PropTypes.bool.isRequired,
 }
 
+
+
+
+
 const TrackList = ({ tracks, displayType, withArtist }) => {
+  const mediaManager = useSelector(state => state.managers.mediaManager)
+
   let hasScrolled = false
   let scrollTimeout = null
-
-  const mediaManager = useSelector(state => state.managers.mediaManager)
 
   const scroll = useCallback(() => {
     hasScrolled = true
@@ -88,20 +99,20 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
           let blockStyle = {}
       
           if (displayType == 'itemBlocks') {
-            blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
+            // blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
           }
       
           return (
-            <div className="trackListItem" key={track.id} >
+            <div className="trackListItem" key={track.getId()} >
               <div className="ratioContainer" >
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
-                  <Track
+                  <RTrack
                     mediaManager={mediaManager} track={track} index={index}
                     hasScrolled={getScrollStatus} displayType={displayType} withArtist={withArtist}
                   />
                   <div className="itemActions">
-                    <Link to={`/track/modify/${ track.id }`} ><i className="fa fa-pen icon button" /></Link>
+                    <Link to={`/track/modify/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
                   </div>
                 </div>
               </div>
@@ -114,7 +125,7 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
 }
 
 TrackList.propTypes = {
-  tracks: PropTypes.array,
+  tracks: PropTypes.arrayOf(PropTypes.instanceOf(Track)),
   displayType: PropTypes.string.isRequired,
   withArtist: PropTypes.bool.isRequired,
 }

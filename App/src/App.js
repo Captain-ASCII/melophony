@@ -11,7 +11,7 @@ import TrackCreationScreen from './screens/TrackCreationScreen'
 import TrackModificationScreen from './screens/TrackModificationScreen'
 import TracksScreen from './screens/TracksScreen'
 
-import { setApiManager, setMediaManager } from './actions/Managers'
+import { setApiManager, setMediaManager } from 'actions/Managers'
 
 import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'

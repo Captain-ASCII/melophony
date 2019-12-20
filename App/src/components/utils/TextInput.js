@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 const TextInput = ({ id, icon, onInput }) => {
   const [ value, setValue ] = useState('')
 
+  const input = useCallback(text => {
+    setValue(text)
+    onInput(text)
+  })
+  
   // Needed ?
   const handleChange = useCallback(() => false)
-
-  const handleInput = useCallback(event => {
-    setValue(event.target.value)
-    onInput(event.target.value)
-  })
-
-  const handleReset = useCallback(() => handleInput(''))
+  const handleInput = useCallback(event => input(event.target.value))
+  const handleReset = useCallback(() => input(''))
   
   return (
     <div className="text-input">

@@ -7,8 +7,11 @@ module.exports = merge(common, {
     resolve: {
       extensions: ['*', '.js', '.jsx'],
       alias: {
-        actions: path.resolve(__dirname, '../src/actions/'),
-        reducers: path.resolve(__dirname, '../src/reducers/'),
+        actions: path.resolve(__dirname, '../src/redux/actions/'),
+        models: path.resolve(__dirname, '../src/models/'),
+        reducers: path.resolve(__dirname, '../src/redux/reducers/'),
+        selectors: path.resolve(__dirname, '../src/redux/selectors/'),
+        store: path.resolve(__dirname, '../src/redux/store/Store.js'),
         utils: path.resolve(__dirname, '../src/utils/')
       }
     },

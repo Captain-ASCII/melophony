@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 
 import Arrays from 'utils/Arrays'
 
+import { selectTracks } from 'selectors/Track'
+
 import TrackList from '../components/tracks/TrackList'
 import TextInput from '../components/utils/TextInput'
 import Switch, { SwitchState } from '../components/utils/Switch'
@@ -57,11 +59,12 @@ const TracksScreen = () => {
   const [ sortType, setSortType ] = useState(configurationManager.get('sortType'))
   const [ sortOrder, setSortOrder ] = useState(configurationManager.get('sortOrder'))
   const [ displayType, setDisplayType ] = useState(configurationManager.get('displayType'))
-  const [ tracks, setTracks ] = useState(_sort(
+  /*const  [ tracks, setTracks ] = useState(_sort(
     global.dataStorage.getAsArray('tracks'),
     configurationManager.get('sortOrder'),
     configurationManager.get('sortType')
-  ))
+  )) */
+  const tracks = selectTracks()
 
   const changeTrackDisplay = useCallback(type => {
     setDisplayType(type)
