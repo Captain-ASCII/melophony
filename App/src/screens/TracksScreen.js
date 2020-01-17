@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 
 import Arrays from 'utils/Arrays'
 
 import { selectTracks } from 'selectors/Track'
+import { setTracks } from 'actions/Track'
 
 import TrackList from '../components/tracks/TrackList'
 import TextInput from '../components/utils/TextInput'
@@ -55,16 +57,19 @@ const _sort = (providedTracks, sortOrder, type) => {
 }
 
 const TracksScreen = () => {
+  const dispatch = useDispatch()
+  const tracks = selectTracks()
+
   const [ filter, setFilter ] = useState('')
   const [ sortType, setSortType ] = useState(configurationManager.get('sortType'))
   const [ sortOrder, setSortOrder ] = useState(configurationManager.get('sortOrder'))
   const [ displayType, setDisplayType ] = useState(configurationManager.get('displayType'))
+
   /*const  [ tracks, setTracks ] = useState(_sort(
     global.dataStorage.getAsArray('tracks'),
     configurationManager.get('sortOrder'),
     configurationManager.get('sortType')
   )) */
-  const tracks = selectTracks()
 
   const changeTrackDisplay = useCallback(type => {
     setDisplayType(type)
@@ -73,11 +78,11 @@ const TracksScreen = () => {
   
   const sort = type => {
     setSortType(type)
-    setTracks(_sort(tracks, sortOrder, type))
+    dispatch(setTracks(_sort(tracks, sortOrder, type)))
   }
   
   const switchOrder = useCallback(value => {
-    setTracks(Arrays.reverse(tracks))
+    dispatch(setTracks(Arrays.reverse(tracks)))
     setSortOrder(value)
   })
   
