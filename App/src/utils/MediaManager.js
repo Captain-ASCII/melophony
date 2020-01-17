@@ -39,8 +39,9 @@ export default class MediaManager {
     
     this.player.addEventListener('error', event => {
       if (event.target.error && event.target.error.code == 4) {
-        this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`
-        this.player.load()
+        this.next()
+        // this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`
+        // this.player.load()
       }
     })
     
@@ -89,7 +90,7 @@ export default class MediaManager {
   }
   
   next() {
-    let tracksArray = dataStorage.getAsArray('sortedTracks')
+    let tracksArray = dataStorage.getAsArray('tracks')
     this.currentIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length
     this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex)
   }
