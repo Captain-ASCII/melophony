@@ -112,7 +112,7 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
                     hasScrolled={getScrollStatus} displayType={displayType} withArtist={withArtist}
                   />
                   <div className="itemActions">
-                    <Link to={`/track/modify/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+                    <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
                   </div>
                 </div>
               </div>

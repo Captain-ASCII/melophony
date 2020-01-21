@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
-import ArtistModificationScreen from './screens/ArtistModificationScreen'
-import ArtistOverviewScreen from './screens/ArtistOverviewScreen'
-import ArtistsScreen from './screens/ArtistsScreen'
-import TrackCreationScreen from './screens/TrackCreationScreen'
-import TrackModificationScreen from './screens/TrackModificationScreen'
-import TracksScreen from './screens/TracksScreen'
+import ArtistOverviewScreen from 'screens/ArtistOverviewScreen'
+import ArtistsScreen from 'screens/ArtistsScreen'
+import TrackCreationScreen from 'screens/TrackCreationScreen'
+import ModificationScreen from 'screens/ModificationScreen'
+import TracksScreen from 'screens/TracksScreen'
 
 import { setApiManager, setMediaManager } from 'actions/Managers'
 
@@ -27,7 +26,7 @@ const App = () => {
 
   useEffect(() => { 
     dispatch(setMediaManager(new MediaManager()))
-    dispatch(setApiManager(new ApiManager()))
+    dispatch(setApiManager(new ApiManager('http://localhost:1958')))
   }, [])
 
   const switchNetwork = useCallback((enabled) => {
@@ -57,10 +56,11 @@ const App = () => {
           <div id="content">
             <Switch>
               <Route path="/tracks" component={TracksScreen} />
-              <Route path="/track/modify/:id" component={TrackModificationScreen} />
+              <Route path="/modify" component={ModificationScreen} />
+              {/* <Route path="/modify/track/:id" component={TrackModificationScreen} /> */}
               <Route path="/track/create" component={TrackCreationScreen} />
               <Route path="/artists" component={ArtistsScreen} />
-              <Route path="/artist/modify/:id" component={ArtistModificationScreen} />
+              {/* <Route path="/artist/modify/:id" component={ArtistModificationScreen} /> */}
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
               <Route path="/" exact component={TracksScreen} />
             </Switch>

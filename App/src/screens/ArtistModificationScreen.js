@@ -1,8 +1,13 @@
 import React, { useCallback } from 'react'
+import { useParams } from 'react-router-dom'
+import { selectArtists, selectArtist } from 'selectors/Artist'
 
-const ArtistModificationScreen = ({ onSave, artist }) => {
+const ArtistModificationScreen = () => {
+  const { id } = useParams()
+  const artists = selectArtists()
+  const artist = selectArtist(id)
   
-  // this.artistsNames = dataStorage.getAsArray('artists').map(artist => <option data-value={artist.id} value={artist.name} />)
+  const artistsNames = artists.map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
   // this.data = dataStorage.get('artists')[this.props.match.params.id] || { id: '', name: '' }
   
   // onSave(

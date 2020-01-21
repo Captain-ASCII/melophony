@@ -1,8 +1,13 @@
 import React, { useCallback, useState } from 'react'
+import { Route, useRouteMatch } from 'react-router-dom'
+
+import ArtistModificationScreen from 'screens/ArtistModificationScreen'
+import TrackModificationScreen from 'screens/TrackModificationScreen'
 
 import CloseButton from '../components/utils/CloseButton'
 
 const ModificationScreen = () => {
+  const { url } = useRouteMatch()
   const [ onSave, setOnSave ] = useState(() => false)
   
   const save = useCallback(() => {
@@ -25,12 +30,13 @@ const ModificationScreen = () => {
     apiManager.put(`${this.type}/${this.data.id}`, this.data)
     this.props.history.goBack()
   })
-  
+
   return (
     <div id="modificationPage">
       <div id="modificationPageHeader">
         <CloseButton />
-        <h2 id="modificationPageTitle">{ this.title }</h2>
+        <Route path={`${url}/artist/:id`} component={ArtistModificationScreen} />
+        <Route path={`${url}/track/:id`} component={TrackModificationScreen} />
         <div id="saveButton" className="button raised" onClick={save} >Save</div>
       </div>
     </div>

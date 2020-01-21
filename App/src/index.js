@@ -65,8 +65,8 @@ async function getData() {
   global.dataStorage.set('/tracks', tracks)
   global.dataStorage.set('/artists', artists)
 
-  store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track))))
   store.dispatch(setArtists(Object.values(artists).map(artist => Artist.fromObject(artist))))
+  store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track, Object.values(artists)))))
   
   ReactDOM.render(
     <Provider store={store} >

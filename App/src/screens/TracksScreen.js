@@ -30,7 +30,9 @@ const ConfigurationSwitch = ({ title, isActive, onSwitch, enabledState, disabled
   )
 }
 
-const filteredTracks = (tracks, filter) => tracks.filter(track => `${track.artistName}${track.title}`.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+const filteredTracks = (tracks, filter) => tracks.filter(track => {
+  return `${track.getArtistName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1
+})
 
 const _sort = (providedTracks, sortOrder, type) => {
   let sortFct = () => -1
