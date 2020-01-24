@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
-import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 
 import { selectArtist } from 'selectors/Artist'
+import { selectTracks } from 'selectors/Track'
 
 import CloseButton from '../components/utils/CloseButton'
 import TrackList from '../components/tracks/TrackList'
 
 const ArtistOverviewScreen = () => {
   const { artistId } = useParams()
-  const artist = useSelector(selectArtist(artistId))
-  const tracks = useSelector(state => state.tracks).filter(track => track.artist === artistId)
+
+  const artist = selectArtist(artistId)
+  const tracks = selectTracks().filter(track => track.artist === artistId)
   
   return (
     <div id="artistOverviewScreen">

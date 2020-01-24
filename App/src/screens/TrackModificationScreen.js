@@ -14,8 +14,7 @@ const TrackModificationScreen = () => {
   const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
   
   const [ artistName, setArtistName ] = useState(artist.getName())
-  // this.artistsNames = dataStorage.getAsArray("artists").map(artist => <option key={ artist.id } data-value={ artist.id } value={ artist.name } />);
-  
+
   const download = useCallback(() => {
     apiManager.get(`download/${track.getVideoId()}`, () => false)
   })

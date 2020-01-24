@@ -14,6 +14,10 @@ export default class Artist {
     return this.name
   }
 
+  withName(name) {
+    return new Artist(this.id, name)
+  }
+
   static fromObject(o) {
     return new Artist(o.id, o.name)
   }
