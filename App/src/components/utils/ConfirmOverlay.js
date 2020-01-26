@@ -1,29 +1,26 @@
 import React, { useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { addListener } from 'actions/Listener'
+import { selectListener } from 'selectors/Listener'
+import { clearNotification } from 'actions/Listener'
 
 const ConfirmOverlay = ({ overlayId }) => {
   const dispatch = useDispatch()
 
-  const overlay = useSelector(state => state.overlay)
+  const overlay = selectListener('OVERLAY_ID')
 
-  const [ visibility, setVisibility ] = useState(false)
-
-  const displayConfirmation = useCallback(setVisibility(true))
-  const closeConfirmation = useCallback(setVisibility(false))
+  const closeConfirmation = useCallback(() => dispatch(clearNotification('OVERLAY_ID')))
 
   const cancel = useCallback(() => closeConfirmation())
   const confirm = useCallback(() => {
+    overlay.confirmCallback()
     closeConfirmation()
   })
 
-  dispatch(addListener(overlayId))
-
-  return visibility ? (
+  return overlay ? (
     <div id="overlay" style={{display: 'flex'}}>
       <div id="overlayBox">
-        <p id="confirmMessage" >{overlay.confirmMessage}</p>
+        <p id="confirmMessage" >{overlay.message}</p>
         <div id="confirmActionBox">
           <div id="cancelButton" className="button raised" onClick={cancel} >No</div>
           <div id="confirmButton" className="button raised" onClick={confirm} >Yes</div>

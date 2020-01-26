@@ -22,9 +22,8 @@
     "babel-plugin-jsx-class": "^1.0.0",
     "babel-plugin-react-html-attrs": "^2.1.0",
     "css-loader": "^3.2.0",
-    "eslint": "^6.7.1",
     "eslint-config-strict-react": "^9.0.2",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react": "^7.18.0",
     "react-hot-loader": "^4.12.14",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
@@ -90,12 +89,14 @@
     },
     "globals": {
       "__dirname": "readonly",
+      "clearInterval": "readonly",
       "clearTimeout": "readonly",
       "document": "readonly",
       "fetch": "readonly",
       "global": "writable",
       "module": "writable",
       "require": "readonly",
+      "setInterval": "readonly",
       "setTimeout": "readonly",
       "window": "writable"
     }

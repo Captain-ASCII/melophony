@@ -1,20 +1,23 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, forwardRef, useImperativeHandle, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import { selectApiManager } from 'selectors/Manager'
 import { selectArtist, selectArtists } from 'selectors/Artist'
 import { selectTrack } from 'selectors/Track'
 
 import InputRange from '../components/utils/InputRange'
 
-const TrackModificationScreen = () => {
+const TrackModificationScreen = (props, ref) => {
   const { id } = useParams()
+
+  const apiManager = selectApiManager()
   
-  const track = selectTrack(id)
-  const artist = selectArtist(track.getArtistId())
+  const [ track, setTrack ]  = useState(selectTrack(id))
+  const [ artist, setArtist ]  = useState(selectArtist(track.getArtistId()))
+  const [ artistState, setArtistState ] = useState('pristine')
+
   const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
   
-  const [ artistName, setArtistName ] = useState(artist.getName())
-
   const download = useCallback(() => {
     apiManager.get(`download/${track.getVideoId()}`, () => false)
   })
@@ -24,10 +27,26 @@ const TrackModificationScreen = () => {
   const deleteItem = useCallback(() => {})
   
   const createArtist = useCallback(() => {
-    apiManager.post('artist', this.state.artistName)
+    apiManager.post('artist', artist.getName())
   })
 
-  const handleInput = useCallback(event => setArtistName(event.target.value))
+  const handleArtistNameSet = useCallback(event => {
+    setTrack(track.withArtistName(event.target.value))
+    setArtist(artist.withName(event.target.value))
+    setArtistState('Modified')
+  })
+  const handleTitleSet = useCallback(event => setTrack(track.withTitle(event.target.value)))
+  const handleDurationSet = useCallback(event => setTrack(track.withDuration(event.target.value)))
+  const handleVideoIdSet = useCallback(event => setTrack(track.withVideoId(event.target.value)))
+
+  const onSave = useImperativeHandle(ref, () => ({
+    onSave: () => {
+      apiManager.put(`track/${track.id}`, track)
+      if (artistState != 'pristine') {
+        apiManager.put(`artist/${artist.id}`, artist)
+      }
+    }
+  }))
   
   return (
     <div>
@@ -37,15 +56,15 @@ const TrackModificationScreen = () => {
             <i className="fa fa-music fa-2x icon" />
             <input
               type="text" className="form-data" id="title"
-              defaultValue={track.getTitle()}
+              defaultValue={track.getTitle()} onInput={handleTitleSet}
             />
           </div>
           <div className="input">
             <i className="fa fa-male fa-2x icon" />
             <input
               type="text" list="artistNames" className="form-data"
-              id="artist" autoComplete="off" onInput={handleInput}
-              defaultValue={artistName}
+              id="artist" autoComplete="off" onInput={handleArtistNameSet}
+              defaultValue={track.getArtistName()}
             />
             <i className="fa fa-plus fa-1x icon button" onClick={createArtist} />
             <datalist id="artistNames">{ artistsNames }</datalist>
@@ -54,7 +73,7 @@ const TrackModificationScreen = () => {
             <i className="fa fa-ruler fa-2x icon" />
             <input
               type="text" className="form-data" id="duration"
-              defaultValue={track.getDuration()}
+              defaultValue={track.getDuration()} onInput={handleDurationSet}
             />
           </div>
     
@@ -77,7 +96,7 @@ const TrackModificationScreen = () => {
             <i className="fab fa-youtube fa-2x icon" />
             <input
               type="text" className="form-data" id="videoId"
-              defaultValue={track.getVideoId()}
+              defaultValue={track.getVideoId()} onInput={handleVideoIdSet}
             />
           </div>
         </div>
@@ -102,4 +121,4 @@ const TrackModificationScreen = () => {
   )
 }
   
-export default TrackModificationScreen
+export default forwardRef(TrackModificationScreen)

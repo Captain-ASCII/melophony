@@ -1,4 +1,4 @@
-import Arrays from 'utils/Arrays'
+import { Arrays } from 'utils/Immutable'
 
 import { SET_ARTIST, SET_ARTISTS } from 'actions/Artist'
 

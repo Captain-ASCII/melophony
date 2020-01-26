@@ -22,22 +22,28 @@ const ArtistModificationScreen = (props, ref) => {
 
   useImperativeHandle(ref, () => ({
     onSave() {
-      dispatch(notifyListener('', { message: 'Hello' }))
-      // const sameNameArtist = artists.find(artist => artist.name === artist.getName())
-      // if (sameNameArtist && (sameNameArtist.id != artist.id)) {
-      //   dispatch(setOverlay(`Cela va effacer l'artiste "${initialName}" et affecter toutes ses musiques à l'artiste "${artist.name}", êtes vous sûr ?`))
-      //   dispatch(addListener('overlay', () => {
-      //     let tracks = selectTracks().filter(track => track.artist == artist.id)
-      //     tracks.forEach(track => {
-      //       track.artist = sameNameArtist.id
-      //       apiManager.put(`track/${track.id}`, track)
-      //     })
-      //     apiManager.delete(`artist/${artist.id}`)
-      //   }))
-      // } else if (!sameNameArtist) {
-      //   dispatch(setArtist(artist))
-      //   apiManager.put(`artist/${id}`, artist)
-      // }
+      const sameNameArtist = artists.find(current => current.getName() === artist.getName())
+      if (sameNameArtist) {
+        if (sameNameArtist.id != artist.id) {
+          dispatch(notifyListener('OVERLAY_ID',
+          {
+            message: `Cela va effacer l'artiste "${initialName}" et affecter toutes ses musiques à l'artiste "${artist.name}", êtes vous sûr ?`,
+            confirmCallback: () => {
+              let tracks = selectTracks().filter(track => track.artist == artist.id)
+              tracks.forEach(track => {
+                track.artist = sameNameArtist.id
+                apiManager.put(`track/${track.id}`, track)
+              })
+              apiManager.delete(`artist/${artist.id}`)
+            }
+          }))
+        }
+        return false
+      } else {
+        dispatch(setArtist(artist))
+        apiManager.put(`artist/${id}`, artist)
+        return true
+      }
     }
   }))
     

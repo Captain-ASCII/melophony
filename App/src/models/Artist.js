@@ -6,8 +6,18 @@ export default class Artist {
     this.name = name
   }
 
+  static #with(a, property, value) {
+    let copy = new Artist(a.id, a.name)
+    copy[property] = value
+    return copy
+  }
+
   getId() {
     return this.id
+  }
+
+  withId(id) {
+    return Artist.#with(this, 'id', id)
   }
 
   getName() {
@@ -15,7 +25,7 @@ export default class Artist {
   }
 
   withName(name) {
-    return new Artist(this.id, name)
+    return Artist.#with(this, 'name', name)
   }
 
   static fromObject(o) {

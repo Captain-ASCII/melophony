@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
+import { setCurrentTrack } from 'actions/App'
 import { selectArtist } from 'selectors/Artist'
 
-import Track, {TrackPropTypes } from 'models/Track'
+import Track from 'models/Track'
 
 import MediaManager from '../../utils/MediaManager'
 
@@ -18,14 +19,18 @@ const formatDuration = (duration) => {
 }
 
 const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArtist }) => {
+  const dispatch = useDispatch()
   const history = useHistory()
 
   const artist = selectArtist(track.getArtistId())
 
-  const startPlay = useCallback(() => mediaManager.startPlay(track.getId(), index))
-  
+  const startPlay = useCallback(() => {
+    mediaManager.startPlay(track.getId(), index)
+    dispatch(setCurrentTrack(track))
+  })
+
   let buttonPressTimer = null
-    
+
   const press = useCallback(() => {
     buttonPressTimer = setTimeout(() => {
       if (!hasScrolled()) {
@@ -33,9 +38,9 @@ const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArti
       }
     }, 500)
   })
-  
+
   const release = useCallback(() => clearTimeout(buttonPressTimer))
-  
+
   return (
     <div
       className="itemInfo"
@@ -43,10 +48,10 @@ const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArti
     >
       <p className="title " >{track.getTitle()}</p>
       { withArtist ?
-            (<Link to={`/artist/${artist.getId()}`} onClick={stopPropagation}>
-              <p className="artist" >{artist.getName()}</p>
-            </Link>) : null
-          }
+        (<Link to={`/artist/${artist.getId()}`} onClick={stopPropagation}>
+          <p className="artist" >{artist.getName()}</p>
+        </Link>) : null
+      }
       <div id={`${track.getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
         <div /> <p />
       </div>
@@ -55,9 +60,9 @@ const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArti
   )
 }
 
-Track.propTypes = {
+RTrack.propTypes = {
   mediaManager: PropTypes.instanceOf(MediaManager),
-  track: PropTypes.shape(TrackPropTypes),
+  track: PropTypes.instanceOf(Track),
   index: PropTypes.number.isRequired,
   hasScrolled: PropTypes.func.isRequired,
   displayType: PropTypes.string.isRequired,
@@ -84,24 +89,24 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
   const getScrollStatus = useCallback(() => hasScrolled)
 
   let artists = global.dataStorage.get('artists')
-  
+
   let tracksCopy = tracks.map(track => { return { ...track } })
   for (let track of tracksCopy) {
     if (artists[track.artist]) {
       track.artistName = artists[track.artist].name
     }
   }
-  
+
   return (
     <div id={displayType} onScroll={scroll} >
       {
         tracks.map((track, index) => {
           let blockStyle = {}
-      
+
           if (displayType == 'itemBlocks') {
             // blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
           }
-      
+
           return (
             <div className="trackListItem" key={track.getId()} >
               <div className="ratioContainer" >
@@ -118,7 +123,7 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
               </div>
             </div>
           )
-        }) 
+        })
       }
     </div>
   )
@@ -127,7 +132,7 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
 TrackList.propTypes = {
   tracks: PropTypes.arrayOf(PropTypes.instanceOf(Track)),
   displayType: PropTypes.string.isRequired,
-  withArtist: PropTypes.bool.isRequired,
+  withArtist: PropTypes.bool,
 }
-  
+
 export default TrackList

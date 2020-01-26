@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 
-import Arrays from 'utils/Arrays'
+import { Arrays } from 'utils/Immutable'
 
 import { selectTracks } from 'selectors/Track'
 import { setTracks } from 'actions/Track'

@@ -1,23 +1,18 @@
-import Arrays from 'utils/Arrays'
+import { Objects } from 'utils/Immutable'
 
-import { ADD_LISTENER, CLEAR_LISTENERS, NOTIFY_LISTENER } from 'actions/Listener'
+import { NOTIFY_LISTENER, CLEAR_NOTIFICATION } from 'actions/Listener'
 
-const INITIAL_CONFIG = {
-  listeners: []
-}
+const INITIAL_CONFIG = {}
 
-const overlay = (state = INITIAL_CONFIG, action) => {
+const listeners = (state = INITIAL_CONFIG, action) => {
   switch (action.type) {
-    case ADD_LISTENER:
-      return Arrays.add(state, action.listener)
-    case CLEAR_LISTENERS:
-      return INITIAL_CONFIG
     case NOTIFY_LISTENER:
-      state.listeners.find(listener => listener.id === action.id).notify(action.notification)
-      return state
+      return Objects.update(state, action.id, action.notification)
+    case CLEAR_NOTIFICATION:
+      return Objects.removeAt(state, action.id)
     default:
       return state
   }
 }
 
-export default overlay
+export default listeners

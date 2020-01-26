@@ -15,14 +15,18 @@ import { setApiManager, setMediaManager } from 'actions/Managers'
 import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
+import { selectMediaManager, selectApiManager } from 'selectors/Manager'
+
 import ConfirmOverlay from './components/utils/ConfirmOverlay'
 import InputRange from './components/utils/InputRange'
 import { SimpleSwitch } from './components/utils/Switch'
 
 const App = () => {
   const dispatch = useDispatch()
-  const mediaManager = useSelector(state => state.managers.mediaManager)
-  const apiManager = useSelector(state => state.managers.apiManager)
+
+  const mediaManager = selectMediaManager()
+  const apiManager = selectApiManager()
+  const currentTrack = useSelector(state => state.app.currentTrack)
 
   useEffect(() => { 
     dispatch(setMediaManager(new MediaManager()))
@@ -31,7 +35,6 @@ const App = () => {
 
   const switchNetwork = useCallback((enabled) => {
     configurationManager.set('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958'))
-    console.warn(configurationManager.get('serverAddress'))
   })
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))
@@ -57,10 +60,8 @@ const App = () => {
             <Switch>
               <Route path="/tracks" component={TracksScreen} />
               <Route path="/modify" component={ModificationScreen} />
-              {/* <Route path="/modify/track/:id" component={TrackModificationScreen} /> */}
               <Route path="/track/create" component={TrackCreationScreen} />
               <Route path="/artists" component={ArtistsScreen} />
-              {/* <Route path="/artist/modify/:id" component={ArtistModificationScreen} /> */}
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
               <Route path="/" exact component={TracksScreen} />
             </Switch>
@@ -99,7 +100,7 @@ const App = () => {
           <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
             <div id="currentTrackInfo"  />
           </Link>
-          <InputRange asReader />
+          <InputRange track={currentTrack} asReader />
         </div>
         <ConfirmOverlay />
       </div>

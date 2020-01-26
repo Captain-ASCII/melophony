@@ -12,25 +12,9 @@ const ModificationScreen = () => {
   const history = useHistory()
   const { url } = useRouteMatch()
   const save = useCallback(() => { 
-    // let data = {}
-    // const inputs = document.querySelectorAll('.form-data')
-
-    // for (const input of inputs) {
-    //   if (input.list) {
-    //     let listElement = document.querySelector(`#${input.list.id} option[value="${input.value}"]`)
-    //     if (input.getAttribute('keepValue')) {
-    //       data[input.id] = input.value
-    //     } else if (listElement) {
-    //       data[input.id] = listElement.getAttribute('data-value')
-    //     }
-    //   } else {
-    //     data[input.id] = input.value
-    //   }
-    // }
-
-    screenRef.current.onSave()
-    
-    history.goBack()
+    if (screenRef.current.onSave()) {
+      history.goBack()
+    }
   })
 
   return (
