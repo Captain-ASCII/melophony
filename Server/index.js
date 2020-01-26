@@ -21,9 +21,9 @@ const configuration = JSON.parse(FileSystem.readFileSync("configuration/configur
 let credentials = {};
 
 if (!configuration.DEBUG) {
-    const privateKey = FileSystem.readFileSync("melophony.ddns.net/privkey.pem", "utf8");
-    const certificate = FileSystem.readFileSync("melophony.ddns.net/cert.pem", "utf8");
-    const ca = FileSystem.readFileSync("melophony.ddns.net/chain.pem", "utf8");
+    const privateKey = FileSystem.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/privkey.pem", "utf8");
+    const certificate = FileSystem.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/cert.pem", "utf8");
+    const ca = FileSystem.readFileSync("/etc/letsencrypt/live/melophony.ddns.net/fullchain.pem", "utf8");
     credentials = { key: privateKey, cert: certificate, ca: ca };
 }
 const App = Express();
@@ -39,7 +39,7 @@ App.use(function(request, response, next) {
 });
 
 const PORT = 1789;
-const HTTPS_PORT = 1804;
+const HTTPS_PORT = 1951;
 
 global.eventListener = new EventListener();
 

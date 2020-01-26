@@ -24,7 +24,7 @@ export default class TrackAspect extends BaseAspect {
 
         this.app.put("/track/:id", (request, response) => {
             if (this.tracks[request.params.id] && this.tracks[request.params.id].videoId != request.body.videoId) {
-                ServerUtils.downloadTrack(request.body.videoId, this.files, this.tracks, this.modifiedTracks, this.db);
+                ServerUtils.downloadTrack(request.body.videoId, this.files, this.tracks, this.artists, this.modifiedTracks, this.db);
             }
 
             this.tracks[request.params.id] = request.body;

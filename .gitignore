@@ -9,3 +9,5 @@ melophony.ddns.net
 npm-debug.log
 v8-compile-cache*
 dist
+nohup.out
+bundle.js
