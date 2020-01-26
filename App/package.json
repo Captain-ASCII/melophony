@@ -4,7 +4,7 @@
   "description": "The frontEnd application with React",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack/webpack.dev.js",
+    "start": "webpack-dev-server --config webpack/webpack.dev.js",
     "build": "webpack -p --config webpack/webpack.prod.js",
     "production": "nodejs server.js"
   },
@@ -18,12 +18,16 @@
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-jsx-class": "^1.0.0",
     "babel-plugin-react-html-attrs": "^2.1.0",
     "css-loader": "^3.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "eslint-config-strict-react": "^9.0.2",
+    "eslint-plugin-react": "^7.18.0",
     "react-hot-loader": "^4.12.14",
+    "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9",
@@ -57,7 +61,47 @@
     "express": "^4.17.1",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
+    "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
+    "redux": "^4.0.4",
     "regenerator-runtime": "^0.13.3"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "strict-react/es6"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "semi": [
+        "error",
+        "never"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ]
+    },
+    "globals": {
+      "__dirname": "readonly",
+      "clearInterval": "readonly",
+      "clearTimeout": "readonly",
+      "document": "readonly",
+      "fetch": "readonly",
+      "global": "writable",
+      "module": "writable",
+      "require": "readonly",
+      "setInterval": "readonly",
+      "setTimeout": "readonly",
+      "window": "writable"
+    }
   }
 }

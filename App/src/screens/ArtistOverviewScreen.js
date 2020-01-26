@@ -1,38 +1,36 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, {  } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
-import CloseButton from "../components/utils/CloseButton";
-import TrackList from "../components/tracks/TrackList";
+import { selectArtist } from 'selectors/Artist'
+import { selectTracksOfArtist } from 'selectors/Track'
 
-export default class ArtistOverviewScreen extends Component {
+import CloseButton from '../components/utils/CloseButton'
+import TrackList from '../components/tracks/TrackList'
 
-    constructor(props) {
-        super(props);
+const ArtistOverviewScreen = () => {
+  const { id } = useParams()
 
-        this.artist = dataStorage.get("artists")[this.props.match.params.id] || { name: "" };
-        this.tracks = dataStorage.getAsArray("tracks").filter(track => track.artist == this.props.match.params.id);
-    }
+  const artist = selectArtist(id)
+  const tracks = selectTracksOfArtist(id)
 
-    render() {
-        return (
-            <div id="artistOverviewScreen">
-                <CloseButton icon="chevron-left" additionalClass="floating mini top transparent" />
-                <div id="artistScreenHeader">
-                    <h1>{ this.artist.name }</h1>
-                </div>
+  return (
+    <div id="artistOverviewScreen">
+      <CloseButton icon="chevron-left" additionalClass="floating mini top transparent" />
+      <div id="artistScreenHeader">
+        <h1>{artist.getName()}</h1>
+      </div>
 
-                <div id="contentHeader">
-                    <h2>Titres</h2>
-                    <div class="displayActions">
-                        <Link to={`/artist/modify/${this.artist.id}`}><i class="fa fa-edit icon button" title="Edit artist data" ></i></Link>
-                    </div>
-                </div>
-                <div class="delimiter"></div>
+      <div id="contentHeader">
+        <h2>Titres</h2>
+        <div className="displayActions">
+          <Link to={`/modify/artist/${artist.getId()}`}><i className="fa fa-edit icon button" title="Edit artist data"  /></Link>
+        </div>
+      </div>
+      <div className="delimiter" />
 
-                <div id="itemList">
-                    <TrackList tracks={ this.tracks } displayType="itemList" filter="" />
-                </div>
-            </div>
-        );
-    }
+      <TrackList tracks={tracks} displayType="itemList" filter="" />
+    </div>
+  )
 }
+
+export default ArtistOverviewScreen

@@ -1,25 +1,35 @@
-import React, { Component } from "react";
+import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 
-export default class TextInput extends Component {
+const TextInput = ({ id, icon, onInput }) => {
+  const [ value, setValue ] = useState('')
 
-    constructor(props) {
-        super(props);
-
-        this.input = React.createRef();
-    }
-
-    reset() {
-        this.input.current.value = "";
-        this.props.onInput("");
-    }
-
-    render() {
-        return (
-            <div class="text-input">
-                <i class={`fa fa-${this.props.icon} icon`}></i>
-                <input ref={this.input} id={`${this.props.id}`} type="text" onInput={ e => this.props.onInput(e.target.value) } />
-                <i class="fa fa-times icon clear-icon button" onClick={ _ => this.reset() } ></i>
-            </div>
-        );
-    }
+  const input = useCallback(text => {
+    setValue(text)
+    onInput(text)
+  })
+  
+  // Needed ?
+  const handleChange = useCallback(() => false)
+  const handleInput = useCallback(event => input(event.target.value))
+  const handleReset = useCallback(() => input(''))
+  
+  return (
+    <div className="text-input">
+      <i className={`fa fa-${icon} icon`} />
+      <input
+        id={id} type="text" value={value}
+        onInput={handleInput} onChange={handleChange}
+      />
+      <i className="fa fa-times icon clear-icon button" onClick={handleReset}  />
+    </div>
+  )
 }
+  
+TextInput.propTypes = {
+  id: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  onInput: PropTypes.func
+}
+
+export default TextInput

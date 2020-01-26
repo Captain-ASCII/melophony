@@ -1,32 +1,29 @@
-import React, { Component } from "react";
+import React, { useCallback, useState } from 'react'
 
-import CloseButton from "../components/utils/CloseButton";
+const TrackCreationScreen = () => {
+  const [ videoId, setVideoId ] = useState('')
 
-export default class TrackCreationScreen extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.videoIdInput = React.createRef();
-    }
-
-    requestServerDownload() {
-        apiManager.post(`file/${this.videoIdInput.current.value}`);
-    }
-
-    render() {
-        return (
-            <div id="AddTrackScreen" >
-                <div id="modificationPageHeader">
-                    <CloseButton />
-                    <h2 id="modificationPageTitle">Add a new track</h2>
-                    <div class="button raised" onClick={ _ => this.requestServerDownload() } >Download</div>
-                </div>
-                <div class="input">
-                    <i class="fab fa-youtube fa-2x icon"></i>
-                    <input ref={this.videoIdInput} type="text" class="form-data" id="videoId" defaultValue="" placeholder="Youtube video ID" />
-                </div>
-            </div>
-        );
-    }
-}
+  const handleInput = useCallback(event => setVideoId(event.target.value))
+  
+  const requestServerDownload = useCallback(() => {
+    apiManager.post(`file/${videoId}`)
+  })
+  
+  return (
+    <div id="AddTrackScreen" >
+      <div id="modificationPageHeader">
+        <h2 id="modificationPageTitle">Add a new track</h2>
+        <div className="button raised" onClick={requestServerDownload} >Download</div>
+      </div>
+      <div className="input">
+        <i className="fab fa-youtube fa-2x icon" />
+        <input
+          type="text" className="form-data" onInput={handleInput}
+          id="videoId" defaultValue="" placeholder="Youtube video ID"
+        />
+      </div>
+    </div>
+    )
+  }
+  
+  export default TrackCreationScreen

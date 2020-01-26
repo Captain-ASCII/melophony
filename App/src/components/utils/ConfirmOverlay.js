@@ -1,47 +1,33 @@
-import React, { Component } from "react";
+import React, { useState, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-export default class ConfirmOverlay extends Component {
+import { selectListener } from 'selectors/Listener'
+import { clearNotification } from 'actions/Listener'
 
-    constructor(props) {
-        super(props);
+const ConfirmOverlay = ({ overlayId }) => {
+  const dispatch = useDispatch()
 
-        this.state = { confirmMessage: "Are you sure ?" };
+  const overlay = selectListener('OVERLAY_ID')
 
-        actionManager.expose("ConfirmOverlay", this, this.displayConfirmation);
+  const closeConfirmation = useCallback(() => dispatch(clearNotification('OVERLAY_ID')))
 
-        this.overlay = React.createRef();
-    }
+  const cancel = useCallback(() => closeConfirmation())
+  const confirm = useCallback(() => {
+    overlay.confirmCallback()
+    closeConfirmation()
+  })
 
-    displayConfirmation(message, callback) {
-        this.setState({ confirmMessage: message, confirmCallback: callback });
-
-        this.overlay.current.style.display = "flex";
-    }
-
-    closeConfirmation() {
-        this.overlay.current.style.display = "none";
-    }
-
-    cancel() {
-        this.closeConfirmation();
-    }
-
-    confirm() {
-        this.state.confirmCallback();
-        this.closeConfirmation();
-    }
-
-    render() {
-        return (
-            <div ref={this.overlay} id="overlay">
-                <div id="overlayBox">
-                    <p id="confirmMessage" >{ this.state.confirmMessage }</p>
-                    <div id="confirmActionBox">
-                        <div id="cancelButton" class="button raised" onClick={ _ => this.cancel() } >No</div>
-                        <div id="confirmButton" class="button raised" onClick={ _ => this.confirm() } >Yes</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+  return overlay ? (
+    <div id="overlay" style={{display: 'flex'}}>
+      <div id="overlayBox">
+        <p id="confirmMessage" >{overlay.message}</p>
+        <div id="confirmActionBox">
+          <div id="cancelButton" className="button raised" onClick={cancel} >No</div>
+          <div id="confirmButton" className="button raised" onClick={confirm} >Yes</div>
+        </div>
+      </div>
+    </div>
+  ) : false
 }
+
+export default ConfirmOverlay

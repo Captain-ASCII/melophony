@@ -17,6 +17,19 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: ['*', '.js', '.jsx'],
+        alias: {
+            public: path.resolve(__dirname, '../public/'),
+            actions: path.resolve(__dirname, '../src/redux/actions/'),
+            models: path.resolve(__dirname, '../src/models/'),
+            reducers: path.resolve(__dirname, '../src/redux/reducers/'),
+            selectors: path.resolve(__dirname, '../src/redux/selectors/'),
+            store: path.resolve(__dirname, '../src/redux/store/Store.js'),
+            utils: path.resolve(__dirname, '../src/utils/'),
+            screens: path.resolve(__dirname, '../src/screens/')
+        }
+    },
     output: {
         path: path.resolve(__dirname, "..", "public"),
         publicPath: "/dist/",
