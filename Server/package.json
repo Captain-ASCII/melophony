@@ -4,7 +4,8 @@
   "description": "Simple server to download from youtube before transferring to devices",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js -e js -V --exec babel-node --presets @babel/preset-env",
+    "start": "babel-node index.js",
+    "dev": "nodemon index.js -e js -i nohup.out -V --exec babel-node --presets @babel/preset-env",
     "test": "echo \"Error: no test specified\" && exit 11"
   },
   "author": "Daniel Ben-Lulu",

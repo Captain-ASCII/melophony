@@ -38,7 +38,9 @@ App.use(function(request, response, next) {
     next();
 });
 
-const PORT = 1789;
+App.use('/.well-known/acme-challenge/', Express.static('.well-known/acme-challenge/', { dotFiles: 'allow' }));
+
+const PORT = 1958;
 const HTTPS_PORT = 1951;
 
 global.eventListener = new EventListener();
@@ -68,7 +70,7 @@ App.get("/*", (request, response) => {
 if (configuration.DEBUG) {
     const server = HTTP.createServer(App);
     server.listen(PORT, function () {
-        console.log(`Example app listening on port ${PORT}`)
+        console.log(`HTTP: Example app listening on port ${PORT}`)
     });
 } else {
     const server = HTTPS.createServer(credentials, App);
@@ -79,7 +81,11 @@ if (configuration.DEBUG) {
         global.eventListener.on("downloadProgress", (id, value) => ws.send(JSON.stringify({ event: "progress", id: id, progress: value })));
     });
 
+    const httpServer = HTTP.createServer(function(request, response) {
+        response.redirect(`https://${request.headers.host}${request.url}`)
+    }).listen(80)
+
     server.listen(HTTPS_PORT, function () {
-        console.log(`Example app listening on port ${HTTPS_PORT}`)
+        console.log(`HTTPS: Example app listening on port ${HTTPS_PORT}`)
     });
 }
