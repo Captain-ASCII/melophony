@@ -55,7 +55,6 @@ export default class MediaManager {
     }
     document.getElementById('currentTrackInfo').innerHTML = `${artist.name} - ${track.title}`
     // new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
-    actionManager.do('setTrack', '', track)
 
     this.play()
   }
