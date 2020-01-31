@@ -21,7 +21,11 @@ class Arrays {
   }
 
   static reverse(array) {
-    return [...array].reverse()
+    return Arrays.copy().reverse()
+  }
+
+  static sort(array, sortFct) {
+    return Arrays.copy().sort(sortFct)
   }
 }
 

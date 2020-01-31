@@ -4,11 +4,9 @@ import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { setCurrentTrack } from 'actions/App'
-import { selectArtist } from 'selectors/Artist'
+import { selectArtists, selectArtist } from 'selectors/Artist'
 
 import Track from 'models/Track'
-
-import MediaManager from '../../utils/MediaManager'
 
 const stopPropagation = e => e.stopPropagation()
 
@@ -18,14 +16,13 @@ const formatDuration = (duration) => {
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArtist }) => {
+const RTrack = ({ track, index, hasScrolled, displayType, withArtist }) => {
   const dispatch = useDispatch()
   const history = useHistory()
 
   const artist = selectArtist(track.getArtistId())
 
   const startPlay = useCallback(() => {
-    mediaManager.startPlay(track.getId(), index)
     dispatch(setCurrentTrack(track))
   })
 
@@ -61,7 +58,6 @@ const RTrack = ({ mediaManager, track, index, hasScrolled, displayType, withArti
 }
 
 RTrack.propTypes = {
-  mediaManager: PropTypes.instanceOf(MediaManager),
   track: PropTypes.instanceOf(Track),
   index: PropTypes.number.isRequired,
   hasScrolled: PropTypes.func.isRequired,
@@ -74,7 +70,7 @@ RTrack.propTypes = {
 
 
 const TrackList = ({ tracks, displayType, withArtist }) => {
-  const mediaManager = useSelector(state => state.managers.mediaManager)
+  const artists = selectArtists()
 
   let hasScrolled = false
   let scrollTimeout = null
@@ -87,8 +83,6 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
     scrollTimeout = setTimeout(() => hasScrolled = false, 1000)
   })
   const getScrollStatus = useCallback(() => hasScrolled)
-
-  let artists = global.dataStorage.get('artists')
 
   let tracksCopy = tracks.map(track => { return { ...track } })
   for (let track of tracksCopy) {
@@ -113,8 +107,8 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
                   <RTrack
-                    mediaManager={mediaManager} track={track} index={index}
-                    hasScrolled={getScrollStatus} displayType={displayType} withArtist={withArtist}
+                    track={track} index={index} hasScrolled={getScrollStatus}
+                    displayType={displayType} withArtist={withArtist}
                   />
                   <div className="itemActions">
                     <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
