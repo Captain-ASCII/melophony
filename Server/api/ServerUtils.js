@@ -21,7 +21,7 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
         }
 
         for (let i in info.formats) {
-            if (info.formats[i].container == "m4a") {
+            if (info.formats[i].mimeType && info.formats[i].mimeType.startsWith("audio/mp4")) {
                 let format = info.formats[i];
                 console.log(`Found information for ${videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`);
 
@@ -61,6 +61,7 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
                         clearTimeout(progressInterval);
                     }
                 }, 2000);
+		break
             }
         }
     });
