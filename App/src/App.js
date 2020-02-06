@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
@@ -16,10 +16,10 @@ import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
-import { selectCurrentTrack } from 'selectors/App'
 
-import ConfirmOverlay from './components/utils/ConfirmOverlay'
-import { SimpleSwitch } from './components/utils/Switch'
+import ConfirmOverlay from 'components/utils/ConfirmOverlay'
+import { SimpleSwitch } from 'components/utils/Switch'
+import NotificationToaster from 'components/utils/NotificationToaster'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -81,6 +81,7 @@ const App = () => {
             />
           </div>
         </div>
+        <NotificationToaster />
         <div id="footer">
           <MediaManager />
           <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
