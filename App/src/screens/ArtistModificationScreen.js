@@ -15,7 +15,7 @@ const ArtistModificationScreen = (props, ref) => {
   const artists = selectArtists()
   const [ artist, setArtistState ] = useState(selectArtist(id))
   const initialName = artist.name
-  
+
   const artistsNames = artists.map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
 
   const setName = useCallback(event => setArtistState(artist.withName(event.target.value)))
@@ -46,7 +46,7 @@ const ArtistModificationScreen = (props, ref) => {
       }
     }
   }))
-    
+
   return (
     <div>
       <div className="input">
@@ -65,5 +65,5 @@ const ArtistModificationScreen = (props, ref) => {
     </div>
   )
 }
-    
+
 export default forwardRef(ArtistModificationScreen)

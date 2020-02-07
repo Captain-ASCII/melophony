@@ -45,6 +45,7 @@ const TrackModificationScreen = (props, ref) => {
       if (artistState != 'pristine') {
         apiManager.put(`artist/${artist.id}`, artist)
       }
+      return true
     }
   }))
 

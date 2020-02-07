@@ -14,13 +14,11 @@ import Artist from 'models/Artist'
 
 import SplashScreen from './screens/SplashScreen.js'
 
-import ApiManager from './utils/ApiManager'
 import ConfigurationManager from './utils/ConfigurationManager'
 
 import { setTracks } from 'actions/Track'
 import { setArtists } from 'actions/Artist'
 
-global.apiManager = new ApiManager('http://localhost:1958')
 global.configurationManager = new ConfigurationManager()
 
 async function getData() {
