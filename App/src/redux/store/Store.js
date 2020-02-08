@@ -1,19 +1,21 @@
 import { combineReducers, createStore } from 'redux'
 
 import app from 'reducers/App'
-import configuration from 'reducers/Configuration'
-import managers from 'reducers/Managers'
 import artists from 'reducers/Artist'
-import tracks from 'reducers/Track'
+import configuration from 'reducers/Configuration'
 import listeners from 'reducers/Listener'
+import managers from 'reducers/Managers'
+import notifications from 'reducers/Notification'
+import tracks from 'reducers/Track'
 
 const reducer = combineReducers({
   app,
-  configuration,
-  managers,
   artists,
+  configuration,
+  listeners,
+  managers,
+  notifications,
   tracks,
-  listeners
 })
 
 const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())

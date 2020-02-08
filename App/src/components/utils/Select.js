@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 
-import Utils from "../../utils/Utils";
+import StringUtils from 'utils/StringUtils'
 
 export default class Select extends Component {
 
@@ -12,7 +12,7 @@ export default class Select extends Component {
                  class="commonSelect option" onClick={ e => this.choose(e) } >{ option.props.children }</div>
         );
 
-        this.optionsId = Utils.generateId();
+        this.optionsId = StringUtils.generateId();
 
         this.state = { selected: "", selectedName: this.props.placeholder || "..." };
 

@@ -1,112 +1,129 @@
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 
-export default class MediaManager {
+import { setCurrentTrack } from 'actions/App'
 
-  static EXTRACT_DURATION = 2000;
+import { selectTracks } from 'selectors/Track'
+import { selectCurrentTrack } from 'selectors/App'
 
-  constructor() {
-    this.currentIndex = 0
+import InputRange from 'components/utils/InputRange'
 
-    this.isPlayingExtract = false
-    this.extractTimeout = null
+const MediaManager = () => {
+  const dispatch = useDispatch()
 
-    this.setPlayer()
+  const EXTRACT_DURATION = 2000
 
-    window.addEventListener('keydown', e => this.onKeyDown(e))
-  }
+  const tracks = selectTracks()
+  const currentTrack = selectCurrentTrack()
 
-  onKeyDown(event) {
+  const [ currentIndex, setCurrentIndex ] = useState(0)
+  const [ isPlayingExtract, setIsPlayingExtract ] = useState(false)
+  const [ extractTimeout, setExtractTimeout ] = useState(null)
+
+  const player = useRef()
+
+  const onKeyDown = event => {
     let tag = event.target.tagName.toLowerCase()
     if (event.keyCode == 32 && tag != 'input' && tag != 'textarea') {
-      this.playPause()
+      playPause()
     }
   }
+  window.addEventListener('keydown', e => onKeyDown(e))
 
-  setPlayer() {
-    if (!this.player) {
-      this.player = document.getElementById('player')
-    }
-  }
+  const startPlay = (id, index) => {
+    setCurrentIndex(index)
+    const track = tracks.find(track => track.id === id)
 
-  getCurrentTrack() {
-    return dataStorage.getAsArray('sortedTracks')[this.currentIndex] || { id: '' }
-  }
-
-  startPlay(id, index) {
-    this.currentIndex = index
-
-    let track = dataStorage.get('tracks')[id]
-    let artist = dataStorage.get('artists')[track.artist] || { name: 'Unknown' }
-
-    this.player.addEventListener('error', event => {
+    player.current.addEventListener('error', event => {
       if (event.target.error && event.target.error.code == 4) {
-        this.next()
-        // this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`
-        // this.player.load()
+        next()
       }
     })
 
-    this.player.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
-    this.player.currentTime = track.startTime
+    player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+    player.current.currentTime = track.getStartTime()
 
-    this.player.ontimeupdate = (event) => {
-      if (this.player.currentTime > track.endTime) {
-        this.next()
+    player.current.ontimeupdate = (event) => {
+      if (player.current.currentTime > track.getEndTime()) {
+        next()
       }
     }
-    document.getElementById('currentTrackInfo').innerHTML = `${artist.name} - ${track.title}`
-    // new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
-    actionManager.do('setTrack', '', track)
+    document.getElementById('currentTrackInfo').innerHTML = `${track.getArtistName()} - ${track.getTitle()}`
 
-    this.play()
+    play()
   }
 
-  previous() {
-    let tracksArray = dataStorage.getAsArray('sortedTracks')
-    this.currentIndex = (this.currentIndex - 1) % tracksArray.length
-    this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex)
-  }
-
-  play() {
-    if (this.player.src == '') {
-      this.next()
+  const play = () => {
+    if (player.current.src === '') {
+      next()
     } else {
-      this.player.onended = () => this.next()
-      this.player.play()
+      player.current.onended = () => next()
+      player.current.play()
       document.getElementById('playButton').className = 'fa fa-pause fa-2x'
     }
   }
 
-  pause() {
-    this.player.pause()
+  const pause = () => {
+    player.current.pause()
     document.getElementById('playButton').className = 'fa fa-play fa-2x'
   }
 
-  playPause() {
-    if (this.player.paused) {
-      this.play()
+  const playPause = useCallback(() => {
+    if (player.current.paused) {
+      play()
     } else {
-      this.pause()
+      pause()
     }
+  })
+
+  const previous = useCallback(() => {
+    const nextIndex = (currentIndex - 1) % tracks.length
+    setCurrentIndex(nextIndex)
+    dispatch(setCurrentTrack(tracks[nextIndex]))
+    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+  })
+
+  const next = useCallback(() => {
+    const nextIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracks.length) : (currentIndex + 1) % tracks.length
+    setCurrentIndex(nextIndex)
+    dispatch(setCurrentTrack(tracks[nextIndex]))
+    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+  })
+
+  const playExtract = (track, time) => {
+    player.current.onended = () => false
+
+    if (!isPlayingExtract) {
+      player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+      setIsPlayingExtract(true)
+    }
+    player.current.currentTime = time
+    player.current.play()
+    if (extractTimeout) {
+      clearTimeout(extractTimeout)
+    }
+    setExtractTimeout(setTimeout(_ => player.current.pause(), MediaManager.EXTRACT_DURATION))
   }
 
-  next() {
-    let tracksArray = dataStorage.getAsArray('tracks')
-    this.currentIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length
-    this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex)
-  }
-
-  playExtract(track, time) {
-    this.player.onended = () => false
-
-    if (!this.isPlayingExtract) {
-      this.player.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
-      this.isPlayingExtract = true
+  useEffect(() => {
+    if (currentTrack) {
+      startPlay(currentTrack.getId(), tracks.findIndex(track => track.getId() === currentTrack.getId()))
     }
-    this.player.currentTime = time
-    this.player.play()
-    if (this.extractTimeout) {
-      clearTimeout(this.extractTimeout)
-    }
-    this.extractTimeout = setTimeout(_ => this.player.pause(), MediaManager.EXTRACT_DURATION)
-  }
+  }, [currentTrack])
+
+  return (
+    <>
+      <audio id="player" ref={player}>
+        <p>If you are reading this, it is because your browser does not support the audio element.</p>
+      </audio>
+      <div id="controls">
+        <div className="button icon" onClick={previous} ><i className="fa fa-backward fa-2x"  /></div>
+        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1"  /></div>
+        <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
+      </div>
+      <InputRange track={currentTrack} asReader />
+    </>
+  )
 }
+
+export default MediaManager

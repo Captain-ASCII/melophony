@@ -3,19 +3,13 @@ import PropTypes from 'prop-types'
 
 import Track from 'models/Track'
 
-import MediaManager from 'utils/MediaManager'
-
-import { selectMediaManager } from 'selectors/Manager'
-
 const getPercentage = (value, track) => {
   return (value / track.getDuration()) * 100
 }
 let intervalHandle = null
 
-const InputRange = ({ track, multiRange, asReader }) => {
+const InputRange = ({ track, multiRange, asReader, mediaManager }) => {
   if (track) {
-    const mediaManager = selectMediaManager()
-
     const trackerRef = useRef()
 
     let handler = null
@@ -42,7 +36,7 @@ const InputRange = ({ track, multiRange, asReader }) => {
         const value = event.target.value
         mediaManager.playExtract(track, value)
         setRightValue(100 - getPercentage(value, track))
-        track.endTime = Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000))
+        track.endTime = Math.max(0, parseInt(value) + (mediaManager.EXTRACT_DURATION / 1000))
       })
     }
 
@@ -86,6 +80,7 @@ InputRange.propTypes = {
   track: PropTypes.instanceOf(Track),
   multiRange: PropTypes.bool,
   asReader: PropTypes.bool,
+  mediaManager: PropTypes.element
 }
 
 export default InputRange

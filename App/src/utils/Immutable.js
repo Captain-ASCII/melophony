@@ -13,7 +13,7 @@ class Arrays {
   }
 
   static remove(array, condition) {
-    return array.filter(condition)
+    return array.filter(element => !condition(element))
   }
 
   static add(array, element) {
@@ -21,7 +21,11 @@ class Arrays {
   }
 
   static reverse(array) {
-    return [...array].reverse()
+    return Arrays.copy(array).reverse()
+  }
+
+  static sort(array, sortFct) {
+    return Arrays.copy(array).sort(sortFct)
   }
 }
 

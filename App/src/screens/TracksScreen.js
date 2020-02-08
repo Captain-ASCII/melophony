@@ -36,7 +36,7 @@ const filteredTracks = (tracks, filter) => tracks.filter(track => {
 
 const _sort = (providedTracks, sortOrder, type) => {
   let sortFct = () => -1
-  
+
   switch (type) {
     case 'date':
       sortFct = (a, b) => new Date(a.creationDate) - new Date(b.creationDate)
@@ -45,17 +45,13 @@ const _sort = (providedTracks, sortOrder, type) => {
       sortFct = (a, b) => a.title.localeCompare(b.title)
       break
   }
-  
-  let tracks = Arrays.copy(providedTracks)
-  tracks.sort((a, b) => sortFct(a, b))
-  
+
+  const tracks = Arrays.sort(providedTracks, (a, b) => sortFct(a, b))
   if (sortOrder == 'ASC') {
-    tracks.reverse()
+    return Arrays.reverse(tracks)
+  } else {
+    return tracks
   }
-  
-  dataStorage.set('sortedTracks', tracks)
-  
-  return tracks
 }
 
 const TracksScreen = () => {
@@ -67,31 +63,25 @@ const TracksScreen = () => {
   const [ sortOrder, setSortOrder ] = useState(configurationManager.get('sortOrder'))
   const [ displayType, setDisplayType ] = useState(configurationManager.get('displayType'))
 
-  /*const  [ tracks, setTracks ] = useState(_sort(
-    global.dataStorage.getAsArray('tracks'),
-    configurationManager.get('sortOrder'),
-    configurationManager.get('sortType')
-  )) */
-
   const changeTrackDisplay = useCallback(type => {
     setDisplayType(type)
     configurationManager.set('displayType', type)
   })
-  
+
   const sort = type => {
     setSortType(type)
     dispatch(setTracks(_sort(tracks, sortOrder, type)))
   }
-  
+
   const switchOrder = useCallback(value => {
     dispatch(setTracks(Arrays.reverse(tracks)))
     setSortOrder(value)
   })
-  
+
   useEffect(() => {
     if (window.innerWidth <= 768) {
       let prevScrollpos = document.getElementById('itemList').scrollTop
-      
+
       document.getElementById('itemList').onscroll = function() {
         let currentScrollPos = document.getElementById('itemList').scrollTop
         if (prevScrollpos > currentScrollPos) {
@@ -103,7 +93,7 @@ const TracksScreen = () => {
       }
     }
   }, [])
-  
+
   return (
     <div id="trackScreen" >
       <div id="contentHeader">
@@ -146,7 +136,7 @@ const TracksScreen = () => {
       <TrackList tracks={filteredTracks(tracks, filter)} displayType={displayType} withArtist />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
-    )
-  }
-  
-  export default TracksScreen
+  )
+}
+
+export default TracksScreen

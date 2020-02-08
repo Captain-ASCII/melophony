@@ -11,7 +11,7 @@ const ModificationScreen = () => {
 
   const history = useHistory()
   const { url } = useRouteMatch()
-  const save = useCallback(() => { 
+  const save = useCallback(() => {
     if (screenRef.current.onSave()) {
       history.goBack()
     }

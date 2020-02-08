@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack/webpack.dev.js",
-    "build": "webpack-dev-server --config webpack/webpack.prod.js"
+    "build": "webpack -p --config webpack/webpack.prod.js",
+    "production": "nodejs server.js"
   },
   "author": "Daniel Ben-Lulu",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "babel-plugin-jsx-class": "^1.0.0",
     "babel-plugin-react-html-attrs": "^2.1.0",
     "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
     "eslint-config-strict-react": "^9.0.2",
     "eslint-plugin-react": "^7.18.0",
     "react-hot-loader": "^4.12.14",
@@ -56,6 +58,7 @@
   },
   "dependencies": {
     "core-js": "^3.2.1",
+    "express": "^4.17.1",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-redux": "^7.1.3",

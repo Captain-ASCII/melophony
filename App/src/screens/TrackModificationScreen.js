@@ -11,21 +11,21 @@ const TrackModificationScreen = (props, ref) => {
   const { id } = useParams()
 
   const apiManager = selectApiManager()
-  
+
   const [ track, setTrack ]  = useState(selectTrack(id))
   const [ artist, setArtist ]  = useState(selectArtist(track.getArtistId()))
   const [ artistState, setArtistState ] = useState('pristine')
 
   const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
-  
+
   const download = useCallback(() => {
     apiManager.get(`download/${track.getVideoId()}`, () => false)
   })
-  
+
   const requestServerDownload = useCallback(() => {})
-  
+
   const deleteItem = useCallback(() => {})
-  
+
   const createArtist = useCallback(() => {
     apiManager.post('artist', artist.getName())
   })
@@ -45,9 +45,10 @@ const TrackModificationScreen = (props, ref) => {
       if (artistState != 'pristine') {
         apiManager.put(`artist/${artist.id}`, artist)
       }
+      return true
     }
   }))
-  
+
   return (
     <div>
       <div className="columns">
@@ -76,7 +77,15 @@ const TrackModificationScreen = (props, ref) => {
               defaultValue={track.getDuration()} onInput={handleDurationSet}
             />
           </div>
-    
+          <div className="input">
+            <i className="fa fa-step-backward fa-2x icon" />
+            <input type="text" disabled defaultValue={track.getStartTime()} />
+          </div>
+          <div className="input">
+            <i className="fa fa-step-forward fa-2x icon" />
+            <input type="text" disabled defaultValue={track.getEndTime()} />
+          </div>
+
           <div className="input">
             <i className="fa fa-fingerprint fa-2x icon" />
             <input type="text" disabled defaultValue={track.getId()} />
@@ -109,9 +118,9 @@ const TrackModificationScreen = (props, ref) => {
           </div>
         </div>
       </div>
-    
+
       <div className="delimiter" />
-    
+
       <h2 className="centeredTitle" >Modify track duration</h2>
       <div className="input">
         <i className="fa fa-ruler fa-2x icon" />
@@ -120,5 +129,5 @@ const TrackModificationScreen = (props, ref) => {
     </div>
   )
 }
-  
+
 export default forwardRef(TrackModificationScreen)
