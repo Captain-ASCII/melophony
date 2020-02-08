@@ -27,8 +27,8 @@ global.configurationManager = new ConfigurationManager()
 global.dataStorage = new DataStorage()
 
 async function getData() {
-  let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json()
-  let artists = await (await fetch(`${global.configurationManager.get('serverAddress')}/artists`)).json()
+  let tracks = await (await fetch(`${store.getState().configuration['serverAddress']}/tracks`)).json()
+  let artists = await (await fetch(`${store.getState().configuration['serverAddress']}/artists`)).json()
   
   // let tracks = {
   //     'hello1':{'id':'hello1','title':'Ça ira, ça ira','artist':'0MIDU7cv','album':'Unknown','imageSrc':{'uri':'https://i.ytimg.com/vi/N831j0zt0jE/mqdefault.jpg'},'imageExtension':'jpg','creationDate':'2019-07-13T21:07:06.885Z','status':'Available','duration':214,'startTime':0,'endTime':214,'lastPlay':'','playCount':0,'rating':0,'progress':0,'videoId':'N831j0zt0jE'},

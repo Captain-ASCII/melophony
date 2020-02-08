@@ -11,6 +11,7 @@ import ModificationScreen from 'screens/ModificationScreen'
 import TracksScreen from 'screens/TracksScreen'
 
 import { setApiManager, setMediaManager } from 'actions/Managers'
+import { setInConfiguration } from 'actions/Configuration'
 
 import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
@@ -34,7 +35,7 @@ const App = () => {
   }, [])
 
   const switchNetwork = useCallback((enabled) => {
-    configurationManager.set('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958'))
+    dispatch(setInConfiguration('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958')))
   })
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))

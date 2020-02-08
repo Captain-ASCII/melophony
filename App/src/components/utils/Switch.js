@@ -13,7 +13,7 @@ export class SwitchState {
 const Switch = ({ isActive, onSwitch, title, enabledState, disabledState }) => {
   const [ active, setActive ] = useState(isActive)
   const [ iconState, setIconState ] = useState(isActive ? `fa-${enabledState.icon}` : `fa-${disabledState.icon}`)
- 
+
   const handleSwitch = useCallback(() => {
     const iconState = active ? `fa-${disabledState.icon}` : `fa-${enabledState.icon}`
     const value = active ? disabledState.value : enabledState.value
@@ -22,7 +22,7 @@ const Switch = ({ isActive, onSwitch, title, enabledState, disabledState }) => {
     setActive(prevActive => !prevActive)
     setIconState(iconState)
   })
-  
+
   return (
     <i
       className={`fa ${iconState} icon button`}
@@ -50,7 +50,7 @@ const SimpleSwitch = ({ icon, isActive, onSwitch, title, configurationSwitch }) 
       configurationSwitch={configurationSwitch}
       enabledState={new SwitchState(icon, true)} disabledState={new SwitchState(icon, false)}
     />
-  )        
+  )
 }
 
 SimpleSwitch.propTypes = {
@@ -60,7 +60,7 @@ SimpleSwitch.propTypes = {
   title: PropTypes.string.isRequired,
   configurationSwitch: PropTypes.string,
 }
-  
+
 export { SimpleSwitch }
 
 export default Switch
