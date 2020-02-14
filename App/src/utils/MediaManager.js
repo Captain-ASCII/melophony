@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { setCurrentTrack } from 'actions/App'
 
 import { selectTracks } from 'selectors/Track'
+import { selectConfiguration } from 'selectors/Configuration'
 import { selectCurrentTrack } from 'selectors/App'
 
 import InputRange from 'components/utils/InputRange'
@@ -13,6 +14,7 @@ const MediaManager = () => {
 
   const EXTRACT_DURATION = 2000
 
+  const configuration = selectConfiguration()
   const tracks = selectTracks()
   const currentTrack = selectCurrentTrack()
 
@@ -40,7 +42,7 @@ const MediaManager = () => {
       }
     })
 
-    player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+    player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
     player.current.currentTime = track.getStartTime()
 
     player.current.ontimeupdate = (event) => {
@@ -84,7 +86,7 @@ const MediaManager = () => {
   })
 
   const next = useCallback(() => {
-    const nextIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracks.length) : (currentIndex + 1) % tracks.length
+    const nextIndex = configuration['shuffleMode'] ? Math.floor(Math.random() * tracks.length) : (currentIndex + 1) % tracks.length
     setCurrentIndex(nextIndex)
     dispatch(setCurrentTrack(tracks[nextIndex]))
     startPlay(`${tracks[nextIndex].id}`, nextIndex)
@@ -94,7 +96,7 @@ const MediaManager = () => {
     player.current.onended = () => false
 
     if (!isPlayingExtract) {
-      player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+      player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
       setIsPlayingExtract(true)
     }
     player.current.currentTime = time

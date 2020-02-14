@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom'
 import { Arrays } from 'utils/Immutable'
 
 import { selectTracks } from 'selectors/Track'
+import { selectConfiguration } from 'selectors/Configuration'
 import { setTracks } from 'actions/Track'
+import { setInConfiguration } from 'actions/Configuration'
 
 import TrackList from '../components/tracks/TrackList'
 import TextInput from '../components/utils/TextInput'
@@ -15,11 +17,13 @@ import CustomSelect from '../components/utils/Select'
 import IconButton from '../components/utils/IconButton'
 
 const ConfigurationSwitch = ({ title, isActive, onSwitch, enabledState, disabledState, configurationKey }) => {
+  const dispatch = useDispatch()
+
   const handleSwitch = useCallback(value => {
     if (onSwitch) {
       onSwitch(value)
     }
-    configurationManager.set(configurationKey, value)
+    dispatch(setInConfiguration(configurationKey, value))
   })
 
   return (
@@ -56,16 +60,18 @@ const _sort = (providedTracks, sortOrder, type) => {
 
 const TracksScreen = () => {
   const dispatch = useDispatch()
+
+  const configuration = selectConfiguration()
   const tracks = selectTracks()
 
   const [ filter, setFilter ] = useState('')
-  const [ sortType, setSortType ] = useState(configurationManager.get('sortType'))
-  const [ sortOrder, setSortOrder ] = useState(configurationManager.get('sortOrder'))
-  const [ displayType, setDisplayType ] = useState(configurationManager.get('displayType'))
+  const [ sortType, setSortType ] = useState(configuration['sortType'])
+  const [ sortOrder, setSortOrder ] = useState(configuration['sortOrder'])
+  const [ displayType, setDisplayType ] = useState(configuration['displayType'])
 
   const changeTrackDisplay = useCallback(type => {
     setDisplayType(type)
-    configurationManager.set('displayType', type)
+    dispatch(setInConfiguration('displayType', type))
   })
 
   const sort = type => {
@@ -115,7 +121,7 @@ const TracksScreen = () => {
           <div className="displayActions">
             <ConfigurationSwitch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              title="Switch track playing mode" configurationKey="shuffleMode" isActive={configurationManager.get('shuffleMode') === true}
+              title="Switch track playing mode" configurationKey="shuffleMode" isActive={configuration['shuffleMode'] === true}
             />
             <IconButton
               icon="list" data="itemList" onClick={changeTrackDisplay}

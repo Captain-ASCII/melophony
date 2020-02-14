@@ -14,16 +14,14 @@ import Artist from 'models/Artist'
 
 import SplashScreen from './screens/SplashScreen.js'
 
-import ConfigurationManager from './utils/ConfigurationManager'
-
 import { setTracks } from 'actions/Track'
 import { setArtists } from 'actions/Artist'
 
-global.configurationManager = new ConfigurationManager()
-
 async function getData() {
-  let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json()
-  let artists = await (await fetch(`${global.configurationManager.get('serverAddress')}/artists`)).json()
+  const configuration = store.getState().configuration
+
+  let tracks = await (await fetch(`${configuration['serverAddress']}/tracks`)).json()
+  let artists = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
 
   store.dispatch(setArtists(Object.values(artists).map(artist => Artist.fromObject(artist))))
   store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track, Object.values(artists)))))
