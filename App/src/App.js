@@ -19,7 +19,7 @@ import MediaManager from 'utils/MediaManager'
 import { selectApiManager } from 'selectors/Manager'
 
 import ConfirmOverlay from 'components/utils/ConfirmOverlay'
-import { SimpleSwitch } from 'components/utils/Switch'
+import { ConfigurationSwitch, SwitchState } from 'components/utils/Switch'
 import NotificationToaster from 'components/utils/NotificationToaster'
 
 const App = () => {
@@ -30,10 +30,6 @@ const App = () => {
   useEffect(() => {
     dispatch(setApiManager(new ApiManager('http://localhost:1958')))
   }, [])
-
-  const switchNetwork = useCallback((enabled) => {
-    dispatch(setInConfiguration('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958')))
-  })
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))
 
@@ -76,9 +72,10 @@ const App = () => {
           </Link>
           <div id="headerActions">
             <i onClick={synchronize} className="fa fa-download icon button" />
-            <SimpleSwitch
-              icon="network-wired" title="Should connect to network for data"
-              configurationSwitch="networkEnabled" onSwitch={switchNetwork}
+            <ConfigurationSwitch
+              enabledState={new SwitchState('network-wired active', 'https://melophony.ddns.net')}
+              disabledState={new SwitchState('network-wired', 'http://localhost:1958')}
+              title="Should connect to network for data" configurationKey="serverAddress"
             />
           </div>
         </div>

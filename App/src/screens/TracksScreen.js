@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 
 import { Link } from 'react-router-dom'
@@ -13,36 +12,9 @@ import { setInConfiguration } from 'actions/Configuration'
 
 import TrackList from '../components/tracks/TrackList'
 import TextInput from '../components/utils/TextInput'
-import Switch, { SwitchState } from '../components/utils/Switch'
+import { ConfigurationSwitch, SwitchState } from '../components/utils/Switch'
 import CustomSelect from '../components/utils/Select'
 import IconButton from '../components/utils/IconButton'
-
-const ConfigurationSwitch = ({ title, onSwitch, enabledState, disabledState, configuration, configurationKey }) => {
-  const dispatch = useDispatch()
-
-  const handleSwitch = useCallback(value => {
-    if (onSwitch) {
-      onSwitch(value)
-    }
-    dispatch(setInConfiguration(configurationKey, value))
-  })
-
-  return (
-    <Switch
-      enabledState={enabledState} disabledState={disabledState} onSwitch={handleSwitch}
-      title={title} isActive={configuration[configurationKey] === enabledState.getValue()}
-    />
-  )
-}
-
-ConfigurationSwitch.propTypes = {
-  title: PropTypes.string.isRequired,
-  onSwitch: PropTypes.func,
-  enabledState: PropTypes.instanceOf(SwitchState).isRequired,
-  disabledState: PropTypes.instanceOf(SwitchState).isRequired,
-  configuration: PropTypes.object.isRequired,
-  configurationKey: PropTypes.string.isRequired,
-}
 
 const filteredTracks = (tracks, filter) => tracks.filter(track => {
   return `${track.getArtistName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1
@@ -126,14 +98,13 @@ const TracksScreen = () => {
             </CustomSelect>
             <ConfigurationSwitch
               enabledState={new SwitchState('sort-amount-up', 'ASC')} disabledState={new SwitchState('sort-amount-down', 'DESC')}
-              onSwitch={switchOrder} configuration={configuration} configurationKey="sortOrder"
-              title="Sort order"
+              title="Sort order" configurationKey="sortOrder" onSwitch={switchOrder}
             />
           </div>
           <div className="displayActions">
             <ConfigurationSwitch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              title="Switch track playing mode" configuration={configuration} configurationKey="shuffleMode"
+              title="Switch track playing mode" configurationKey="shuffleMode"
             />
             <IconButton
               icon="list" data="itemList" onClick={changeTrackDisplay}

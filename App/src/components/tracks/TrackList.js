@@ -16,11 +16,9 @@ const formatDuration = (duration) => {
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const RTrack = ({ track, index, hasScrolled, displayType, withArtist }) => {
+const RTrack = ({ track, hasScrolled, displayType, withArtist }) => {
   const dispatch = useDispatch()
   const history = useHistory()
-
-  const artist = selectArtist(track.getArtistId())
 
   const startPlay = useCallback(() => {
     dispatch(setCurrentTrack(track))
@@ -45,8 +43,8 @@ const RTrack = ({ track, index, hasScrolled, displayType, withArtist }) => {
     >
       <p className="title " >{track.getTitle()}</p>
       { withArtist ?
-        (<Link to={`/artist/${artist.getId()}`} onClick={stopPropagation}>
-          <p className="artist" >{artist.getName()}</p>
+        (<Link to={`/artist/${track.getArtistId()}`} onClick={stopPropagation}>
+          <p className="artist" >{track.getArtistName()}</p>
         </Link>) : null
       }
       <div id={`${track.getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
@@ -59,7 +57,6 @@ const RTrack = ({ track, index, hasScrolled, displayType, withArtist }) => {
 
 RTrack.propTypes = {
   track: PropTypes.instanceOf(Track),
-  index: PropTypes.number.isRequired,
   hasScrolled: PropTypes.func.isRequired,
   displayType: PropTypes.string.isRequired,
   withArtist: PropTypes.bool.isRequired,
@@ -84,17 +81,10 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
   })
   const getScrollStatus = useCallback(() => hasScrolled)
 
-  let tracksCopy = tracks.map(track => { return { ...track } })
-  for (let track of tracksCopy) {
-    if (artists[track.artist]) {
-      track.artistName = artists[track.artist].name
-    }
-  }
-
   return (
     <div id={displayType} onScroll={scroll} >
       {
-        tracks.map((track, index) => {
+        tracks.map((track) => {
           let blockStyle = {}
 
           if (displayType == 'itemBlocks') {
@@ -107,7 +97,7 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
                   <RTrack
-                    track={track} index={index} hasScrolled={getScrollStatus}
+                    track={track} hasScrolled={getScrollStatus}
                     displayType={displayType} withArtist={withArtist}
                   />
                   <div className="itemActions">
