@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 
 import { Link } from 'react-router-dom'
@@ -16,7 +17,7 @@ import Switch, { SwitchState } from '../components/utils/Switch'
 import CustomSelect from '../components/utils/Select'
 import IconButton from '../components/utils/IconButton'
 
-const ConfigurationSwitch = ({ title, isActive, onSwitch, enabledState, disabledState, configurationKey }) => {
+const ConfigurationSwitch = ({ title, onSwitch, enabledState, disabledState, configuration, configurationKey }) => {
   const dispatch = useDispatch()
 
   const handleSwitch = useCallback(value => {
@@ -29,16 +30,25 @@ const ConfigurationSwitch = ({ title, isActive, onSwitch, enabledState, disabled
   return (
     <Switch
       enabledState={enabledState} disabledState={disabledState} onSwitch={handleSwitch}
-      title={title} isActive={isActive}
+      title={title} isActive={configuration[configurationKey] === enabledState.getValue()}
     />
   )
+}
+
+ConfigurationSwitch.propTypes = {
+  title: PropTypes.string.isRequired,
+  onSwitch: PropTypes.func,
+  enabledState: PropTypes.instanceOf(SwitchState).isRequired,
+  disabledState: PropTypes.instanceOf(SwitchState).isRequired,
+  configuration: PropTypes.object.isRequired,
+  configurationKey: PropTypes.string.isRequired,
 }
 
 const filteredTracks = (tracks, filter) => tracks.filter(track => {
   return `${track.getArtistName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1
 })
 
-const _sort = (providedTracks, sortOrder, type) => {
+function _sort(providedTracks, sortOrder, type) {
   let sortFct = () => -1
 
   switch (type) {
@@ -74,10 +84,11 @@ const TracksScreen = () => {
     dispatch(setInConfiguration('displayType', type))
   })
 
-  const sort = type => {
+  const sort = useCallback(type => {
     setSortType(type)
+    dispatch(setInConfiguration('sortType', type))
     dispatch(setTracks(_sort(tracks, sortOrder, type)))
-  }
+  })
 
   const switchOrder = useCallback(value => {
     dispatch(setTracks(Arrays.reverse(tracks)))
@@ -109,19 +120,20 @@ const TracksScreen = () => {
             <TextInput id="trackSearch" icon="search" onInput={setFilter} />
           </div>
           <div id="sortBar" >
-            <CustomSelect onSelection={sortType => sort(sortType)} icon="" placeholder="Order" >
+            <CustomSelect onSelection={sort} icon="" placeholder="Order" >
               <option value="title">By title</option>
               <option value="date">By date of download</option>
             </CustomSelect>
             <ConfigurationSwitch
               enabledState={new SwitchState('sort-amount-up', 'ASC')} disabledState={new SwitchState('sort-amount-down', 'DESC')}
-              onSwitch={switchOrder} configurationKey="sortOrder" title="Sort order"
+              onSwitch={switchOrder} configuration={configuration} configurationKey="sortOrder"
+              title="Sort order"
             />
           </div>
           <div className="displayActions">
             <ConfigurationSwitch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              title="Switch track playing mode" configurationKey="shuffleMode" isActive={configuration['shuffleMode'] === true}
+              title="Switch track playing mode" configuration={configuration} configurationKey="shuffleMode"
             />
             <IconButton
               icon="list" data="itemList" onClick={changeTrackDisplay}
@@ -139,7 +151,7 @@ const TracksScreen = () => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList tracks={filteredTracks(tracks, filter)} displayType={displayType} withArtist />
+      <TrackList tracks={_sort(filteredTracks(tracks, filter), sortOrder, sortType)} displayType={displayType} withArtist />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )
