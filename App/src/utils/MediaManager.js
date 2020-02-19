@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { setCurrentTrack } from 'actions/App'
 
@@ -32,6 +33,12 @@ const MediaManager = () => {
   }
   window.addEventListener('keydown', e => onKeyDown(e))
 
+  const getCurrentTrackUrl = useCallback(() => {
+    if (currentTrack) {
+      return `/modify/track/${currentTrack.getId()}`
+    }
+  })
+
   const startPlay = (id, index) => {
     setCurrentIndex(index)
     const track = tracks.find(track => track.id === id)
@@ -45,7 +52,7 @@ const MediaManager = () => {
     player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
     player.current.currentTime = track.getStartTime()
 
-    player.current.ontimeupdate = (event) => {
+    player.current.ontimeupdate = () => {
       if (player.current.currentTime > track.getEndTime()) {
         next()
       }
@@ -123,6 +130,9 @@ const MediaManager = () => {
         <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1"  /></div>
         <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
       </div>
+      <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
+        <div id="currentTrackInfo"  />
+      </Link>
       <InputRange track={currentTrack} asReader />
     </>
   )

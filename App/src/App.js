@@ -33,8 +33,6 @@ const App = () => {
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))
 
-  const getCurrentTrackUrl = useCallback(() => '/track/modify/')
-
   return(
     <Router>
       <div className="App">
@@ -82,9 +80,6 @@ const App = () => {
         <NotificationToaster />
         <div id="footer">
           <MediaManager />
-          <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
-            <div id="currentTrackInfo"  />
-          </Link>
         </div>
         <ConfirmOverlay />
       </div>
