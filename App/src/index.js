@@ -7,14 +7,14 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { store } from 'store'
-import App from './App.js'
+import App from 'app'
 
 import Track from 'models/Track'
 import Artist from 'models/Artist'
 
 import Playlist from 'utils/Playlist'
 
-import SplashScreen from './screens/SplashScreen.js'
+import SplashScreen from 'screens/SplashScreen'
 
 import { setPlaylist } from 'actions/App'
 import { setTracks } from 'actions/Track'
