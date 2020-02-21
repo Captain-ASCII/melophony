@@ -12,19 +12,26 @@ import App from './App.js'
 import Track from 'models/Track'
 import Artist from 'models/Artist'
 
+import Playlist from 'utils/Playlist'
+
 import SplashScreen from './screens/SplashScreen.js'
 
+import { setPlaylist } from 'actions/App'
 import { setTracks } from 'actions/Track'
 import { setArtists } from 'actions/Artist'
 
 async function getData() {
   const configuration = store.getState().configuration
 
-  let tracks = await (await fetch(`${configuration['serverAddress']}/tracks`)).json()
-  let artists = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
+  const tracksJson = await (await fetch(`${configuration['serverAddress']}/tracks`)).json()
+  const artistsJson = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
 
-  store.dispatch(setArtists(Object.values(artists).map(artist => Artist.fromObject(artist))))
-  store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track, Object.values(artists)))))
+  const tracks = Object.values(tracksJson).map(track => Track.fromObject(track, Object.values(artistsJson)))
+  const artists = Object.values(artistsJson).map(artist => Artist.fromObject(artist))
+
+  store.dispatch(setArtists(artists))
+  store.dispatch(setTracks(tracks))
+  store.dispatch(setPlaylist(new Playlist(tracks)))
 
   ReactDOM.render(
     <Provider store={store} >

@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
+import { selectPlaylist } from 'selectors/App'
 import { setCurrentTrack } from 'actions/App'
-import { selectArtists, selectArtist } from 'selectors/Artist'
 
 import Track from 'models/Track'
 
@@ -19,6 +19,8 @@ const formatDuration = (duration) => {
 const RTrack = ({ track, hasScrolled, displayType, withArtist }) => {
   const dispatch = useDispatch()
   const history = useHistory()
+
+  const playlist = selectPlaylist()
 
   const startPlay = useCallback(() => {
     dispatch(setCurrentTrack(track))
@@ -36,21 +38,29 @@ const RTrack = ({ track, hasScrolled, displayType, withArtist }) => {
 
   const release = useCallback(() => clearTimeout(buttonPressTimer))
 
+  const handleEnqueue = useCallback(() => playlist.enqueue(track))
+
   return (
-    <div
-      className="itemInfo"
-      onClick={startPlay} onTouchStart={press} onTouchEnd={release}
-    >
-      <p className="title " >{track.getTitle()}</p>
-      { withArtist ?
-        (<Link to={`/artist/${track.getArtistId()}`} onClick={stopPropagation}>
-          <p className="artist" >{track.getArtistName()}</p>
-        </Link>) : null
-      }
-      <div id={`${track.getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
-        <div /> <p />
+    <div className="itemInfo" >
+      <div
+        className="subItemInfo" onClick={startPlay}
+        onTouchStart={press} onTouchEnd={release}
+      >
+        <p className="title " >{track.getTitle()}</p>
+        { withArtist ?
+          (<Link to={`/artist/${track.getArtistId()}`} onClick={stopPropagation}>
+            <p className="artist" >{track.getArtistName()}</p>
+          </Link>) : null
+        }
+        <div id={`${track.getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''} >
+          <div /> <p />
+        </div>
+        <p className="duration" >{formatDuration(track.getDuration())}</p>
       </div>
-      <p className="duration" >{formatDuration(track.getDuration())}</p>
+      <div className="itemActions">
+        <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
+        <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+      </div>
     </div>
   )
 }
@@ -67,7 +77,6 @@ RTrack.propTypes = {
 
 
 const TrackList = ({ tracks, displayType, withArtist }) => {
-  const artists = selectArtists()
 
   let hasScrolled = false
   let scrollTimeout = null
@@ -100,9 +109,6 @@ const TrackList = ({ tracks, displayType, withArtist }) => {
                     track={track} hasScrolled={getScrollStatus}
                     displayType={displayType} withArtist={withArtist}
                   />
-                  <div className="itemActions">
-                    <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
-                  </div>
                 </div>
               </div>
             </div>

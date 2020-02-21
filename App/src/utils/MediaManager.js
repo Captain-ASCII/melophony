@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom'
 
 import { setCurrentTrack } from 'actions/App'
 
-import { selectTracks } from 'selectors/Track'
 import { selectConfiguration } from 'selectors/Configuration'
-import { selectCurrentTrack } from 'selectors/App'
+import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
 
 import InputRange from 'components/utils/InputRange'
 
@@ -16,10 +15,9 @@ const MediaManager = () => {
   const EXTRACT_DURATION = 2000
 
   const configuration = selectConfiguration()
-  const tracks = selectTracks()
+  const playlist = selectPlaylist()
   const currentTrack = selectCurrentTrack()
 
-  const [ currentIndex, setCurrentIndex ] = useState(0)
   const [ isPlayingExtract, setIsPlayingExtract ] = useState(false)
   const [ extractTimeout, setExtractTimeout ] = useState(null)
 
@@ -39,10 +37,7 @@ const MediaManager = () => {
     }
   })
 
-  const startPlay = (id, index) => {
-    setCurrentIndex(index)
-    const track = tracks.find(track => track.id === id)
-
+  const startPlay = track => {
     player.current.addEventListener('error', event => {
       if (event.target.error && event.target.error.code == 4) {
         next()
@@ -86,17 +81,11 @@ const MediaManager = () => {
   })
 
   const previous = useCallback(() => {
-    const nextIndex = (currentIndex - 1) % tracks.length
-    setCurrentIndex(nextIndex)
-    dispatch(setCurrentTrack(tracks[nextIndex]))
-    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+    dispatch(setCurrentTrack(playlist.getPrevious()))
   })
 
   const next = useCallback(() => {
-    const nextIndex = configuration['shuffleMode'] ? Math.floor(Math.random() * tracks.length) : (currentIndex + 1) % tracks.length
-    setCurrentIndex(nextIndex)
-    dispatch(setCurrentTrack(tracks[nextIndex]))
-    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+    dispatch(setCurrentTrack(playlist.getNext()))
   })
 
   const playExtract = (track, time) => {
@@ -111,14 +100,19 @@ const MediaManager = () => {
     if (extractTimeout) {
       clearTimeout(extractTimeout)
     }
-    setExtractTimeout(setTimeout(_ => player.current.pause(), MediaManager.EXTRACT_DURATION))
+    setExtractTimeout(setTimeout(() => player.current.pause(), MediaManager.EXTRACT_DURATION))
   }
 
   useEffect(() => {
     if (currentTrack) {
-      startPlay(currentTrack.getId(), tracks.findIndex(track => track.getId() === currentTrack.getId()))
+      startPlay(currentTrack)
+      playlist.setTrack(currentTrack)
     }
   }, [currentTrack])
+
+  useEffect(() => {
+    playlist.setShuffleMode(configuration['shuffleMode'])
+  }, [configuration])
 
   return (
     <>
@@ -127,7 +121,7 @@ const MediaManager = () => {
       </audio>
       <div id="controls">
         <div className="button icon" onClick={previous} ><i className="fa fa-backward fa-2x"  /></div>
-        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1"  /></div>
+        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1" /></div>
         <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
       </div>
       <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >

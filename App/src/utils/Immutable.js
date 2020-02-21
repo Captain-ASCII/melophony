@@ -20,12 +20,27 @@ class Arrays {
     return [...array, element]
   }
 
+  static pop(array) {
+    return [ array[0], array.slice(1) ]
+  }
+
   static reverse(array) {
     return Arrays.copy(array).reverse()
   }
 
   static sort(array, sortFct) {
     return Arrays.copy(array).sort(sortFct)
+  }
+
+  static shuffle(array) {
+    const copy = Arrays.copy(array)
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const tmp = copy[i]
+      copy[i] = copy[j]
+      copy[j] = tmp
+    }
+    return copy
   }
 }
 
