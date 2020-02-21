@@ -10,11 +10,11 @@ import { selectConfiguration } from 'selectors/Configuration'
 import { setTracks } from 'actions/Track'
 import { setInConfiguration } from 'actions/Configuration'
 
-import TrackList from '../components/tracks/TrackList'
-import TextInput from '../components/utils/TextInput'
-import { ConfigurationSwitch, SwitchState } from '../components/utils/Switch'
-import CustomSelect from '../components/utils/Select'
-import IconButton from '../components/utils/IconButton'
+import TrackList from 'components/TrackList'
+import TextInput from 'components/TextInput'
+import { ConfigurationSwitch, SwitchState } from 'components/Switch'
+import CustomSelect from 'components/Select'
+import IconButton from 'components/IconButton'
 
 const filteredTracks = (tracks, filter) => tracks.filter(track => {
   return `${track.getArtistName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1

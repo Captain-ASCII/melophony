@@ -18,9 +18,9 @@ import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
 
-import ConfirmOverlay from 'components/utils/ConfirmOverlay'
-import { ConfigurationSwitch, SwitchState } from 'components/utils/Switch'
-import NotificationToaster from 'components/utils/NotificationToaster'
+import ConfirmOverlay from 'components/ConfirmOverlay'
+import { ConfigurationSwitch, SwitchState } from 'components/Switch'
+import NotificationToaster from 'components/NotificationToaster'
 
 const App = () => {
   const dispatch = useDispatch()

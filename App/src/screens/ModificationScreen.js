@@ -4,7 +4,7 @@ import { Route, useRouteMatch, useHistory } from 'react-router-dom'
 import ArtistModificationScreen from 'screens/ArtistModificationScreen'
 import TrackModificationScreen from 'screens/TrackModificationScreen'
 
-import CloseButton from '../components/utils/CloseButton'
+import CloseButton from 'components/CloseButton'
 
 const ModificationScreen = () => {
   const screenRef = useRef()

@@ -7,7 +7,7 @@ import { setCurrentTrack } from 'actions/App'
 import { selectConfiguration } from 'selectors/Configuration'
 import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
 
-import InputRange from 'components/utils/InputRange'
+import InputRange from 'components/InputRange'
 
 const MediaManager = () => {
   const dispatch = useDispatch()

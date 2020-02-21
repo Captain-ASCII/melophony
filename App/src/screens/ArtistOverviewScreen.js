@@ -4,8 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 import { selectArtist } from 'selectors/Artist'
 import { selectTracksOfArtist } from 'selectors/Track'
 
-import CloseButton from '../components/utils/CloseButton'
-import TrackList from '../components/tracks/TrackList'
+import CloseButton from 'components/CloseButton'
+import TrackList from 'components/TrackList'
 
 const ArtistOverviewScreen = () => {
   const { id } = useParams()

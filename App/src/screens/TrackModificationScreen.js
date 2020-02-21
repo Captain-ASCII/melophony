@@ -5,7 +5,7 @@ import { selectApiManager } from 'selectors/Manager'
 import { selectArtist, selectArtists } from 'selectors/Artist'
 import { selectTrack } from 'selectors/Track'
 
-import InputRange from '../components/utils/InputRange'
+import InputRange from 'components/InputRange'
 
 const TrackModificationScreen = (props, ref) => {
   const { id } = useParams()

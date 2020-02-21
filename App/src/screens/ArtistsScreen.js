@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { selectArtists } from 'selectors/Artist'
 
-import TextInput from './../components/utils/TextInput'
+import TextInput from 'components/TextInput'
 
 const ArtistsScreen = () => {
   const artists = selectArtists()
