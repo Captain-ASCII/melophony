@@ -81,8 +81,9 @@ if (configuration.DEBUG) {
         global.eventListener.on("downloadProgress", (id, value) => ws.send(JSON.stringify({ event: "progress", id: id, progress: value })));
     });
 
-    const httpServer = HTTP.createServer(function(request, response) {
-        response.redirect(`https://${request.headers.host}${request.url}`)
+    HTTP.createServer(function(request, response) {
+        response.writeHead(301, { "Location": "https://" + request.headers['host'] + request.url });
+        response.end();
     }).listen(80)
 
     server.listen(HTTPS_PORT, function () {
