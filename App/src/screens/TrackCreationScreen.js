@@ -1,14 +1,18 @@
 import React, { useCallback, useState } from 'react'
 
+import { selectApiManager } from 'selectors/Manager'
+
 const TrackCreationScreen = () => {
+  const apiManager = selectApiManager()
+
   const [ videoId, setVideoId ] = useState('')
 
   const handleInput = useCallback(event => setVideoId(event.target.value))
-  
+
   const requestServerDownload = useCallback(() => {
     apiManager.post(`file/${videoId}`)
   })
-  
+
   return (
     <div id="AddTrackScreen" >
       <div id="modificationPageHeader">
@@ -25,5 +29,5 @@ const TrackCreationScreen = () => {
     </div>
     )
   }
-  
+
   export default TrackCreationScreen
