@@ -7,36 +7,32 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { store } from 'store'
-import App from './App.js'
+import App from 'app'
 
 import Track from 'models/Track'
 import Artist from 'models/Artist'
 
-import SplashScreen from './screens/SplashScreen.js'
+import Playlist from 'utils/Playlist'
 
-import ActionManager from './utils/ActionManager'
-import ApiManager from './utils/ApiManager'
-import ConfigurationManager from './utils/ConfigurationManager'
-import DataStorage from './utils/DataStorage'
+import SplashScreen from 'screens/SplashScreen'
 
+import { setPlaylist } from 'actions/App'
 import { setTracks } from 'actions/Track'
 import { setArtists } from 'actions/Artist'
 
-global.actionManager = new ActionManager()
-global.apiManager = new ApiManager('http://localhost:1958')
-global.configurationManager = new ConfigurationManager()
-global.dataStorage = new DataStorage()
-
 async function getData() {
-  let tracks = await (await fetch(`${global.configurationManager.get('serverAddress')}/tracks`)).json()
-  let artists = await (await fetch(`${global.configurationManager.get('serverAddress')}/artists`)).json()
-  
-  global.dataStorage.set('/tracks', tracks)
-  global.dataStorage.set('/artists', artists)
+  const configuration = store.getState().configuration
 
-  store.dispatch(setArtists(Object.values(artists).map(artist => Artist.fromObject(artist))))
-  store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track, Object.values(artists)))))
-  
+  const tracksJson = await (await fetch(`${configuration['serverAddress']}/tracks`)).json()
+  const artistsJson = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
+
+  const tracks = Object.values(tracksJson).map(track => Track.fromObject(track, Object.values(artistsJson)))
+  const artists = Object.values(artistsJson).map(artist => Artist.fromObject(artist))
+
+  store.dispatch(setArtists(artists))
+  store.dispatch(setTracks(tracks))
+  store.dispatch(setPlaylist(new Playlist(tracks)))
+
   ReactDOM.render(
     <Provider store={store} >
       <App />

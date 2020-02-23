@@ -8,7 +8,7 @@ module.exports = merge(common, {
         historyApiFallback: true,
         https: true,
         contentBase: path.join(__dirname, '..', 'public/'),
-        publicPath: 'https://localhost:1951/dist/',
+        publicPath: 'https://localhost:1951/',
         port: 1951,
         hotOnly: true
     },

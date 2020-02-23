@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
 
 import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
@@ -10,48 +11,60 @@ import TrackCreationScreen from 'screens/TrackCreationScreen'
 import ModificationScreen from 'screens/ModificationScreen'
 import TracksScreen from 'screens/TracksScreen'
 
-import { setApiManager, setMediaManager } from 'actions/Managers'
+import { setApiManager } from 'actions/Managers'
 
 import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
-import { selectMediaManager, selectApiManager } from 'selectors/Manager'
+import { selectApiManager } from 'selectors/Manager'
 
-import ConfirmOverlay from './components/utils/ConfirmOverlay'
-import InputRange from './components/utils/InputRange'
-import { SimpleSwitch } from './components/utils/Switch'
+import ConfirmOverlay from 'components/ConfirmOverlay'
+import { ConfigurationSwitch, SwitchState } from 'components/Switch'
+import NotificationToaster from 'components/NotificationToaster'
+
+
+const MenuLink = ({ title, path, icon }) => {
+  return (
+    <Link to={path} >
+      <div className="menuLink button" >
+        <i className={`fa fa-${icon}`} />
+        <p className="buttonTitle" >{ title }</p>
+      </div>
+    </Link>
+  )
+}
+
+MenuLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+}
+
+
+
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const mediaManager = selectMediaManager()
   const apiManager = selectApiManager()
-  const currentTrack = useSelector(state => state.app.currentTrack)
 
-  useEffect(() => { 
-    dispatch(setMediaManager(new MediaManager()))
+  const [ menuState, setMenu ] = useState('closed')
+
+  useEffect(() => {
     dispatch(setApiManager(new ApiManager('http://localhost:1958')))
   }, [])
 
-  const switchNetwork = useCallback((enabled) => {
-    configurationManager.set('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958'))
-  })
-
   const synchronize = useCallback(() => apiManager.get('synchronize'))
 
-  const getCurrentTrackUrl = useCallback(() => '/track/modify/')
-
-  const triggerPlay = useCallback(() => mediaManager.playPause())
-  const triggerPrevious = useCallback(() => mediaManager.previous())
-  const triggerNext = useCallback(() => mediaManager.next())
+  const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'))
 
   return(
     <Router>
       <div className="App">
         <div className="main-container">
-          <div className="sidebar left" >
-            <Link to="/tracks" ><div className="button">Titles</div></Link>
-            <Link to="/artists" ><div className="button">Artists</div></Link>
+          <div className={`sidebar left ${menuState}`} >
+            <MenuLink path="/tracks" title="Tracks" icon="music" />
+            <MenuLink path="/artists" title="Artists" icon="user-friends" />
             <div id="toaster">
               <div id="toasterText">?!</div>
             </div>
@@ -72,35 +85,29 @@ const App = () => {
           </div>
         </div>
         <div id="header">
-          <Link to="/" >
-            <div id="AppHeader">
-              <div className="logo" >
-                <img src="/img/melophony.png" style={{ height: '100%' }} />
+          <div id="headerMenu" >
+            <i className="fa fa-bars fa-2x icon button" onClick={handleMenuSwitch} />
+            <Link to="/" >
+              <div id="AppHeader">
+                <div className="logo" >
+                  <img src="/img/melophony.png" style={{ height: '100%' }} />
+                </div>
+                <h1>Melophony</h1>
               </div>
-              <h1>Melophony</h1>
-            </div>
-          </Link>
+            </Link>
+          </div>
           <div id="headerActions">
             <i onClick={synchronize} className="fa fa-download icon button" />
-            <SimpleSwitch
-              icon="network-wired" title="Should connect to network for data"
-              configurationSwitch="networkEnabled" onSwitch={switchNetwork}
+            <ConfigurationSwitch
+              enabledState={new SwitchState('network-wired active', 'https://melophony.ddns.net')}
+              disabledState={new SwitchState('network-wired', 'http://localhost:1958')}
+              title="Should connect to network for data" configurationKey="serverAddress"
             />
           </div>
         </div>
+        <NotificationToaster />
         <div id="footer">
-          <audio id="player">
-            <p>If you are reading this, it is because your browser does not support the audio element.</p>
-          </audio>
-          <div id="controls">
-            <div className="button icon" onClick={triggerPrevious} ><i className="fa fa-backward fa-2x"  /></div>
-            <div className="button icon" onClick={triggerPlay} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1"  /></div>
-            <div className="button icon" onClick={triggerNext} ><i className="fa fa-forward fa-2x"  /></div>
-          </div>
-          <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
-            <div id="currentTrackInfo"  />
-          </Link>
-          <InputRange track={currentTrack} asReader />
+          <MediaManager />
         </div>
         <ConfirmOverlay />
       </div>

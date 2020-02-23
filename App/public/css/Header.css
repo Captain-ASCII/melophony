@@ -11,14 +11,20 @@
 }
 
 #header {
-    padding: 0 20px;
+    padding: 0 15px;
     top: 0;
 }
 
 #AppHeader {
+    margin: 0 20px;
     height: 100%;
     display: flex;
     flex: 1;
+}
+
+#headerMenu {
+    display: flex;
+    align-items: center;
 }
 
 #headerActions {
@@ -32,11 +38,12 @@
 }
 
 #header > div {
-    padding: 0 20px;
+    padding: 0 5px;
 }
 
 .logo {
-    height: 100%;
+    width: 50px;
+    height: 50px;
     padding-right: 15px;
 }
 

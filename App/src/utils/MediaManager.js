@@ -1,112 +1,135 @@
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-export default class MediaManager {
+import { setCurrentTrack } from 'actions/App'
 
-  static EXTRACT_DURATION = 2000;
+import { selectConfiguration } from 'selectors/Configuration'
+import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
 
-  constructor() {
-    this.currentIndex = 0
+import InputRange from 'components/InputRange'
 
-    this.isPlayingExtract = false
-    this.extractTimeout = null
+const MediaManager = () => {
+  const dispatch = useDispatch()
 
-    this.setPlayer()
+  const EXTRACT_DURATION = 2000
 
-    window.addEventListener('keydown', e => this.onKeyDown(e))
-  }
+  const configuration = selectConfiguration()
+  const playlist = selectPlaylist()
+  const currentTrack = selectCurrentTrack()
 
-  onKeyDown(event) {
+  const [ isPlayingExtract, setIsPlayingExtract ] = useState(false)
+  const [ extractTimeout, setExtractTimeout ] = useState(null)
+
+  const player = useRef()
+
+  const onKeyDown = event => {
     let tag = event.target.tagName.toLowerCase()
     if (event.keyCode == 32 && tag != 'input' && tag != 'textarea') {
-      this.playPause()
+      playPause()
     }
   }
+  window.addEventListener('keydown', e => onKeyDown(e))
 
-  setPlayer() {
-    if (!this.player) {
-      this.player = document.getElementById('player')
+  const getCurrentTrackUrl = useCallback(() => {
+    if (currentTrack) {
+      return `/modify/track/${currentTrack.getId()}`
     }
-  }
+  })
 
-  getCurrentTrack() {
-    return dataStorage.getAsArray('sortedTracks')[this.currentIndex] || { id: '' }
-  }
-
-  startPlay(id, index) {
-    this.currentIndex = index
-
-    let track = dataStorage.get('tracks')[id]
-    let artist = dataStorage.get('artists')[track.artist] || { name: 'Unknown' }
-
-    this.player.addEventListener('error', event => {
+  const startPlay = track => {
+    player.current.addEventListener('error', event => {
       if (event.target.error && event.target.error.code == 4) {
-        this.next()
-        // this.player.src = `https://melophony.ddns.net/files/${track.videoId}.m4a`
-        // this.player.load()
+        next()
       }
     })
 
-    this.player.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
-    this.player.currentTime = track.startTime
+    player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
+    player.current.currentTime = track.getStartTime()
 
-    this.player.ontimeupdate = (event) => {
-      if (this.player.currentTime > track.endTime) {
-        this.next()
+    player.current.ontimeupdate = () => {
+      if (player.current.currentTime > track.getEndTime()) {
+        next()
       }
     }
-    document.getElementById('currentTrackInfo').innerHTML = `${artist.name} - ${track.title}`
-    // new InputRange("tracker", document.getElementById("tracker"), track).asReader(player);
-    actionManager.do('setTrack', '', track)
+    document.getElementById('currentTrackInfo').innerHTML = `${track.getArtistName()} - ${track.getTitle()}`
 
-    this.play()
+    play()
   }
 
-  previous() {
-    let tracksArray = dataStorage.getAsArray('sortedTracks')
-    this.currentIndex = (this.currentIndex - 1) % tracksArray.length
-    this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex)
-  }
-
-  play() {
-    if (this.player.src == '') {
-      this.next()
+  const play = () => {
+    if (player.current.src === '') {
+      next()
     } else {
-      this.player.onended = () => this.next()
-      this.player.play()
+      player.current.onended = () => next()
+      player.current.play()
       document.getElementById('playButton').className = 'fa fa-pause fa-2x'
     }
   }
 
-  pause() {
-    this.player.pause()
+  const pause = () => {
+    player.current.pause()
     document.getElementById('playButton').className = 'fa fa-play fa-2x'
   }
 
-  playPause() {
-    if (this.player.paused) {
-      this.play()
+  const playPause = useCallback(() => {
+    if (player.current.paused) {
+      play()
     } else {
-      this.pause()
+      pause()
     }
+  })
+
+  const previous = useCallback(() => {
+    dispatch(setCurrentTrack(playlist.getPrevious()))
+  })
+
+  const next = useCallback(() => {
+    dispatch(setCurrentTrack(playlist.getNext()))
+  })
+
+  const playExtract = (track, time) => {
+    player.current.onended = () => false
+
+    if (!isPlayingExtract) {
+      player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
+      setIsPlayingExtract(true)
+    }
+    player.current.currentTime = time
+    player.current.play()
+    if (extractTimeout) {
+      clearTimeout(extractTimeout)
+    }
+    setExtractTimeout(setTimeout(() => player.current.pause(), MediaManager.EXTRACT_DURATION))
   }
 
-  next() {
-    let tracksArray = dataStorage.getAsArray('tracks')
-    this.currentIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracksArray.length) : (this.currentIndex + 1) % tracksArray.length
-    this.startPlay(`${tracksArray[this.currentIndex].id}`, this.currentIndex)
-  }
-
-  playExtract(track, time) {
-    this.player.onended = () => false
-
-    if (!this.isPlayingExtract) {
-      this.player.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
-      this.isPlayingExtract = true
+  useEffect(() => {
+    if (currentTrack) {
+      startPlay(currentTrack)
+      playlist.setTrack(currentTrack)
     }
-    this.player.currentTime = time
-    this.player.play()
-    if (this.extractTimeout) {
-      clearTimeout(this.extractTimeout)
-    }
-    this.extractTimeout = setTimeout(_ => this.player.pause(), MediaManager.EXTRACT_DURATION)
-  }
+  }, [currentTrack])
+
+  useEffect(() => {
+    playlist.setShuffleMode(configuration['shuffleMode'])
+  }, [configuration])
+
+  return (
+    <>
+      <audio id="player" ref={player}>
+        <p>If you are reading this, it is because your browser does not support the audio element.</p>
+      </audio>
+      <div id="controls">
+        <div className="button icon" onClick={previous} ><i className="fa fa-backward fa-2x"  /></div>
+        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1" /></div>
+        <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
+      </div>
+      <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
+        <div id="currentTrackInfo"  />
+      </Link>
+      <InputRange track={currentTrack} asReader />
+    </>
+  )
 }
+
+export default MediaManager
