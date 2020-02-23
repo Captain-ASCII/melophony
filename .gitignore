@@ -11,3 +11,4 @@ v8-compile-cache*
 dist
 nohup.out
 bundle.js
+current_melophony_pid.txt
