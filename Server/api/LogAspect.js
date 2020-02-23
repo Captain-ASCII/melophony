@@ -1,19 +1,19 @@
 
-import FileSystem from "fs";
+import FileSystem from 'fs'
 
 export default class LogAspect {
 
-    static LOGS_FILE = "logs.txt";
+  static LOGS_FILE = 'logs.txt'
 
-    constructor(app, db) {
-        this.app = app;
+  constructor(app, db) {
+    this.app = app
 
-        this.app.use("*", (request, response, next) => {
-            let now = new Date();
-            let log = `${now.toLocaleDateString("fr-FR")} ${now.toLocaleTimeString("fr-FR")}: Received request ${request.method} - [${request.originalUrl}]`;
-            console.log(log);
-            FileSystem.writeFile(LogAspect.LOGS_FILE, log, _ => false);
-            next();
-        });
-    }
+    this.app.use('*', (request, response, next) => {
+      let now = new Date()
+      let log = `${now.toLocaleDateString('fr-FR')} ${now.toLocaleTimeString('fr-FR')}: Received request ${request.method} - [${request.originalUrl}]`
+      console.log(log)
+      FileSystem.writeFile(LogAspect.LOGS_FILE, log, () => false)
+      next()
+    })
+  }
 }
