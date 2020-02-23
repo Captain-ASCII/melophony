@@ -17,6 +17,7 @@ import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
+import { selectConfiguration } from 'selectors/Configuration'
 
 import ConfirmOverlay from 'components/ConfirmOverlay'
 import { ConfigurationSwitch, SwitchState } from 'components/Switch'
@@ -46,12 +47,13 @@ MenuLink.propTypes = {
 const App = () => {
   const dispatch = useDispatch()
 
+  const configuration = selectConfiguration()
   const apiManager = selectApiManager()
 
   const [ menuState, setMenu ] = useState('closed')
 
   useEffect(() => {
-    dispatch(setApiManager(new ApiManager('http://localhost:1958')))
+    dispatch(setApiManager(new ApiManager(configuration['serverAddress'])))
   }, [])
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))
