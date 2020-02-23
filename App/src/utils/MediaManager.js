@@ -1,22 +1,23 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { setCurrentTrack } from 'actions/App'
 
-import { selectTracks } from 'selectors/Track'
-import { selectCurrentTrack } from 'selectors/App'
+import { selectConfiguration } from 'selectors/Configuration'
+import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
 
-import InputRange from 'components/utils/InputRange'
+import InputRange from 'components/InputRange'
 
 const MediaManager = () => {
   const dispatch = useDispatch()
 
   const EXTRACT_DURATION = 2000
 
-  const tracks = selectTracks()
+  const configuration = selectConfiguration()
+  const playlist = selectPlaylist()
   const currentTrack = selectCurrentTrack()
 
-  const [ currentIndex, setCurrentIndex ] = useState(0)
   const [ isPlayingExtract, setIsPlayingExtract ] = useState(false)
   const [ extractTimeout, setExtractTimeout ] = useState(null)
 
@@ -30,20 +31,23 @@ const MediaManager = () => {
   }
   window.addEventListener('keydown', e => onKeyDown(e))
 
-  const startPlay = (id, index) => {
-    setCurrentIndex(index)
-    const track = tracks.find(track => track.id === id)
+  const getCurrentTrackUrl = useCallback(() => {
+    if (currentTrack) {
+      return `/modify/track/${currentTrack.getId()}`
+    }
+  })
 
+  const startPlay = track => {
     player.current.addEventListener('error', event => {
       if (event.target.error && event.target.error.code == 4) {
         next()
       }
     })
 
-    player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+    player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
     player.current.currentTime = track.getStartTime()
 
-    player.current.ontimeupdate = (event) => {
+    player.current.ontimeupdate = () => {
       if (player.current.currentTime > track.getEndTime()) {
         next()
       }
@@ -77,24 +81,18 @@ const MediaManager = () => {
   })
 
   const previous = useCallback(() => {
-    const nextIndex = (currentIndex - 1) % tracks.length
-    setCurrentIndex(nextIndex)
-    dispatch(setCurrentTrack(tracks[nextIndex]))
-    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+    dispatch(setCurrentTrack(playlist.getPrevious()))
   })
 
   const next = useCallback(() => {
-    const nextIndex = configurationManager.get('shuffleMode') ? Math.floor(Math.random() * tracks.length) : (currentIndex + 1) % tracks.length
-    setCurrentIndex(nextIndex)
-    dispatch(setCurrentTrack(tracks[nextIndex]))
-    startPlay(`${tracks[nextIndex].id}`, nextIndex)
+    dispatch(setCurrentTrack(playlist.getNext()))
   })
 
   const playExtract = (track, time) => {
     player.current.onended = () => false
 
     if (!isPlayingExtract) {
-      player.current.src = `${configurationManager.get('serverAddress')}/files/${track.videoId}.m4a`
+      player.current.src = `${configuration['serverAddress']}/files/${track.videoId}.m4a`
       setIsPlayingExtract(true)
     }
     player.current.currentTime = time
@@ -102,14 +100,19 @@ const MediaManager = () => {
     if (extractTimeout) {
       clearTimeout(extractTimeout)
     }
-    setExtractTimeout(setTimeout(_ => player.current.pause(), MediaManager.EXTRACT_DURATION))
+    setExtractTimeout(setTimeout(() => player.current.pause(), MediaManager.EXTRACT_DURATION))
   }
 
   useEffect(() => {
     if (currentTrack) {
-      startPlay(currentTrack.getId(), tracks.findIndex(track => track.getId() === currentTrack.getId()))
+      startPlay(currentTrack)
+      playlist.setTrack(currentTrack)
     }
   }, [currentTrack])
+
+  useEffect(() => {
+    playlist.setShuffleMode(configuration['shuffleMode'])
+  }, [configuration])
 
   return (
     <>
@@ -118,9 +121,12 @@ const MediaManager = () => {
       </audio>
       <div id="controls">
         <div className="button icon" onClick={previous} ><i className="fa fa-backward fa-2x"  /></div>
-        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1"  /></div>
+        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex="-1" /></div>
         <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
       </div>
+      <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
+        <div id="currentTrackInfo"  />
+      </Link>
       <InputRange track={currentTrack} asReader />
     </>
   )

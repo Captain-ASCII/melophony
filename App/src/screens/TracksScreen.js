@@ -6,35 +6,21 @@ import { Link } from 'react-router-dom'
 import { Arrays } from 'utils/Immutable'
 
 import { selectTracks } from 'selectors/Track'
+import { selectConfiguration } from 'selectors/Configuration'
 import { setTracks } from 'actions/Track'
+import { setInConfiguration } from 'actions/Configuration'
 
-import TrackList from '../components/tracks/TrackList'
-import TextInput from '../components/utils/TextInput'
-import Switch, { SwitchState } from '../components/utils/Switch'
-import CustomSelect from '../components/utils/Select'
-import IconButton from '../components/utils/IconButton'
-
-const ConfigurationSwitch = ({ title, isActive, onSwitch, enabledState, disabledState, configurationKey }) => {
-  const handleSwitch = useCallback(value => {
-    if (onSwitch) {
-      onSwitch(value)
-    }
-    configurationManager.set(configurationKey, value)
-  })
-
-  return (
-    <Switch
-      enabledState={enabledState} disabledState={disabledState} onSwitch={handleSwitch}
-      title={title} isActive={isActive}
-    />
-  )
-}
+import TrackList from 'components/TrackList'
+import TextInput from 'components/TextInput'
+import { ConfigurationSwitch, SwitchState } from 'components/Switch'
+import CustomSelect from 'components/Select'
+import IconButton from 'components/IconButton'
 
 const filteredTracks = (tracks, filter) => tracks.filter(track => {
   return `${track.getArtistName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1
 })
 
-const _sort = (providedTracks, sortOrder, type) => {
+function _sort(providedTracks, sortOrder, type) {
   let sortFct = () => -1
 
   switch (type) {
@@ -56,22 +42,25 @@ const _sort = (providedTracks, sortOrder, type) => {
 
 const TracksScreen = () => {
   const dispatch = useDispatch()
+
+  const configuration = selectConfiguration()
   const tracks = selectTracks()
 
   const [ filter, setFilter ] = useState('')
-  const [ sortType, setSortType ] = useState(configurationManager.get('sortType'))
-  const [ sortOrder, setSortOrder ] = useState(configurationManager.get('sortOrder'))
-  const [ displayType, setDisplayType ] = useState(configurationManager.get('displayType'))
+  const [ sortType, setSortType ] = useState(configuration['sortType'])
+  const [ sortOrder, setSortOrder ] = useState(configuration['sortOrder'])
+  const [ displayType, setDisplayType ] = useState(configuration['displayType'])
 
   const changeTrackDisplay = useCallback(type => {
     setDisplayType(type)
-    configurationManager.set('displayType', type)
+    dispatch(setInConfiguration('displayType', type))
   })
 
-  const sort = type => {
+  const sort = useCallback(type => {
     setSortType(type)
+    dispatch(setInConfiguration('sortType', type))
     dispatch(setTracks(_sort(tracks, sortOrder, type)))
-  }
+  })
 
   const switchOrder = useCallback(value => {
     dispatch(setTracks(Arrays.reverse(tracks)))
@@ -103,19 +92,19 @@ const TracksScreen = () => {
             <TextInput id="trackSearch" icon="search" onInput={setFilter} />
           </div>
           <div id="sortBar" >
-            <CustomSelect onSelection={sortType => sort(sortType)} icon="" placeholder="Order" >
+            <CustomSelect onSelection={sort} icon="" placeholder="Order" >
               <option value="title">By title</option>
               <option value="date">By date of download</option>
             </CustomSelect>
             <ConfigurationSwitch
               enabledState={new SwitchState('sort-amount-up', 'ASC')} disabledState={new SwitchState('sort-amount-down', 'DESC')}
-              onSwitch={switchOrder} configurationKey="sortOrder" title="Sort order"
+              title="Sort order" configurationKey="sortOrder" onSwitch={switchOrder}
             />
           </div>
           <div className="displayActions">
             <ConfigurationSwitch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              title="Switch track playing mode" configurationKey="shuffleMode" isActive={configurationManager.get('shuffleMode') === true}
+              title="Switch track playing mode" configurationKey="shuffleMode"
             />
             <IconButton
               icon="list" data="itemList" onClick={changeTrackDisplay}
@@ -133,7 +122,7 @@ const TracksScreen = () => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList tracks={filteredTracks(tracks, filter)} displayType={displayType} withArtist />
+      <TrackList tracks={_sort(filteredTracks(tracks, filter), sortOrder, sortType)} displayType={displayType} withArtist />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )

@@ -20,6 +20,7 @@ module.exports = {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     alias: {
+      app: path.resolve(__dirname, '../src/App.js'),
       public: path.resolve(__dirname, '../public/'),
       actions: path.resolve(__dirname, '../src/redux/actions/'),
       components: path.resolve(__dirname, '../src/components/'),

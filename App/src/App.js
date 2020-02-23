@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 
 import { hot } from 'react-hot-loader'
@@ -17,34 +18,53 @@ import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
 
-import ConfirmOverlay from 'components/utils/ConfirmOverlay'
-import { SimpleSwitch } from 'components/utils/Switch'
-import NotificationToaster from 'components/utils/NotificationToaster'
+import ConfirmOverlay from 'components/ConfirmOverlay'
+import { ConfigurationSwitch, SwitchState } from 'components/Switch'
+import NotificationToaster from 'components/NotificationToaster'
+
+
+const MenuLink = ({ title, path, icon }) => {
+  return (
+    <Link to={path} >
+      <div className="menuLink button" >
+        <i className={`fa fa-${icon}`} />
+        <p className="buttonTitle" >{ title }</p>
+      </div>
+    </Link>
+  )
+}
+
+MenuLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+}
+
+
+
 
 const App = () => {
   const dispatch = useDispatch()
 
   const apiManager = selectApiManager()
 
+  const [ menuState, setMenu ] = useState('closed')
+
   useEffect(() => {
     dispatch(setApiManager(new ApiManager('http://localhost:1958')))
   }, [])
 
-  const switchNetwork = useCallback((enabled) => {
-    dispatch(setInConfiguration('serverAddress', (enabled ? 'https://melophony.ddns.net' : 'http://localhost:1958')))
-  })
-
   const synchronize = useCallback(() => apiManager.get('synchronize'))
 
-  const getCurrentTrackUrl = useCallback(() => '/track/modify/')
+  const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'))
 
   return(
     <Router>
       <div className="App">
         <div className="main-container">
-          <div className="sidebar left" >
-            <Link to="/tracks" ><div className="button">Titles</div></Link>
-            <Link to="/artists" ><div className="button">Artists</div></Link>
+          <div className={`sidebar left ${menuState}`} >
+            <MenuLink path="/tracks" title="Tracks" icon="music" />
+            <MenuLink path="/artists" title="Artists" icon="user-friends" />
             <div id="toaster">
               <div id="toasterText">?!</div>
             </div>
@@ -65,28 +85,29 @@ const App = () => {
           </div>
         </div>
         <div id="header">
-          <Link to="/" >
-            <div id="AppHeader">
-              <div className="logo" >
-                <img src="/img/melophony.png" style={{ height: '100%' }} />
+          <div id="headerMenu" >
+            <i className="fa fa-bars fa-2x icon button" onClick={handleMenuSwitch} />
+            <Link to="/" >
+              <div id="AppHeader">
+                <div className="logo" >
+                  <img src="/img/melophony.png" style={{ height: '100%' }} />
+                </div>
+                <h1>Melophony</h1>
               </div>
-              <h1>Melophony</h1>
-            </div>
-          </Link>
+            </Link>
+          </div>
           <div id="headerActions">
             <i onClick={synchronize} className="fa fa-download icon button" />
-            <SimpleSwitch
-              icon="network-wired" title="Should connect to network for data"
-              configurationSwitch="networkEnabled" onSwitch={switchNetwork}
+            <ConfigurationSwitch
+              enabledState={new SwitchState('network-wired active', 'https://melophony.ddns.net')}
+              disabledState={new SwitchState('network-wired', 'http://localhost:1958')}
+              title="Should connect to network for data" configurationKey="serverAddress"
             />
           </div>
         </div>
         <NotificationToaster />
         <div id="footer">
           <MediaManager />
-          <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
-            <div id="currentTrackInfo"  />
-          </Link>
         </div>
         <ConfirmOverlay />
       </div>

@@ -1,6 +1,6 @@
 
 export const SET_CONFIGURATION = 'SET_CONFIGURATION'
-export const SET_CONFIGURATION_VALUE = 'SET_CONFIGURATION_VALUE'
+export const SET_IN_CONFIGURATION = 'SET_IN_CONFIGURATION'
 
 export const setConfiguration = configuration => ({ type: SET_CONFIGURATION, configuration })
-export const setInConfiguration = (key, value) => ({ type: SET_CONFIGURATION_VALUE, key, value })
+export const setInConfiguration = (key, value) => ({ type: SET_IN_CONFIGURATION, key, value })

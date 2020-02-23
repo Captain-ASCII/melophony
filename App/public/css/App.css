@@ -137,15 +137,32 @@ h1 {
 
 .sidebar.left {
     height: 100%;
-    width: 15%;
-    padding: 15px;
+    padding: 15px 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     position: relative;
+    transition: width 0.5s;
+}
+.sidebar.left.opened {
+    width: 15%;
+}
+
+.sidebar.left.closed {
+    width: 80px;
+}
+
+.sidebar.closed .buttonTitle {
+  display: none;
 }
 
 .sidebar.left > .button {
     margin: 10px;
     font-size: 15px;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #toaster {
@@ -345,6 +362,10 @@ h1 {
 
 .button.icon.floating:hover {
     background-color: var(--main-hover-bg);
+}
+
+.button .buttonTitle {
+  margin: 0 10px;
 }
 
 .input {

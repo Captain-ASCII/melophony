@@ -1,7 +1,8 @@
 import { Objects } from 'utils/Immutable'
 
-import { SET_CONFIGURATION, SET_CONFIGURATION_VALUE } from 'actions/Configuration'
+import { SET_CONFIGURATION, SET_IN_CONFIGURATION } from 'actions/Configuration'
 
+const MELOPHONY_CONFIGURATION = 'melophony-configuration'
 const INITIAL_CONFIG = {
   serverAddress: 'https://melophony.ddns.net',
   networkEnabled: true,
@@ -11,12 +12,25 @@ const INITIAL_CONFIG = {
   displayType: 'itemList'
 }
 
-const configuration = (state = INITIAL_CONFIG, action) => {
+function inflate() {
+  const jsonConfiguration = localStorage.getItem(MELOPHONY_CONFIGURATION)
+  if (jsonConfiguration) {
+    return JSON.parse(jsonConfiguration)
+  }
+  return INITIAL_CONFIG
+}
+
+function store(newConfiguration) {
+  localStorage.setItem(MELOPHONY_CONFIGURATION, JSON.stringify(newConfiguration))
+  return newConfiguration
+}
+
+const configuration = (state = inflate(), action) => {
   switch (action.type) {
     case SET_CONFIGURATION:
-      return action.configuration
-    case SET_CONFIGURATION_VALUE:
-      return Objects.update(state, action.key, action.value)
+      return store(action.configuration)
+    case SET_IN_CONFIGURATION:
+      return store(Objects.update(state, action.key, action.value))
     default:
       return state
   }

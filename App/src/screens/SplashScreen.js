@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { setConfiguration } from 'actions/Configuration'
 
-import Select from '../components/utils/Select'
+import Select from 'components/Select'
 
 const Splash = ({ getRequiredData }) => {
   const dispatch = useDispatch()

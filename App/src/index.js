@@ -7,26 +7,31 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { store } from 'store'
-import App from './App.js'
+import App from 'app'
 
 import Track from 'models/Track'
 import Artist from 'models/Artist'
 
-import SplashScreen from './screens/SplashScreen.js'
+import Playlist from 'utils/Playlist'
 
-import ConfigurationManager from './utils/ConfigurationManager'
+import SplashScreen from 'screens/SplashScreen'
 
+import { setPlaylist } from 'actions/App'
 import { setTracks } from 'actions/Track'
 import { setArtists } from 'actions/Artist'
 
-global.configurationManager = new ConfigurationManager()
-
 async function getData() {
-  let tracks = await (await fetch(`${store.getState().configuration['serverAddress']}/tracks`)).json()
-  let artists = await (await fetch(`${store.getState().configuration['serverAddress']}/artists`)).json()
+  const configuration = store.getState().configuration
 
-  store.dispatch(setArtists(Object.values(artists).map(artist => Artist.fromObject(artist))))
-  store.dispatch(setTracks(Object.values(tracks).map(track => Track.fromObject(track, Object.values(artists)))))
+  const tracksJson = await (await fetch(`${configuration['serverAddress']}/tracks`)).json()
+  const artistsJson = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
+
+  const tracks = Object.values(tracksJson).map(track => Track.fromObject(track, Object.values(artistsJson)))
+  const artists = Object.values(artistsJson).map(artist => Artist.fromObject(artist))
+
+  store.dispatch(setArtists(artists))
+  store.dispatch(setTracks(tracks))
+  store.dispatch(setPlaylist(new Playlist(tracks)))
 
   ReactDOM.render(
     <Provider store={store} >
