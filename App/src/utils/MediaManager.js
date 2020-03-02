@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { setCurrentTrack } from 'actions/App'
+import { setCurrentTrack, setPlaylist } from 'actions/App'
 
 import { selectConfiguration } from 'selectors/Configuration'
 import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
@@ -85,7 +85,9 @@ const MediaManager = () => {
   })
 
   const next = useCallback(() => {
-    dispatch(setCurrentTrack(playlist.getNext()))
+    const [ track, modifiedPlaylist ] = playlist.getNext()
+    dispatch(setCurrentTrack(track))
+    dispatch(setPlaylist(modifiedPlaylist))
   })
 
   const playExtract = (track, time) => {
