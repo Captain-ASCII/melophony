@@ -1,10 +1,13 @@
 import React, {} from 'react'
 import PropTypes from 'prop-types'
 
+import { selectPlaylist } from 'selectors/App'
+
 import Track from 'models/Track'
 
 const PlayList = ({ tracks }) => {
-const rTracks = tracks.map(track => (<p key={track.getId()} className="hideWhenClosed" >{ track.getTitle() }</p>))
+  const rTracks = tracks.map(track => (<p key={track.getId()} className="hideWhenClosed" >{ track.getTitle() }</p>))
+  const rPlaylist = selectPlaylist().getList().map(track => (<p key={track.getId()} className="hideWhenClosed" >{ track.getTitle() }</p>))
 
   return (
     <div className="playlist" >
@@ -13,6 +16,7 @@ const rTracks = tracks.map(track => (<p key={track.getId()} className="hideWhenC
         <span className="hideWhenClosed" >Track(s)</span>
       </h3>
       { rTracks }
+      { rPlaylist }
     </div>
   )
 }

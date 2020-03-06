@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { selectPlaylist } from 'selectors/App'
-import { setCurrentTrack, setPlaylist } from 'actions/App'
+import { setPlaylist } from 'actions/App'
 
 import Track from 'models/Track'
 
@@ -23,7 +23,7 @@ const RTrack = ({ track, hasScrolled, displayType }) => {
   const playlist = selectPlaylist()
 
   const startPlay = useCallback(() => {
-    dispatch(setCurrentTrack(track))
+    dispatch(setPlaylist(playlist.withTrack(track)))
   })
 
   let buttonPressTimer = null

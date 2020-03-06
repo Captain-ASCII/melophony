@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { setCurrentTrack, setPlaylist } from 'actions/App'
+import { setPlaylist } from 'actions/App'
 
 import { selectConfiguration } from 'selectors/Configuration'
-import { selectCurrentTrack, selectPlaylist } from 'selectors/App'
+import { selectPlaylist } from 'selectors/App'
 
 import InputRange from 'components/InputRange'
 
@@ -16,7 +16,7 @@ const MediaManager = () => {
 
   const configuration = selectConfiguration()
   const playlist = selectPlaylist()
-  const currentTrack = selectCurrentTrack()
+  const currentTrack = playlist.getCurrent()
 
   const [ isPlayingExtract, setIsPlayingExtract ] = useState(false)
   const [ extractTimeout, setExtractTimeout ] = useState(null)
@@ -81,13 +81,11 @@ const MediaManager = () => {
   })
 
   const previous = useCallback(() => {
-    dispatch(setCurrentTrack(playlist.getPrevious()))
+    dispatch(setPlaylist(playlist.previous()))
   })
 
   const next = useCallback(() => {
-    const [ track, modifiedPlaylist ] = playlist.getNext()
-    dispatch(setCurrentTrack(track))
-    dispatch(setPlaylist(modifiedPlaylist))
+    dispatch(setPlaylist(playlist.next()))
   })
 
   const playExtract = (track, time) => {
@@ -108,12 +106,11 @@ const MediaManager = () => {
   useEffect(() => {
     if (currentTrack) {
       startPlay(currentTrack)
-      playlist.setTrack(currentTrack)
     }
   }, [currentTrack])
 
   useEffect(() => {
-    playlist.setShuffleMode(configuration['shuffleMode'])
+    dispatch(setPlaylist(playlist.withShuffleMode(configuration['shuffleMode'])))
   }, [configuration])
 
   return (

@@ -5,7 +5,7 @@ import Model from 'models/Model'
 
 export default class Playlist extends Model {
 
-  constructor(tracks, shuffledTracks = Arrays.shuffle(tracks), current = tracks, index = 0, queue = []) {
+  constructor(tracks, shuffledTracks = Arrays.shuffle(tracks), current = tracks, index = -1, queue = []) {
     super()
 
     this.tracks = tracks
@@ -21,39 +21,41 @@ export default class Playlist extends Model {
 
   dequeue() {
     if (this.queue.length > 0) {
-      const [track, queue] = Arrays.pop(this.queue)
-      return [ track, this.with('queue', queue) ]
+      const [ track, queue ] = Arrays.pop(this.queue)
+      return this.withTrack(track).with('queue', queue)
     }
     Log.w('Cannot dequeue empty array')
-    return [ null, this ]
+    return this
   }
 
-  setTrack(currentTrack) {
-    this.index = this.current.findIndex(track => track.getId() === currentTrack.getId())
+  withTrack(currentTrack) {
+    return this.with('index', this.current.findIndex(track => track.getId() === currentTrack.getId()))
   }
 
-  setShuffleMode(shuffleMode) {
-    if (shuffleMode) {
-      this.current = this.shuffledTracks
-    } else {
-      this.current = this.tracks
-    }
+  withShuffleMode(shuffleMode) {
+    return this.with('current', shuffleMode ? this.shuffledTracks : this.tracks)
+  }
+
+  getList() {
+    return this.current.slice(this.index, Math.min(this.index + 5, this.current.length))
   }
 
   getQueue() {
     return this.queue
   }
 
-  getPrevious() {
-    this.index = (this.index - 1 + this.current.length) % this.current.length
-    return this.current[this.index]
+  previous() {
+    return this.with('index', (this.index - 1 + this.current.length) % this.current.length)
   }
 
-  getNext() {
+  getCurrent() {
+    return this.index > -1 ? this.current[this.index] : null
+  }
+
+  next() {
     if (this.queue.length > 0) {
       return this.dequeue()
     }
-    this.index = (this.index + 1) % this.current.length
-    return [ this.current[this.index], this ]
+    return this.with('index', (this.index + 1) % this.current.length)
   }
 }
