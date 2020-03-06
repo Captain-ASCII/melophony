@@ -18,6 +18,7 @@ import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
 import { selectPlaylist } from 'selectors/App'
+import { selectConfiguration } from 'selectors/Configuration'
 
 import PlayList from 'components/PlayList'
 import ConfirmOverlay from 'components/ConfirmOverlay'
@@ -48,13 +49,14 @@ MenuLink.propTypes = {
 const App = () => {
   const dispatch = useDispatch()
 
+  const configuration = selectConfiguration()
   const apiManager = selectApiManager()
   const playlist = selectPlaylist()
 
   const [ menuState, setMenu ] = useState('closed')
 
   useEffect(() => {
-    dispatch(setApiManager(new ApiManager('http://localhost:1958')))
+    dispatch(setApiManager(new ApiManager(configuration['serverAddress'])))
   }, [])
 
   const synchronize = useCallback(() => apiManager.get('synchronize'))

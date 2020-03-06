@@ -33,5 +33,39 @@
     "plugins": [
       "@babel/plugin-proposal-class-properties"
     ]
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "semi": [
+        "error",
+        "never"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ]
+    },
+    "globals": {
+      "__dirname": "readonly",
+      "clearInterval": "readonly",
+      "clearTimeout": "readonly",
+      "fetch": "readonly",
+      "global": "writable",
+      "module": "writable",
+      "require": "readonly",
+      "setInterval": "readonly",
+      "setTimeout": "readonly"
+    }
   }
 }
