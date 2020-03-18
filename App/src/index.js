@@ -12,7 +12,7 @@ import App from 'app'
 import Track from 'models/Track'
 import Artist from 'models/Artist'
 
-import Playlist from 'utils/Playlist'
+import Playlist from 'models/Playlist'
 
 import SplashScreen from 'screens/SplashScreen'
 
@@ -27,7 +27,7 @@ async function getData() {
   const artistsJson = await (await fetch(`${configuration['serverAddress']}/artists`)).json()
 
   const tracks = Object.values(tracksJson).map(track => Track.fromObject(track, Object.values(artistsJson)))
-  const artists = Object.values(artistsJson).map(artist => Artist.fromObject(artist))
+  const artists = Object.values(artistsJson).map(artist => new Artist().fromObject(artist))
 
   store.dispatch(setArtists(artists))
   store.dispatch(setTracks(tracks))

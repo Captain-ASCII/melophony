@@ -1,15 +1,12 @@
+import Model from 'models/Model'
 
-export default class Artist {
+export default class Artist extends Model {
 
   constructor(id, name) {
+    super()
+
     this.id = id
     this.name = name
-  }
-
-  static #with(a, property, value) {
-    let copy = new Artist(a.id, a.name)
-    copy[property] = value
-    return copy
   }
 
   getId() {
@@ -17,7 +14,7 @@ export default class Artist {
   }
 
   withId(id) {
-    return Artist.#with(this, 'id', id)
+    return this.with('id', id)
   }
 
   getName() {
@@ -25,10 +22,6 @@ export default class Artist {
   }
 
   withName(name) {
-    return Artist.#with(this, 'name', name)
-  }
-
-  static fromObject(o) {
-    return new Artist(o.id, o.name)
+    return this.with('name', name)
   }
 }

@@ -150,7 +150,7 @@ h1 {
     width: 80px;
 }
 
-.sidebar.closed .buttonTitle {
+.sidebar.left.closed .hideWhenClosed {
   display: none;
 }
 
@@ -163,6 +163,29 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.playlist {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  background-color: #222;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.playlist > .playlistLength {
+  align-self: center;
+  margin: 5px;
+}
+
+.playlistLength > span {
+  margin: 2px;
+}
+
+.playlist > p {
+  margin: 5px;
 }
 
 #toaster {

@@ -2,7 +2,10 @@
 class Arrays {
 
   static copy(array) {
-    return [...array]
+    if (array) {
+      return [...array]
+    }
+    return null
   }
 
   static update(array, id, element) {
