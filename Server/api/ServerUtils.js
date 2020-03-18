@@ -21,7 +21,7 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
   }
 
   for (let i in info.formats) {
-    if (info.formats[i].container == 'm4a') {
+    if (info.formats[i].mimeType.startsWith('audio/mp4')) {
       let format = info.formats[i]
       console.log(`Found information for ${videoId}: [ itag: ${format.itag}, length: ${format.clen} ]`)
 
@@ -39,30 +39,30 @@ function downloadTrack(videoId, files, tracks, artists, modifiedTracks, db) {
       db.save()
       checkFilesDir()
       exec(`ytdl -q ${format.itag} https://www.youtube.com/watch?v=${videoId} > ${FILE_DIR}/${videoId}.m4a`, (error, stdout, stderr) => {
-      if (error) {
-        console.log(`Error YTDL download: ${error}`)
-        return `Error: ${error}`
-      }
-      files[videoId].state = Track.AVAILABLE
-      if (track) {
-        tracks[track.id].status = Track.AVAILABLE
-      }
-      global.eventListener.notify('downloadEnd', [ videoId ])
+        if (error) {
+          console.log(`Error YTDL download: ${error}`)
+          return `Error: ${error}`
+        }
+        files[videoId].state = Track.AVAILABLE
+        if (track) {
+          tracks[track.id].status = Track.AVAILABLE
+        }
+        global.eventListener.notify('downloadEnd', [ videoId ])
 
-      db.save()
-      console.log(`Download done for ${videoId}`)
-    })
+        db.save()
+        console.log(`Download done for ${videoId}`)
+      })
 
-    let progressInterval = setInterval(_ => {
-      const progress = getDownloadProgress(videoId, files)
-      global.eventListener.notify('downloadProgress', [ videoId, progress ])
+      let progressInterval = setInterval(() => {
+        const progress = getDownloadProgress(videoId, files)
+        global.eventListener.notify('downloadProgress', [ videoId, progress ])
 
-      if (progress == 100) {
-        clearTimeout(progressInterval)
-      }
-    }, 2000)
+        if (progress == 100) {
+          clearTimeout(progressInterval)
+        }
+      }, 2000)
+    }
   }
-}
 })
 return { added: videoId }
 }

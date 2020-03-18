@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types'
 
-export default class Track {
+import Model from 'models/Model'
+
+export default class Track extends Model {
 
   constructor(id, title, artistId, artistName, duration, videoId, creationDate, status, startTime, endTime) {
+    super()
+
     this.id = id
     this.title = title
     this.artistId = artistId
@@ -15,18 +19,12 @@ export default class Track {
     this.endTime = endTime
   }
 
-  static #with(t, property, value) {
-    let copy = Track.fromTrack(t)
-    copy[property] = value
-    return copy
-  }
-
   getId() {
     return this.id
   }
 
   withId(id) {
-    return Track.#with(this, 'id', id)
+    return this.with('id', id)
   }
 
   getTitle() {
@@ -34,7 +32,7 @@ export default class Track {
   }
 
   withTitle(title) {
-    return Track.#with(this, 'title', title)
+    return this.with('title', title)
   }
 
   getArtistId() {
@@ -42,7 +40,7 @@ export default class Track {
   }
 
   withArtistId(artistId) {
-    return Track.#with(this, 'artistId', artistId)
+    return this.with('artistId', artistId)
   }
 
   getArtistName() {
@@ -50,7 +48,7 @@ export default class Track {
   }
 
   withArtistName(artistName) {
-    return Track.#with(this, 'artistName', artistName)
+    return this.with('artistName', artistName)
   }
 
   getDuration() {
@@ -58,7 +56,7 @@ export default class Track {
   }
 
   withDuration(duration) {
-    return Track.#with(this, 'duration', duration)
+    return this.with('duration', duration)
   }
 
   getVideoId() {
@@ -66,7 +64,7 @@ export default class Track {
   }
 
   withVideoId(videoId) {
-    return Track.#with(this, 'videoId', videoId)
+    return this.with('videoId', videoId)
   }
 
   getCreationDate() {
@@ -74,7 +72,7 @@ export default class Track {
   }
 
   withCreationDate(creationDate) {
-    return Track.#with(this, 'creationDate', creationDate)
+    return this.with('creationDate', creationDate)
   }
 
   getStatus() {
@@ -82,7 +80,7 @@ export default class Track {
   }
 
   withStatus(status) {
-    return Track.#with(this, 'status', status)
+    return this.with('status', status)
   }
 
   getStartTime() {
@@ -90,7 +88,7 @@ export default class Track {
   }
 
   withStartTime(startTime) {
-    return Track.#with(this, 'startTime', startTime)
+    return this.with('startTime', startTime)
   }
 
 
@@ -98,8 +96,8 @@ export default class Track {
     return this.endTime
   }
 
-  withEndTime(startTime) {
-    return Track.#with(this, 'endTime', endTime)
+  withEndTime(endTime) {
+    return this.with('endTime', endTime)
   }
 
   static fromTrack(t) {

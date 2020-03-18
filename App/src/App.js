@@ -17,8 +17,10 @@ import ApiManager from 'utils/ApiManager'
 import MediaManager from 'utils/MediaManager'
 
 import { selectApiManager } from 'selectors/Manager'
+import { selectPlaylist } from 'selectors/App'
 import { selectConfiguration } from 'selectors/Configuration'
 
+import PlayList from 'components/PlayList'
 import ConfirmOverlay from 'components/ConfirmOverlay'
 import { ConfigurationSwitch, SwitchState } from 'components/Switch'
 import NotificationToaster from 'components/NotificationToaster'
@@ -29,7 +31,7 @@ const MenuLink = ({ title, path, icon }) => {
     <Link to={path} >
       <div className="menuLink button" >
         <i className={`fa fa-${icon}`} />
-        <p className="buttonTitle" >{ title }</p>
+        <p className="buttonTitle hideWhenClosed" >{ title }</p>
       </div>
     </Link>
   )
@@ -49,6 +51,7 @@ const App = () => {
 
   const configuration = selectConfiguration()
   const apiManager = selectApiManager()
+  const playlist = selectPlaylist()
 
   const [ menuState, setMenu ] = useState('closed')
 
@@ -67,9 +70,12 @@ const App = () => {
           <div className={`sidebar left ${menuState}`} >
             <MenuLink path="/tracks" title="Tracks" icon="music" />
             <MenuLink path="/artists" title="Artists" icon="user-friends" />
-            <div id="toaster">
-              <div id="toasterText">?!</div>
+            <div id="mainPlaylist" >
+              <PlayList tracks={playlist.getQueue()} />
             </div>
+          </div>
+          <div id="toaster">
+            <div id="toasterText">?!</div>
           </div>
           <div id="content">
             <Switch>

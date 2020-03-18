@@ -122,7 +122,7 @@ const TracksScreen = () => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList tracks={_sort(filteredTracks(tracks, filter), sortOrder, sortType)} displayType={displayType} withArtist />
+      <TrackList tracks={_sort(filteredTracks(tracks, filter), sortOrder, sortType)} displayType={displayType} />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )
