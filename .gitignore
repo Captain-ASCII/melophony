@@ -13,3 +13,5 @@ dist
 nohup.out
 bundle.js
 bundle.js.map
+
+.vscode
