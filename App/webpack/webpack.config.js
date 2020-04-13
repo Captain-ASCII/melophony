@@ -1,15 +1,24 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
+  devtool: 'source-map',
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader',
-        options: { presets: ['@babel/env'] }
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader'
+          }
+        ]
+      },
+      {
+        enforce: 'pre',
+        test: '/.js$/',
+        loader: 'source-map-loader'
       },
       {
         test: /\.css$/,
@@ -18,18 +27,18 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.css'],
     alias: {
-      app: path.resolve(__dirname, '../src/App.js'),
-      public: path.resolve(__dirname, '../public/'),
-      actions: path.resolve(__dirname, '../src/redux/actions/'),
-      components: path.resolve(__dirname, '../src/components/'),
-      models: path.resolve(__dirname, '../src/models/'),
-      reducers: path.resolve(__dirname, '../src/redux/reducers/'),
-      selectors: path.resolve(__dirname, '../src/redux/selectors/'),
-      store: path.resolve(__dirname, '../src/redux/store/Store.js'),
-      utils: path.resolve(__dirname, '../src/utils/'),
-      screens: path.resolve(__dirname, '../src/screens/')
+      '@public': path.resolve(__dirname, '../public/'),
+      '@components': path.resolve(__dirname, '../src/components/'),
+      '@models': path.resolve(__dirname, '../src/models/'),
+      '@utils': path.resolve(__dirname, '../src/utils/'),
+      '@screens': path.resolve(__dirname, '../src/screens/'),
+
+      '@actions': path.resolve(__dirname, '../src/redux/actions/'),
+      '@reducers': path.resolve(__dirname, '../src/redux/reducers/'),
+      '@selectors': path.resolve(__dirname, '../src/redux/selectors/'),
+      '@store': path.resolve(__dirname, '../src/redux/store/Store.ts'),
     }
   },
   output: {

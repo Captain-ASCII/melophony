@@ -8,6 +8,8 @@ melophony.ddns.net
 .well-known
 npm-debug.log
 v8-compile-cache*
+build
 dist
 nohup.out
 bundle.js
+bundle.js.map

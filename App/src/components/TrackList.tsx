@@ -1,0 +1,123 @@
+import React, { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { Link, useHistory } from 'react-router-dom'
+
+import { selectPlaylist } from '@selectors/App'
+import { setPlaylist } from '@actions/App'
+
+import Track from '@models/Track'
+
+const formatDuration = (duration: number): string => {
+  const minutes = '0' + Math.round(duration / 60)
+  const seconds = '0' + (duration % 60)
+  return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
+}
+
+const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled: () => boolean; displayType: string }): JSX.Element => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  const playlist = selectPlaylist()
+
+  const [ buttonPressTimer, setButtonPressTimer ] = useState(null)
+
+  const startPlay = useCallback(() => {
+    dispatch(setPlaylist(playlist.withTrack(track)))
+  }, [ dispatch, playlist, track ])
+
+  const press = useCallback(() => {
+    setButtonPressTimer(
+      setTimeout(() => {
+        if (!hasScrolled()) {
+          history.push(`/track/modify/${track.getId()}`)
+        }
+      }, 500)
+    )
+  }, [ history, hasScrolled, track ])
+
+  const release = useCallback(() => clearTimeout(buttonPressTimer), [ buttonPressTimer ])
+
+  const stopPropagation = useCallback(() => (e: MouseEvent): void => e.stopPropagation(), [])
+  const handleEnqueue = useCallback(() => dispatch(setPlaylist(playlist.enqueue(track))), [ dispatch, playlist, track ])
+
+  return (
+    <div className="itemInfo" >
+      <div
+        className="subItemInfo" onClick={startPlay}
+        onTouchStart={press} onTouchEnd={release}
+      >
+        <p className="title " >{track.getTitle()}</p>
+      </div>
+      <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
+        <p className="artist" >{track.getArtist().getName()}</p>
+      </Link>
+      <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  />
+      <p className="duration" >{formatDuration(track.getDuration())}</p>
+      <div className="itemActions">
+        <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
+        <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+      </div>
+    </div>
+  )
+}
+
+// RTrack.propTypes = {
+//   track: PropTypes.instanceOf(Track),
+//   hasScrolled: PropTypes.func.isRequired,
+//   displayType: PropTypes.string,
+// }
+
+
+
+
+
+const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType: string }): JSX.Element => {
+
+  const [ hasScrolled, setHasScrolled ] = useState(false)
+  const [ scrollTimeout, setScrollTimeout ] = useState(null)
+
+  const scroll = useCallback(() => {
+    setHasScrolled(true)
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout)
+    }
+    setScrollTimeout(setTimeout(() => setHasScrolled(false), 1000))
+  }, [ scrollTimeout ])
+
+  const getScrollStatus = useCallback(() => hasScrolled, [ hasScrolled ])
+
+  return (
+    <div id={displayType} onScroll={scroll} >
+      {
+        tracks.map((track) => {
+          const blockStyle = {}
+
+          if (displayType == 'itemBlocks') {
+            // blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
+          }
+
+          return (
+            <div className="trackListItem" key={track.getId()} >
+              <div className="ratioContainer" >
+                <div className="blockBackground" style={blockStyle} />
+                <div className="stretchBox" >
+                  <RTrack
+                    track={track} hasScrolled={getScrollStatus}
+                    displayType={displayType}
+                  />
+                </div>
+              </div>
+            </div>
+          )
+        })
+      }
+    </div>
+  )
+}
+
+// TrackList.propTypes = {
+//   tracks: PropTypes.arrayOf(PropTypes.instanceOf(Track)),
+//   displayType: PropTypes.string.isRequired,
+// }
+
+export default TrackList

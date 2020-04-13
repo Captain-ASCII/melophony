@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "lib": ["dom"],
+    "outDir": "./dist",
+    "sourceMap": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "strictNullChecks": false,
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "baseUrl": "./src",
+    "paths": {
+      "@actions/*": ["redux/actions/*"],
+      "@components/*": ["components/*"],
+      "@models/*": ["models/*"],
+      "@reducers/*": ["redux/reducers/*"],
+      "@selectors/*": ["redux/selectors/*"],
+      "@store": ["redux/store/Store.ts"],
+      "@utils/*": ["utils/*"],
+      "@screens/*": ["screens/*"]
+    }
+  },
+  "plugins": [
+    "@typescript-eslint",
+  ],
+  "include": [
+    "src"
+  ],
+  "exclude" : [
+    "./old",
+    "./build",
+    "./dist",
+    "./public",
+    "./node_modules"
+  ],
+}
