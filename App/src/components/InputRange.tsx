@@ -10,7 +10,8 @@ const getPercentage = (value: number, track: Track): number => {
 
 let intervalHandle: any
 
-const InputRange = ({ track, multiRange, asReader }: { track: Track | null; multiRange?: boolean; asReader?: boolean }): JSX.Element | null => {
+const InputRange = ({ track, multiRange, asReader, onStartSet, onEndSet }:
+  { track: Track | null; multiRange?: boolean; asReader?: boolean; onStartSet?: (v: number) => void; onEndSet?: (v: number) => void }): JSX.Element | null => {
 
   if (track) {
     const [ leftValue, setLeftValue ] = useState(getPercentage(track.getStartTime(), track))
@@ -50,8 +51,8 @@ const InputRange = ({ track, multiRange, asReader }: { track: Track | null; mult
         const value = event.target.value
         mediaManager.playExtract(track, value)
         setRightValue(100 - getPercentage(value, track))
-        track.withEndTime(Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000)))
-      }, [ mediaManager, track ])
+        onEndSet(Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000)))
+      }, [ onEndSet, mediaManager, track ])
     }
 
     const defaultValue = asReader ? 0 : track.getEndTime()
@@ -60,8 +61,8 @@ const InputRange = ({ track, multiRange, asReader }: { track: Track | null; mult
       const value = event.target.value
       mediaManager.playExtract(track, value)
       setLeftValue(getPercentage(value, track))
-      track.withStartTime(parseInt(value))
-    }, [ mediaManager, track ])
+      onStartSet(parseInt(value))
+    }, [ onStartSet, mediaManager, track ])
 
     return (
       <div id="tracker" className="multi-range" >
@@ -86,12 +87,5 @@ const InputRange = ({ track, multiRange, asReader }: { track: Track | null; mult
 
   return null
 }
-
-// InputRange.propTypes = {
-//   track: PropTypes.instanceOf(Track),
-//   multiRange: PropTypes.bool,
-//   asReader: PropTypes.bool,
-//   mediaManager: PropTypes.element
-// }
 
 export default InputRange

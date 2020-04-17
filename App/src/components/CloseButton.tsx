@@ -12,7 +12,7 @@ export default function CloseButton({ icon, additionalClass }: { icon?: string; 
   const goBack = useCallback(() => history.goBack(), [ history ])
 
   return (
-    <div id="backButton" className={`button icon ${ additionalClass ? additionalClass : '' }`} onClick={goBack} >
+    <div id="closeButton" className={`button icon ${ additionalClass ? additionalClass : '' }`} onClick={goBack} >
       <i className={`fa fa-${icon} fa-2x icon`} />
     </div>
   )

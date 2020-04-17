@@ -9,4 +9,8 @@ export default class Utils {
     }
     return result
   }
+
+  static isNumber(value: string): boolean {
+    return !isNaN(parseInt(value))
+  }
 }

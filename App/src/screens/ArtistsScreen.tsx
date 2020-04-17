@@ -9,7 +9,7 @@ const ArtistsScreen = (): JSX.Element => {
   const artists = selectArtists()
   const [ filter, setFilter ] = useState('')
 
-  const handleFilter = useCallback(event => setFilter(event.target.value), [])
+  const handleFilter = useCallback(value => setFilter(value), [])
 
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
@@ -28,7 +28,7 @@ const ArtistsScreen = (): JSX.Element => {
   })
 
   return (
-    <div id="artistScreen">
+    <div id="artistScreen" className="screen" >
       <div id="contentHeader">
         <h1>Artistes</h1>
         <div className="searchbar">

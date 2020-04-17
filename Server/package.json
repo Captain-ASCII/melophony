@@ -23,8 +23,7 @@
     "squirrelly": "^7.5.0",
     "typeorm": "^0.2.24",
     "ws": "^7.1.2",
-    "ytdl": "^1.2.0",
-    "ytdl-core": "^2.0.0"
+    "ytdl-core": "https://github.com/fent/node-ytdl-core.git"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

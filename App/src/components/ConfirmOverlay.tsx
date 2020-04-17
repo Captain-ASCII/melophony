@@ -22,10 +22,12 @@ const ConfirmOverlay = (): JSX.Element | null => {
 
   const cancel = useCallback(() => {
     overlay.getConfirmCallback()(false)
+    setOverlay(null)
   }, [ overlay ])
 
   const confirm = useCallback(() => {
     overlay.getConfirmCallback()(true)
+    setOverlay(null)
   }, [ overlay ])
 
   return overlay ? (

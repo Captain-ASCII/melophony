@@ -61,14 +61,6 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
   )
 }
 
-// RTrack.propTypes = {
-//   track: PropTypes.instanceOf(Track),
-//   hasScrolled: PropTypes.func.isRequired,
-//   displayType: PropTypes.string,
-// }
-
-
-
 
 
 const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType: string }): JSX.Element => {
@@ -114,10 +106,5 @@ const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType:
     </div>
   )
 }
-
-// TrackList.propTypes = {
-//   tracks: PropTypes.arrayOf(PropTypes.instanceOf(Track)),
-//   displayType: PropTypes.string.isRequired,
-// }
 
 export default TrackList

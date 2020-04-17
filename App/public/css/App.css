@@ -14,7 +14,7 @@
 @import url("Splash.css");
 @import url("Status.css");
 @import url("StatusMessage.css");
-@import url("TrackModification.css");
+@import url("ModificationScreen.css");
 @import url("Tracks.css");
 
 @import url("LoginScreen.css");
@@ -62,11 +62,6 @@
 
 * {
     box-sizing: border-box;
-}
-
-.screen {
-  flex: 1;
-  align-self: stretch;
 }
 
 html, body, #root {
@@ -136,7 +131,9 @@ h1 {
 }
 
 .centeredTitle {
-    display: inline;
+    display: block;
+    margin: 10px 0 0 0;
+    width: 100%;
     text-align: center;
 }
 
@@ -222,11 +219,11 @@ h1 {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
-#content > div {
-    position: relative;
-    height: 100%;
+#content > .statusMessage {
+  flex: 1;
 }
 
 .trackContainer {

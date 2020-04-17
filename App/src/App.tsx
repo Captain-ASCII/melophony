@@ -1,13 +1,14 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { hot } from 'react-hot-loader'
 
+import ArtistModificationScreen from '@screens/ArtistModificationScreen'
 import ArtistOverviewScreen from '@screens/ArtistOverviewScreen'
 import ArtistsScreen from '@screens/ArtistsScreen'
 import TrackCreationScreen from '@screens/TrackCreationScreen'
-import ModificationScreen from '@screens/ModificationScreen'
+import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TracksScreen from '@screens/TracksScreen'
 
 import { setApiManager } from '@actions/App'
@@ -16,14 +17,14 @@ import ApiManager from '@utils/ApiManager'
 import Player from '@components/Player'
 
 import { selectApiManager } from '@selectors/App'
-import { selectPlaylist } from '@selectors/App'
 import { selectConfiguration } from '@selectors/Configuration'
+import { selectPlaylist } from '@selectors/App'
 
-import PlayList from '@components/PlayList'
-import ConfirmOverlay from '@components/ConfirmOverlay'
-import RSwitch, { SwitchState } from '@components/Switch'
-import NotificationToaster from '@components/NotificationToaster'
 import { setConfiguration } from '@actions/Configuration'
+import ConfirmOverlay from '@components/ConfirmOverlay'
+import NotificationToaster from '@components/NotificationToaster'
+import PlayList from '@components/PlayList'
+import RSwitch, { SwitchState } from '@components/Switch'
 
 
 const MenuLink = ({ title, path, icon }: { title: string; path: string; icon: string }): JSX.Element => {
@@ -77,11 +78,12 @@ const App = (): JSX.Element => {
           <div id="content">
             <Switch>
               <Route path="/tracks" component={TracksScreen} />
-              <Route path="/modify" component={ModificationScreen} />
               <Route path="/track/create" component={TrackCreationScreen} />
               <Route path="/artists" component={ArtistsScreen} />
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
               <Route path="/" exact component={TracksScreen} />
+              <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
+              <Route path="/modify/track/:id" component={TrackModificationScreen} />
             </Switch>
           </div>
           <div className="sidebar right" >

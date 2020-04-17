@@ -9,5 +9,5 @@ export const selectTracks = (): Array<Track> => useSelector((state: RootState) =
 export const selectTrack = (trackId: number): Track =>
   useSelector((state: RootState) => state.tracks.find((track: Track) => track.getId() === trackId))
 
-export const selectTracksOfArtist = (artistId: string): Array<Track> =>
+export const selectTracksOfArtist = (artistId: number): Array<Track> =>
   useSelector((state: RootState) => state.tracks.filter((track: Track) => track.getArtist().getId() === artistId))

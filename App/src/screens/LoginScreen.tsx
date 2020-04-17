@@ -59,7 +59,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
           <p>Please provide your username & password to authenticate and get access to your tracks</p>
         </div>
         <div id="loginInputs" >
-          <form>
+          <form onSubmit={login} >
             <Field title="Email" id="email" icon="at" onInput={setEmail} />
             <Field title="Password" id="password" icon="key" type="password" onInput={setPassword} />
             { errorMessage && <StatusMessage message={errorMessage} type={MessageType.WARNING} /> }

@@ -1,10 +1,10 @@
 
 export default class Artist {
 
-  private id: string
+  private id: number
   private name: string
 
-  constructor(id: string, name: string) {
+  constructor(id: number, name: string) {
     this.id = id
     this.name = name
   }
@@ -13,7 +13,7 @@ export default class Artist {
     return new Artist(this.id, this.name)
   }
 
-  withId(id: string): Artist {
+  withId(id: number): Artist {
     const clone = this.clone()
     clone.id = id
     return clone
@@ -25,7 +25,7 @@ export default class Artist {
     return clone
   }
 
-  getId(): string {
+  getId(): number {
     return this.id
   }
 

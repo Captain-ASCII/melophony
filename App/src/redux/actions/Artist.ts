@@ -6,7 +6,7 @@ export const SET_ARTISTS = 'SET_ARTISTS'
 
 interface SetArtistAction {
   type: typeof SET_ARTIST;
-  id: string;
+  id: number;
   artist: Artist;
 }
 

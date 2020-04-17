@@ -2,12 +2,19 @@
 import Track from '@models/Track'
 
 export const SET_TRACKS = 'SET_TRACKS'
+export const SET_TRACK = 'SET_TRACK'
 
-interface SetTrackAction {
+interface SetTracksAction {
   type: typeof SET_TRACKS;
   tracks: Array<Track>;
 }
 
-export const setTracks = (tracks: Array<Track>): SetTrackAction => ({ type: SET_TRACKS, tracks })
+interface SetTrackAction {
+  type: typeof SET_TRACK;
+  track: Track;
+}
 
-export type TrackAction = SetTrackAction
+export const setTracks = (tracks: Array<Track>): SetTracksAction => ({ type: SET_TRACKS, tracks })
+export const setTrack = (track: Track): SetTrackAction => ({ type: SET_TRACK, track })
+
+export type TrackAction = SetTracksAction | SetTrackAction

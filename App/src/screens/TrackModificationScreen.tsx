@@ -1,18 +1,38 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useHistory, useParams } from 'react-router-dom'
+
+import Track from '@models/Track'
 
 import { selectApiManager } from '@selectors/App'
 import { selectArtist, selectArtists } from '@selectors/Artist'
 import { selectTrack } from '@selectors/Track'
 
+import { setTrack } from '@actions/Track'
+
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
+import CloseButton from '@components/CloseButton'
 
-const TrackModificationScreen = ({ onSaveCallback }: { onSaveCallback: (f: () => boolean) => void }): JSX.Element => {
+function getInt(v: string): number {
+  const n = parseInt(v)
+  if (isNaN(n)) {
+    return 0
+  }
+  return n
+}
+
+function getValidTime(time: number, track: Track): number {
+  return Math.max(0, Math.min(time, track.getDuration()))
+}
+
+const TrackModificationScreen = (): JSX.Element => {
+  const dispatch = useDispatch()
+  const history = useHistory()
   const { id } = useParams()
 
   if (id) {
-    const [ track, setTrack ]  = useState(selectTrack(parseInt(id)))
+    const [ track, setCurrentTrack ]  = useState(selectTrack(parseInt(id)))
 
     if (track) {
       const apiManager = selectApiManager()
@@ -20,15 +40,14 @@ const TrackModificationScreen = ({ onSaveCallback }: { onSaveCallback: (f: () =>
       const [ artist, setArtist ]  = useState(selectArtist(track.getArtist().getId()))
       const [ artistState, setArtistState ] = useState('pristine')
 
-      useEffect(() => {
-        onSaveCallback(() => {
-          apiManager.put(`/track/${track.getId()}`, track, () => false)
-          if (artistState != 'pristine') {
-            apiManager.put(`/artist/${artist.getId()}`, artist, () => false)
-          }
-          return true
-        })
-      }, [ apiManager, artist, artistState, onSaveCallback, track ])
+      const save = useCallback(() => {
+        apiManager.put(`/track/${track.getId()}`, track, () => false)
+        if (artistState != 'pristine') {
+          apiManager.put(`/artist/${artist.getId()}`, artist, () => false)
+        }
+        dispatch(setTrack(track))
+        history.goBack()
+      }, [ dispatch, apiManager, history, artist, artistState, track ])
 
       const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
 
@@ -47,15 +66,26 @@ const TrackModificationScreen = ({ onSaveCallback }: { onSaveCallback: (f: () =>
       const handleArtistNameSet = useCallback(event => {
         const modifiedArtist = artist.withName(event.target.value)
         setArtist(modifiedArtist)
-        setTrack(track.withArtist(modifiedArtist))
+        setCurrentTrack(track.withArtist(modifiedArtist))
         setArtistState('Modified')
       }, [ artist, track ])
-      const handleTitleSet = useCallback(event => setTrack(track.withTitle(event.target.value)), [ track ])
-      const handleDurationSet = useCallback(event => setTrack(track.withDuration(event.target.value)), [ track ])
-      const handleVideoIdSet = useCallback(event => setTrack(track.withFile(track.getFile().withVideoId(event.target.value))), [ track ])
+      const handleTitleSet = useCallback(event => setCurrentTrack(track.withTitle(event.target.value)), [ track ])
+      const handleVideoIdSet = useCallback(event => setCurrentTrack(track.withFile(track.getFile().withVideoId(event.target.value))), [ track ])
+      const handleStartSet = useCallback(value => {
+        const time = getValidTime(value, track)
+        setCurrentTrack(track.withStartTime(time))
+      }, [ track ])
+      const handleEndSet = useCallback(value => {
+        const time = getValidTime(value, track)
+        setCurrentTrack(track.withEndTime(time))
+      }, [ track ])
+
+      const handleStartSetFromEvent = useCallback(event => handleStartSet(getInt(event.target.value)), [ handleStartSet ])
+      const handleEndSetFromEvent = useCallback(event => handleEndSet(getInt(event.target.value)), [ handleEndSet ])
 
       return (
-        <div>
+        <div className="screen" >
+          <CloseButton />
           <div className="columns">
             <div>
               <div className="input">
@@ -79,16 +109,16 @@ const TrackModificationScreen = ({ onSaveCallback }: { onSaveCallback: (f: () =>
                 <i className="fa fa-ruler fa-2x icon" />
                 <input
                   type="text" className="form-data" id="duration"
-                  defaultValue={track.getDuration()} onInput={handleDurationSet}
+                  disabled defaultValue={track.getDuration()}
                 />
               </div>
               <div className="input">
                 <i className="fa fa-step-backward fa-2x icon" />
-                <input type="text" disabled defaultValue={track.getStartTime()} />
+                <input type="text" value={track.getStartTime()} onChange={handleStartSetFromEvent} />
               </div>
               <div className="input">
                 <i className="fa fa-step-forward fa-2x icon" />
-                <input type="text" disabled defaultValue={track.getEndTime()} />
+                <input type="text" value={track.getEndTime()} onChange={handleEndSetFromEvent} />
               </div>
 
               <div className="input">
@@ -129,14 +159,18 @@ const TrackModificationScreen = ({ onSaveCallback }: { onSaveCallback: (f: () =>
           <h2 className="centeredTitle" >Modify track duration</h2>
           <div className="input">
             <i className="fa fa-ruler fa-2x icon" />
-            <InputRange track={track} multiRange />
+            <InputRange track={track} multiRange onStartSet={handleStartSet} onEndSet={handleEndSet} />
           </div>
+          <div id="saveButton" className="button raised" onClick={save} >Save</div>
         </div>
       )
     }
   }
   return (
-    <StatusMessage message="No track found" type={MessageType.ERROR} />
+    <>
+      <CloseButton />
+      <StatusMessage message="No track found" type={MessageType.ERROR} />
+    </>
   )
 }
 

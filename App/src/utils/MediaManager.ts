@@ -114,7 +114,7 @@ export default class MediaManager {
     this.audio.onended = (): boolean => false
 
     if (!this.isPlayingExtract) {
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}.m4a`
+      this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
       this.isPlayingExtract = true
     }
     this.audio.currentTime = time

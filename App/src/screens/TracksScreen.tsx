@@ -93,7 +93,7 @@ const TracksScreen = (): JSX.Element => {
   }, [])
 
   return (
-    <div id="trackScreen" >
+    <div id="trackScreen" className="screen" >
       <div id="contentHeader">
         <h1>Titres</h1>
         <div id="toolBar">
@@ -115,6 +115,7 @@ const TracksScreen = (): JSX.Element => {
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
               title="Switch track playing mode" onSwitch={switchMode} initial={configuration.getShuffleMode()}
             />
+            { /*
             <IconButton
               icon="list" data="itemList" onClick={changeTrackDisplay}
               title="Track list"
@@ -127,6 +128,7 @@ const TracksScreen = (): JSX.Element => {
               icon="stream" data="groupedItems" onClick={changeTrackDisplay}
               title="Tracks for each artist"
             />
+            */ }
           </div>
         </div>
       </div>

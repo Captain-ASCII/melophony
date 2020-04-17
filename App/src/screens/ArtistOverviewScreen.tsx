@@ -1,6 +1,8 @@
 import React, {  } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
+import StringUtils from '@utils/StringUtils'
+
 import { selectArtist } from '@selectors/Artist'
 import { selectTracksOfArtist } from '@selectors/Track'
 
@@ -10,9 +12,9 @@ import TrackList from '@components/TrackList'
 const ArtistOverviewScreen = (): JSX.Element => {
   const { id } = useParams()
 
-  if (id) {
-    const artist = selectArtist(id)
-    const tracks = selectTracksOfArtist(id)
+  if (id && StringUtils.isNumber(id)) {
+    const artist = selectArtist(parseInt(id))
+    const tracks = selectTracksOfArtist(parseInt(id))
 
     return (
       <div id="artistOverviewScreen">

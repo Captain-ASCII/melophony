@@ -7,5 +7,5 @@ import Artist from '@models/Artist'
 export const selectArtists = (): Array<Artist> =>
   useSelector((state: RootState) => state.artists)
 
-export const selectArtist = (artistId: string): Artist =>
+export const selectArtist = (artistId: number): Artist =>
   useSelector((state: RootState) => state.artists.find((artist: Artist) => artist.getId() === artistId))
