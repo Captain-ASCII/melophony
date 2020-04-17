@@ -1,0 +1,44 @@
+
+#loginScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#logoBox {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logoBox .logo {
+  width: 100px;
+  height: 100px;
+}
+
+#logoBox h1 {
+  font-size: 50px;
+}
+
+#loginBox > div {
+  margin: 20px 0;
+}
+
+#loginText {
+  text-align: center;
+}
+
+#loginText > * {
+  margin: 5px;
+}
+
+#loginInputs > form > div {
+  margin: 10px;
+}

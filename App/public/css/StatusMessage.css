@@ -1,0 +1,27 @@
+
+.statusMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.statusMessage > .message {
+  font-size: larger;
+  font-weight: bold;
+}
+
+.statusMessage.error {
+  color: #e74c3c;
+}
+
+.statusMessage.warning {
+  color: #e67e22;
+}
+
+.statusMessage.info {
+  color: #3498db;
+}
+
+.statusMessage.success {
+  color: #2ecc71;
+}

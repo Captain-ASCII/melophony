@@ -1,4 +1,12 @@
 
 #trackScreen, #artistScreen {
-    margin: 20px 20px 0 20px;
+  padding: 20px 20px 0 20px;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 40px 30px 30px 30px;
 }

@@ -6,10 +6,10 @@ const webpack = require('webpack')
 module.exports = merge(common, {
     devServer: {
         historyApiFallback: true,
-        https: true,
+        // https: true,
         contentBase: path.join(__dirname, '..', 'public/'),
-        publicPath: 'https://localhost:1951/',
-        port: 1951,
+        publicPath: 'http://localhost:1958/',
+        port: 1958,
         hotOnly: true
     },
     devtool: 'source-map',
