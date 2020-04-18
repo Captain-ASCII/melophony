@@ -26,8 +26,18 @@ export default class AuthenticationAspect extends BaseAspect {
 
     this.router.post('/login', async (request, response) => this.sendResponse(response, await this.authenticate(request.body.email, request.body.password)))
 
-    this.router.use((request, response, next) => this.checkToken(request, response, next))
-    this.router.use((request, response, next) => this.refreshToken(request, response, next))
+    this.router.use(this.protectRoutesWith(this.checkToken.bind(this)))
+    this.router.use(this.protectRoutesWith(this.refreshToken.bind(this)))
+  }
+
+  protectRoutesWith(middlewareFunction: (request: Request, response: Response, next: Function) => void) {
+    return function(request: Request, response: Response, next: Function): void {
+      if (request.path === '/register' && request.method === 'POST') {
+        next()
+      } else {
+        middlewareFunction(request, response, next)
+      }
+    }
   }
 
   async authenticate(email: string, password: string): Promise<ApiResult> {
