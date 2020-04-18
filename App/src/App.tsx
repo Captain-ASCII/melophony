@@ -49,11 +49,7 @@ const App = (): JSX.Element => {
 
   const [ menuState, setMenu ] = useState('closed')
 
-  useEffect(() => {
-    dispatch(setApiManager(new ApiManager(configuration.getServerAddress(), true)))
-  }, [ dispatch, configuration ])
-
-  const synchronize = useCallback(() => apiManager.get('synchronize', () => false), [ apiManager ])
+  const synchronize = useCallback(() => apiManager.get('synchronize'), [ apiManager ])
 
   const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'), [])
 
