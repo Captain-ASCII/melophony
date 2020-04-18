@@ -53,6 +53,7 @@ export default class DownloadUtils {
     track.file = file
     track.title = parts[1] || title
     track.duration = duration
+    track.endTime = duration
     track.artist = await DownloadUtils.findArtist(userId, parts[0])
     await getConnection().getRepository(Track).save(track)
   }
