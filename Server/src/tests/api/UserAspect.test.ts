@@ -29,7 +29,7 @@ describe('Test UserAspect.ts', () => {
 
     expect(result.getStatus()).toBe(200)
     expect(result.getData()).not.toBeNull()
-    userId = result.getData().id
+    userId = result.getData()
   })
 
   test('should get the newly created user', async () => {
@@ -38,7 +38,7 @@ describe('Test UserAspect.ts', () => {
   })
 
   test('should modify the user\'s first name', async () => {
-    const user = await (await userAspect.getUser(userId)).getData() as User
+    const user = (await userAspect.getUser(userId)).getData() as User
 
     const firstName = 'Daniel'
     user.firstName = firstName
@@ -72,7 +72,7 @@ describe('Test UserAspect.ts', () => {
 
   test('should not delete another user', async () => {
     const registration = await userAspect.register({ ...user, email: 'anotherUser@gmail.com' } as User)
-    const newUserId = registration.getData().id
+    const newUserId = registration.getData()
 
     const deletion = await userAspect.deleteUser(userId, newUserId)
     expect(deletion.getStatus()).toBe(400)

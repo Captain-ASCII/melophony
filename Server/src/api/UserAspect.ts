@@ -43,7 +43,7 @@ export default class UserAspect extends BaseAspect {
         realUser.playlists = [ defaultPlaylist ]
         await userRepository.save(realUser)
         await playlistRepository.save(defaultPlaylist)
-        return new ApiResult(200, 'User registered successfully', realUser)
+        return new ApiResult(200, 'User registered successfully', realUser.id)
       }
       return new ApiResult(400, 'Mail already used')
     }
