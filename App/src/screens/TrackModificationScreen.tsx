@@ -41,9 +41,9 @@ const TrackModificationScreen = (): JSX.Element => {
       const [ artistState, setArtistState ] = useState('pristine')
 
       const save = useCallback(() => {
-        apiManager.put(`/track/${track.getId()}`, track, () => false)
+        apiManager.put(`/track/${track.getId()}`, track)
         if (artistState != 'pristine') {
-          apiManager.put(`/artist/${artist.getId()}`, artist, () => false)
+          apiManager.put(`/artist/${artist.getId()}`, artist)
         }
         dispatch(setTrack(track))
         history.goBack()
@@ -52,15 +52,15 @@ const TrackModificationScreen = (): JSX.Element => {
       const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
 
       const download = useCallback(() => {
-        apiManager.get(`/download/${track.getFile().getVideoId()}`, () => false)
+        apiManager.get(`/download/${track.getFile().getVideoId()}`)
       }, [ apiManager, track ])
 
       const requestServerDownload = useCallback(() => false, [])
 
-      const deleteItem = useCallback(() => apiManager.delete(`/track/${track.getId()}`, () => false), [ apiManager, track ])
+      const deleteItem = useCallback(() => apiManager.delete(`/track/${track.getId()}`), [ apiManager, track ])
 
       const createArtist = useCallback(() => {
-        apiManager.post('/artist', artist, () => false)
+        apiManager.post('/artist', artist)
       }, [ apiManager, artist ])
 
       const handleArtistNameSet = useCallback(event => {

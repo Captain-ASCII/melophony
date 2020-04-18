@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import { selectApiManager } from '@selectors/App'
-import { useHistory } from 'react-router-dom'
+import CloseButton from '@components/CloseButton'
 
 const TrackCreationScreen = (): JSX.Element => {
   const history = useHistory()
@@ -13,12 +14,13 @@ const TrackCreationScreen = (): JSX.Element => {
   const handleInput = useCallback(event => setVideoId(event.target.value), [])
 
   const requestServerDownload = useCallback(() => {
-    apiManager.post('/track', { videoId }, () => false)
+    apiManager.post('/track', { videoId })
     history.goBack()
   }, [ history, apiManager, videoId ])
 
   return (
-    <div id="AddTrackScreen" >
+    <div id="AddTrackScreen" className="screen" >
+      <CloseButton />
       <div id="modificationPageHeader">
         <h2 id="modificationPageTitle">Add a new track</h2>
         <div className="button raised" onClick={requestServerDownload} >Download</div>

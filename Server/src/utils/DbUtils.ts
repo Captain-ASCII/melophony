@@ -94,7 +94,7 @@ export default class DbUtils {
       .into(entityType)
       .values([ entity ])
       .execute()
-      .then(result => new ApiResult(200, 'OK', result.raw.insertId))
+      .then(result => new ApiResult(200, `${entityType.name} created`, result.raw.insertId))
       .catch(error => handleError(error))
   }
 
@@ -128,7 +128,7 @@ export default class DbUtils {
       }
       return entities.length
     })
-    .then(result => new ApiResult(200, 'OK', result))
+    .then(result => new ApiResult(200, `${entityType.name} updated`, result))
   }
 
   static async delete<T>(entityType: new (...c: any[]) => T, id: number, filter: number | SQLCustomizer): Promise<ApiResult> {
@@ -138,7 +138,7 @@ export default class DbUtils {
       }
       return entities.length
     })
-    .then(result => new ApiResult(200, 'OK', result))
+    .then(result => new ApiResult(200, `${entityType.name} deleted`, result))
     .catch(error => handleError(error))
   }
 

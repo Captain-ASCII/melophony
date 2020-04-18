@@ -37,8 +37,8 @@ store.getState().app.mediaManager = new MediaManager()
 
 async function getData(): Promise<void> {
 
-  const tracksResponse = await apiManager.get('/tracks', () => false)
-  const artistsResponse = await apiManager.get('/artists', () => false)
+  const tracksResponse = await apiManager.get('/tracks')
+  const artistsResponse = await apiManager.get('/artists')
 
   const tracks = tracksResponse[1].data.map((track: any) => Track.fromObject(track))
   const artists = artistsResponse[1].data.map((artist: any) => new Artist(artist.id, artist.name))
@@ -56,7 +56,7 @@ async function getData(): Promise<void> {
 }
 
 async function init(): Promise<void> {
-  if (JWT.get() &&  (await apiManager.get('/user', () => false))[0] != 400) {
+  if (JWT.get() &&  (await apiManager.get('/user'))[0] != 400) {
     ReactDOM.render(
       <Provider store={store} >
         <SplashScreen getRequiredData={getData} />
