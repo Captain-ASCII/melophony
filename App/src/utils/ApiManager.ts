@@ -1,6 +1,12 @@
 
 import JWT from 'jwt-client'
 
+import { store } from '@store'
+
+import Notification from '@models/Notification'
+
+import { addNotification } from '@actions/Notification'
+
 class ApiRequest {
 
   method: string
@@ -48,7 +54,7 @@ export default class ApiManager {
   isWithAuthentication: boolean
   request: ApiRequest
 
-  constructor(serverUrl: string, withAuthentication: boolean) {
+  constructor(serverUrl: string, withAuthentication = true) {
     this.serverUrl = serverUrl
     this.isWithAuthentication = withAuthentication
     this.request = new ApiRequest('', 'GET', '')
@@ -69,27 +75,27 @@ export default class ApiManager {
     return this.request
   }
 
-  get(path: string, onResult: (code: number, data: any) => void): Promise<[number, any]> {
+  get(path: string, onResult: (code: number, data: any) => void | null = null, withNotification = false): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'GET', path)
-    return this.sendRequest(onResult)
+    return this.sendRequest(onResult, withNotification)
   }
 
-  post(path: string, body: object, onResult: (code: number, data: any) => void): Promise<[number, any]> {
+  post(path: string, body: object, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'POST', path).withBody(body)
-    return this.sendRequest(onResult)
+    return this.sendRequest(onResult, withNotification)
   }
 
-  put(path: string, body: object, onResult: (code: number, data: any) => void): Promise<[number, any]> {
+  put(path: string, body: object, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'PUT', path).withBody(body)
-    return this.sendRequest(onResult)
+    return this.sendRequest(onResult, withNotification)
   }
 
-  delete(path: string, onResult: (code: number, data: any) => void): Promise<[number, any]> {
+  delete(path: string, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'DELETE', path)
-    return this.sendRequest(onResult)
+    return this.sendRequest(onResult, withNotification)
   }
 
-  sendRequest(onResult: (code: number, data: any) => void | null): Promise<[number, any]> {
+  sendRequest(onResult: (code: number, data: any) => void | null, withNotification: boolean): Promise<[number, any]> {
     if (this.isWithAuthentication) {
       this.request.withHeader('Authorization', JWT.get())
     }
@@ -104,6 +110,9 @@ export default class ApiManager {
         if (body.token && JWT.validate(body.token)) {
           JWT.keep(body.token)
         }
+      }
+      if (withNotification) {
+        store.dispatch(addNotification(new Notification(body.message)))
       }
       if (onResult) {
         onResult(data[0], body)

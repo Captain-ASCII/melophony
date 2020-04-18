@@ -13,7 +13,7 @@ const TrackCreationScreen = (): JSX.Element => {
   const handleInput = useCallback(event => setVideoId(event.target.value), [])
 
   const requestServerDownload = useCallback(() => {
-    apiManager.post('/track', { videoId }, () => false)
+    apiManager.post('/track', { videoId })
     history.goBack()
   }, [ history, apiManager, videoId ])
 
