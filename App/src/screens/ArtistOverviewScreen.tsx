@@ -2,6 +2,7 @@ import React, {  } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import StringUtils from '@utils/StringUtils'
+import ColorUtils from '@utils/ColorUtils'
 
 import { selectArtist } from '@selectors/Artist'
 import { selectTracksOfArtist } from '@selectors/Track'
@@ -19,7 +20,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
     return (
       <div id="artistOverviewScreen">
         <CloseButton icon="chevron-left" additionalClass="floating mini top transparent" />
-        <div id="artistScreenHeader">
+        <div id="artistScreenHeader" style={{ backgroundColor: ColorUtils.getRandomColor() }}  >
           <h1>{artist.getName()}</h1>
         </div>
 
