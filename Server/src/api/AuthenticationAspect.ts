@@ -44,17 +44,21 @@ export default class AuthenticationAspect extends BaseAspect {
 
   checkToken(request: Request, response: Response, next: Function): void {
     let token = request.headers['authorization'] || request.query.jwt
-    if (token !== undefined) {
+    if (token !== undefined && typeof token === 'string') {
      if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length)
       }
 
-      JWT.verify(token, this.configuration.secret, (err: Error, decoded: any) => {
+      JWT.verify(token, this.configuration.secret, (err: any, decoded: any) => {
         if (err) {
           this.sendResponse(response, new ApiResult(400, 'Token is not valid'))
         } else {
-          request.token = token
-          request.decoded = decoded
+          if (typeof token === 'string') {
+            request.token = token
+          }
+          if (decoded) {
+            request.decoded = decoded
+          }
           next()
         }
       })
