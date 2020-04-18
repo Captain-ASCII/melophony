@@ -2,8 +2,7 @@ const Express = require('express')
 const fs = require('fs')
 const https = require('https')
 
-const PORT = 1804
-
+const PORT = 1958
 
 const app = Express()
 
@@ -19,5 +18,5 @@ https.createServer({
         key: fs.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/privkey.pem'),
         cert: fs.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/cert.pem'),
 }, app).listen(PORT, function() {
-    console.log('Production app started')
+    console.log(`Production app started, (PORT: ${PORT})`)
 })
