@@ -2,17 +2,19 @@
 import DownloadUtils from '@utils/DownloadUtils'
 import TestUtils from '@tests/TestUtils'
 
-import ApiResult from '@api/ApiResult'
 import TrackAspect from '@api/TrackAspect'
 import UserAspect from '@api/UserAspect'
 
-import File from '@models/File'
 import Track from '@models/Track'
 import User from '@models/User'
 
-async function mockDownload(userId: number, videoId: string, file: File, track: Track): Promise<ApiResult> {
-  await DownloadUtils.setTrack(userId, track, file, 'Mocked title', 100)
-  return new ApiResult(200, 'Download started')
+function mockDownloadFunction(mockedTitle = 'Mocked title') {
+  return async function(videoId: string, setTrack: ((title: string, duration: number) => void) | undefined): Promise<boolean> {
+    if (setTrack) {
+      await setTrack(mockedTitle, 100)
+    }
+    return true
+  }
 }
 
 describe('Test TrackAspect.ts', () => {
@@ -27,7 +29,7 @@ describe('Test TrackAspect.ts', () => {
     const result = await new UserAspect().register(new User('trackAspectTest@gmail.com', '', '', 'password', [], [], []))
     userId = result.getData()
 
-    jest.spyOn(DownloadUtils, 'download').mockImplementation(mockDownload)
+    jest.spyOn(DownloadUtils, 'download').mockImplementation(mockDownloadFunction())
   })
 
   afterAll(async () => {
@@ -46,7 +48,7 @@ describe('Test TrackAspect.ts', () => {
     expect(result.getMessage()).toEqual('Download started')
   })
 
-  test('should get the created track', async () => {
+  test('should create and get a track', async () => {
     const creation = await aspect.createTrack(userId, 'test2')
     const trackId = creation.getData()
 
@@ -64,13 +66,20 @@ describe('Test TrackAspect.ts', () => {
   })
 
   test('should indicate the file is already downloaded but create new track', async () => {
-    const result = await aspect.createTrack(userId, 'test')
-    expect(result.getStatus()).toEqual(400)
-    expect(result.getMessage()).toEqual('Track already downloaded')
+    const firstCreation = await aspect.createTrack(userId, 'test3')
+    expect(firstCreation.getMessage()).toEqual('Download started')
+    const firstTrackId = firstCreation.getData()
+
+    const secondCreation = await aspect.createTrack(userId, 'test3')
+    expect(secondCreation.getStatus()).toEqual(200)
+    expect(secondCreation.getMessage()).toEqual('Track already downloaded on server')
+    const secondTrackId = secondCreation.getData()
+
+    expect(firstTrackId).not.toEqual(secondTrackId)
   })
 
   test('should modify track', async () => {
-    const creation = await aspect.createTrack(userId, 'test3')
+    const creation = await aspect.createTrack(userId, 'test4')
     const trackId = creation.getData()
     const obtaining = await aspect.getTrack(userId, trackId)
     const track = obtaining.getData() as Track
