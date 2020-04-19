@@ -16,7 +16,8 @@
       "@api/*": ["src/api/*"],
       "@models/*": ["src/models/*"],
       "@tests/*": ["src/tests/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@projectConfiguration": ["ProjectConfiguration.ts"]
     },
     "typeRoots": [
       "src/typings",
