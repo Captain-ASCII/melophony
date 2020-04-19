@@ -11,7 +11,10 @@ import WebSocket from 'ws'
 import Cors from 'cors'
 import { createConnection } from 'typeorm'
 
+import Environment from '@projectConfiguration'
+
 import { AppEvents, getListenerConnector } from '@utils/AppEventUtils'
+import Log from '@utils/Log'
 
 import ArtistAspect from '@api/ArtistAspect'
 import AuthenticationAspect from '@api/AuthenticationAspect'
@@ -26,10 +29,9 @@ const HTTPS_PORT = 1804
 
 createConnection().then(async () => {
 
-  const configuration = JSON.parse(FileSystem.readFileSync('configuration/configuration.json', 'utf8'))
   let credentials = {}
 
-  if (!configuration.DEBUG) {
+  if (!Environment.DEBUG) {
     const privateKey = FileSystem.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/privkey.pem', 'utf8')
     const certificate = FileSystem.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/cert.pem', 'utf8')
     const ca = FileSystem.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/fullchain.pem', 'utf8')
@@ -40,12 +42,6 @@ createConnection().then(async () => {
   App.use(Express.text())
   App.use(Express.json())
 
-  // App.use(function(request, response, next: Function) {
-  //   response.header('Access-Control-Allow-Origin', '*')
-  //   response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  //   response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  //   next()
-  // })
   App.use(Cors())
 
   App.use('/.well-known/acme-challenge/', Express.static('.well-known/acme-challenge/', { dotfiles: 'allow' }))
@@ -64,7 +60,7 @@ createConnection().then(async () => {
     response.send({ status: 'Nothing to do' })
   })
 
-  if (configuration.DEBUG) {
+  if (Environment.DEBUG) {
     const server = HTTP.createServer(App)
     server.listen(PORT, function () {
       console.log(`HTTP: Example app listening on port ${PORT}`)

@@ -1,9 +1,10 @@
 
-import FileSystem from 'fs'
 import JWT from 'jsonwebtoken'
 import Bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import { getConnection } from 'typeorm'
+
+import Environment from '@projectConfiguration'
 
 import TokenGenerator from '@utils/TokenGenerator'
 
@@ -16,13 +17,12 @@ export default class AuthenticationAspect extends BaseAspect {
 
   private static TOKEN_LIFETIME = 1800
 
-  private configuration = JSON.parse(FileSystem.readFileSync('configuration/configuration.json', 'utf8'))
   private tokenGenerator: TokenGenerator
 
   constructor() {
     super()
 
-    this.tokenGenerator = new TokenGenerator(this.configuration.secret, { expiresIn: AuthenticationAspect.TOKEN_LIFETIME })
+    this.tokenGenerator = new TokenGenerator(Environment.SECRET, { expiresIn: AuthenticationAspect.TOKEN_LIFETIME })
 
     this.router.post('/login', async (request, response) => this.sendResponse(response, await this.authenticate(request.body.email, request.body.password)))
 
@@ -59,7 +59,7 @@ export default class AuthenticationAspect extends BaseAspect {
         token = token.slice(7, token.length)
       }
 
-      JWT.verify(token, this.configuration.secret, (err: any, decoded: any) => {
+      JWT.verify(token, Environment.SECRET, (err: any, decoded: any) => {
         if (err) {
           this.sendResponse(response, new ApiResult(400, 'Token is not valid'))
         } else {
