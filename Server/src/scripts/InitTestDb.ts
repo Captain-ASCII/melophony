@@ -1,6 +1,8 @@
 
 import MySQL from 'mysql'
 
+import Log from '@utils/Log'
+
 const connection = MySQL.createConnection({
   host: 'localhost',
   user: 'root',
@@ -16,13 +18,13 @@ connection.connect(function(error) {
     if (error) {
       throw error
     }
-    console.log('Database dropped')
+    Log.i('Database dropped')
 
     connection.query('CREATE DATABASE MelophonyTest', function (error, result) {
       if (error) {
         throw error
       }
-      console.log('Database created')
+      Log.i('Database created')
       connection.end()
     })
   })

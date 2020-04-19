@@ -39,4 +39,4 @@ createConnection().then(async connection => {
   }
 
   await connection.close()
-}).catch(error => console.log(error))
+}).catch(error => Log.e('Db connection error:', error))

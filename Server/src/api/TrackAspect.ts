@@ -72,7 +72,6 @@ export default class TrackAspect extends BaseAspect {
   }
 
   async modifyTrack(userId: number, trackId: number, track: Track): Promise<ApiResult> {
-    console.warn(userId, trackId, track)
     return DbUtils.update(Track, trackId, track, userId)
   }
 

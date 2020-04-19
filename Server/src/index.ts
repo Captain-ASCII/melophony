@@ -63,7 +63,7 @@ createConnection().then(async () => {
   if (Environment.DEBUG) {
     const server = HTTP.createServer(App)
     server.listen(PORT, function () {
-      console.log(`HTTP: Example app listening on port ${PORT}`)
+      Log.i(`HTTP: Example app listening on port ${PORT}`)
     })
   } else {
     const server = HTTPS.createServer(credentials, App)
@@ -79,8 +79,8 @@ createConnection().then(async () => {
     // }).listen(80)
 
     server.listen(HTTPS_PORT, function () {
-      console.log(`HTTPS: Example app listening on port ${HTTPS_PORT}`)
+      Log.i(`HTTPS: Example app listening on port ${HTTPS_PORT}`)
     })
   }
-}).catch(error => console.log(error))
+}).catch(error => Log.e('DB connection error:', error))
 

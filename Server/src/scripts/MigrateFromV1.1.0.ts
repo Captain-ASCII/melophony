@@ -4,6 +4,8 @@ import 'tsconfig-paths/register'
 import FS from 'fs'
 import { createConnection } from 'typeorm'
 
+import Log from '@utils/Log'
+
 import Artist from '@models/Artist'
 import File, { FileState } from '@models/File'
 import Track from '@models/Track'
@@ -28,7 +30,7 @@ createConnection().then(async connection => {
       return result
     }
 
-    console.warn(`id without artist: ${artistId}`)
+    Log.w(`id without artist: ${artistId}`)
     return null
   }
 
@@ -38,7 +40,7 @@ createConnection().then(async connection => {
       return result
     }
 
-    console.warn(`file not found with id ${fileId}`)
+    Log.w(`file not found with id ${fileId}`)
     return null
   }
 
@@ -98,6 +100,6 @@ createConnection().then(async connection => {
   await connection.getRepository(User).save(user)
 
   await connection.close()
-}).catch(error => console.log(error))
+}).catch(error => Log.e('DB connection error:', error))
 
 
