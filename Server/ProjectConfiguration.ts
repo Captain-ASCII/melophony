@@ -1,6 +1,6 @@
 
 export default {
   PROJECT_ROOT: __dirname,
-  DEBUG: true,
+  DEBUG: false,
   SECRET: 'ILoveMarieBenLulu-28072021'
 }
