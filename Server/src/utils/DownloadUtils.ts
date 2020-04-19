@@ -14,6 +14,7 @@ import Track from '@models/Track'
 import User from '@models/User'
 
 export default class DownloadUtils {
+
   public static FILE_DIR = 'files'
 
   static deleteFile(id: string): void {
@@ -124,6 +125,28 @@ export default class DownloadUtils {
       stream.pipe(FileSystem.createWriteStream(`${DownloadUtils.FILE_DIR}/${videoId}.m4a`))
       return true
 
+    } catch (error) {
+      Log.e('Error during download', error)
+    }
+
+    return false
+  }
+
+  static async downloadSync(videoId: string): Promise<boolean> {
+    try {
+      const stream = YTDL(`https://www.youtube.com/watch?v=${videoId}`, {filter: (format) => format.mimeType !== undefined && format.mimeType.startsWith('audio/mp4')})
+      const streamPromise = new Promise<boolean>((resolve, reject) => {
+        stream.on('info', (info: videoInfo) => Log.i('Got info for track'))
+        stream.on('progress', (chunk: number, current: number, total: number) => Log.i(`${current}/${total} [${Math.floor(current*100/total)}%]`))
+        stream.on('end', () => {
+          Log.i(`File ${videoId}.m4a downloaded successfully`)
+          resolve(true)
+        })
+        stream.on('error', () => reject(false))
+
+        stream.pipe(FileSystem.createWriteStream(`${DownloadUtils.FILE_DIR}/${videoId}.m4a`))
+      })
+      return await streamPromise
     } catch (error) {
       Log.e('Error during download', error)
     }
