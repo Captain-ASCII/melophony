@@ -15,7 +15,7 @@ import ApiResult from '@api/ApiResult'
 
 export default class AuthenticationAspect extends BaseAspect {
 
-  private static TOKEN_LIFETIME = 1800
+  private static TOKEN_LIFETIME = 3600
 
   private tokenGenerator: TokenGenerator
 
