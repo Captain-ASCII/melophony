@@ -2,19 +2,18 @@
 import DownloadUtils from '@utils/DownloadUtils'
 import TestUtils from '@tests/TestUtils'
 
-import ApiResult from '@api/ApiResult'
 import ArtistAspect from '@api/ArtistAspect'
 import TrackAspect from '@api/TrackAspect'
 import UserAspect from '@api/UserAspect'
 
 import Artist from '@models/Artist'
-import File from '@models/File'
-import Track from '@models/Track'
 import User from '@models/User'
 
-async function mockDownload(userId: number, videoId: string, file: File, track: Track): Promise<ApiResult> {
-  await DownloadUtils.setTrack(userId, track, file, 'Artist - Title', 100)
-  return new ApiResult(200, 'Download started')
+async function mockDownload(videoId: string, setTrack: ((title: string, duration: number) => void) | undefined): Promise<boolean> {
+  if (setTrack) {
+    await setTrack('Artist - Title', 100)
+  }
+  return true
 }
 
 describe('Test ArtistAspect.ts', () => {
