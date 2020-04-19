@@ -7,10 +7,12 @@ import { Arrays } from '@utils/Immutable'
 
 import Track from '@models/Track'
 
-import { setConfiguration } from '@actions/Configuration'
-
-import { selectTracks } from '@selectors/Track'
 import { selectConfiguration } from '@selectors/Configuration'
+import { selectPlaylist } from '@selectors/App'
+import { selectTracks } from '@selectors/Track'
+
+import { setConfiguration } from '@actions/Configuration'
+import { setPlaylist } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
 import TrackList from '@components/TrackList'
@@ -49,6 +51,7 @@ const TracksScreen = (): JSX.Element => {
 
   const configuration = selectConfiguration()
   const tracks = selectTracks()
+  const playlist = selectPlaylist()
 
   const [ filter, setFilter ] = useState('')
 
@@ -68,7 +71,8 @@ const TracksScreen = (): JSX.Element => {
 
   const switchMode = useCallback((value: boolean) => {
     dispatch(setConfiguration(configuration.withShuffleMode(value)))
-  }, [ dispatch, configuration ])
+    dispatch(setPlaylist(playlist.withShuffleMode(value)))
+  }, [ dispatch, configuration, playlist ])
 
   useEffect(() => {
     if (window.innerWidth <= 768) {

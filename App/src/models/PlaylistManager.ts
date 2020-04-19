@@ -10,18 +10,20 @@ export default class PlaylistManager {
   private shuffledTracks: Array<Track>
   private current: Array<Track>
   private index: number
+  private currentTrack: Track | null
   private queue: Array<Track>
 
-  constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks), current = tracks, index = -1, queue: Array<Track> = []) {
+  constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks), current = tracks, currentTrack: Track, index = -1, queue: Array<Track> = []) {
     this.tracks = tracks
     this.shuffledTracks = shuffledTracks
     this.current = current
+    this.currentTrack = currentTrack
     this.index = index
     this.queue = queue
   }
 
   clone(p: PlaylistManager = this): PlaylistManager {
-    return new PlaylistManager(p.tracks, p.shuffledTracks, p.current, p.index, p.queue)
+    return new PlaylistManager(p.tracks, p.shuffledTracks, p.current, p.currentTrack, p.index, p.queue)
   }
 
   enqueue(track: Track): PlaylistManager {
@@ -40,6 +42,7 @@ export default class PlaylistManager {
   withTrack(currentTrack: Track): PlaylistManager {
     const clone = this.clone()
     clone.index = this.current.findIndex(track => track.getId() === currentTrack.getId())
+    clone.currentTrack = currentTrack
     return clone
   }
 
@@ -58,6 +61,7 @@ export default class PlaylistManager {
   withIndex(index: number): PlaylistManager {
     const clone = this.clone()
     clone.index = index
+    clone.currentTrack = clone.current[clone.index]
     return clone
   }
 
@@ -74,7 +78,7 @@ export default class PlaylistManager {
   }
 
   getCurrent(): Track | null {
-    return this.index > -1 ? this.current[this.index] : null
+    return this.currentTrack
   }
 
   next(): PlaylistManager {
