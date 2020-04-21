@@ -13,7 +13,7 @@ export default class PlaylistManager {
   private currentTrack: Track | null
   private queue: Array<Track>
 
-  constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks), current = tracks, currentTrack: Track, index = -1, queue: Array<Track> = []) {
+  constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks), current = tracks, currentTrack: Track = null, index = -1, queue: Array<Track> = []) {
     this.tracks = tracks
     this.shuffledTracks = shuffledTracks
     this.current = current

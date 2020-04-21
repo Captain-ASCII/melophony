@@ -1,6 +1,36 @@
 
 @media only screen and (max-width: 768px) {
 
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    h4 {
+        font-size: 16px;
+    }
+
+    /* Login Screen */
+
+    #loginScreen {
+        justify-content: start;
+    }
+
+    #logoBox > h1 {
+        font-size: 36px;
+    }
+
+    #loginInputs > .button, #sessionParametersIcon {
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.18);
+    }
+
     .sidebar.left {
         display: none;
     }

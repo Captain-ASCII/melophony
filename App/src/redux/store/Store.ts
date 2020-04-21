@@ -27,7 +27,7 @@ const reducer = combineReducers({
   app,
   artists,
   configuration,
-  listeners,
+//   listeners,
   notifications,
   tracks,
 })

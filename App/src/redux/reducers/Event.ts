@@ -5,7 +5,7 @@ import { Arrays } from '@utils/Immutable'
 
 import EventListener from '@models/EventListener'
 
-const listeners = <T extends unknown>(state: Array<EventListener<T>> = [], action: EventAction<T>): Array<EventListener<T>> => {
+const listeners = <T>(state: Array<EventListener<T>> = [], action: EventAction<T>): Array<EventListener<T>> => {
   switch (action.type) {
     case ADD_LISTENER:
       return Arrays.add(state, action.listener)

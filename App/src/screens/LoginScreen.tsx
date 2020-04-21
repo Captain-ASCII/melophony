@@ -46,43 +46,41 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
 
   return (
     <div id="loginScreen" className="screen" >
-      <SessionConfigurator />
       <div id="logoBox">
-        <div className="logo" >
-          <img src="/img/melophony.png" style={{ height: '100%' }} />
-        </div>
+        <img src="/img/melophony.png" style={{ height: '100%' }} />
         <h1>Melophony</h1>
       </div>
       <div id="loginBox" >
         <div id="loginText" >
-          <h1>Login</h1>
+          <h2>Login</h2>
           <p>Please provide your username & password to authenticate and get access to your tracks</p>
         </div>
         <div id="loginInputs" >
           <form onSubmit={login} >
             <Field title="Email" id="email" icon="at" onInput={setEmail} />
             <Field title="Password" id="password" icon="key" type="password" onInput={setPassword} />
-            { errorMessage && <StatusMessage message={errorMessage} type={MessageType.WARNING} /> }
-            {
-              mode === Mode.LOGIN && (
-                <>
-                  <Button title="Login" icon="sign-in-alt" onClick={login} />
-                  <Button title="Join the kiwis" icon="kiwi-bird" onClick={switchMode} />
-                </>
-              )
-            }
-            {
-              mode === Mode.REGISTER && (
-                <>
+          </form>
+          { errorMessage && <StatusMessage message={errorMessage} type={MessageType.WARNING} /> }
+          {
+            mode === Mode.LOGIN && (
+              <>
+                <Button title="Login" icon="sign-in-alt" onClick={login} />
+                <Button title="Join the kiwis" icon="kiwi-bird" onClick={switchMode} />
+              </>
+            )
+          }
+          {
+            mode === Mode.REGISTER && (
+              <>
                   <Field title="Repeat your password" id="repeatPassword" icon="key" type="password" onInput={setPassword} />
                   <Field title="First name" id="firstName" icon="user" onInput={setFirstName} />
                   <Field title="Last name" id="lastName" icon="user" onInput={setLastName} />
                   <Button title="Register" icon="thumbs-up" onClick={register} />
                   <Button title="Back to login" icon="sign-in-alt" onClick={switchMode} />
-                </>
-              )
-            }
-          </form>
+              </>
+            )
+          }
+          <SessionConfigurator />
         </div>
       </div>
     </div>

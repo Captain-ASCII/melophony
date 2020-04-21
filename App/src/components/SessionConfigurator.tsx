@@ -22,7 +22,11 @@ const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Eleme
     if (document) {
       const element = document.getElementById('sessionParameters')
       if (element) {
-        element.style.display = 'flex'
+        if (element.style.display === 'flex') {
+            element.style.display = 'none'
+        } else {
+            element.style.display = 'flex'
+        }
       }
     }
   }, [])

@@ -7,28 +7,26 @@
 }
 
 #logoBox {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-
   align-self: stretch;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#logoBox .logo {
+#logoBox > img {
   width: 100px;
   height: 100px;
 }
 
-#logoBox h1 {
+#logoBox > h1 {
   font-size: 50px;
 }
 
-#loginBox > div {
-  margin: 20px 0;
+#loginInputs {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 20px 0;
 }
 
 #loginText {
@@ -39,6 +37,6 @@
   margin: 5px;
 }
 
-#loginInputs > form > div {
+#loginInputs > div {
   margin: 10px;
 }
