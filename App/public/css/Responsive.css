@@ -1,133 +1,129 @@
 
 @media only screen and (max-width: 768px) {
 
-    h1 {
-        font-size: 36px;
-    }
+  h1 {
+    font-size: 36px;
+  }
 
-    h2 {
-        font-size: 24px;
-    }
+  h2 {
+    font-size: 24px;
+  }
 
-    h3 {
-        font-size: 20px;
-    }
+  h3 {
+    font-size: 20px;
+  }
 
-    h4 {
-        font-size: 16px;
-    }
+  h4 {
+    font-size: 16px;
+  }
 
-    /* Login Screen */
+  /* Login Screen */
 
-    #loginScreen {
-        justify-content: start;
-    }
+  #loginScreen {
+    justify-content: start;
+  }
 
-    #logoBox > h1 {
-        font-size: 36px;
-    }
+  #loginInputs > .button, #sessionParametersIcon {
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.18);
+  }
 
-    #loginInputs > .button, #sessionParametersIcon {
-        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.18);
-    }
+  .sidebar.left {
+    display: none;
+  }
 
-    .sidebar.left {
-        display: none;
-    }
+  #trackScreen {
+    margin: 0;
+  }
 
-    #trackScreen {
-        margin: 0;
-    }
+  #headerActions {
+    display: none;
+  }
 
-    #headerActions {
-        display: none;
-    }
+  #contentHeader > h1 {
+    display: none;
+  }
 
-    #contentHeader > h1 {
-        display: none;
-    }
+  #contentHeader {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    margin: 0;
+    transition: top 0.4s ease-in-out;
+  }
 
-    #contentHeader {
-        position: absolute;
-        width: 100%;
-        top: 0;
-        margin: 0;
-        transition: top 0.4s ease-in-out;
-    }
+  #toolBar {
+    height: 50px;
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #222;
+    margin: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
 
-    #toolBar {
-        height: 50px;
-        flex: 1;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border-radius: 10px;
-        background-color: #222;
-        margin: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    }
+  #toolBar > * {
+    margin: 0;
+  }
 
-    #toolBar > * {
-        margin: 0;
-    }
+  .delimiter {
+    display: none;
+  }
 
-    .delimiter {
-        display: none;
-    }
+  #itemBlocks, #itemList {
+    padding-top: 80px;
+    height: 100%;
+  }
 
-    #itemBlocks, #itemList {
-        padding-top: 80px;
-        height: 100%;
-    }
+  .trackListItem {
+    height: 45px;
+  }
 
-    .trackListItem {
-        height: 45px;
-    }
+  .itemActions, .progressBar,.duration,
+  .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream,
+  #sortBar {
+    display: none !important;
+  }
 
-    .itemActions, .progressBar,.duration,
-    .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream,
-    #sortBar {
-        display: none !important;
-    }
+  ::-webkit-scrollbar {
+    width: 0px !important;
+  }
 
-    ::-webkit-scrollbar {
-      width: 0px !important;
-    }
+  #toolBar input[type="text"] {
+    background: none !important;
+  }
 
-    #toolBar input[type="text"] {
-        background: none !important;
-    }
+  #footer {
+    flex-wrap: wrap;
+  }
 
-    #footer {
-        flex-wrap: wrap;
-    }
+  #controls {
+    width: 30%;
+    margin: 1%;
+  }
 
-    #controls {
-        width: 30%;
-        margin: 1%;
-    }
+  #currentTrackInfoLink {
+    display: flex;
+    align-items: center;
+    margin: 1%;
+    width: 65%;
+    height: 48px;
+    white-space: nowrap;
+  }
 
-    #currentTrackInfoLink {
-        display: flex;
-        align-items: center;
-        margin: 1%;
-        width: 65%;
-        height: 48px;
-        white-space: nowrap;
-    }
+  #currentTrackInfo {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    #currentTrackInfo {
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+  #footer #tracker {
+    flex-shrink: 0;
+    width: 100%;
+  }
 
-    #footer #tracker {
-        flex-shrink: 0;
-        width: 100%;
-    }
-
-    .input > * {
-        margin: 10px 5px;
-    }
+  .input > * {
+    margin: 10px 5px;
+  }
 }

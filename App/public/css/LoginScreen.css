@@ -18,15 +18,11 @@
   height: 100px;
 }
 
-#logoBox > h1 {
-  font-size: 50px;
-}
-
 #loginInputs {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 20px 0;
 }
 
 #loginText {

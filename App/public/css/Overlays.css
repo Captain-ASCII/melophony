@@ -1,31 +1,31 @@
 
 #overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
 }
 
 #overlayBox {
-    max-width: 50%;
-    background-color: #22222D;
-    border-radius: 5px;
-    padding: 20px;
+  max-width: 50%;
+  background-color: #22222D;
+  border-radius: 5px;
+  padding: 20px;
 }
 
 #confirmMessage {
-    margin: 10px;
-    font-size: 13px;
+  margin: 10px;
+  font-size: 13px;
 }
 
 #confirmActionBox {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }

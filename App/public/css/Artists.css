@@ -1,17 +1,17 @@
 
 .artistListItem > .link {
-    flex: 1;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    padding: 10px;
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
 .artistActions {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 5px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 5px;
 }
 
 
@@ -22,21 +22,21 @@
 #artistScreen {}
 
 #artistScreenHeader {
-    height: 200px;
-    display: flex;
-    padding: 10px;
-    align-items: flex-end;
-    background: var(--warning-bg);
+  height: 200px;
+  display: flex;
+  padding: 10px;
+  align-items: flex-end;
+  background: var(--warning-bg);
 }
 
 #artistScreenHeader > h2 {
-    font-size: 25px;
+  font-size: 25px;
 }
 
 #artistTracks {
-    padding: 20px;
+  padding: 20px;
 }
 
 .trackListItem .artist:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }

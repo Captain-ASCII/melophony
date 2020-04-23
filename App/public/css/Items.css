@@ -1,10 +1,10 @@
 
 .itemInfo, .subItemInfo {
-    flex: 1;
-    display: flex;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .itemActions {
-    margin: 0 10px;
+  margin: 0 10px;
 }

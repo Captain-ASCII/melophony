@@ -1,12 +1,12 @@
 
 .columns {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .columns > div {
-    flex-grow: 1;
-    min-width: 350px;
-    margin: 10px;
+  flex-grow: 1;
+  min-width: 350px;
+  margin: 10px;
 }
