@@ -1,10 +1,24 @@
 
-.itemInfo, .subItemInfo {
-  flex: 1;
+.itemInfo, .mainTrackInfo, .optionalTrackInfo {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin: 0 10px;
+}
+
+.itemInfo {
+  flex: 1;
+}
+
+.mainTrackInfo {
+  flex: 3;
+}
+
+.optionalTrackInfo {
+  flex: 1;
 }
 
 .itemActions {
+  display: flex;
   margin: 0 10px;
 }

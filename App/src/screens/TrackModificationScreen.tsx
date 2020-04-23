@@ -85,7 +85,9 @@ const TrackModificationScreen = (): JSX.Element => {
 
       return (
         <div className="screen" >
-          <CloseButton />
+          <div id="preActions" >
+            <CloseButton />
+          </div>
           <div className="columns">
             <div>
               <div className="input">
@@ -152,16 +154,18 @@ const TrackModificationScreen = (): JSX.Element => {
                 <div className="button raised alert" onClick={deleteItem} >Delete</div>
               </div>
             </div>
+            <div id="trackBarModifier">
+              <h2>Modify track duration</h2>
+              <div className="input">
+                <i className="fa fa-ruler fa-2x icon" />
+                <InputRange track={track} multiRange onStartSet={handleStartSet} onEndSet={handleEndSet} />
+              </div>
+            </div>
           </div>
 
-          <div className="delimiter" />
-
-          <h2 className="centeredTitle" >Modify track duration</h2>
-          <div className="input">
-            <i className="fa fa-ruler fa-2x icon" />
-            <InputRange track={track} multiRange onStartSet={handleStartSet} onEndSet={handleEndSet} />
+          <div id="postActions" >
+            <div id="saveButton" className="button raised" onClick={save} >Save</div>
           </div>
-          <div id="saveButton" className="button raised" onClick={save} >Save</div>
         </div>
       )
     }

@@ -2,7 +2,7 @@
 @media only screen and (max-width: 768px) {
 
   h1 {
-    font-size: 36px;
+    font-size: 30px;
   }
 
   h2 {
@@ -15,6 +15,20 @@
 
   h4 {
     font-size: 16px;
+  }
+
+  h5 {
+    font-size: 12px;
+  }
+
+  input[type="text"], input[type="password"] {
+    min-width: auto;
+  }
+
+  .screen {
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   /* Login Screen */
@@ -31,8 +45,19 @@
     display: none;
   }
 
+  /* Track Screen */
+
+  #menu {
+    display: none !important;
+  }
+
+  .logo {
+    height: 70px;
+  }
+
   #trackScreen {
     margin: 0;
+    padding: 0 !important;
   }
 
   #headerActions {
@@ -63,27 +88,42 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
-  #toolBar > * {
-    margin: 0;
-  }
-
   .delimiter {
     display: none;
   }
 
   #itemBlocks, #itemList {
-    padding-top: 80px;
     height: 100%;
   }
 
-  .trackListItem {
-    height: 45px;
+  .itemInfo {
+    margin:  10px 0;
   }
 
-  .itemActions, .progressBar,.duration,
-  .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream,
-  #sortBar {
+  .mainTrackInfo {
+    flex-direction: column;
+  }
+
+  .mainTrackInfo {
+    align-items: flex-start;
+  }
+
+  .mainTrackInfo > .title {
+    font-weight: bold;
+  }
+
+  .itemActions {
+    margin: 0;
+  }
+
+  .progressBar, .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream, #sortBar {
     display: none !important;
+  }
+
+  /* Track Modification Screen */
+
+  .columns > div {
+    min-width: auto;
   }
 
   ::-webkit-scrollbar {
@@ -91,7 +131,10 @@
   }
 
   #toolBar input[type="text"] {
+    min-width: auto;
     background: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
   }
 
   #footer {
@@ -100,13 +143,13 @@
 
   #controls {
     width: 30%;
-    margin: 1%;
+    margin: 0 1%;
   }
 
   #currentTrackInfoLink {
     display: flex;
     align-items: center;
-    margin: 1%;
+    margin: 0 1%;
     width: 65%;
     height: 48px;
     white-space: nowrap;
@@ -121,6 +164,8 @@
   #footer #tracker {
     flex-shrink: 0;
     width: 100%;
+    position: relative;
+    top: -5px;
   }
 
   .input > * {

@@ -29,7 +29,7 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
     setButtonPressTimer(
       setTimeout(() => {
         if (!hasScrolled()) {
-          history.push(`/track/modify/${track.getId()}`)
+          history.push(`/modify/track/${track.getId()}`)
         }
       }, 500)
     )
@@ -41,21 +41,20 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
   const handleEnqueue = useCallback(() => dispatch(setPlaylist(playlist.enqueue(track))), [ dispatch, playlist, track ])
 
   return (
-    <div className="itemInfo" >
-      <div
-        className="subItemInfo" onClick={startPlay}
-        onTouchStart={press} onTouchEnd={release}
-      >
+    <div className="itemInfo" onClick={startPlay} onTouchStart={press} onTouchEnd={release} >
+      <div className="mainTrackInfo" >
         <p className="title " >{track.getTitle()}</p>
+        <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
+          <p className="artist" >{track.getArtist().getName()}</p>
+        </Link>
       </div>
-      <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
-        <p className="artist" >{track.getArtist().getName()}</p>
-      </Link>
-      <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  />
-      <p className="duration" >{formatDuration(track.getDuration())}</p>
-      <div className="itemActions">
-        <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
-        <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+      <div className="optionalTrackInfo" >
+        {/* <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  /> */}
+        <p className="duration" >{formatDuration(track.getDuration())}</p>
+        <div className="itemActions">
+          <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
+          <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+        </div>
       </div>
     </div>
   )

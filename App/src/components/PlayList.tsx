@@ -11,10 +11,10 @@ const PlayList = ({ tracks }: { tracks: Array<Track> }): JSX.Element => {
 
   return (
     <div className="playlist" >
-      <h3 className="playlistLength" >
+      <h5 className="playlistLength" >
         <span>{ rTracks.length }</span>
         <span className="hideWhenClosed" >Track(s)</span>
-      </h3>
+      </h5>
       { rTracks }
       { rPlaylist }
     </div>

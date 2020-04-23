@@ -89,7 +89,7 @@ const App = (): JSX.Element => {
         </div>
         <div id="header">
           <div id="headerMenu" >
-            <i className="fa fa-bars fa-2x icon button" onClick={handleMenuSwitch} />
+            <i id="menu" className="fa fa-bars fa-2x icon button" onClick={handleMenuSwitch} />
             <Link to="/" >
               <div id="AppHeader">
                 <div className="logo" >
