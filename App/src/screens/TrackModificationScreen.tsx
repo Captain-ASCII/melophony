@@ -51,11 +51,11 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
 
-      const download = useCallback(() => {
-        apiManager.get(`/download/${track.getFile().getVideoId()}`)
-      }, [ apiManager, track ])
+      // const download = useCallback(() => {
+      //   apiManager.get(`/download/${track.getFile().getVideoId()}`)
+      // }, [ apiManager, track ])
 
-      const requestServerDownload = useCallback(() => false, [])
+      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getVideoId()}`, { forceDownload: true }), [ apiManager, track ])
 
       const deleteItem = useCallback(() => apiManager.delete(`/track/${track.getId()}`), [ apiManager, track ])
 
@@ -149,7 +149,9 @@ const TrackModificationScreen = (): JSX.Element => {
             <div id="serverInformation">
               <h2 style={{ marginLeft: 5 }} >Actions</h2>
               <div className="actions">
+                { /*
                 <div className="button raised" onClick={download} >Get locally</div>
+              */ }
                 <div className="button raised" onClick={requestServerDownload} >Download</div>
                 <div className="button raised alert" onClick={deleteItem} >Delete</div>
               </div>
