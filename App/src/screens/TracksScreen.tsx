@@ -46,6 +46,15 @@ function _sort(providedTracks: Array<Track>, sortOrder: string, type: string): A
   }
 }
 
+function changeTopValue(elementId: string, value: string): void {
+  if (window.innerWidth <= 768) {
+    const element = document.getElementById(elementId)
+    if (element) {
+      element.style.top = value
+    }
+  }
+}
+
 const TracksScreen = (): JSX.Element => {
   const dispatch = useDispatch()
 
@@ -75,26 +84,23 @@ const TracksScreen = (): JSX.Element => {
   }, [ dispatch, configuration, playlist ])
 
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      const listElement = document.getElementById('itemList')
-      if (listElement) {
-        let prevScrollpos = listElement.scrollTop
+    const listElement = document.getElementById('itemList')
+    if (listElement) {
+      let prevScrollpos = listElement.scrollTop
 
-        listElement.onscroll = function(): void {
-          const currentScrollPos = listElement.scrollTop
-          const element = document.getElementById('contentHeader')
-          if (element) {
-            if (prevScrollpos > currentScrollPos) {
-              element.style.top = '0'
-            } else {
-              element.style.top = '-200px'
-            }
-            prevScrollpos = currentScrollPos
-          }
-        }
+      listElement.onscroll = function(): void {
+        const currentScrollPos = listElement.scrollTop
+        changeTopValue('contentHeader', prevScrollpos > currentScrollPos ? '0' : '-200px')
+        changeTopValue('itemList', prevScrollpos > currentScrollPos ? '65px' : '0')
+        prevScrollpos = currentScrollPos
       }
     }
   }, [])
+
+  const handleFilterSet = useCallback((t: string) => {
+    changeTopValue('itemValue', t !== '' ? '65px' : '0')
+    setFilter(t)
+  }, [ setFilter ])
 
   return (
     <div id="trackScreen" className="screen" >
@@ -102,7 +108,7 @@ const TracksScreen = (): JSX.Element => {
         <h1>Titres</h1>
         <div id="toolBar">
           <div className="searchbar">
-            <TextInput id="trackSearch" icon="search" onInput={setFilter} />
+            <TextInput id="trackSearch" icon="search" onInput={handleFilterSet} />
           </div>
           <div id="sortBar" >
             <CustomSelect onSelection={sort} icon="" placeholder="Order" >
