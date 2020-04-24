@@ -18,13 +18,13 @@ const ArtistOverviewScreen = (): JSX.Element => {
     const tracks = selectTracksOfArtist(parseInt(id))
 
     return (
-      <div id="artistOverviewScreen">
+      <div id="artistOverviewScreen" className="screen" >
         <CloseButton icon="chevron-left" additionalClass="floating mini top transparent" />
         <div id="artistScreenHeader" style={{ backgroundColor: ColorUtils.getRandomColor() }}  >
           <h1>{artist.getName()}</h1>
         </div>
 
-        <div id="contentHeader">
+        <div id="titlesHeader" >
           <h2>Titres</h2>
           <div className="displayActions">
             <Link to={`/modify/artist/${artist.getId()}`}><i className="fa fa-edit icon button" title="Edit artist data"  /></Link>

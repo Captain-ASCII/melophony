@@ -62,7 +62,9 @@ const ArtistModificationScreen = (): JSX.Element => {
 
       return (
         <div className="screen" >
-          <CloseButton />
+          <div id="preActions" >
+            <CloseButton />
+          </div>
           <div className="input">
             <i className="fa fa-male fa-2x icon" />
             <input
@@ -75,7 +77,9 @@ const ArtistModificationScreen = (): JSX.Element => {
             <i className="fa fa-fingerprint fa-2x icon" />
             <input type="text" disabled defaultValue={artist.getId()} />
           </div>
-          <div id="saveButton" className="button raised" onClick={save} >Save</div>
+          <div id="postActions" >
+            <div id="saveButton" className="button raised" onClick={save} >Save</div>
+          </div>
         </div>
       )
     }

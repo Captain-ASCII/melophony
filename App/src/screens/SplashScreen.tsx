@@ -6,9 +6,9 @@ const Splash = ({ getRequiredData }: { getRequiredData: () => void }): JSX.Eleme
 
   return (
     <div id="splash">
-      <SessionConfigurator onChange={getRequiredData} />
       <img id="splashImg" src="/img/melophony.png" />
       <h1 id="splashTitle" >Melophony</h1>
+      <SessionConfigurator onChange={getRequiredData} />
     </div>
   )
 }
