@@ -37,13 +37,16 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
 
   const release = useCallback(() => clearTimeout(buttonPressTimer), [ buttonPressTimer ])
 
-  const stopPropagation = useCallback(() => (e: MouseEvent): void => e.stopPropagation(), [])
-  const handleEnqueue = useCallback(() => dispatch(setPlaylist(playlist.enqueue(track))), [ dispatch, playlist, track ])
+  const stopPropagation = useCallback((e: React.MouseEvent): void => e.stopPropagation(), [])
+  const handleEnqueue = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    dispatch(setPlaylist(playlist.enqueue(track)))
+  }, [ dispatch, playlist, track ])
 
   return (
     <div className="itemInfo" onClick={startPlay} onTouchStart={press} onTouchEnd={release} >
       <div className="mainTrackInfo" >
-        <p className="title " >{track.getTitle()}</p>
+        <p className="title" >{track.getTitle()}</p>
         <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
           <p className="artist" >{track.getArtist().getName()}</p>
         </Link>
@@ -53,7 +56,7 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
         <p className="duration" >{formatDuration(track.getDuration())}</p>
         <div className="itemActions">
           <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
-          <Link to={`/modify/track/${track.getId()}`} ><i className="fa fa-pen icon button" /></Link>
+          <Link to={`/modify/track/${track.getId()}`} onClick={stopPropagation} ><i className="fa fa-pen icon button" /></Link>
         </div>
       </div>
     </div>
