@@ -68,9 +68,6 @@ const App = (): JSX.Element => {
               <PlayList tracks={playlist.getQueue()} />
             </div>
           </div>
-          <div id="toaster">
-            <div id="toasterText">?!</div>
-          </div>
           <div id="content">
             <Switch>
               <Route path="/tracks" component={TracksScreen} />
