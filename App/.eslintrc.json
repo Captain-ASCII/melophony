@@ -1,0 +1,42 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "react-hooks"
+  ],
+  "rules": {
+    "indent": "off",
+    "semi": [ "error", "never" ],
+    "quotes": [ "error", "single" ],
+    "react/jsx-filename-extension": [ "error", { "extensions": [ ".tsx" ] } ],
+    "react-hooks/exhaustive-deps": "error",
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/no-explicit-any": [ "off" ],
+    "@typescript-eslint/array-type": [ "error", "generic" ],
+    "@typescript-eslint/explicit-function-return-type": [ "error", { "allowExpressions": true } ]
+  },
+  "globals": {
+    "__dirname": "readonly",
+    "clearInterval": "readonly",
+    "clearTimeout": "readonly",
+    "console": "readonly",
+    "fetch": "readonly",
+    "global": "writable",
+    "module": "writable",
+    "require": "readonly",
+    "setInterval": "readonly",
+    "setTimeout": "readonly",
+    "Headers": "writable"
+  }
+}
