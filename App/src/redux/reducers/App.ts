@@ -4,7 +4,7 @@ import { SET_PLAYLIST, SET_MEDIA_MANAGER, SET_API_MANAGER, AppAction } from '@ac
 import AppStore from '@models/AppStore'
 import PlaylistManager from '@models/PlaylistManager'
 
-const INITIAL = new AppStore(new PlaylistManager([]), null, null)
+const INITIAL = new AppStore(null, null, null)
 
 const app = (state = INITIAL, action: AppAction): AppStore => {
   switch (action.type) {

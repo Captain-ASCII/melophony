@@ -30,7 +30,7 @@ const configuration = store.getState().configuration
 
 const apiManager = new ApiManager(configuration.getServerAddress(), true)
 store.getState().app.apiManager = apiManager
-store.getState().app.playlist = new PlaylistManager([])
+store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
 
 async function getData(): Promise<void> {
@@ -43,7 +43,7 @@ async function getData(): Promise<void> {
 
   store.dispatch(setArtists(artists))
   store.dispatch(setTracks(tracks))
-  store.dispatch(setPlaylist(new PlaylistManager(tracks)))
+  store.dispatch(setPlaylist(new PlaylistManager(tracks, configuration.getShuffleMode())))
 
   ReactDOM.render(
     <Provider store={store} >
