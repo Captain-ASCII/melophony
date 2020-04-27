@@ -5,36 +5,36 @@ export default class File {
   private videoId: string
   private state: string
 
-  constructor(id: string, videoId: string, state: string) {
+  public constructor(id: string, videoId: string, state: string) {
     this.id = id
     this.videoId = videoId
     this.state = state
   }
 
-  withId(id: string): File {
+  public withId(id: string): File {
     this.id = id
     return this
   }
 
-  withVideoId(videoId: string): File {
+  public withVideoId(videoId: string): File {
     this.videoId = videoId
     return this
   }
 
-  withState(state: string): File {
+  public withState(state: string): File {
     this.state = state
     return this
   }
 
-  getId(): string {
+  public getId(): string {
     return this.id
   }
 
-  getVideoId(): string {
+  public getVideoId(): string {
     return this.videoId
   }
 
-  getState(): string {
+  public getState(): string {
     return this.state
   }
 

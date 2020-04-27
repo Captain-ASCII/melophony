@@ -6,16 +6,16 @@ export default class Notification {
   private id: string
   private message: string
 
-  constructor(message: string) {
+  public constructor(message: string) {
     this.id = StringUtils.generateId()
     this.message = message
   }
 
-  getId(): string {
+  public getId(): string {
     return this.id
   }
 
-  getMessage(): string {
+  public getMessage(): string {
     return this.message
   }
 }

@@ -13,7 +13,9 @@ export default class PlaylistManager {
   private currentTrack: Track | null
   private queue: Array<Track>
 
-  constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks), current = tracks, currentTrack: Track = null, index = -1, queue: Array<Track> = []) {
+  public constructor(tracks: Array<Track>, shuffledTracks = Arrays.shuffle(tracks),
+    current = tracks, currentTrack: Track | null = null, index = -1, queue: Array<Track> = []) {
+
     this.tracks = tracks
     this.shuffledTracks = shuffledTracks
     this.current = current
@@ -22,15 +24,15 @@ export default class PlaylistManager {
     this.queue = queue
   }
 
-  clone(p: PlaylistManager = this): PlaylistManager {
+  public clone(p: PlaylistManager = this): PlaylistManager {
     return new PlaylistManager(p.tracks, p.shuffledTracks, p.current, p.currentTrack, p.index, p.queue)
   }
 
-  enqueue(track: Track): PlaylistManager {
+  public enqueue(track: Track): PlaylistManager {
     return this.withQueue(Arrays.add(this.queue, track))
   }
 
-  dequeue(): PlaylistManager {
+  public dequeue(): PlaylistManager {
     if (this.queue.length > 0) {
       const [ track, queue ] = Arrays.pop(this.queue)
       return this.withTrack(track).withQueue(queue)
@@ -39,49 +41,49 @@ export default class PlaylistManager {
     return this
   }
 
-  withTrack(currentTrack: Track): PlaylistManager {
+  public withTrack(currentTrack: Track): PlaylistManager {
     const clone = this.clone()
     clone.index = this.current.findIndex(track => track.getId() === currentTrack.getId())
     clone.currentTrack = currentTrack
     return clone
   }
 
-  withQueue(queue: Array<Track>): PlaylistManager {
+  public withQueue(queue: Array<Track>): PlaylistManager {
     const clone = this.clone()
     clone.queue = queue
     return clone
   }
 
-  withShuffleMode(shuffleMode: boolean): PlaylistManager {
+  public withShuffleMode(shuffleMode: boolean): PlaylistManager {
     const clone = this.clone()
     clone.current = shuffleMode ? this.shuffledTracks : this.tracks
     return clone
   }
 
-  withIndex(index: number): PlaylistManager {
+  public withIndex(index: number): PlaylistManager {
     const clone = this.clone()
     clone.index = index
     clone.currentTrack = clone.current[clone.index]
     return clone
   }
 
-  getList(): Array<Track> {
+  public getList(): Array<Track> {
     return this.current.slice(this.index, Math.min(this.index + 5, this.current.length))
   }
 
-  getQueue(): Array<Track> {
+  public getQueue(): Array<Track> {
     return this.queue
   }
 
-  previous(): PlaylistManager {
+  public previous(): PlaylistManager {
     return this.withIndex((this.index - 1 + this.current.length) % this.current.length)
   }
 
-  getCurrent(): Track | null {
+  public getCurrent(): Track | null {
     return this.currentTrack
   }
 
-  next(): PlaylistManager {
+  public next(): PlaylistManager {
     if (this.queue.length > 0) {
       return this.dequeue()
     }

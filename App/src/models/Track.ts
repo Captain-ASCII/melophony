@@ -21,8 +21,8 @@ export default class Track {
   private playlists: Array<Playlist>
   private album: Album
 
-  constructor(id: number, title: string, artist: Artist, duration: number, file: File, creationDate: Date, startTime: number, endTime: number,
-              lastPlay: Date, playCount: number, rating: number, progress: number, playlists: Array<Playlist>, album: Album) {
+  public constructor(id: number, title: string, artist: Artist, duration: number, file: File, creationDate: Date, startTime: number, endTime: number,
+    lastPlay: Date, playCount: number, rating: number, progress: number, playlists: Array<Playlist>, album: Album) {
     this.id = id
     this.title = title
     this.artist = artist
@@ -39,7 +39,7 @@ export default class Track {
     this.album = album
   }
 
-  clone(t: Track = this): Track {
+  public clone(t: Track = this): Track {
     return new Track(
       t.id,
       t.title,
@@ -58,88 +58,88 @@ export default class Track {
     )
   }
 
-  withId(id: number): Track {
+  public withId(id: number): Track {
     const clone = this.clone()
     clone.id = id
     return clone
   }
 
-  withTitle(title: string): Track {
+  public withTitle(title: string): Track {
     const clone = this.clone()
     clone.title = title
     return clone
   }
 
-  withArtist(artist: Artist): Track {
+  public withArtist(artist: Artist): Track {
     const clone = this.clone()
     clone.artist = artist
     return clone
   }
 
-  withDuration(duration: number): Track {
+  public withDuration(duration: number): Track {
     const clone = this.clone()
     clone.duration = duration
     return clone
   }
 
-  withFile(file: File): Track {
+  public withFile(file: File): Track {
     const clone = this.clone()
     clone.file = file
     return clone
   }
 
-  withCreationDate(creationDate: Date): Track {
+  public withCreationDate(creationDate: Date): Track {
     const clone = this.clone()
     clone.creationDate = creationDate
     return clone
   }
 
-  withStartTime(startTime: number): Track {
+  public withStartTime(startTime: number): Track {
     const clone = this.clone()
     clone.startTime = startTime
     return clone
   }
 
-  withEndTime(endTime: number): Track {
+  public withEndTime(endTime: number): Track {
     const clone = this.clone()
     clone.endTime = endTime
     return clone
   }
 
 
-  getId(): number {
+  public getId(): number {
     return this.id
   }
 
-  getTitle(): string {
+  public getTitle(): string {
     return this.title
   }
 
-  getArtist(): Artist {
+  public getArtist(): Artist {
     return this.artist
   }
 
-  getDuration(): number {
+  public getDuration(): number {
     return this.duration
   }
 
-  getFile(): File {
+  public getFile(): File {
     return this.file
   }
 
-  getCreationDate(): Date {
+  public getCreationDate(): Date {
     return this.creationDate
   }
 
-  getStartTime(): number {
+  public getStartTime(): number {
     return this.startTime
   }
 
-  getEndTime(): number {
+  public getEndTime(): number {
     return this.endTime
   }
 
-  static fromObject(o: any): Track {
+  public static fromObject(o: any): Track {
     return new Track(
       o.id,
       o.title,
