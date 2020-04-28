@@ -1,7 +1,12 @@
+#!/bin/bash
 
-while read p; do
-    echo "Killing $p..."
-    sudo kill -9 $p
-done < ~/Documents/current_melophony_pid.txt
+kill_command () {
+    if [ ! -z "$1" ]; then
+        echo "Killing $1..."
+        sudo kill -9 $1
+    fi
+}
 
-sudo lsof -i | grep -E "1804|1951" | awk '{print $2}' | xargs sudo kill -9 
+export -f kill_command
+
+sudo lsof -i | grep -E "1804|1958|nodejs.*\*:log-server" | awk '{print $2}' | xargs -I {} bash -c "kill_command {}"
