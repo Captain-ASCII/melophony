@@ -1,21 +1,15 @@
 
 import JWT from 'jwt-client'
 
-import { store } from '@store'
-
-import Notification from '@models/Notification'
-
-import { addNotification } from '@actions/Notification'
-
 class ApiRequest {
 
-  method: string
-  baseUrl: string
-  path: string
-  parameters: RequestInit
-  headers: Headers
+  private method: string
+  private baseUrl: string
+  private path: string
+  private parameters: RequestInit
+  private headers: Headers
 
-  constructor(baseUrl: string, method: string, path: string) {
+  public constructor(baseUrl: string, method: string, path: string) {
     this.method = method
     this.baseUrl = baseUrl
     this.path = path
@@ -23,79 +17,81 @@ class ApiRequest {
     this.parameters = { method: method, headers: this.headers }
   }
 
-  withHeader(header: string, value: string): ApiRequest {
+  public withHeader(header: string, value: string): ApiRequest {
     this.headers.append(header, value)
     return this
   }
 
-  withBody(body: object): ApiRequest {
+  public withBody(body: object): ApiRequest {
     this.headers.append('Content-Type', 'application/json')
     this.parameters.body = JSON.stringify(body)
 
     return this
   }
 
-  getBaseUrl(): string {
+  public getBaseUrl(): string {
     return this.baseUrl
   }
 
-  getPath(): string {
+  public getPath(): string {
     return this.path
   }
 
-  getParams(): RequestInit {
+  public getParams(): RequestInit {
     return this.parameters
   }
 }
 
 export default class ApiManager {
 
-  serverUrl: string
-  isWithAuthentication: boolean
-  request: ApiRequest
+  private serverUrl: string
+  private isWithAuthentication: boolean
+  private defaultCallback: ((code: number, data: any) => void)
+  private request: ApiRequest
 
-  constructor(serverUrl: string, withAuthentication = true) {
+  public constructor(serverUrl: string, withAuthentication = true, defaultCallback: ((code: number, data: any) => void) = () => {}) {
     this.serverUrl = serverUrl
     this.isWithAuthentication = withAuthentication
+    this.defaultCallback = defaultCallback
     this.request = new ApiRequest('', 'GET', '')
   }
 
-  clone(): ApiManager {
+  public clone(): ApiManager {
     return new ApiManager(this.serverUrl, this.isWithAuthentication)
   }
 
-  withServerAddress(address: string): ApiManager {
+  public withServerAddress(address: string): ApiManager {
     const clone = this.clone()
     clone.serverUrl = address
     return clone
   }
 
-  createRequest(): ApiRequest {
+  public createRequest(): ApiRequest {
     this.request = new ApiRequest(this.serverUrl, 'GET', '')
     return this.request
   }
 
-  get(path: string, onResult: (code: number, data: any) => void | null = null, withNotification = false): Promise<[number, any]> {
+  public get(path: string, onResult: ((code: number, data: any) => void) | false | undefined = false): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'GET', path)
-    return this.sendRequest(onResult, withNotification)
+    return this.sendRequest(onResult)
   }
 
-  post(path: string, body: object, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
+  public post(path: string, body: object, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'POST', path).withBody(body)
-    return this.sendRequest(onResult, withNotification)
+    return this.sendRequest(onResult)
   }
 
-  put(path: string, body: object, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
+  public put(path: string, body: object, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'PUT', path).withBody(body)
-    return this.sendRequest(onResult, withNotification)
+    return this.sendRequest(onResult)
   }
 
-  delete(path: string, onResult: (code: number, data: any) => void | null = null, withNotification = true): Promise<[number, any]> {
+  public delete(path: string, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'DELETE', path)
-    return this.sendRequest(onResult, withNotification)
+    return this.sendRequest(onResult)
   }
 
-  sendRequest(onResult: (code: number, data: any) => void | null, withNotification: boolean): Promise<[number, any]> {
+  private sendRequest(onResult: ((code: number, data: any) => void) | false | undefined): Promise<[number, any]> {
     if (this.isWithAuthentication) {
       this.request.withHeader('Authorization', JWT.get())
     }
@@ -111,17 +107,16 @@ export default class ApiManager {
           JWT.keep(body.token)
         }
       }
-      if (withNotification) {
-        store.dispatch(addNotification(new Notification(body.message)))
-      }
       if (onResult) {
         onResult(data[0], body)
+      } else if (onResult !== false) {
+        this.defaultCallback(data[0], body)
       }
     })
-    .catch((error: Error) => {
-      console.error(error)
-      throw new Error('Failure during network request')
-    })
+      .catch((error: Error) => {
+        console.error(error)
+        throw new Error('Failure during network request')
+      })
 
     return json
   }

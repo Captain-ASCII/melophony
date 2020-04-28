@@ -14,21 +14,26 @@ import { store } from '@store'
 import Track from '@models/Track'
 import Artist from '@models/Artist'
 
+import Notification from '@models/Notification'
 import PlaylistManager from '@models/PlaylistManager'
 
 import LoginScreen from '@screens/LoginScreen'
 import SplashScreen from '@screens/SplashScreen'
 
+import { addNotification } from '@actions/Notification'
+import { setArtists } from '@actions/Artist'
 import { setPlaylist } from '@actions/App'
 import { setTracks } from '@actions/Track'
-import { setArtists } from '@actions/Artist'
 
 import ApiManager from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
 
 const configuration = store.getState().configuration
 
-const apiManager = new ApiManager(configuration.getServerAddress(), true)
+const apiManager = new ApiManager(configuration.getServerAddress(), true, (code, body) => {
+  store.dispatch(addNotification(new Notification(body.message)))
+})
+
 store.getState().app.apiManager = apiManager
 store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
