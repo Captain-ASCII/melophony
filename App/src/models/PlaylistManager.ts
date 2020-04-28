@@ -13,18 +13,22 @@ export default class PlaylistManager {
   private currentTrack: Track | null
   private queue: Array<Track>
 
-  public constructor(tracks: Array<Track>, shuffleMode: boolean, initialTracks = tracks, currentTrack: Track | null = null, index = -1, queue: Array<Track> = []) {
+  public constructor(tracks: Array<Track>, shuffleMode: boolean, initialTracks = tracks, currentTrack: Track | null = null, index = -1, queue: Array<Track> = [], cloning = false) {
 
     this.shuffleMode = shuffleMode
     this.initialTracks = initialTracks
-    this.tracks = shuffleMode ? Arrays.shuffle(tracks) : this.initialTracks
+    if (cloning) {
+      this.tracks = tracks
+    } else {
+      this.tracks = shuffleMode ? Arrays.shuffle(tracks) : this.initialTracks
+    }
     this.currentTrack = currentTrack
     this.index = index
     this.queue = queue
   }
 
   public clone(p: PlaylistManager = this): PlaylistManager {
-    return new PlaylistManager(p.tracks, p.shuffleMode, p.initialTracks, p.currentTrack, p.index, p.queue)
+    return new PlaylistManager(p.tracks, p.shuffleMode, p.initialTracks, p.currentTrack, p.index, p.queue, true)
   }
 
   public enqueue(track: Track): PlaylistManager {
@@ -59,8 +63,8 @@ export default class PlaylistManager {
       clone.tracks = Arrays.shuffle(this.tracks)
     } else {
       clone.tracks = this.initialTracks
-      clone.index = 0
     }
+    clone.index = -1
     return clone
   }
 
@@ -72,7 +76,11 @@ export default class PlaylistManager {
   }
 
   public getList(): Array<Track> {
-    return this.tracks.slice(this.index, Math.min(this.index + 5, this.tracks.length))
+    const startIndex = Math.max(0, this.index)
+    if (startIndex > this.tracks.length - 5) {
+      return [ ...this.tracks.slice(startIndex, this.tracks.length), ...this.tracks.slice(0, startIndex - this.tracks.length + 5) ]
+    }
+    return this.tracks.slice(startIndex, startIndex + 5)
   }
 
   public getQueue(): Array<Track> {

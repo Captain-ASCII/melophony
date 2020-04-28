@@ -5,6 +5,8 @@ import { store } from '@store'
 
 import Track from '@models/Track'
 
+import { setPlaylist } from '@actions/App'
+
 export default class MediaManager {
 
   static EXTRACT_DURATION = 2000
@@ -34,6 +36,13 @@ export default class MediaManager {
 
   withAudio(audio: HTMLAudioElement): MediaManager {
     const clone = this.clone()
+
+    /* eslint-disable */
+    audio.toJSON = function () {
+      return 'HTMLAudioElement'
+    }
+    /* eslint-enable */
+
     clone.audio = audio
     return clone
   }
@@ -57,7 +66,7 @@ export default class MediaManager {
   }
 
   setTrack(track: Track | null): void {
-    if (track !== null) {
+    if (this.audio !== null && track !== null) {
       this.audio.addEventListener('error', (event: any) => {
         if (event.target.error && event.target.error.code == 4) {
           this.next()
@@ -78,7 +87,7 @@ export default class MediaManager {
   }
 
   play(): void {
-    if (this.audio.src !== '') {
+    if (this.audio !== null && this.audio.src !== '') {
       this.audio.onended = (): void => this.next()
       this.audio.play()
       this.setElementClass('playButton', 'fa fa-pause fa-2x')
@@ -86,24 +95,26 @@ export default class MediaManager {
   }
 
   pause(): void {
-    this.audio.pause()
-    this.setElementClass('playButton', 'fa fa-play fa-2x')
+    if (this.audio !== null) {
+      this.audio.pause()
+      this.setElementClass('playButton', 'fa fa-play fa-2x')
+    }
   }
 
   previous(): void {
-    store.getState().app.playlist = store.getState().app.playlist.previous()
+    store.dispatch(setPlaylist(store.getState().app.playlist.previous()))
     this.setTrack(store.getState().app.playlist.getCurrent())
     this.play()
   }
 
   next(): void {
-    store.getState().app.playlist = store.getState().app.playlist.next()
+    store.dispatch(setPlaylist(store.getState().app.playlist.next()))
     this.setTrack(store.getState().app.playlist.getCurrent())
     this.play()
   }
 
   playPause(): void {
-    if (this.audio.paused) {
+    if (this.audio !== null && this.audio.paused) {
       this.play()
     } else {
       this.pause()
@@ -111,17 +122,19 @@ export default class MediaManager {
   }
 
   playExtract(track: Track, time: number): void {
-    this.audio.onended = (): boolean => false
+    if (this.audio !== null) {
+      this.audio.onended = (): boolean => false
 
-    if (!this.isPlayingExtract) {
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
-      this.isPlayingExtract = true
+      if (!this.isPlayingExtract) {
+        this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
+        this.isPlayingExtract = true
+      }
+      this.audio.currentTime = time
+      this.audio.play()
+      if (this.extractTimeout) {
+        clearTimeout(this.extractTimeout)
+      }
+      this.extractTimeout  = setTimeout(() => this.audio.pause(), MediaManager.EXTRACT_DURATION)
     }
-    this.audio.currentTime = time
-    this.audio.play()
-    if (this.extractTimeout) {
-      clearTimeout(this.extractTimeout)
-    }
-    this.extractTimeout  = setTimeout(() => this.audio.pause(), MediaManager.EXTRACT_DURATION)
   }
 }
