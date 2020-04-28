@@ -59,6 +59,7 @@ export default class UserAspect extends BaseAspect {
       .getOne()
 
     if (user) {
+      delete user.password
       return new ApiResult(200, 'OK', user)
     }
     return new ApiResult(400, 'KO')
