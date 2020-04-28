@@ -2,7 +2,6 @@
 import { SET_PLAYLIST, SET_MEDIA_MANAGER, SET_API_MANAGER, AppAction } from '@actions/App'
 
 import AppStore from '@models/AppStore'
-import PlaylistManager from '@models/PlaylistManager'
 
 const INITIAL = new AppStore(null, null, null)
 

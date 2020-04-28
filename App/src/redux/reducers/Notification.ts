@@ -9,7 +9,7 @@ const notifications = (state: Array<Notification> = [], action: NotificationActi
     case ADD_NOTIFICATION:
       return Arrays.add(state, action.notification)
     case REMOVE_NOTIFICATION:
-        return Arrays.remove(state, (notification: Notification): boolean => notification.getId() === action.notification.getId())
+      return Arrays.remove(state, (notification: Notification): boolean => notification.getId() === action.notification.getId())
     default:
       return state
   }

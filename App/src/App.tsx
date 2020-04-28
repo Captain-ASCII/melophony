@@ -51,7 +51,7 @@ const App = (): JSX.Element => {
 
   const synchronize = useCallback(() => apiManager.get('synchronize'), [ apiManager ])
 
-  const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'), [])
+  const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'), [ setMenu ])
 
   const switchServerAddress = useCallback((value: string) => {
     dispatch(setConfiguration(configuration.withServerAddress(value)))

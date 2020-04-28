@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 
