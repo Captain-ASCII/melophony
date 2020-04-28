@@ -88,7 +88,11 @@ export default class MediaManager {
 
   play(): void {
     if (this.audio !== null && this.audio.src !== '') {
-      this.audio.onended = (): void => this.next()
+      this.audio.onended = (): void => {
+        // Reload for token (music is playing, we are considering the user is still there)
+        store.getState().app.apiManager.get('/user')
+        this.next()
+      }
       this.audio.play()
       this.setElementClass('playButton', 'fa fa-pause fa-2x')
     }
