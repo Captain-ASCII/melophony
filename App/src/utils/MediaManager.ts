@@ -38,6 +38,7 @@ export default class MediaManager {
     const clone = this.clone()
 
     /* eslint-disable */
+    // @ts-ignore
     audio.toJSON = function () {
       return 'HTMLAudioElement'
     }
