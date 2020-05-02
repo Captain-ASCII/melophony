@@ -6,6 +6,7 @@ import { selectPlaylist } from '@selectors/App'
 import { setPlaylist } from '@actions/App'
 
 import Track from '@models/Track'
+import MediaUtils from '@utils/MediaUtils'
 
 const formatDuration = (duration: number): string => {
   const minutes = '0' + Math.round(duration / 60)
@@ -43,13 +44,22 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
     dispatch(setPlaylist(playlist.enqueue(track)))
   }, [ dispatch, playlist, track ])
 
+  const renderArtistName = (): JSX.Element => {
+    const artistNameElement = <p className="artist" >{track.getArtist().getName()}</p>
+    return MediaUtils.isMobileScreen() ?
+    artistNameElement :
+    (
+      <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
+        { artistNameElement }
+      </Link>
+    )
+  }
+
   return (
     <div className="itemInfo" onClick={startPlay} onTouchStart={press} onTouchEnd={release} >
       <div className="mainTrackInfo" >
         <p className="title" >{track.getTitle()}</p>
-        <Link to={`/artist/${track.getArtist().getId()}`} onClick={stopPropagation}>
-          <p className="artist" >{track.getArtist().getName()}</p>
-        </Link>
+        { renderArtistName() }
       </div>
       <div className="optionalTrackInfo" >
         {/* <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  /> */}

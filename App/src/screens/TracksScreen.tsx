@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
+import MediaUtils from '@utils/MediaUtils'
 
 import Track from '@models/Track'
 
@@ -15,11 +16,10 @@ import { setConfiguration } from '@actions/Configuration'
 import { setPlaylist } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
-import TrackList from '@components/TrackList'
-import TextInput from '@components/TextInput'
-import Switch, { SwitchState } from '@components/Switch'
 import CustomSelect from '@components/Select'
-import IconButton from '@components/IconButton'
+import Switch, { SwitchState } from '@components/Switch'
+import TextInput from '@components/TextInput'
+import TrackList from '@components/TrackList'
 
 const filteredTracks = (tracks: Array<Track>, filter: string): Array<Track> => tracks.filter((track: Track) =>
   `${track.getArtist().getName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1)
@@ -47,7 +47,7 @@ function _sort(providedTracks: Array<Track>, sortOrder: string, type: string): A
 }
 
 function changeTopValue(elementId: string, value: string): void {
-  if (window.innerWidth <= 768) {
+  if (MediaUtils.isMobileScreen()) {
     const element = document.getElementById(elementId)
     if (element) {
       element.style.top = value
