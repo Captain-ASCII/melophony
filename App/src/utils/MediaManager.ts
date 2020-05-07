@@ -139,7 +139,10 @@ export default class MediaManager {
       if (this.extractTimeout) {
         clearTimeout(this.extractTimeout)
       }
-      this.extractTimeout  = setTimeout(() => this.audio.pause(), MediaManager.EXTRACT_DURATION)
+      this.extractTimeout = setTimeout(() => {
+        this.audio.pause()
+        this.isPlayingExtract = false
+      }, MediaManager.EXTRACT_DURATION)
     }
   }
 }
