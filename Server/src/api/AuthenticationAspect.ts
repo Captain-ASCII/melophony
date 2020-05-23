@@ -32,7 +32,8 @@ export default class AuthenticationAspect extends BaseAspect {
 
   protectRoutesWith(middlewareFunction: (request: Request, response: Response, next: Function) => void) {
     return function(request: Request, response: Response, next: Function): void {
-      if (request.path === '/register' && request.method === 'POST') {
+      if ((request.path === '/register' && request.method === 'POST')
+      || (request.path === '/login' && request.method === 'POST')) {
         next()
       } else {
         middlewareFunction(request, response, next)
