@@ -47,7 +47,7 @@ const App = (): JSX.Element => {
   const apiManager = selectApiManager()
   const playlist = selectPlaylist()
 
-  const [ menuState, setMenu ] = useState('closed')
+  const [ menuState, setMenu ] = useState(MediaUtils.isMobileScreen() ? 'closed' : 'opened')
 
   const synchronize = useCallback(() => apiManager.get('synchronize'), [ apiManager ])
 
