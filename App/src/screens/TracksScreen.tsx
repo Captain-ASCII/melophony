@@ -123,7 +123,7 @@ const TracksScreen = (): JSX.Element => {
           <div className="displayActions">
             <Switch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              title="Switch track playing mode" onSwitch={switchMode} initial={configuration.getShuffleMode()}
+              onOff title="Switch track playing mode" onSwitch={switchMode} initial={configuration.getShuffleMode()}
             />
             { /*
             <IconButton

@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
+import IconButton from '@components/IconButton'
+
 class SwitchState<T> {
 
   private icon: string
@@ -21,13 +23,13 @@ class SwitchState<T> {
   }
 }
 
-const Switch = <U extends unknown>({ initial, onSwitch, title, enabledState, disabledState }:
-  { initial: U; onSwitch: (t: U) => void; title: string; enabledState: SwitchState<U>; disabledState: SwitchState<U> }): JSX.Element => {
+const Switch = <U extends unknown>({ initial, onSwitch, title, enabledState, disabledState, onOff }:
+  { initial: U; onSwitch: (t: U) => void; title: string; enabledState: SwitchState<U>; disabledState: SwitchState<U>, onOff?: boolean }): JSX.Element => {
   const [ active, setActive ] = useState(initial === enabledState.getValue())
-  const [ iconState, setIconState ] = useState(active ? `fa-${enabledState.getIcon()}` : `fa-${disabledState.getIcon()}`)
+  const [ iconState, setIconState ] = useState(active ? enabledState.getIcon() : disabledState.getIcon())
 
   const handleSwitch = useCallback(() => {
-    const iconState = active ? `fa-${disabledState.getIcon()}` : `fa-${enabledState.getIcon()}`
+    const iconState = active ? disabledState.getIcon() : enabledState.getIcon()
     const value = active ? disabledState.getValue() : enabledState.getValue()
 
     onSwitch(value)
@@ -35,12 +37,7 @@ const Switch = <U extends unknown>({ initial, onSwitch, title, enabledState, dis
     setIconState(iconState)
   }, [ active, disabledState, enabledState, onSwitch ])
 
-  return (
-    <i
-      className={`fa ${iconState} icon button`}
-      onClick={handleSwitch} title={title}
-    />
-  )
+  return <IconButton icon={iconState} className={onOff && active ? 'active' : ''} onClick={handleSwitch} title={title} />
 }
 
 // Switch.propTypes = {

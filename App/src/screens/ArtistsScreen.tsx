@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { selectArtists } from '@selectors/Artist'
 
 import TextInput from '@components/TextInput'
+import IconButton from '@components/IconButton'
 
 const ArtistsScreen = (): JSX.Element => {
   const artists = selectArtists()
@@ -17,11 +18,11 @@ const ArtistsScreen = (): JSX.Element => {
       <div className="artistListItem" key={artist.getId()} >
         <Link to={`/artist/${artist.getId()}`} className="link" >
           <div className="name">
-            <p>{ artist.getName() }</p>
+            <h5>{ artist.getName() }</h5>
           </div>
         </Link>
         <div className="artistActions">
-          <Link to={`/modify/artist/${artist.getId()}`}><i className="fa fa-pen icon" /></Link>
+          <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="pen" /></Link>
         </div>
       </div>
     )
