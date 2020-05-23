@@ -37,6 +37,9 @@
   --disabled-color: #666;
 }*/
 
+.red {
+  background-color: var(--alert-bg);
+}
 
 h1 {
   font-size: 36px;
@@ -276,6 +279,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 
 .button {
+  position: relative;
   height: 36px;
   padding: 0px 20px;
   display: flex;
@@ -284,16 +288,25 @@ p, h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 
   border-radius: 5px;
+  overflow: hidden;
   transition: background-color 0.2s;
   text-align: right;
 }
 
-.button:hover {
-  background-color: var(--main-hover-bg);
+.button > .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.button:hover > .overlay {
+  transition: background-color 0.5s;
+  background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .button.icon {
   border-radius: 100px;
+  overflow: hidden;
   padding: 0px;
 }
 

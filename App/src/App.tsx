@@ -18,7 +18,9 @@ import { selectApiManager } from '@selectors/App'
 import { selectConfiguration } from '@selectors/Configuration'
 import { selectPlaylist } from '@selectors/App'
 
+import Button from '@components/Button'
 import ConfirmOverlay from '@components/ConfirmOverlay'
+import IconButton from '@components/IconButton'
 import NotificationToaster from '@components/NotificationToaster'
 import Player from '@components/Player'
 import PlayList from '@components/PlayList'
@@ -29,9 +31,8 @@ import UserDrawer from '@components/UserDrawer'
 const MenuLink = ({ title, path, icon }: { title: string; path: string; icon: string }): JSX.Element => {
   return (
     <Link to={path} >
-      <div className="menuLink button" >
-        <i className={`fa fa-${icon}`} />
-        <p className="buttonTitle hideWhenClosed" >{ title }</p>
+      <div className="menuLink buttonTitle hideWhenClosed">
+        <Button icon={icon} title={title} onClick={() => {}} />
       </div>
     </Link>
   )
@@ -97,7 +98,7 @@ const App = (): JSX.Element => {
             </Link>
           </div>
           <div id="headerActions">
-            <i onClick={synchronize} className="fa fa-download icon button" />
+            <IconButton onClick={synchronize} icon="download" />
             <RSwitch
               initial={configuration.getServerAddress()}
               enabledState={new SwitchState('network-wired active', 'https://melophony.ddns.net')}
