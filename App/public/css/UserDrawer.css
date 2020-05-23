@@ -1,0 +1,13 @@
+
+#userDrawer {
+  margin: 20px 0;
+}
+
+#userMessage {
+  text-align: center;
+  margin: 10px;
+}
+
+#disconnectButton {
+  background-color: var(--alert-bg);
+}

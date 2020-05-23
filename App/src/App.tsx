@@ -23,6 +23,7 @@ import NotificationToaster from '@components/NotificationToaster'
 import Player from '@components/Player'
 import PlayList from '@components/PlayList'
 import RSwitch, { SwitchState } from '@components/Switch'
+import UserDrawer from '@components/UserDrawer'
 
 
 const MenuLink = ({ title, path, icon }: { title: string; path: string; icon: string }): JSX.Element => {
@@ -60,6 +61,7 @@ const App = (): JSX.Element => {
       <div className="App">
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
+            <UserDrawer />
             <MenuLink path="/tracks" title="Tracks" icon="music" />
             <MenuLink path="/artists" title="Artists" icon="user-friends" />
             <div id="mainPlaylist" >
