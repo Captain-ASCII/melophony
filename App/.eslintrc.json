@@ -23,7 +23,7 @@
     "react-hooks/exhaustive-deps": "error",
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/no-explicit-any": [ "off" ],
-    "@typescript-eslint/array-type": [ "error", "generic" ],
+    "@typescript-eslint/array-type": [ "error", { "default": "generic" } ],
     "@typescript-eslint/explicit-function-return-type": [ "error", { "allowExpressions": true } ]
   },
   "globals": {
