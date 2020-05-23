@@ -64,7 +64,9 @@ export default class PlaylistManager {
     } else {
       clone.tracks = this.initialTracks
     }
-    clone.index = clone.tracks.findIndex((track: Track) => track.getId() === this.getCurrent().getId())
+    if (this.getCurrent()) {
+      clone.index = clone.tracks.findIndex((track: Track) => track.getId() === this.getCurrent().getId())
+    }
     return clone
   }
 
