@@ -13,6 +13,7 @@ export default class MediaManager {
 
   private audio: HTMLAudioElement
 
+  private onPlayPauseCallback: (isPlaying: boolean) => void
   private isPlayingExtract: boolean
   private extractTimeout: any
 
@@ -46,6 +47,11 @@ export default class MediaManager {
 
     clone.audio = audio
     return clone
+  }
+
+  onPlayPause(onPlayPauseCallback: (isPlaying: boolean) => void): MediaManager {
+    this.onPlayPauseCallback = onPlayPauseCallback
+    return this
   }
 
   setElementHTML(id: string, value: string): void {
@@ -87,11 +93,17 @@ export default class MediaManager {
       }
       this.audio.play()
     }
+    if (this.onPlayPauseCallback) {
+      this.onPlayPauseCallback(true)
+    }
   }
 
   pause(): void {
     if (this.audio !== null) {
       this.audio.pause()
+    }
+    if (this.onPlayPauseCallback) {
+      this.onPlayPauseCallback(false)
     }
   }
 
@@ -112,6 +124,9 @@ export default class MediaManager {
       this.play()
     } else {
       this.pause()
+    }
+    if (this.onPlayPauseCallback) {
+      this.onPlayPauseCallback(this.audio === null || !this.audio.paused)
     }
   }
 

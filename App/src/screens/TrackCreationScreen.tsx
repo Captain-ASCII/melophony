@@ -39,7 +39,7 @@ const TrackCreationScreen = (): JSX.Element => {
         <Button icon="download" className="raised" onClick={requestServerDownload} title="Download" />
       </div>
     </div>
-    )
-  }
+  )
+}
 
-  export default TrackCreationScreen
+export default TrackCreationScreen

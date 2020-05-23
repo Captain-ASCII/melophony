@@ -22,7 +22,7 @@ const Player = (): JSX.Element => {
   const player = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    dispatch(setMediaManager(mediaManager.clone().withAudio(player.current)))
+    dispatch(setMediaManager(mediaManager.withAudio(player.current).onPlayPause(setIsPlaying)))
   }, [ dispatch ])
 
   useEffect(() => {
@@ -41,10 +41,8 @@ const Player = (): JSX.Element => {
   const playPause = useCallback(() => {
     if (currentTrack) {
       mediaManager.playPause()
-      setIsPlaying(mediaManager.isPlaying())
     } else {
       dispatch(setPlaylist(playlist.next()))
-      setIsPlaying(true)
     }
   }, [ dispatch, mediaManager, currentTrack, playlist ])
 
@@ -52,7 +50,7 @@ const Player = (): JSX.Element => {
     dispatch(setPlaylist(playlist.previous()))
   }, [ dispatch, playlist ])
 
-  const next = useCallback(() => { 
+  const next = useCallback(() => {
     dispatch(setPlaylist(playlist.next()))
   }, [ dispatch, playlist ])
 
