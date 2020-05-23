@@ -1,7 +1,19 @@
 
-import JWT from 'jwt-client'
+import Log from '@utils/Log'
+import TokenManager from '@utils/TokenManager'
 
-class ApiRequest {
+class ApiTimeoutError extends Error {}
+
+function timeout<T>(ms: number, promise: Promise<T>): Promise<T> {
+  return new Promise<T>(function(resolve, reject) {
+    setTimeout(function() {
+      reject(new ApiTimeoutError(`Available time for API request (${ms/1000}s) has been exceeded`))
+    }, ms)
+    promise.then(resolve, reject)
+  })
+}
+
+export class ApiRequest {
 
   private method: string
   private baseUrl: string
@@ -42,22 +54,48 @@ class ApiRequest {
   }
 }
 
+export class RequestCustomizer {
+
+  private resultCallback: ((code: number, data: any | null) => void) | undefined
+  private timeout: number
+
+  public constructor(resultCallback: ((code: number, data: any | null) => void) | undefined = undefined, timeout = 2000) {
+    this.resultCallback = resultCallback
+    this.timeout = timeout
+  }
+
+  public onResult(code: number, data: any): void {
+    if (this.resultCallback) {
+      this.resultCallback(code, data)
+    }
+  }
+
+  public getTimeout(): number {
+    return this.timeout
+  }
+
+  public static NULL = new RequestCustomizer()
+  public static DEFAULT: RequestCustomizer = new RequestCustomizer()
+
+  public static setDefault(customizer: RequestCustomizer) {
+    RequestCustomizer.DEFAULT = customizer
+  }
+}
+
 export default class ApiManager {
 
   private serverUrl: string
-  private isWithAuthentication: boolean
-  private defaultCallback: ((code: number, data: any) => void)
   private request: ApiRequest
+  private tokenManager: TokenManager
 
-  public constructor(serverUrl: string, withAuthentication = true, defaultCallback: ((code: number, data: any) => void) = () => {}) {
+  public constructor(serverUrl: string, tokenManager: TokenManager) {
     this.serverUrl = serverUrl
-    this.isWithAuthentication = withAuthentication
-    this.defaultCallback = defaultCallback
     this.request = new ApiRequest('', 'GET', '')
+    this.tokenManager = tokenManager
   }
 
   public clone(): ApiManager {
-    return new ApiManager(this.serverUrl, this.isWithAuthentication)
+    return new ApiManager(this.serverUrl, this.tokenManager)
   }
 
   public withServerAddress(address: string): ApiManager {
@@ -71,52 +109,50 @@ export default class ApiManager {
     return this.request
   }
 
-  public get(path: string, onResult: ((code: number, data: any) => void) | false | undefined = false): Promise<[number, any]> {
+  public get(path: string, customizer: RequestCustomizer = RequestCustomizer.NULL): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'GET', path)
-    return this.sendRequest(onResult)
+    return this.send(customizer)
   }
 
-  public post(path: string, body: object, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
+  public post(path: string, body: object, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'POST', path).withBody(body)
-    return this.sendRequest(onResult)
+    return this.send(customizer)
   }
 
-  public put(path: string, body: object, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
+  public put(path: string, body: object, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'PUT', path).withBody(body)
-    return this.sendRequest(onResult)
+    return this.send(customizer)
   }
 
-  public delete(path: string, onResult: ((code: number, data: any) => void) | false | undefined = undefined): Promise<[number, any]> {
+  public delete(path: string, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
     this.request = new ApiRequest(this.serverUrl, 'DELETE', path)
-    return this.sendRequest(onResult)
+    return this.send(customizer)
   }
 
-  private sendRequest(onResult: ((code: number, data: any) => void) | false | undefined): Promise<[number, any]> {
-    if (this.isWithAuthentication) {
-      this.request.withHeader('Authorization', JWT.get())
-    }
+  private send(customizer: RequestCustomizer): Promise<[number, any]> {
+    this.tokenManager.addToken(this.request)
     console.warn(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
 
-    const json = fetch(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
-      .then(async (response: Response): Promise<[number, any]> => [response.status, await response.json()])
+    const json = timeout(
+      customizer.getTimeout(),
+      fetch(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
+        .then(async (response: Response): Promise<[number, any]> => [response.status, await response.json()])
+    )
 
     json.then((data: [number, any]) => {
       const body = data[1]
-      if (this.isWithAuthentication) {
-        if (body.token && JWT.validate(body.token)) {
-          JWT.keep(body.token)
-        }
-      }
-      if (onResult) {
-        onResult(data[0], body)
-      } else if (onResult !== false) {
-        this.defaultCallback(data[0], body)
+      this.tokenManager.keepToken(body)
+      customizer.onResult(data[0], body)
+    })
+    .catch((error: Error) => {
+      if (error instanceof ApiTimeoutError) {
+        Log.w('Unable to get information from the server')
+        customizer.onResult(408, null)
+      } else {
+        Log.e('Error during API request', error)
+        throw new Error('Failure during network request')
       }
     })
-      .catch((error: Error) => {
-        console.error(error)
-        throw new Error('Failure during network request')
-      })
 
     return json
   }

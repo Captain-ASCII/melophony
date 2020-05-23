@@ -41,9 +41,9 @@ const ArtistModificationScreen = (): JSX.Element => {
                   `Cela va effacer l'artiste "${initialName}" et affecter toutes ses musiques à l'artiste "${artist.getName()}", êtes vous sûr ?`,
                   () => {
                     tracks.forEach(track => {
-                      apiManager.put(`/track/${track.getId()}`, track.withArtist(sameNameArtist), () => null)
+                      apiManager.put(`/track/${track.getId()}`, track.withArtist(sameNameArtist))
                     })
-                    apiManager.delete(`/artist/${artist.getId()}`, () => null)
+                    apiManager.delete(`/artist/${artist.getId()}`)
                     history.goBack()
                   }
                 )
@@ -53,7 +53,7 @@ const ArtistModificationScreen = (): JSX.Element => {
           return false
         } else {
           dispatch(setArtist(artist))
-          apiManager.put(`/artist/${id}`, artist, () => null)
+          apiManager.put(`/artist/${id}`, artist)
           history.goBack()
         }
       }, [ apiManager, history, artist, artists, tracks, dispatch, id, initialName ])

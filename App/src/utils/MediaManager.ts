@@ -83,15 +83,15 @@ export default class MediaManager {
         }
       }
       this.setElementHTML('currentTrackInfo', `${track.getArtist().getName()} - ${track.getTitle()}`)
-      this.play()
     }
   }
 
   play(): void {
     if (this.audio !== null && this.audio.src !== '') {
+      // Reload for token (music is playing, we are considering the user is still there)
+      store.getState().app.apiManager.get('/user')
+
       this.audio.onended = (): void => {
-        // Reload for token (music is playing, we are considering the user is still there)
-        store.getState().app.apiManager.get('/user')
         this.next()
       }
       this.audio.play()

@@ -25,14 +25,20 @@ import { setArtists } from '@actions/Artist'
 import { setPlaylist } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
-import ApiManager from '@utils/ApiManager'
+import ApiManager, { RequestCustomizer } from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
+import TokenManager from '@utils/TokenManager'
 
 const configuration = store.getState().configuration
 
-const apiManager = new ApiManager(configuration.getServerAddress(), true, (code, body) => {
+const apiManager = new ApiManager(configuration.getServerAddress(), new TokenManager(() => {
+  JWT.forget()
+  init()
+}))
+
+RequestCustomizer.setDefault(new RequestCustomizer((code: number, body: any) => {
   store.dispatch(addNotification(new Notification(body.message)))
-})
+}))
 
 store.getState().app.apiManager = apiManager
 store.getState().app.playlist = new PlaylistManager([], false)

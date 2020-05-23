@@ -1,12 +1,14 @@
 import React, { useState, useCallback } from 'react'
 import JWT from 'jwt-client'
 
-import Field from '@components/Field'
-import Button from '@components/Button'
-import StatusMessage, { MessageType } from '@components/StatusMessage'
+import { RequestCustomizer } from '@utils/ApiManager'
 
 import { selectApiManager } from '@selectors/App'
+
+import Field from '@components/Field'
+import Button from '@components/Button'
 import SessionConfigurator from '@components/SessionConfigurator'
+import StatusMessage, { MessageType } from '@components/StatusMessage'
 
 enum Mode {
   LOGIN,
@@ -35,11 +37,11 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   }, [ getRequiredData ])
 
   const login = useCallback(() => {
-    apiManager.post('/login', { email, password }, handleResponse)
+    apiManager.post('/login', { email, password }, new RequestCustomizer(handleResponse))
   }, [ apiManager, email, password, handleResponse ])
 
   const register = useCallback(() => {
-    apiManager.post('/register', { email, firstName, lastName, password }, handleResponse)
+    apiManager.post('/register', { email, firstName, lastName, password }, new RequestCustomizer(handleResponse))
   }, [ apiManager, email, firstName, lastName, password, handleResponse ])
 
   const switchMode = useCallback(() => setMode(mode === Mode.LOGIN ? Mode.REGISTER : Mode.LOGIN), [ mode ])
