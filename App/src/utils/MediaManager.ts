@@ -57,15 +57,6 @@ export default class MediaManager {
     }
   }
 
-  setElementClass(id: string, value: string): void {
-    if (document !== undefined) {
-      const element = document.getElementById(id)
-      if (element) {
-        element.className = value
-      }
-    }
-  }
-
   setTrack(track: Track | null): void {
     if (this.audio !== null && track !== null) {
       this.audio.addEventListener('error', (event: any) => {
@@ -95,14 +86,12 @@ export default class MediaManager {
         this.next()
       }
       this.audio.play()
-      this.setElementClass('playButton', 'fa fa-pause fa-2x')
     }
   }
 
   pause(): void {
     if (this.audio !== null) {
       this.audio.pause()
-      this.setElementClass('playButton', 'fa fa-play fa-2x')
     }
   }
 
@@ -144,5 +133,12 @@ export default class MediaManager {
         this.isPlayingExtract = false
       }, MediaManager.EXTRACT_DURATION)
     }
+  }
+
+  isPlaying(): boolean {
+    if (this.audio) {
+      return ! this.audio.paused
+    }
+    return false
   }
 }
