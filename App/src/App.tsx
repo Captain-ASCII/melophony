@@ -11,18 +11,16 @@ import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TracksScreen from '@screens/TracksScreen'
 
-import { setApiManager } from '@actions/App'
+import MediaUtils from '@utils/MediaUtils'
 
-import ApiManager from '@utils/ApiManager'
-import Player from '@components/Player'
-
+import { setConfiguration } from '@actions/Configuration'
 import { selectApiManager } from '@selectors/App'
 import { selectConfiguration } from '@selectors/Configuration'
 import { selectPlaylist } from '@selectors/App'
 
-import { setConfiguration } from '@actions/Configuration'
 import ConfirmOverlay from '@components/ConfirmOverlay'
 import NotificationToaster from '@components/NotificationToaster'
+import Player from '@components/Player'
 import PlayList from '@components/PlayList'
 import RSwitch, { SwitchState } from '@components/Switch'
 
