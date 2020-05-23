@@ -1,10 +1,18 @@
 import React, { useCallback } from 'react'
 
-const IconButton = <T extends unknown>({ onClick, title, icon, data }: { onClick: (d: T) => void; title: string; icon: string; data?: T }): JSX.Element => {
-  const handleClick = useCallback(() => onClick(data), [ onClick, data ])
+const IconButton = <T extends unknown>({ onClick, title, icon, data, className }:
+  { onClick?: (d: T) => void; title?: string; icon: string; data?: T, className?: string }): JSX.Element => {
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(data)
+    }
+  }, [ onClick, data ])
 
   return (
-    <i className={`fa fa-${icon} icon button`} onClick={handleClick} title={title}  />
+    <div className={`button icon ${className}`} onClick={handleClick} >
+      <i className={`fa fa-${icon}`} title={title} />
+      <div className="overlay" />
+    </div>
   )
 }
 

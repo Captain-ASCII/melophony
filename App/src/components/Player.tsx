@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect } from 'react'
+import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -8,6 +8,7 @@ import { selectPlaylist } from '@selectors/App'
 import { setPlaylist, setMediaManager } from '@actions/App'
 
 import InputRange from '@components/InputRange'
+import IconButton from '@components/IconButton'
 
 const Player = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -15,6 +16,8 @@ const Player = (): JSX.Element => {
   const mediaManager = selectMediaManager()
   const playlist = selectPlaylist()
   const currentTrack = playlist.getCurrent()
+
+  const [ isPlaying, setIsPlaying ] = useState(false)
 
   const player = useRef<HTMLAudioElement>(null)
 
@@ -38,8 +41,10 @@ const Player = (): JSX.Element => {
   const playPause = useCallback(() => {
     if (currentTrack) {
       mediaManager.playPause()
+      setIsPlaying(mediaManager.isPlaying())
     } else {
       dispatch(setPlaylist(playlist.next()))
+      setIsPlaying(true)
     }
   }, [ dispatch, mediaManager, currentTrack, playlist ])
 
@@ -47,7 +52,7 @@ const Player = (): JSX.Element => {
     dispatch(setPlaylist(playlist.previous()))
   }, [ dispatch, playlist ])
 
-  const next = useCallback(() => {
+  const next = useCallback(() => { 
     dispatch(setPlaylist(playlist.next()))
   }, [ dispatch, playlist ])
 
@@ -57,9 +62,9 @@ const Player = (): JSX.Element => {
         <p>If you are reading this, it is because your browser does not support the audio element.</p>
       </audio>
       <div id="controls">
-        <div className="button icon" onClick={previous} ><i className="fa fa-backward fa-2x"  /></div>
-        <div className="button icon" onClick={playPause} ><i id="playButton" className="fa fa-play fa-2x" tabIndex={-1} /></div>
-        <div className="button icon" onClick={next} ><i className="fa fa-forward fa-2x"  /></div>
+        <IconButton icon="backward" onClick={previous} />
+        <IconButton icon={isPlaying ? 'pause' : 'play'} onClick={playPause} />
+        <IconButton icon="forward" onClick={next} />
       </div>
       <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
         <div id="currentTrackInfo"  />

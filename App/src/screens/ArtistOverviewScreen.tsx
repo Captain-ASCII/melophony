@@ -9,6 +9,7 @@ import { selectTracksOfArtist } from '@selectors/Track'
 
 import CloseButton from '@components/CloseButton'
 import TrackList from '@components/TrackList'
+import IconButton from '@components/IconButton'
 
 const ArtistOverviewScreen = (): JSX.Element => {
   const { id } = useParams()
@@ -27,7 +28,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
         <div id="titlesHeader" >
           <h2>Titres</h2>
           <div className="displayActions">
-            <Link to={`/modify/artist/${artist.getId()}`}><i className="fa fa-edit icon button" title="Edit artist data"  /></Link>
+            <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="edit" title="Edit artist data" /></Link>
           </div>
         </div>
         <div className="delimiter" />

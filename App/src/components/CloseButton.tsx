@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 
 import { useHistory } from 'react-router-dom'
+import IconButton from './IconButton'
 
 export default function CloseButton({ icon, additionalClass }: { icon?: string; additionalClass?: string }): JSX.Element {
   const history = useHistory()
@@ -13,7 +14,7 @@ export default function CloseButton({ icon, additionalClass }: { icon?: string; 
 
   return (
     <div id="closeButton" className={`button icon ${ additionalClass ? additionalClass : '' }`} onClick={goBack} >
-      <i className={`fa fa-${icon} fa-2x icon`} />
+      <IconButton icon={icon} className="fa-2x" />
     </div>
   )
 }

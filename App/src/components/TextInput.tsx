@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
+import IconButton from '@components/IconButton'
+
 const TextInput = ({ id, icon, type, onInput }: { id: string; type?: string; icon: string; onInput: (t: string) => void }): JSX.Element => {
 
   const [ value, setValue ] = useState('')
@@ -21,7 +23,7 @@ const TextInput = ({ id, icon, type, onInput }: { id: string; type?: string; ico
         id={id} type={type || 'text'} value={value}
         onInput={handleInput} onChange={handleChange}
       />
-      <i className="fa fa-times icon clear-icon button" onClick={handleReset}  />
+      <IconButton icon="times" className="clear-icon" onClick={handleReset} />
     </div>
   )
 }

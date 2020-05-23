@@ -8,6 +8,8 @@ import { setPlaylist } from '@actions/App'
 import Track from '@models/Track'
 import MediaUtils from '@utils/MediaUtils'
 
+import IconButton from '@components/IconButton'
+
 const formatDuration = (duration: number): string => {
   const minutes = '0' + Math.round(duration / 60)
   const seconds = '0' + (duration % 60)
@@ -65,8 +67,8 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
         {/* <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  /> */}
         <p className="duration" >{formatDuration(track.getDuration())}</p>
         <div className="itemActions">
-          <i className="fa fa-plus-square icon button" onClick={handleEnqueue} />
-          <Link to={`/modify/track/${track.getId()}`} onClick={stopPropagation} ><i className="fa fa-pen icon button" /></Link>
+          <IconButton icon="plus-square" onClick={handleEnqueue} />
+          <Link to={`/modify/track/${track.getId()}`} onClick={stopPropagation} ><IconButton icon="pen" /></Link>
         </div>
       </div>
     </div>

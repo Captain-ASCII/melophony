@@ -13,6 +13,7 @@ import { setTrack } from '@actions/Track'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
+import IconButton from '@components/IconButton'
 
 function getInt(v: string): number {
   const n = parseInt(v)
@@ -104,7 +105,7 @@ const TrackModificationScreen = (): JSX.Element => {
                   id="artist" autoComplete="off" onInput={handleArtistNameSet}
                   defaultValue={track.getArtist().getName()}
                 />
-                <i className="fa fa-plus fa-1x icon button" onClick={createArtist} />
+                <IconButton icon="plus" onClick={createArtist} />
                 <datalist id="artistNames">{ artistsNames }</datalist>
               </div>
               <div className="input">
