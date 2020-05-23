@@ -1,4 +1,8 @@
 
+.artistListItem {
+  padding: 10px;
+}
+
 .artistListItem > .link {
   flex: 1;
   align-self: stretch;
