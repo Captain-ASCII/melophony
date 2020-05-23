@@ -12,6 +12,7 @@ import { selectArtists, selectArtist } from '@selectors/Artist'
 import { selectTracks } from '@selectors/Track'
 import { selectApiManager } from '@selectors/App'
 
+import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 
@@ -65,6 +66,9 @@ const ArtistModificationScreen = (): JSX.Element => {
           <div id="preActions" >
             <CloseButton />
           </div>
+          <div id="pageHeader">
+            <h2 id="pageTitle">Modify an artist</h2>
+          </div>
           <div className="input">
             <i className="fa fa-male fa-2x icon" />
             <input
@@ -78,7 +82,7 @@ const ArtistModificationScreen = (): JSX.Element => {
             <input type="text" disabled defaultValue={artist.getId()} />
           </div>
           <div id="postActions" >
-            <div id="saveButton" className="button raised" onClick={save} >Save</div>
+            <Button icon="save" className="raised" onClick={save} title="Save" />
           </div>
         </div>
       )

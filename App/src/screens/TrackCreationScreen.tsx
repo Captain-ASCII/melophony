@@ -25,8 +25,8 @@ const TrackCreationScreen = (): JSX.Element => {
       <div id="preActions">
         <CloseButton />
       </div>
-      <div id="modificationPageHeader">
-        <h2 id="modificationPageTitle">Add a new track</h2>
+      <div id="pageHeader">
+        <h2 id="pageTitle">Add a new track</h2>
       </div>
       <div className="input">
         <i className="fab fa-youtube fa-2x icon" />

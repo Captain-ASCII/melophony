@@ -11,20 +11,6 @@
   margin: 20px;
 }
 
-#modificationPageHeader {
-  display: flex;
-  margin-bottom: 30px;
-}
-
-#modificationPageHeader > *, .input > * {
-  margin: 10px;
-}
-
-#modificationPageTitle {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  flex: 1;
-}
-
 #trackModificator {
   flex: 1;
 }
