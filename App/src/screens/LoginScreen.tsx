@@ -49,7 +49,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   return (
     <div id="loginScreen" className="screen" >
       <div id="logoBox">
-        <img src="/img/melophony.png" style={{ height: '100%' }} />
+        <img src="/img/melophony.png" />
         <h1>Melophony</h1>
       </div>
       <div id="loginBox" >
