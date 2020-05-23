@@ -11,8 +11,9 @@ import App from './App'
 
 import { store } from '@store'
 
-import Track from '@models/Track'
 import Artist from '@models/Artist'
+import Track from '@models/Track'
+import User from '@models/User'
 
 import Notification from '@models/Notification'
 import PlaylistManager from '@models/PlaylistManager'
@@ -22,7 +23,7 @@ import SplashScreen from '@screens/SplashScreen'
 
 import { addNotification } from '@actions/Notification'
 import { setArtists } from '@actions/Artist'
-import { setPlaylist } from '@actions/App'
+import { setPlaylist, setUser } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
 import ApiManager, { RequestCustomizer } from '@utils/ApiManager'
@@ -48,13 +49,16 @@ async function getData(): Promise<void> {
 
   const tracksResponse = await apiManager.get('/tracks')
   const artistsResponse = await apiManager.get('/artists')
+  const userResponse = await apiManager.get('/user')
 
   const tracks = tracksResponse[1].data.map((track: any) => Track.fromObject(track))
   const artists = artistsResponse[1].data.map((artist: any) => new Artist(artist.id, artist.name))
+  const user = User.fromObject(userResponse[1].data)
 
   store.dispatch(setArtists(artists))
   store.dispatch(setTracks(tracks))
   store.dispatch(setPlaylist(new PlaylistManager(tracks, configuration.getShuffleMode())))
+  store.dispatch(setUser(user))
 
   ReactDOM.render(
     <Provider store={store} >
@@ -65,7 +69,7 @@ async function getData(): Promise<void> {
 }
 
 async function init(): Promise<void> {
-  if (JWT.get() &&  (await apiManager.get('/user'))[0] != 400) {
+  if (JWT.get() && (await apiManager.get('/user'))[0] != 400) {
     ReactDOM.render(
       <Provider store={store} >
         <SplashScreen getRequiredData={getData} />
@@ -83,5 +87,7 @@ async function init(): Promise<void> {
     )
   }
 }
+
+export { init }
 
 init()
