@@ -23,7 +23,7 @@ const UserDrawer = (): JSX.Element => {
   return (
     <div id="userDrawer" >
       <p id="userMessage" >Hello { user.getFirstName() } !</p>
-      <Button className="red" icon="times-circle" onClick={disconnect} title="Disconnect" />
+      <Button className="raised alert" icon="times-circle" onClick={disconnect} title="Disconnect" />
     </div>
   )
 }

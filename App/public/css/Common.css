@@ -37,10 +37,6 @@
   --disabled-color: #666;
 }*/
 
-.red {
-  background-color: var(--alert-bg);
-}
-
 h1 {
   font-size: 36px;
 }
@@ -321,7 +317,6 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: 5px;
   color: var(--button-color);
   background-color: var(--primary-bg);
-  width: 100px;
 }
 
 .button.raised:hover {
