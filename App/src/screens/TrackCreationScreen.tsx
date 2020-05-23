@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { selectApiManager } from '@selectors/App'
+
+import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
 
 const TrackCreationScreen = (): JSX.Element => {
@@ -20,10 +22,11 @@ const TrackCreationScreen = (): JSX.Element => {
 
   return (
     <div id="AddTrackScreen" className="screen" >
-      <CloseButton />
+      <div id="preActions">
+        <CloseButton />
+      </div>
       <div id="modificationPageHeader">
         <h2 id="modificationPageTitle">Add a new track</h2>
-        <div className="button raised" onClick={requestServerDownload} >Download</div>
       </div>
       <div className="input">
         <i className="fab fa-youtube fa-2x icon" />
@@ -31,6 +34,9 @@ const TrackCreationScreen = (): JSX.Element => {
           type="text" className="form-data" onInput={handleInput}
           id="videoId" defaultValue="" placeholder="Youtube video ID"
         />
+      </div>
+      <div id="postActions">
+        <Button icon="download" className="raised" onClick={requestServerDownload} title="Download" />
       </div>
     </div>
     )
