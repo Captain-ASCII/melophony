@@ -32,6 +32,7 @@ module.exports = {
       '@public': path.resolve(__dirname, '../public/'),
       '@components': path.resolve(__dirname, '../src/components/'),
       '@models': path.resolve(__dirname, '../src/models/'),
+      '@index': path.resolve(__dirname, '../src/index.tsx'),
       '@utils': path.resolve(__dirname, '../src/utils/'),
       '@screens': path.resolve(__dirname, '../src/screens/'),
 

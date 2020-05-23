@@ -15,6 +15,7 @@
       "@actions/*": ["redux/actions/*"],
       "@components/*": ["components/*"],
       "@models/*": ["models/*"],
+      "@index": ["index.tsx"],
       "@reducers/*": ["redux/reducers/*"],
       "@selectors/*": ["redux/selectors/*"],
       "@store": ["redux/store/Store.ts"],
