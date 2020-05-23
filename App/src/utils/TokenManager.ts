@@ -5,7 +5,7 @@ import { ApiRequest } from '@utils/ApiManager'
 export default class TokenManager {
 
   private tokenExpirationCallback: () => void
-  private timeoutId: NodeJS.Timeout
+  private timeoutId: number
 
   public constructor(tokenExpirationCallback: () => void) {
     this.tokenExpirationCallback = tokenExpirationCallback
@@ -20,7 +20,7 @@ export default class TokenManager {
         clearTimeout(this.timeoutId)
       }
       console.warn((decoded.claim.exp * 1000) - new Date().getTime())
-      this.timeoutId = setTimeout(() => {
+      this.timeoutId = window.setTimeout(() => {
         if (this.tokenExpirationCallback) {
           this.tokenExpirationCallback()
         }
