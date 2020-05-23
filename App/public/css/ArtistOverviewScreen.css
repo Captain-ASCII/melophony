@@ -1,4 +1,8 @@
 
+#artistOverviewScreen {
+  padding: 0;
+}
+
 #titlesHeader {
   display: flex;
   justify-content: space-between;

@@ -355,7 +355,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .button.icon.floating.top {
   top: 15px;
-  left: 15px;
+  right: 15px;
 }
 
 .button.icon.floating.transparent {

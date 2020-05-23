@@ -19,7 +19,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
 
     return (
       <div id="artistOverviewScreen" className="screen" >
-        <CloseButton icon="chevron-left" additionalClass="floating mini top transparent" />
+        <CloseButton additionalClass="floating mini top transparent" />
         <div id="artistScreenHeader" style={{ backgroundColor: ColorUtils.getRandomColor() }}  >
           <h1>{artist.getName()}</h1>
         </div>
