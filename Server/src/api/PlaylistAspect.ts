@@ -1,6 +1,6 @@
 
 import ApiAspectUtils from '@utils/ApiAspectUtils'
-import DbUtils from '@utils/DbUtils'
+import DbUtils, { SQLCustomizer, JoinCustomizer, WhereCustomizer } from '@utils/DbUtils'
 
 import Playlist from '@models/Playlist'
 
@@ -29,7 +29,7 @@ export default class PlaylistAspect extends BaseAspect {
   }
 
   async getPlaylist(userId: number, id: number): Promise<ApiResult> {
-    return DbUtils.read(Playlist, id, userId)
+    return DbUtils.read(Playlist, id, SQLCustomizer.merge(SQLCustomizer.getUserIdCustomizer(userId), new SQLCustomizer([ new JoinCustomizer('entity.tracks') ])))
   }
 
   async getPlaylists(userId: number): Promise<ApiResult> {
