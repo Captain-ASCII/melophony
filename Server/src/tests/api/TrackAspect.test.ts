@@ -44,12 +44,12 @@ describe('Test TrackAspect.ts', () => {
   })
 
   test('should try to download a file', async () => {
-    const result = await aspect.createTrack(userId, 'test')
+    const result = await aspect.createTrack(userId, 'trackTest')
     expect(result.getMessage()).toEqual('Download started')
   })
 
   test('should create and get a track', async () => {
-    const creation = await aspect.createTrack(userId, 'test2')
+    const creation = await aspect.createTrack(userId, 'trackTest2')
     const trackId = creation.getData()
 
     const result = await aspect.getTrack(userId, trackId)
@@ -66,11 +66,11 @@ describe('Test TrackAspect.ts', () => {
   })
 
   test('should indicate the file is already downloaded but create new track', async () => {
-    const firstCreation = await aspect.createTrack(userId, 'test3')
+    const firstCreation = await aspect.createTrack(userId, 'trackTest3')
     expect(firstCreation.getMessage()).toEqual('Download started')
     const firstTrackId = firstCreation.getData()
 
-    const secondCreation = await aspect.createTrack(userId, 'test3')
+    const secondCreation = await aspect.createTrack(userId, 'trackTest3')
     expect(secondCreation.getStatus()).toEqual(200)
     expect(secondCreation.getMessage()).toEqual('Track already downloaded on server')
     const secondTrackId = secondCreation.getData()
@@ -79,7 +79,7 @@ describe('Test TrackAspect.ts', () => {
   })
 
   test('should modify track', async () => {
-    const creation = await aspect.createTrack(userId, 'test4')
+    const creation = await aspect.createTrack(userId, 'trackTest4')
     const trackId = creation.getData()
     const obtaining = await aspect.getTrack(userId, trackId)
     const track = obtaining.getData() as Track
