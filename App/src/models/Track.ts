@@ -58,6 +58,28 @@ export default class Track {
     )
   }
 
+  public static fromObject(o: any): Track | null {
+    if (o) {
+      return new Track(
+        o.id,
+        o.title,
+        Artist.fromObject(o.artist),
+        o.duration,
+        File.fromObject(o.file),
+        new Date(o.creationDate),
+        o.startTime,
+        o.endTime,
+        o.lastPlay,
+        o.playCount,
+        o.rating,
+        o.progress,
+        o.playlists,
+        o.album,
+      )
+    }
+    return null
+  }
+
   public withId(id: number): Track {
     const clone = this.clone()
     clone.id = id
@@ -137,24 +159,5 @@ export default class Track {
 
   public getEndTime(): number {
     return this.endTime
-  }
-
-  public static fromObject(o: any): Track {
-    return new Track(
-      o.id,
-      o.title,
-      new Artist(o.artist.id, o.artist.name),
-      o.duration,
-      new File(o.file.id, o.file.videoId, o.file.state),
-      new Date(o.creationDate),
-      o.startTime,
-      o.endTime,
-      o.lastPlay,
-      o.playCount,
-      o.rating,
-      o.progress,
-      o.playlists,
-      o.album,
-    )
   }
 }

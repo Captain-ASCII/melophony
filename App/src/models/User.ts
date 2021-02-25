@@ -13,12 +13,12 @@ export default class User {
     this.email = email
   }
 
-  public clone({ id = this.id, firstName = this.firstName, lastName = this.lastName, email = this.email }) {
-    return new User(id, firstName, lastName, email)
+  public clone(user: User): User {
+    return new User(user.id, user.firstName, user.lastName, user.email)
   }
 
-  public static fromObject({ id = 0, firstName = '', lastName = '', email = '' }) {
-    return new User(id, firstName, lastName, email)
+  public static fromObject(o: any): User {
+    return new User(o.id, o.firstName, o.lastName, o.email)
   }
 
   getId(): number {

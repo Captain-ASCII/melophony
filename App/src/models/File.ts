@@ -11,6 +11,13 @@ export default class File {
     this.state = state
   }
 
+  public static fromObject(o: any): File | null {
+    if (o) {
+      return new File(o.id, o.videoId, o.state)
+    }
+    return null
+  }
+
   public withId(id: string): File {
     this.id = id
     return this
@@ -37,5 +44,4 @@ export default class File {
   public getState(): string {
     return this.state
   }
-
 }
