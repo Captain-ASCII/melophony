@@ -15,3 +15,7 @@ bundle.js
 current_melophony_pid.txt
 bundle.js.map
 .vscode
+venv
+db.sqlite3
+*.pyc
+__pycache__
