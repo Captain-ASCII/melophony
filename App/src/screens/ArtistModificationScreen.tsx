@@ -42,7 +42,7 @@ const ArtistModificationScreen = (): JSX.Element => {
                   `Cela va effacer l'artiste "${initialName}" et affecter toutes ses musiques à l'artiste "${artist.getName()}", êtes vous sûr ?`,
                   () => {
                     tracks.forEach(track => {
-                      apiManager.put(`/track/${track.getId()}`, track.withArtist(sameNameArtist))
+                      apiManager.put(`/track/${track.getId()}`, track.withArtists([sameNameArtist]))
                     })
                     apiManager.delete(`/artist/${artist.getId()}`)
                     history.goBack()
