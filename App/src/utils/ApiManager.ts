@@ -77,7 +77,7 @@ export class RequestCustomizer {
   public static NULL = new RequestCustomizer()
   public static DEFAULT: RequestCustomizer = new RequestCustomizer()
 
-  public static setDefault(customizer: RequestCustomizer) {
+  public static setDefault(customizer: RequestCustomizer): void {
     RequestCustomizer.DEFAULT = customizer
   }
 }
@@ -136,15 +136,13 @@ export default class ApiManager {
     const json = timeout(
       customizer.getTimeout(),
       fetch(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
-        .then(async (response: Response): Promise<[number, any]> => [response.status, await response.json()])
+        .then(async (response: Response): Promise<[number, any]> => [ response.status, await response.json() ])
     )
 
     json.then((data: [number, any]) => {
-      const body = data[1]
-      this.tokenManager.keepToken(body)
-      customizer.onResult(data[0], body)
-    })
-    .catch((error: Error) => {
+      this.tokenManager.keepToken(data[1])
+      customizer.onResult(data[0], data[1])
+    }).catch((error: Error) => {
       if (error instanceof ApiTimeoutError) {
         Log.w('Unable to get information from the server')
         customizer.onResult(408, null)
@@ -154,6 +152,6 @@ export default class ApiManager {
       }
     })
 
-    return json
+    return json.then(data => [ data[0], data[1].data ])
   }
 }

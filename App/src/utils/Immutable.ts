@@ -6,8 +6,11 @@ class Arrays {
   }
 
   static update<T>(array: Array<T>, oldElement: T, newElement: T): Array<T> {
+    return Arrays.updateAt(array, newElement, array.findIndex((element: T) => oldElement === element))
+  }
+
+  static updateAt<T>(array: Array<T>, newElement: T, index: number): Array<T> {
     const copy = Arrays.copy(array)
-    const index = copy.findIndex((element: T) => oldElement === element)
     copy[index] = newElement
     return copy
   }
@@ -21,6 +24,10 @@ class Arrays {
 
   static remove<T>(array: Array<T>, condition: (element: T) => boolean): Array<T> {
     return array.filter(element => !condition(element))
+  }
+
+  static removeAt<T>(array: Array<T>, index: number): Array<T> {
+    return [ ...array.slice(0, index), ...array.slice(index + 1) ]
   }
 
   static add<T>(array: Array<T>, element: T): Array<T> {
@@ -68,7 +75,7 @@ class Objects {
     return copy
   }
 
-  static remove(object: {[key: string]: any}, condition: (...args: any[]) => boolean): {[key: string]: any} {
+  static remove(object: {[key: string]: any}, condition: (...args: Array<any>) => boolean): {[key: string]: any} {
     const copy = Objects.copy(object)
     for (const i in copy) {
       if (condition(copy[i])) {
@@ -80,6 +87,11 @@ class Objects {
 
   static add(object: {[key: string]: any}, id: string, element: any): {[key: string]: any} {
     return Objects.update(object, id, element)
+  }
+
+  static isEmpty(object: {[key: string]: any}): boolean {
+    console.warn(Object.keys(object).length)
+    return Object.keys(object).length === 0
   }
 }
 

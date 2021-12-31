@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import Select, { StylesConfig } from 'react-select'
 
+import Artist from '@models/Artist'
 import Track from '@models/Track'
 
 import { selectApiManager } from '@selectors/App'
@@ -14,6 +16,21 @@ import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
 import IconButton from '@components/IconButton'
+import { Objects } from '@utils/Immutable'
+
+const colourStyles: StylesConfig = {
+  container: (styles) => ({ ...styles, flex: 1 }),
+  valueContainer: (styles) => ({...styles, height: 30 }),
+  control: (styles) => ({ ...styles, backgroundColor: '#22252c', borderWidth: 0, minHeight: 36, height: 36, flex: 1 }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({...styles, backgroundColor: '#22252c' }),
+  placeholder: (styles) => ({...styles, fontSize: 13 }),
+  input: (styles) => ({...styles, color: 'white', fontSize: 13}),
+  multiValue: (styles) => ({ ...styles, backgroundColor: '#2c84F8' }),
+  multiValueLabel: (styles) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
+  menuList: (styles) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
+  multiValueRemove: (styles) => ({...styles, ':hover': {color: '#dc2d1b'}}),
+  menu: (styles) => ({...styles, backgroundColor: '#22252c'})
+}
 
 function getInt(v: string): number {
   const n = parseInt(v)
@@ -38,23 +55,18 @@ const TrackModificationScreen = (): JSX.Element => {
     if (track) {
       const apiManager = selectApiManager()
 
+      const [ modifications, setModifications ] = useState({})
       const [ artist, setArtist ]  = useState(selectArtist(track.getArtist().getId()))
-      const [ artistState, setArtistState ] = useState('pristine')
 
       const save = useCallback(() => {
-        apiManager.put(`/track/${track.getId()}`, track)
-        if (artistState != 'pristine') {
-          apiManager.put(`/artist/${artist.getId()}`, artist)
+        if (!Objects.isEmpty(modifications)) {
+          apiManager.put(`/track/${track.getId()}`, modifications)
+          dispatch(setTrack(track))
         }
-        dispatch(setTrack(track))
         history.goBack()
-      }, [ dispatch, apiManager, history, artist, artistState, track ])
+      }, [ dispatch, apiManager, history, artist, track ])
 
-      const artistsNames = selectArtists().map(artist => <option key={artist.getId()} data-value={artist.getId()} value={artist.getName()} />)
-
-      // const download = useCallback(() => {
-      //   apiManager.get(`/download/${track.getFile().getVideoId()}`)
-      // }, [ apiManager, track ])
+      const artistsNames = selectArtists().map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
       const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getVideoId()}`, { forceDownload: true }), [ apiManager, track ])
 
@@ -64,20 +76,25 @@ const TrackModificationScreen = (): JSX.Element => {
         apiManager.post('/artist', artist)
       }, [ apiManager, artist ])
 
-      const handleArtistNameSet = useCallback(event => {
-        const modifiedArtist = artist.withName(event.target.value)
-        setArtist(modifiedArtist)
-        setCurrentTrack(track.withArtist(modifiedArtist))
-        setArtistState('Modified')
+      const handleTitleSet = useCallback(event => {
+        setModifications(Object.assign(modifications, {'title': event.target.value}))
+        setCurrentTrack(track.withTitle(event.target.value))
+      }, [ track ])
+
+      const handleArtistNameSet = useCallback(artists => {
+        setModifications(Object.assign(modifications, {'artists': artists.map(a => a.value)}))
+        setCurrentTrack(track.withArtists(artists.map(a => new Artist(a.value, a.label))))
       }, [ artist, track ])
-      const handleTitleSet = useCallback(event => setCurrentTrack(track.withTitle(event.target.value)), [ track ])
-      const handleVideoIdSet = useCallback(event => setCurrentTrack(track.withFile(track.getFile().withVideoId(event.target.value))), [ track ])
+
       const handleStartSet = useCallback(value => {
         const time = getValidTime(value, track)
+        setModifications(Object.assign(modifications, {'startTime': time}))
         setCurrentTrack(track.withStartTime(time))
       }, [ track ])
+
       const handleEndSet = useCallback(value => {
         const time = getValidTime(value, track)
+        setModifications(Object.assign(modifications, {'endTime': time}))
         setCurrentTrack(track.withEndTime(time))
       }, [ track ])
 
@@ -100,13 +117,12 @@ const TrackModificationScreen = (): JSX.Element => {
               </div>
               <div className="input">
                 <i className="fa fa-male fa-2x icon" />
-                <input
-                  type="text" list="artistNames" className="form-data"
-                  id="artist" autoComplete="off" onInput={handleArtistNameSet}
-                  defaultValue={track.getArtist().getName()}
+                <Select
+                  isMulti isClearable id="artistNames" styles={colourStyles}
+                  options={artistsNames} onChange={handleArtistNameSet}
+                  defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />
                 <IconButton icon="plus" onClick={createArtist} />
-                <datalist id="artistNames">{ artistsNames }</datalist>
               </div>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
@@ -141,18 +157,12 @@ const TrackModificationScreen = (): JSX.Element => {
               </div>
               <div className="input">
                 <i className="fab fa-youtube fa-2x icon" />
-                <input
-                  type="text" className="form-data" id="videoId"
-                  defaultValue={track.getFile().getVideoId()} onInput={handleVideoIdSet}
-                />
+                <input type="text" className="form-data" id="videoId" disabled defaultValue={track.getFile().getVideoId()} />
               </div>
             </div>
             <div id="serverInformation">
               <h2 style={{ marginLeft: 5 }} >Actions</h2>
               <div className="actions">
-                { /*
-                <div className="button raised" onClick={download} >Get locally</div>
-              */ }
                 <div className="button raised" onClick={requestServerDownload} >Download</div>
                 <div className="button raised alert" onClick={deleteItem} >Delete</div>
               </div>

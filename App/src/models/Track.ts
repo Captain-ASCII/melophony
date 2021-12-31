@@ -8,7 +8,7 @@ export default class Track {
 
   private id: number
   private title: string
-  private artist: Artist
+  private artists: Array<Artist>
   private duration: number
   private file: File
   private creationDate: Date
@@ -21,11 +21,11 @@ export default class Track {
   private playlists: Array<Playlist>
   private album: Album
 
-  public constructor(id: number, title: string, artist: Artist, duration: number, file: File, creationDate: Date, startTime: number, endTime: number,
+  public constructor(id: number, title: string, artists: Array<Artist>, duration: number, file: File, creationDate: Date, startTime: number, endTime: number,
     lastPlay: Date, playCount: number, rating: number, progress: number, playlists: Array<Playlist>, album: Album) {
     this.id = id
     this.title = title
-    this.artist = artist
+    this.artists = artists
     this.duration = duration
     this.file = file
     this.creationDate = creationDate
@@ -43,7 +43,7 @@ export default class Track {
     return new Track(
       t.id,
       t.title,
-      t.artist,
+      t.artists,
       t.duration,
       t.file,
       t.creationDate,
@@ -58,6 +58,28 @@ export default class Track {
     )
   }
 
+  public static fromObject(o: any): Track | null {
+    if (o) {
+      return new Track(
+        o.id,
+        o.title,
+        Artist.fromArray(o.artists),
+        o.duration,
+        File.fromObject(o.file),
+        new Date(o.creationDate),
+        o.startTime,
+        o.endTime,
+        o.lastPlay,
+        o.playCount,
+        o.rating,
+        o.progress,
+        o.playlists,
+        o.album,
+      )
+    }
+    return null
+  }
+
   public withId(id: number): Track {
     const clone = this.clone()
     clone.id = id
@@ -70,9 +92,9 @@ export default class Track {
     return clone
   }
 
-  public withArtist(artist: Artist): Track {
+  public withArtists(artists: Array<Artist>): Track {
     const clone = this.clone()
-    clone.artist = artist
+    clone.artists = artists
     return clone
   }
 
@@ -116,7 +138,14 @@ export default class Track {
   }
 
   public getArtist(): Artist {
-    return this.artist
+    if (this.artists.length == 0) {
+      return new Artist(-1, "Unknown")
+    }
+    return this.artists[0]
+  }
+
+  public getArtists(): Array<Artist> {
+    return this.artists
   }
 
   public getDuration(): number {
@@ -137,24 +166,5 @@ export default class Track {
 
   public getEndTime(): number {
     return this.endTime
-  }
-
-  public static fromObject(o: any): Track {
-    return new Track(
-      o.id,
-      o.title,
-      new Artist(o.artist.id, o.artist.name),
-      o.duration,
-      new File(o.file.id, o.file.videoId, o.file.state),
-      new Date(o.creationDate),
-      o.startTime,
-      o.endTime,
-      o.lastPlay,
-      o.playCount,
-      o.rating,
-      o.progress,
-      o.playlists,
-      o.album,
-    )
   }
 }

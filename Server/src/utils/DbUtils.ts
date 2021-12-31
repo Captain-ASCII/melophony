@@ -13,7 +13,7 @@ class JoinCustomizer {
   private link: string
   private alias: string
 
-  constructor(link: string, alias: string) {
+  constructor(link: string, alias = 'internal') {
     this.link = link
     this.alias = alias
   }
@@ -50,7 +50,7 @@ class SQLCustomizer {
   private joins: Array<JoinCustomizer>
   private wheres: Array<WhereCustomizer>
 
-  constructor(joins: Array<JoinCustomizer>, wheres: Array<WhereCustomizer>) {
+  constructor(joins: Array<JoinCustomizer> = [], wheres: Array<WhereCustomizer> = []) {
     this.joins = joins
     this.wheres = wheres
   }
@@ -67,8 +67,12 @@ class SQLCustomizer {
     return new SQLCustomizer([ ...left.getJoins(), ...right.getJoins() ], [ ...left.getWheres(), ...right.getWheres() ])
   }
 
+  static getUserIdCustomizer(userId: number): SQLCustomizer {
+    return new SQLCustomizer([], [ new WhereCustomizer('entity.userId = :userId', { userId }) ])
+  }
+
   static getIdCustomizer(id: number): SQLCustomizer {
-    return new SQLCustomizer([], [ new WhereCustomizer('id = :id', { id })])
+    return new SQLCustomizer([], [ new WhereCustomizer('entity.id = :id', { id })])
   }
 
   static fromSearch(search: any): SQLCustomizer {
@@ -82,6 +86,7 @@ class SQLCustomizer {
   static NULL = new SQLCustomizer([], [])
 }
 
+export { JoinCustomizer, WhereCustomizer, SQLCustomizer }
 
 
 export default class DbUtils {
@@ -165,7 +170,7 @@ export default class DbUtils {
   static getCustomizer(filter: number | SQLCustomizer, idFilter: SQLCustomizer): SQLCustomizer {
     let customizer: SQLCustomizer
     if (typeof filter === 'number') {
-      customizer = new SQLCustomizer([], [ new WhereCustomizer('entity.userId = :userId', { userId: filter }) ])
+      customizer = SQLCustomizer.getUserIdCustomizer(filter)
     } else {
       customizer = filter
     }

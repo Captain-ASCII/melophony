@@ -7,8 +7,10 @@ import { hot } from 'react-hot-loader'
 import ArtistModificationScreen from '@screens/ArtistModificationScreen'
 import ArtistOverviewScreen from '@screens/ArtistOverviewScreen'
 import ArtistsScreen from '@screens/ArtistsScreen'
+import PlaylistsScreen from '@screens/PlaylistsScreen'
 import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
+import TrackSharingScreen from '@screens/TrackSharingScreen'
 import TracksScreen from '@screens/TracksScreen'
 
 import MediaUtils from '@utils/MediaUtils'
@@ -63,7 +65,9 @@ const App = (): JSX.Element => {
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
             <UserDrawer />
+            <MenuLink path="/tracksharing" title="Music sharing" icon="share-alt" />
             <MenuLink path="/tracks" title="Tracks" icon="music" />
+            <MenuLink path="/playlists" title="Playlists" icon="compact-disc" />
             <MenuLink path="/artists" title="Artists" icon="user-friends" />
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
@@ -75,9 +79,11 @@ const App = (): JSX.Element => {
               <Route path="/track/create" component={TrackCreationScreen} />
               <Route path="/artists" component={ArtistsScreen} />
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
-              <Route path="/" exact component={TracksScreen} />
+              <Route path="/playlists" component={PlaylistsScreen} />
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
+              <Route path="/tracksharing" component={TrackSharingScreen} />
+              <Route path="/" exact component={TracksScreen} />
             </Switch>
           </div>
           <div className="sidebar right" >

@@ -10,35 +10,24 @@ import MediaUtils from '@utils/MediaUtils'
 
 import IconButton from '@components/IconButton'
 
+import useLongPress from './hooks/LongPressHook'
+
 const formatDuration = (duration: number): string => {
   const minutes = '0' + Math.round(duration / 60)
   const seconds = '0' + (duration % 60)
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled: () => boolean; displayType: string }): JSX.Element => {
+const RTrack = ({ track, displayType }: { track: Track; displayType: string }): JSX.Element => {
   const dispatch = useDispatch()
   const history = useHistory()
 
   const playlist = selectPlaylist()
 
-  const [ buttonPressTimer, setButtonPressTimer ] = useState(null)
-
+  const longPress = useLongPress(() => history.push(`/modify/track/${track.getId()}`), 500)
   const startPlay = useCallback(() => {
     dispatch(setPlaylist(playlist.withTrack(track)))
   }, [ dispatch, playlist, track ])
-
-  const press = useCallback(() => {
-    setButtonPressTimer(
-      setTimeout(() => {
-        if (!hasScrolled()) {
-          history.push(`/modify/track/${track.getId()}`)
-        }
-      }, 500)
-    )
-  }, [ history, hasScrolled, track ])
-
-  const release = useCallback(() => clearTimeout(buttonPressTimer), [ buttonPressTimer ])
 
   const stopPropagation = useCallback((e: React.MouseEvent): void => e.stopPropagation(), [])
   const handleEnqueue = useCallback((e: React.MouseEvent) => {
@@ -58,7 +47,7 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
   }
 
   return (
-    <div className="itemInfo" onClick={startPlay} onTouchStart={press} onTouchEnd={release} >
+    <div className="itemInfo" onClick={startPlay} {...longPress} >
       <div className="mainTrackInfo" >
         <p className="title" >{track.getTitle()}</p>
         { renderArtistName() }
@@ -78,22 +67,8 @@ const RTrack = ({ track, hasScrolled, displayType }: { track: Track; hasScrolled
 
 
 const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType: string }): JSX.Element => {
-
-  const [ hasScrolled, setHasScrolled ] = useState(false)
-  const [ scrollTimeout, setScrollTimeout ] = useState(null)
-
-  const scroll = useCallback(() => {
-    setHasScrolled(true)
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout)
-    }
-    setScrollTimeout(setTimeout(() => setHasScrolled(false), 1000))
-  }, [ scrollTimeout ])
-
-  const getScrollStatus = useCallback(() => hasScrolled, [ hasScrolled ])
-
   return (
-    <div id={displayType} onScroll={scroll} >
+    <div id={displayType} >
       {
         tracks.map((track) => {
           const blockStyle = {}
@@ -107,10 +82,7 @@ const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType:
               <div className="ratioContainer" >
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
-                  <RTrack
-                    track={track} hasScrolled={getScrollStatus}
-                    displayType={displayType}
-                  />
+                  <RTrack track={track} displayType={displayType} />
                 </div>
               </div>
             </div>

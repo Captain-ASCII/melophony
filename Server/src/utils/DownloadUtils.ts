@@ -111,7 +111,7 @@ export default class DownloadUtils {
 
       stream.on('info', (info: videoInfo) => {
         if (setTrack) {
-          setTrack(info.player_response.videoDetails.title, info.player_response.videoDetails.lengthSeconds)
+          setTrack(info.player_response.videoDetails.title, parseInt(info.player_response.videoDetails.lengthSeconds))
         }
       })
       stream.on('progress', (chunk: number, current: number, total: number) => {

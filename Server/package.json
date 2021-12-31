@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register --files src/index.ts",
     "dev": "nodemon",
-    "test": "ts-node scripts/InitTestDb.ts && jest"
+    "test": "ts-node src/scripts/InitTestDb.ts && jest"
   },
   "author": "Daniel Ben-Lulu",
   "license": "ISC",
@@ -15,12 +15,10 @@
     "bcrypt": "^4.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
-    "squirrelly": "^7.5.0",
     "typeorm": "^0.2.24",
     "ws": "^7.1.2",
     "ytdl-core": "https://github.com/fent/node-ytdl-core.git"

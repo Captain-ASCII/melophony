@@ -1,6 +1,6 @@
 
 import ApiAspectUtils from '@utils/ApiAspectUtils'
-import DbUtils from '@utils/DbUtils'
+import DbUtils, { SQLCustomizer, JoinCustomizer, WhereCustomizer } from '@utils/DbUtils'
 
 import Playlist from '@models/Playlist'
 
@@ -24,24 +24,24 @@ export default class PlaylistAspect extends BaseAspect {
     )
   }
 
-  async createPlaylist(userId: number, artist: Playlist): Promise<ApiResult> {
-    return DbUtils.create(Playlist, artist)
+  async createPlaylist(userId: number, playlist: Playlist): Promise<ApiResult> {
+    return DbUtils.create(Playlist, playlist)
   }
 
   async getPlaylist(userId: number, id: number): Promise<ApiResult> {
-    return DbUtils.read(Playlist, id, userId)
+    return DbUtils.read(Playlist, id, SQLCustomizer.merge(SQLCustomizer.getUserIdCustomizer(userId), new SQLCustomizer([ new JoinCustomizer('entity.tracks') ])))
   }
 
   async getPlaylists(userId: number): Promise<ApiResult> {
-    return DbUtils.readAll(Playlist, userId)
+    return DbUtils.readAll(Playlist, SQLCustomizer.merge(SQLCustomizer.getUserIdCustomizer(userId), new SQLCustomizer([ new JoinCustomizer('entity.tracks') ])))
   }
 
-  async findPlaylist(userId: number, artistName: string): Promise<ApiResult> {
-    return DbUtils.find(Playlist, { name: artistName }, userId)
+  async findPlaylist(userId: number, playlistName: string): Promise<ApiResult> {
+    return DbUtils.find(Playlist, { name: playlistName }, userId)
   }
 
-  async modifyPlaylist(userId: number, id: number, artist: Playlist): Promise<ApiResult> {
-    return DbUtils.update(Playlist, id, artist, userId)
+  async modifyPlaylist(userId: number, id: number, playlist: Playlist): Promise<ApiResult> {
+    return DbUtils.update(Playlist, id, playlist, userId)
   }
 
   async deletePlaylist(userId: number, id: number): Promise<ApiResult> {

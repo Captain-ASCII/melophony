@@ -79,7 +79,7 @@ createConnection().then(async () => {
     // }).listen(80)
 
     server.listen(HTTPS_PORT, function () {
-      Log.i(`HTTPS: Example app listening on port ${HTTPS_PORT}`)
+      Log.i(`HTTPS: App listening on port ${HTTPS_PORT}`)
     })
   }
 }).catch(error => Log.e('DB connection error:', error))

@@ -43,9 +43,9 @@ export default class FileAspect extends BaseAspect {
 
     ApiAspectUtils.associateCRUDOperations(
       this,
-      'playlist',
+      'file',
       null,
-      this.getFile,
+      null,
       null,
       this.findFile,
       null,
@@ -67,15 +67,11 @@ export default class FileAspect extends BaseAspect {
     // })
   }
 
-  async getFile(userId: number, artistId: number): Promise<ApiResult> {
-    return DbUtils.read(File, artistId, userId)
+  async findFile(userId: number, fileName: string): Promise<ApiResult> {
+    return DbUtils.find(File, { name: fileName }, userId)
   }
 
-  async findFile(userId: number, artistName: string): Promise<ApiResult> {
-    return DbUtils.find(File, { name: artistName }, userId)
-  }
-
-  async deleteFile(userId: number, artistId: number): Promise<ApiResult> {
-    return DbUtils.delete(File, artistId, userId)
+  async deleteFile(userId: number, fileId: number): Promise<ApiResult> {
+    return DbUtils.delete(File, fileId, userId)
   }
 }
