@@ -59,7 +59,7 @@ export class RequestCustomizer {
   private resultCallback: ((code: number, data: any | null) => void) | undefined
   private timeout: number
 
-  public constructor(resultCallback: ((code: number, data: any | null) => void) | undefined = undefined, timeout = 2000) {
+  public constructor(resultCallback: ((code: number, data: any | null) => void) | undefined = undefined, timeout = 20000) {
     this.resultCallback = resultCallback
     this.timeout = timeout
   }
