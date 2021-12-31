@@ -51,9 +51,9 @@ async function getData(): Promise<void> {
   const artistsResponse = await apiManager.get('/artists')
   const userResponse = await apiManager.get('/user')
 
-  const tracks = tracksResponse[1].data.map((track: any) => Track.fromObject(track))
-  const artists = artistsResponse[1].data.map((artist: any) => new Artist(artist.id, artist.name))
-  const user = User.fromObject(userResponse[1].data)
+  const tracks = tracksResponse[1].map((track: any) => Track.fromObject(track))
+  const artists = artistsResponse[1].map((artist: any) => Artist.fromObject(artist))
+  const user = User.fromObject(userResponse[1])
 
   store.dispatch(setArtists(artists))
   store.dispatch(setTracks(tracks))
@@ -68,24 +68,30 @@ async function getData(): Promise<void> {
   )
 }
 
+async function tryAuthentication(): Promise<void> {
+  apiManager.get('/user').then(response => {
+    if (response[0] != 200) {
+      JWT.forget()
+      ReactDOM.render(
+        <Provider store={store} >
+          <LoginScreen getRequiredData={getData} />
+        </Provider>,
+        document.getElementById('root')
+      )
+    } else {
+      getData()
+    }
+  })
+}
+
 async function init(): Promise<void> {
-  if (JWT.get() && (await apiManager.get('/user'))[0] != 400) {
-    ReactDOM.render(
-      <Provider store={store} >
-        <SplashScreen getRequiredData={getData} />
-      </Provider>,
-      document.getElementById('root')
-    )
-    getData()
-  } else {
-    JWT.forget()
-    ReactDOM.render(
-      <Provider store={store} >
-        <LoginScreen getRequiredData={getData} />
-      </Provider>,
-      document.getElementById('root')
-    )
-  }
+  ReactDOM.render(
+    <Provider store={store} >
+      <SplashScreen getRequiredData={getData} />
+    </Provider>,
+    document.getElementById('root')
+  )
+  tryAuthentication()
 }
 
 export { init }
