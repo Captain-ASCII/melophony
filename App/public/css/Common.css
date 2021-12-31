@@ -168,6 +168,10 @@ p, h1, h2, h3, h4, h5, h6 {
   justify-content: center;
 }
 
+.menuLink > .button {
+  flex: 1;
+}
+
 
 .playlist {
   display: flex;
@@ -383,37 +387,11 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: 0 10px;
 }
 
-.input {
-  display: flex;
-}
-
-.text-input {
-  display: flex;
-  position: relative;
-}
-
-.text-input > .icon {
-  position: absolute;
-}
-
-.text-input > .left-icon {
-  left: 5px;
-}
-
-.text-input > .clear-icon {
-  right: 5px;
-}
-
-.text-input > input {
-  text-indent: 30px;
-}
-
 input {
   outline: none !important;
 }
 
 input[type="text"], input[type="password"] {
-  height: 36px;
   flex: 1;
   min-width: 300px;
   border: none;

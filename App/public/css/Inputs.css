@@ -1,0 +1,32 @@
+
+.input {
+  display: flex;
+}
+
+.text-input {
+  display: flex;
+  position: relative;
+}
+
+.text-input > .icon {
+  position: absolute;
+}
+
+.text-input > .left-icon {
+  left: 5px;
+}
+
+.text-input > .clear-icon {
+  right: 5px;
+}
+
+.text-input > input {
+  text-indent: 25px;
+  height: 36px;
+}
+
+.clickableTextInput {
+  display: flex;
+  min-width: 40px;
+  min-height: 30px;
+}
