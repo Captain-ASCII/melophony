@@ -10,10 +10,10 @@ import MediaUtils from '@utils/MediaUtils'
 
 import IconButton from '@components/IconButton'
 
-import useLongPress from './hooks/LongPressHook'
+import useLongPress from '../hooks/LongPressHook'
 
 const formatDuration = (duration: number): string => {
-  const minutes = '0' + Math.round(duration / 60)
+  const minutes = '0' + Math.floor(duration / 60)
   const seconds = '0' + (duration % 60)
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
