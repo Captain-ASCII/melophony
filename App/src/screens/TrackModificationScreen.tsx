@@ -19,17 +19,17 @@ import IconButton from '@components/IconButton'
 import { Objects } from '@utils/Immutable'
 
 const colourStyles: StylesConfig = {
-  container: (styles) => ({ ...styles, flex: 1 }),
-  valueContainer: (styles) => ({...styles, height: 30 }),
-  control: (styles) => ({ ...styles, backgroundColor: '#22252c', borderWidth: 0, minHeight: 36, height: 36, flex: 1 }),
-  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({...styles, backgroundColor: '#22252c' }),
-  placeholder: (styles) => ({...styles, fontSize: 13 }),
-  input: (styles) => ({...styles, color: 'white', fontSize: 13}),
-  multiValue: (styles) => ({ ...styles, backgroundColor: '#2c84F8' }),
-  multiValueLabel: (styles) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
-  menuList: (styles) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
-  multiValueRemove: (styles) => ({...styles, ':hover': {color: '#dc2d1b'}}),
-  menu: (styles) => ({...styles, backgroundColor: '#22252c'})
+  container: (styles: any) => ({ ...styles, flex: 1 }),
+  valueContainer: (styles: any) => ({...styles, height: 30 }),
+  control: (styles: any) => ({ ...styles, backgroundColor: '#22252c', borderWidth: 0, minHeight: 36, height: 36, flex: 1 }),
+  option: (styles: any) => ({...styles, backgroundColor: '#22252c' }),
+  placeholder: (styles: any) => ({...styles, fontSize: 13 }),
+  input: (styles: any) => ({...styles, color: 'white', fontSize: 13}),
+  multiValue: (styles: any) => ({ ...styles, backgroundColor: '#2c84F8' }),
+  multiValueLabel: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
+  menuList: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
+  multiValueRemove: (styles: any) => ({...styles, ':hover': {color: '#dc2d1b'}}),
+  menu: (styles: any) => ({...styles, backgroundColor: '#22252c'})
 }
 
 function getInt(v: string): number {
@@ -82,8 +82,8 @@ const TrackModificationScreen = (): JSX.Element => {
       }, [ track ])
 
       const handleArtistNameSet = useCallback(artists => {
-        setModifications(Object.assign(modifications, {'artists': artists.map(a => a.value)}))
-        setCurrentTrack(track.withArtists(artists.map(a => new Artist(a.value, a.label))))
+        setModifications(Object.assign(modifications, {'artists': artists.map((a: any) => a.value)}))
+        setCurrentTrack(track.withArtists(artists.map((a: any) => new Artist(a.value, a.label))))
       }, [ artist, track ])
 
       const handleStartSet = useCallback(value => {
