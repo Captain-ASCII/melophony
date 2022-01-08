@@ -2,10 +2,12 @@ import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 
+import { Arrays } from '@utils/Immutable'
+
 import Event from '@models/Event'
 import OverlayMessage from '@models/OverlayMessage'
 
-import { setArtist } from '@actions/Artist'
+import { setArtist, setArtists } from '@actions/Artist'
 import { notifyEvent } from '@actions/Event'
 
 import { selectArtists, selectArtist } from '@selectors/Artist'
@@ -50,14 +52,24 @@ const ArtistModificationScreen = (): JSX.Element => {
                 )
               )
             ))
+          } else {
+            history.goBack()
           }
-          return false
         } else {
           dispatch(setArtist(artist))
           apiManager.put(`/artist/${id}`, artist)
           history.goBack()
         }
       }, [ apiManager, history, artist, artists, tracks, dispatch, id, initialName ])
+
+      const deleteArtist = useCallback(() => {
+        apiManager.delete(`/artist/${id}`).then(([code, data]) => {
+          if (code === 200) {
+            dispatch(setArtists(Arrays.remove(artists, a => a.getId().toString() === id)))
+          }
+        })
+        history.goBack()
+      }, [ history, apiManager ])
 
       const setName = useCallback(event => setArtistState(artist.withName(event.target.value)), [ artist ])
 
@@ -83,6 +95,7 @@ const ArtistModificationScreen = (): JSX.Element => {
           </div>
           <div id="postActions" >
             <Button icon="save" className="raised" onClick={save} title="Save" />
+            <Button icon="trash" className="raised alert" onClick={deleteArtist} title="Delete" />
           </div>
         </div>
       )
