@@ -38,6 +38,7 @@ const ArtistsScreen = (): JSX.Element => {
       </div>
       <div className="delimiter" />
       <div id="itemBlocks">{ artistsComponents }</div>
+      <Link to={'/artist/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )
 }

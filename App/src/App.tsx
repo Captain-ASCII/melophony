@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { hot } from 'react-hot-loader'
 
 import ArtistModificationScreen from '@screens/ArtistModificationScreen'
+import ArtistCreationScreen from '@screens/ArtistCreationScreen'
 import ArtistOverviewScreen from '@screens/ArtistOverviewScreen'
 import ArtistsScreen from '@screens/ArtistsScreen'
 import PlaylistsScreen from '@screens/PlaylistsScreen'
@@ -78,6 +79,7 @@ const App = (): JSX.Element => {
               <Route path="/tracks" component={TracksScreen} />
               <Route path="/track/create" component={TrackCreationScreen} />
               <Route path="/artists" component={ArtistsScreen} />
+              <Route path="/artist/create" component={ArtistCreationScreen} />
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
               <Route path="/playlists" component={PlaylistsScreen} />
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
