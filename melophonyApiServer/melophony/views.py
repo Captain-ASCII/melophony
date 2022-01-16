@@ -12,11 +12,15 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, JsonResponse
 
 from .apps import MelophonyConfig
-from .models import Album, Artist, File, Track, Playlist
+from .models import Album, Artist, File, Track, Playlist, PlaylistTrack
 from .utils import model_to_dict
 
 
 logging.basicConfig(level=logging.INFO)
+
+class Message:
+    SUCCESS = "Success"
+    ERROR = "Error"
 
 
 class Status:
@@ -30,23 +34,25 @@ class Status:
 
 FILES_DIR = os.path.join(os.path.dirname(__file__), "files")
 
+
 def _file_path(name):
     return os.path.join(FILES_DIR, name + '.m4a')
 
 
-def response(data=None, status=Status.SUCCESS, message=None, token=None, recursive=False):
-    result = None
+def format(data, filters=None, foreign_keys=[], foreign_filters={}):
     if isinstance(data, QuerySet):
-        if recursive:
-            result = [model_to_dict(x, True) for x in data]
+        if len(foreign_keys) > 0:
+            return [model_to_dict(x, filters, foreign_keys, foreign_filters) for x in data]
         else:
-            result = [x for x in data.values()]
+            return [x for x in data.values()]
     elif isinstance(data, dict):
-        result = data
+        return data
     elif isinstance(data, models.Model):
-        result = model_to_dict(data, recursive)
+        return model_to_dict(data, filters, foreign_keys, foreign_filters)
 
-    data = {'message': message, 'data': result}
+
+def response(data=None, status=Status.SUCCESS, message=Message.SUCCESS, token=None):
+    data = {'message': message, 'data': data}
     if token is not None:
         data['token'] = token
 
@@ -56,37 +62,50 @@ def response(data=None, status=Status.SUCCESS, message=None, token=None, recursi
     return r
 
 
-def act(action, message="Success", status=Status.SUCCESS):
+def act(action):
     try:
-        action()
-        return response(status=status, message=message)
+        return action()
     except Exception as e:
         print(str(e))
-        return response(status=Status.ERROR, message=e.message)
+        return None
+
 
 def create(o_type, obj):
-    return act(lambda: o_type.objects.create(**obj), status=Status.CREATED)
+    return act(lambda: o_type.objects.create(**obj))
 
-def get(o_type, id, mapping=None, recursive=False):
+
+def get(o_type, id, filters=None, foreign_keys=[], foreign_filters={}):
     try:
         obj = o_type.objects.get(pk=id)
-        if mapping is None:
-            return response(obj, recursive=recursive)
-        else:
-            result = {}
-            for m in mapping:
-                if hasattr(obj, m[1]):
-                    result[m[0]] = getattr(obj, m[1])
+        return format(obj, filters, foreign_keys, foreign_filters)
+    except Exception:
+        return None
 
-            return response(result, recursive=recursive)
-    except Exception as e:
-        return response(message=e)
+
+def get_all(o_type, filters=None, foreign_keys=[], foreign_filters={}):
+    try:
+        objects = o_type.objects.all()
+        return [format(o, filters, foreign_keys, foreign_filters) for o in objects]
+    except Exception:
+        return None
+
 
 def update(o_type, id, changes):
-    return act(lambda: o_type.objects.filter(pk=id).update(**changes))
+    def upd():
+        obj = o_type.objects.filter(pk=id)
+        obj.update(**changes)
+        return obj.first()
+    return act(upd)
+
 
 def delete(o_type, id):
     return act(lambda: o_type.objects.filter(pk=id).delete())
+
+
+def set_many_to_many(relation_array, objects):
+    relation_array.clear()
+    for o in objects:
+        relation_array.add(o)
 
 
 # Files
@@ -135,37 +154,33 @@ def login(r, body):
         return response(status=Status.UNAUTHORIZED, message='Invalid credentials')
 
 def get_user(r):
-    return get(
-        User,
-        r.user_id if hasattr(r, 'user_id') else -1,
-        [('userName', 'username'), ('firstName', 'first_name'), ('lastName', 'last_name')]
-    )
+    user = get(User, r.user.id, ['username', 'first_name', 'last_name'])
+    return response({'userName': user['username'], 'firstName': user['first_name'], 'lastName': user['last_name']})
 
 def update_user(r, user, user_id):
-    # return update(User, user_id, user)
+    # return response(update(User, user_id, user))
     return response(status=Status.ERROR, message="NOT IMPLEMENTED")
 
 def delete_user(r, user_id):
-    return delete(User, user_id)
+    return response(delete(User, user_id))
 
 
 # Artists
 
 def create_artist(r, artist):
-    Artist.objects.create(**artist)
-    return response(status=Status.CREATED)
+    return response(create(Artist, artist), message=Message.CREATED, status=Status.CREATED)
 
 def get_artist(r, artist_id):
     return get(Artist, artist_id)
 
 def update_artist(r, artist, artist_id):
-    return update(Artist, artist_id, artist)
+    return response(update(Artist, artist_id, artist))
 
 def delete_artist(r, artist_id):
-    return delete(artist_id)
+    return response(delete(Artist, artist_id))
 
 def list_artists(r):
-    return response(Artist.objects.all())
+    return response(format(Artist.objects.all()))
 
 def find_artist(r, body, artistName):
     return response()
@@ -174,19 +189,19 @@ def find_artist(r, body, artistName):
 # Albums
 
 def create_album(r, album):
-    return create(Album, album)
+    return response(create(Album, album), message=Message.CREATED, status=Status.CREATED)
 
 def get_album(r, album_id):
     return get(Album, album_id)
 
 def update_album(r, album, album_id):
-    return update(Album, album_id, album)
+    return response(update(Album, album_id, album))
 
 def delete_album(r, album_id):
-    return delete(Album, album_id)
+    return response(delete(Album, album_id))
 
 def list_albums(r):
-    return response(Album.objects.all())
+    return response(format(Album.objects.all()))
 
 def find_album(r, body, artistName):
     return response()
@@ -209,7 +224,7 @@ def create_track(r, track):
         else:
             _download_file(video_id)
 
-        return create(Track, {
+        return response(create(Track, {
             'title': title,
             'album': None,
             'file': file,
@@ -219,7 +234,7 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
-        })
+        }, message=Message.CREATED, status=Status.CREATED))
     else:
         return response(status=Status.ERROR, message='Could not get track information')
 
@@ -237,13 +252,13 @@ def update_track(r, changes, track_id):
         except Exception as e:
             return response(status=Status.ERROR, message=f'Error while updating artists: {e}')
 
-    return update(Track, track_id, changes)
+    return response(update(Track, track_id, changes))
 
 def delete_track(r, track_id):
-    return delete(Track, track_id)
+    return response(delete(Track, track_id))
 
 def list_tracks(r):
-    return response(Track.objects.all(), recursive=True)
+    return response(get_all(Track, foreign_keys=['artists', 'file']))
 
 def find_track(r, body, track):
     return response()
