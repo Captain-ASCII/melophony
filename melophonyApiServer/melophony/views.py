@@ -251,20 +251,32 @@ def find_track(r, body, track):
 
 # Playlists
 
-def create_playlist(r, playlist):
-    return create(Playlist, playlist)
+def create_playlist(r, provided_playlist):
+    playlist = Playlist.objects.create(user=r.user, name=provided_playlist['name'])
+    for index, track in enumerate(provided_playlist['tracks']):
+        PlaylistTrack.objects.create(track_id=track, playlist=playlist, order=index)
+
+    return response(format(playlist), message=Message.SUCCESS, status=Status.CREATED)
 
 def get_playlist(r, playlist_id):
     return get(Playlist, playlist_id)
 
-def update_playlist(r, playlist, playlist_id):
-    return update(Playlist, playlist_id, playlist)
+def update_playlist(r, modifications, playlist_id):
+    tracks = modifications['tracks']
+    del modifications['tracks']
+    playlist = update(Playlist, playlist_id, modifications)
+
+    PlaylistTrack.objects.filter(playlist_id=playlist.id).delete()
+    for index, track in enumerate(tracks):
+        PlaylistTrack.objects.create(track_id=track, playlist_id=playlist_id, order=index)
+
+    return response(format(playlist))
 
 def delete_playlist(r, playlist_id):
-    return delete(Playlist, playlist_id)
+    return response(delete(Playlist, playlist_id))
 
 def list_playlists(r):
-    return response(User.objects.all())
+    return response(get_all(Playlist, foreign_keys=['tracks', 'artists', 'file']))
 
 def find_playlist(r, body, playlist):
     return response()

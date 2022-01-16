@@ -48,4 +48,10 @@ class Track(models.Model):
 class Playlist(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tracks = models.ManyToManyField(Track)
+    tracks = models.ManyToManyField(Track, through='melophony.PlaylistTrack')
+
+
+class PlaylistTrack(models.Model):
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
