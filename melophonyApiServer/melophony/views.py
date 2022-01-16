@@ -158,7 +158,6 @@ def get_user(r):
     return response({'userName': user['username'], 'firstName': user['first_name'], 'lastName': user['last_name']})
 
 def update_user(r, user, user_id):
-    # return response(update(User, user_id, user))
     return response(status=Status.ERROR, message="NOT IMPLEMENTED")
 
 def delete_user(r, user_id):
@@ -168,13 +167,13 @@ def delete_user(r, user_id):
 # Artists
 
 def create_artist(r, artist):
-    return response(create(Artist, artist), message=Message.CREATED, status=Status.CREATED)
+    return response(format(create(Artist, artist)), message=Message.CREATED, status=Status.CREATED)
 
 def get_artist(r, artist_id):
     return get(Artist, artist_id)
 
 def update_artist(r, artist, artist_id):
-    return response(update(Artist, artist_id, artist))
+    return response(format(update(Artist, artist_id, artist)))
 
 def delete_artist(r, artist_id):
     return response(delete(Artist, artist_id))
@@ -189,13 +188,13 @@ def find_artist(r, body, artistName):
 # Albums
 
 def create_album(r, album):
-    return response(create(Album, album), message=Message.CREATED, status=Status.CREATED)
+    return response(format(create(Album, album)), message=Message.CREATED, status=Status.CREATED)
 
 def get_album(r, album_id):
     return get(Album, album_id)
 
 def update_album(r, album, album_id):
-    return response(update(Album, album_id, album))
+    return response(format(update(Album, album_id, album)))
 
 def delete_album(r, album_id):
     return response(delete(Album, album_id))
@@ -224,7 +223,7 @@ def create_track(r, track):
         else:
             _download_file(video_id)
 
-        return response(create(Track, {
+        return response(format(create(Track, {
             'title': title,
             'album': None,
             'file': file,
@@ -234,7 +233,7 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
-        }, message=Message.CREATED, status=Status.CREATED))
+        }), message=Message.CREATED, status=Status.CREATED))
     else:
         return response(status=Status.ERROR, message='Could not get track information')
 
@@ -252,7 +251,7 @@ def update_track(r, changes, track_id):
         except Exception as e:
             return response(status=Status.ERROR, message=f'Error while updating artists: {e}')
 
-    return response(update(Track, track_id, changes))
+    return response(format(update(Track, track_id, changes)))
 
 def delete_track(r, track_id):
     return response(delete(Track, track_id))
