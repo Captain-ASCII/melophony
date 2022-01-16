@@ -12,7 +12,6 @@ import PlaylistsScreen from '@screens/PlaylistsScreen'
 import PlaylistModificationScreen from '@screens/PlaylistModificationScreen'
 import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
-import TrackSharingScreen from '@screens/TrackSharingScreen'
 import TracksScreen from '@screens/TracksScreen'
 
 import MediaUtils from '@utils/MediaUtils'
@@ -87,7 +86,6 @@ const App = (): JSX.Element => {
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
               <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
-              <Route path="/tracksharing" component={TrackSharingScreen} />
               <Route path="/" exact component={TracksScreen} />
             </Switch>
           </div>
