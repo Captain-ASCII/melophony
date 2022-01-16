@@ -27,6 +27,9 @@ class Arrays {
   }
 
   static removeAt<T>(array: Array<T>, index: number): Array<T> {
+    if (index === undefined || index < 0 || index >= array.length) {
+      return array
+    }
     return [ ...array.slice(0, index), ...array.slice(index + 1) ]
   }
 
@@ -90,7 +93,6 @@ class Objects {
   }
 
   static isEmpty(object: {[key: string]: any}): boolean {
-    console.warn(Object.keys(object).length)
     return Object.keys(object).length === 0
   }
 }

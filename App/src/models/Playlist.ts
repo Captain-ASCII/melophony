@@ -17,6 +17,32 @@ export default class Playlist {
     return new Playlist(o.id, o.name, o.tracks.map((track: any) => Track.fromObject(track)))
   }
 
+  public clone(p: Playlist = this): Playlist {
+    return new Playlist(
+      p.id,
+      p.name,
+      p.tracks
+    )
+  }
+
+  public withId(id: number): Playlist {
+    const clone = this.clone()
+    clone.id = id
+    return clone
+  }
+
+  public withName(name: string): Playlist {
+    const clone = this.clone()
+    clone.name = name
+    return clone
+  }
+
+  public withTracks(tracks: Array<Track>): Playlist {
+    const clone = this.clone()
+    clone.tracks = tracks
+    return clone
+  }
+
   public getId(): number {
     return this.id
   }

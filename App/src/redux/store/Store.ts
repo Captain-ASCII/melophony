@@ -5,31 +5,15 @@ import artists from '@reducers/Artist'
 import configuration from '@reducers/Configuration'
 import notifications from '@reducers/Notification'
 import tracks from '@reducers/Track'
-import listeners from '@reducers/Event'
-
-// import Playlist from '@models/Playlist'
-// import Artist from '@models/Artist'
-// import Configuration from '@models/Configuration'
-// import Manager from '@models/Manager'
-// import Notification from '@models/Notification'
-// import Track from '@models/Track'
-
-// interface RootState {
-//   playlists: Array<Playlist>;
-//   artists: Array<Artist>;
-//   configuration: Configuration;
-//   managers: Array<Manager>;
-//   notifications: Array<Notification>;
-//   tracks: Array<Track>;
-// }
+import playlists from '@reducers/Playlist'
 
 const reducer = combineReducers({
   app,
   artists,
   configuration,
-//   listeners,
   notifications,
   tracks,
+  playlists,
 })
 
 declare global {

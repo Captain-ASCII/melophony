@@ -3,6 +3,10 @@
   display: flex;
 }
 
+.input>:nth-child(2) {
+  flex: 1;
+}
+
 .text-input {
   display: flex;
   position: relative;
@@ -21,8 +25,11 @@
 }
 
 .text-input > input {
-  text-indent: 25px;
   height: 36px;
+}
+
+.text-input.with-icon > input {
+  text-indent: 25px;
 }
 
 .clickableTextInput {

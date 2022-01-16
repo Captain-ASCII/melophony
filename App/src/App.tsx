@@ -9,6 +9,7 @@ import ArtistCreationScreen from '@screens/ArtistCreationScreen'
 import ArtistOverviewScreen from '@screens/ArtistOverviewScreen'
 import ArtistsScreen from '@screens/ArtistsScreen'
 import PlaylistsScreen from '@screens/PlaylistsScreen'
+import PlaylistModificationScreen from '@screens/PlaylistModificationScreen'
 import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TrackSharingScreen from '@screens/TrackSharingScreen'
@@ -19,7 +20,7 @@ import MediaUtils from '@utils/MediaUtils'
 import { setConfiguration } from '@actions/Configuration'
 import { selectApiManager } from '@selectors/App'
 import { selectConfiguration } from '@selectors/Configuration'
-import { selectPlaylist } from '@selectors/App'
+import { selectPlaylistManager } from '@selectors/App'
 
 import Button from '@components/Button'
 import ConfirmOverlay from '@components/ConfirmOverlay'
@@ -48,7 +49,7 @@ const App = (): JSX.Element => {
 
   const configuration = selectConfiguration()
   const apiManager = selectApiManager()
-  const playlist = selectPlaylist()
+  const playlist = selectPlaylistManager()
 
   const [ menuState, setMenu ] = useState(MediaUtils.isMobileScreen() ? 'closed' : 'opened')
 
@@ -82,8 +83,10 @@ const App = (): JSX.Element => {
               <Route path="/artist/create" component={ArtistCreationScreen} />
               <Route path="/artist/:id" component={ArtistOverviewScreen} />
               <Route path="/playlists" component={PlaylistsScreen} />
+              <Route path="/playlist/create" component={PlaylistModificationScreen} />
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
+              <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
               <Route path="/tracksharing" component={TrackSharingScreen} />
               <Route path="/" exact component={TracksScreen} />
             </Switch>

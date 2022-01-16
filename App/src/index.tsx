@@ -13,6 +13,7 @@ import { store } from '@store'
 
 import Artist from '@models/Artist'
 import Track from '@models/Track'
+import Playlist from '@models/Playlist'
 import User from '@models/User'
 
 import Notification from '@models/Notification'
@@ -23,8 +24,9 @@ import SplashScreen from '@screens/SplashScreen'
 
 import { addNotification } from '@actions/Notification'
 import { setArtists } from '@actions/Artist'
-import { setPlaylist, setUser } from '@actions/App'
+import { setPlaylistManager, setUser } from '@actions/App'
 import { setTracks } from '@actions/Track'
+import { setPlaylists } from '@actions/Playlist'
 
 import ApiManager, { RequestCustomizer } from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
@@ -48,16 +50,19 @@ store.getState().app.mediaManager = new MediaManager()
 async function getData(): Promise<void> {
 
   const tracksResponse = await apiManager.get('/tracks')
+  const playlistsResponse = await apiManager.get('/playlists')
   const artistsResponse = await apiManager.get('/artists')
   const userResponse = await apiManager.get('/user')
 
   const tracks = tracksResponse[1].map((track: any) => Track.fromObject(track))
+  const playlists = playlistsResponse[1].map((playlist: any) => Playlist.fromObject(playlist))
   const artists = artistsResponse[1].map((artist: any) => Artist.fromObject(artist))
   const user = User.fromObject(userResponse[1])
 
   store.dispatch(setArtists(artists))
   store.dispatch(setTracks(tracks))
-  store.dispatch(setPlaylist(new PlaylistManager(tracks, configuration.getShuffleMode())))
+  store.dispatch(setPlaylists(playlists))
+  store.dispatch(setPlaylistManager(new PlaylistManager(tracks, configuration.getShuffleMode())))
   store.dispatch(setUser(user))
 
   ReactDOM.render(

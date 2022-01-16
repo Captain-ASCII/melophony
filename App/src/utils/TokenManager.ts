@@ -19,7 +19,6 @@ export default class TokenManager {
       if (this.timeoutId) {
         clearTimeout(this.timeoutId)
       }
-      console.warn((decoded.claim.exp * 1000) - new Date().getTime())
       this.timeoutId = window.setTimeout(() => {
         if (this.tokenExpirationCallback) {
           this.tokenExpirationCallback()

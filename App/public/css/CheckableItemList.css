@@ -1,0 +1,14 @@
+
+.checkableList {
+  overflow-y: scroll;
+}
+
+.checkItem {
+  padding: 10px;
+  margin: 1px 0;
+}
+
+.checked {
+  background-color: var(--primary-bg);
+  border-radius: 5px;
+}

@@ -146,7 +146,7 @@ p, h1, h2, h3, h4, h5, h6 {
   transition: width 0.5s;
 }
 .sidebar.left.opened {
-  width: 15%;
+  width: 25%;
 }
 
 .sidebar.left.closed {
@@ -281,7 +281,6 @@ p, h1, h2, h3, h4, h5, h6 {
 .button {
   position: relative;
   height: 36px;
-  padding: 0px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -319,6 +318,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .button.raised {
   margin: 5px;
+  padding: 0 20px;
   color: var(--button-color);
   background-color: var(--primary-bg);
 }
@@ -368,6 +368,10 @@ p, h1, h2, h3, h4, h5, h6 {
 .button.icon.floating.top {
   top: 15px;
   right: 15px;
+}
+
+.button.icon.floating.second {
+  right: 60px;
 }
 
 .button.icon.floating.transparent {

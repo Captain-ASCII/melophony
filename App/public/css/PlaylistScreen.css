@@ -1,0 +1,55 @@
+
+#playlistScreen {
+  display: flex;
+}
+
+.playlistInfo {
+  margin: 10px;
+}
+
+.playlistTrackOperator > * {
+  margin: 0 5px;
+}
+
+.playlistAddTrackHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #999;
+}
+
+.playlistAddTrackHeader .text-input {
+  flex: 1;
+}
+
+.playlistTracksContainer {
+  background: var(--main-dark-bg);
+  border-radius: 5px;
+  flex: 1;
+}
+
+.playlistTrack {
+  display: grid;
+  grid-template-columns: 36px 35% auto 36px;
+  align-items: center;
+  font-size: 12px;
+  margin: 5px 0;
+  padding: 0 10px;
+}
+
+.addTrackOverlay {
+  display: flex;
+  flex-direction: column;
+}
+
+.overlayTrack {
+  display: flex;
+}
+
+.overlayTrackArtist {
+  flex-basis: 40%;
+  font-weight: bold;
+  flex-shrink: 0;
+}

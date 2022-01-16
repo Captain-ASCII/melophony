@@ -2,9 +2,10 @@ import React, { useCallback, useState } from 'react'
 
 import IconButton from '@components/IconButton'
 
-const TextInput = ({ id, icon, type, onInput }: { id: string; type?: string; icon: string; onInput: (t: string) => void }): JSX.Element => {
+const TextInput = ({ id, icon, type, onInput, placeHolder = '', initialValue = '' }:
+{ id?: string; type?: string; placeHolder?: string; icon?: string; onInput: (t: string) => void; initialValue?: string }): JSX.Element => {
 
-  const [ value, setValue ] = useState('')
+  const [ value, setValue ] = useState(initialValue)
 
   const input = useCallback(text => {
     setValue(text)
@@ -17,10 +18,10 @@ const TextInput = ({ id, icon, type, onInput }: { id: string; type?: string; ico
   const handleReset = useCallback(() => input(''), [ input ])
 
   return (
-    <div className="text-input">
-      <i className={`fa fa-${icon} icon`} />
+    <div className={`text-input ${icon ? "with-icon" : ""}`}>
+      { icon && <i className={`fa fa-${icon} icon`} /> }
       <input
-        id={id} type={type || 'text'} value={value}
+        id={id} type={type || 'text'} value={value} placeholder={placeHolder}
         onInput={handleInput} onChange={handleChange}
       />
       <IconButton icon="times" className="clear-icon" onClick={handleReset} />

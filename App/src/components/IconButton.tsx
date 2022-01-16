@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 
 const IconButton = <T extends unknown>({ onClick, title, icon, data, className }:
-{ onClick?: (d: T) => void; title?: string; icon: string; data?: T; className?: string }): JSX.Element => {
-  const handleClick = useCallback(() => {
+{ onClick?: (d: T, event?: React.MouseEvent) => void; title?: string; icon: string; data?: T; className?: string }): JSX.Element => {
+  const handleClick = useCallback((event) => {
     if (onClick) {
-      onClick(data)
+      onClick(data, event)
     }
   }, [ onClick, data ])
 
