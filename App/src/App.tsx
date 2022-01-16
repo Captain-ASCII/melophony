@@ -100,7 +100,7 @@ const App = (): JSX.Element => {
             <Link to="/" >
               <div id="AppHeader">
                 <div className="logo" >
-                  <img src="/img/melophony.png" style={{ height: '100%' }} />
+                  <img src="/public/img/melophony.png" style={{ height: '100%' }} />
                 </div>
                 <h1>Melophony</h1>
               </div>

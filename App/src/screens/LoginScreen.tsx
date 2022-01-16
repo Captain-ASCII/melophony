@@ -62,7 +62,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   return (
     <div id="loginScreen" className="screen" >
       <div id="logoBox">
-        <img src="/img/melophony.png" />
+        <img src="/public/img/melophony.png" />
         <h1>Melophony</h1>r()
       </div>
       <div id="loginBox" >
@@ -78,7 +78,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
           </form>
           { (loading || errorMessage) &&
             <div id="statusBox">
-              { loading && <div id="loadingBox" ><img src="/img/loading.gif" id="loadingGif" /></div> }
+              { loading && <div id="loadingBox" ><img src="/public/img/loading.gif" id="loadingGif" /></div> }
               { errorMessage && <StatusMessage message={errorMessage} type={MessageType.WARNING} /> }
             </div>
           }
