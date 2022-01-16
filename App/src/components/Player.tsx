@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import { selectMediaManager } from '@selectors/App'
-import { selectPlaylist } from '@selectors/App'
+import { selectPlaylistManager } from '@selectors/App'
 
-import { setPlaylist, setMediaManager } from '@actions/App'
+import { setPlaylistManager, setMediaManager } from '@actions/App'
 
 import InputRange from '@components/InputRange'
 import IconButton from '@components/IconButton'
@@ -14,7 +14,7 @@ const Player = (): JSX.Element => {
   const dispatch = useDispatch()
 
   const mediaManager = selectMediaManager()
-  const playlist = selectPlaylist()
+  const playlist = selectPlaylistManager()
   const currentTrack = playlist.getCurrent()
 
   const [ isPlaying, setIsPlaying ] = useState(false)
@@ -42,16 +42,16 @@ const Player = (): JSX.Element => {
     if (currentTrack) {
       mediaManager.playPause()
     } else {
-      dispatch(setPlaylist(playlist.next()))
+      dispatch(setPlaylistManager(playlist.next()))
     }
   }, [ dispatch, mediaManager, currentTrack, playlist ])
 
   const previous = useCallback(() => {
-    dispatch(setPlaylist(playlist.previous()))
+    dispatch(setPlaylistManager(playlist.previous()))
   }, [ dispatch, playlist ])
 
   const next = useCallback(() => {
-    dispatch(setPlaylist(playlist.next()))
+    dispatch(setPlaylistManager(playlist.next()))
   }, [ dispatch, playlist ])
 
   return (

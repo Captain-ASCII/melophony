@@ -9,11 +9,11 @@ import MediaUtils from '@utils/MediaUtils'
 import Track from '@models/Track'
 
 import { selectConfiguration } from '@selectors/Configuration'
-import { selectPlaylist } from '@selectors/App'
+import { selectPlaylistManager } from '@selectors/App'
 import { selectTracks } from '@selectors/Track'
 
 import { setConfiguration } from '@actions/Configuration'
-import { setPlaylist } from '@actions/App'
+import { setPlaylistManager } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
 import CustomSelect from '@components/Select'
@@ -60,7 +60,7 @@ const TracksScreen = (): JSX.Element => {
 
   const configuration = selectConfiguration()
   const tracks = selectTracks()
-  const playlist = selectPlaylist()
+  const playlist = selectPlaylistManager()
 
   const [ filter, setFilter ] = useState('')
 
@@ -80,7 +80,7 @@ const TracksScreen = (): JSX.Element => {
 
   const switchMode = useCallback((value: boolean) => {
     dispatch(setConfiguration(configuration.withShuffleMode(value)))
-    dispatch(setPlaylist(playlist.withShuffleMode(value)))
+    dispatch(setPlaylistManager(playlist.withShuffleMode(value)))
   }, [ dispatch, configuration, playlist ])
 
   useEffect(() => {

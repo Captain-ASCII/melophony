@@ -5,7 +5,7 @@ import { store } from '@store'
 
 import Track from '@models/Track'
 
-import { setPlaylist } from '@actions/App'
+import { setPlaylistManager } from '@actions/App'
 
 export default class MediaManager {
 
@@ -108,13 +108,13 @@ export default class MediaManager {
   }
 
   previous(): void {
-    store.dispatch(setPlaylist(store.getState().app.playlist.previous()))
+    store.dispatch(setPlaylistManager(store.getState().app.playlist.previous()))
     this.setTrack(store.getState().app.playlist.getCurrent())
     this.play()
   }
 
   next(): void {
-    store.dispatch(setPlaylist(store.getState().app.playlist.next()))
+    store.dispatch(setPlaylistManager(store.getState().app.playlist.next()))
     this.setTrack(store.getState().app.playlist.getCurrent())
     this.play()
   }

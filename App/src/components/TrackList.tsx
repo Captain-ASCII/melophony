@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 
-import { selectPlaylist } from '@selectors/App'
-import { setPlaylist } from '@actions/App'
+import { selectPlaylistManager } from '@selectors/App'
+import { setPlaylistManager } from '@actions/App'
 
 import Track from '@models/Track'
 import MediaUtils from '@utils/MediaUtils'
@@ -22,17 +22,17 @@ const RTrack = ({ track, displayType }: { track: Track; displayType: string }): 
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const playlist = selectPlaylist()
+  const playlist = selectPlaylistManager()
 
   const longPress = useLongPress(() => history.push(`/modify/track/${track.getId()}`), 500)
   const startPlay = useCallback(() => {
-    dispatch(setPlaylist(playlist.withTrack(track)))
+    dispatch(setPlaylistManager(playlist.withTrack(track)))
   }, [ dispatch, playlist, track ])
 
   const stopPropagation = useCallback((e: React.MouseEvent): void => e.stopPropagation(), [])
   const handleEnqueue = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    dispatch(setPlaylist(playlist.enqueue(track)))
+    dispatch(setPlaylistManager(playlist.enqueue(track)))
   }, [ dispatch, playlist, track ])
 
   const renderArtistName = (): JSX.Element => {

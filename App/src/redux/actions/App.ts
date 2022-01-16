@@ -5,11 +5,11 @@ import User from '@models/User'
 import ApiManager from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
 
-export const SET_PLAYLIST = 'SET_PLAYLIST'
+export const SET_PLAYLIST_MANAGER = 'SET_PLAYLIST_MANAGER'
 export const SET_USER = 'SET_USER'
 
-interface SetPlaylistAction {
-  type: typeof SET_PLAYLIST;
+interface SetPlaylistManagerAction {
+  type: typeof SET_PLAYLIST_MANAGER;
   playlist: PlaylistManager;
 }
 interface SetUserAction {
@@ -17,7 +17,7 @@ interface SetUserAction {
   user: User;
 }
 
-export const setPlaylist = (playlist: PlaylistManager): AppAction => ({ type: SET_PLAYLIST, playlist })
+export const setPlaylistManager = (playlist: PlaylistManager): AppAction => ({ type: SET_PLAYLIST_MANAGER, playlist })
 export const setUser = (user: User): AppAction => ({ type: SET_USER, user })
 
 export const SET_API_MANAGER = 'SET_API_MANAGER'
@@ -35,4 +35,4 @@ interface SetApiManagerAction {
 export const setMediaManager = (mediaManager: MediaManager): AppAction => ({ type: SET_MEDIA_MANAGER, mediaManager })
 export const setApiManager = (apiManager: ApiManager): AppAction => ({ type: SET_API_MANAGER, apiManager })
 
-export type AppAction = SetPlaylistAction | SetUserAction | SetMediaManagerAction | SetApiManagerAction
+export type AppAction = SetPlaylistManagerAction | SetUserAction | SetMediaManagerAction | SetApiManagerAction
