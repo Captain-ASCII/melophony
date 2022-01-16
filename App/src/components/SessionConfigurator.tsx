@@ -49,7 +49,6 @@ const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Eleme
           onSelection={configureNetwork}
           >
           <option value="https://melophony-api.ddns.net:1804" >Online</option>
-          <option value="https://melophony-api.ddns.net:1804" >Home offline</option>
           <option value="http://localhost:1804" >Local</option>
         </Select>
       </div>

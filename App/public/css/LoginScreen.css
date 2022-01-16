@@ -36,3 +36,14 @@
 #loginInputs > div {
   margin: 10px;
 }
+
+#statusBox {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+#loadingBox {
+  display: flex;
+  justify-content: center;
+}
