@@ -20,6 +20,7 @@ logging.basicConfig(level=logging.INFO)
 
 class Message:
     SUCCESS = "Success"
+    CREATED = "Created"
     ERROR = "Error"
 
 
