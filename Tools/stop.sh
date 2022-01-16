@@ -9,4 +9,5 @@ kill_command () {
 
 export -f kill_command
 
-sudo lsof -i | grep -E "1804|1958|nodejs.*\*:log-server" | awk '{print $2}' | xargs -I {} bash -c "kill_command {}"
+sudo lsof -i | grep -E "1804|1958|nodejs.*\*:log-server" | grep -v grep | awk '{print $2}' | xargs -I {} bash -c "kill_command {}"
+sudo ps aux | grep -E "nodejs.*server.js" | grep -v grep | awk '{print $2}' | xargs -I {} bash -c "kill_command {}"
