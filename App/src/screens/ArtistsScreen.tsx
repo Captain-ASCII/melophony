@@ -22,7 +22,7 @@ const ArtistsScreen = (): JSX.Element => {
           </div>
         </Link>
         <div className="artistActions">
-          <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="pen" /></Link>
+          <Link to={`/modify/artist/${artist.getId()}`}><IconButton className="floating mini" icon="pen" /></Link>
         </div>
       </div>
     )
@@ -37,7 +37,7 @@ const ArtistsScreen = (): JSX.Element => {
         </div>
       </div>
       <div className="delimiter" />
-      <div id="itemBlocks">{ artistsComponents }</div>
+      <div className="itemBlocks">{ artistsComponents }</div>
       <Link to={'/artist/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )

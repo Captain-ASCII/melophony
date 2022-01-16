@@ -33,11 +33,9 @@ const ArtistCreationScreen = (): JSX.Element => {
 
   return (
     <div id="AddTrackScreen" className="screen" >
-      <div id="preActions">
-        <CloseButton />
-      </div>
       <div id="pageHeader">
         <h2 id="pageTitle">Add a new artist</h2>
+        <CloseButton />
       </div>
       <div className="input">
         <i className="fa fa-solid fa-user fa-2x icon" />

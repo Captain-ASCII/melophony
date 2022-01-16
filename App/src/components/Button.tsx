@@ -1,14 +1,22 @@
 import React, { useCallback } from 'react'
 
-const Button = <T extends unknown>({ onClick, title, icon, data, className }:
-  { onClick: (d: T) => void; title: string; icon?: string; data?: T, className?: string }): JSX.Element => {
-  const handleClick = useCallback(() => onClick(data), [ onClick, data ])
+import Log from '@utils/Log'
+
+const Button = <T extends unknown>({ onClick, title, icon, data, className = '' }:
+{ onClick: (d: T) => void; title?: string; icon?: string; data?: T; className?: string }): JSX.Element => {
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(data)
+    } else {
+      Log.w('No onClick defined')
+    }
+  }, [ onClick, data ])
 
   return (
     <div className={`button ${className}`} onClick={handleClick} >
-        <i className={`fa fa-${icon} icon button`}  />
-        <p className="buttonTitle" >{ title }</p>
-        <div className="overlay" ></div>
+      { icon && <i className={`fa fa-${icon} icon button`}  /> }
+      { title && <p className="buttonTitle" >{ title }</p> }
+      <div className="overlay" ></div>
     </div>
   )
 }

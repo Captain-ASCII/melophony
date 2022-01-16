@@ -75,11 +75,9 @@ const ArtistModificationScreen = (): JSX.Element => {
 
       return (
         <div className="screen" >
-          <div id="preActions" >
-            <CloseButton />
-          </div>
           <div id="pageHeader">
             <h2 id="pageTitle">Modify an artist</h2>
+            <CloseButton />
           </div>
           <div className="input">
             <i className="fa fa-male fa-2x icon" />

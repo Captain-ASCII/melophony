@@ -103,7 +103,8 @@ const TrackModificationScreen = (): JSX.Element => {
 
       return (
         <div className="screen" >
-          <div id="preActions" >
+          <div id="pageHeader">
+            <h2 id="pageTitle">Track modification</h2>
             <CloseButton />
           </div>
           <div className="columns">
@@ -168,7 +169,7 @@ const TrackModificationScreen = (): JSX.Element => {
               </div>
             </div>
             <div id="trackBarModifier">
-              <h2>Modify track duration</h2>
+              <h2>Track duration</h2>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
                 <InputRange track={track} multiRange onStartSet={handleStartSet} onEndSet={handleEndSet} />

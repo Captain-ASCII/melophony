@@ -25,6 +25,10 @@
     min-width: auto;
   }
 
+  .responsiveShrink .buttonTitle {
+    display: none;
+  }
+
   .screen {
     padding: 10px;
   }
@@ -87,7 +91,7 @@
     display: none;
   }
 
-  #itemBlocks, #itemList {
+  .itemBlocks, #itemList {
     top: 65px;
     height: 100%;
     position: relative;

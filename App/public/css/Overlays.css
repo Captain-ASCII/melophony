@@ -1,22 +1,40 @@
 
-#overlay {
-  position: absolute;
+
+.fullOverlay {
+  position: fixed;
+  z-index: 1000;
+  margin: 0 !important;
+}
+
+
+.fullOverlayBackground {
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 999;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: none;
+  /* display: none; */
   justify-content: center;
   align-items: center;
 }
 
-#overlayBox {
-  max-width: 50%;
-  background-color: #22222D;
+.fullOverlayBox {
+  background-color: var(--main-bg-color);
   border-radius: 5px;
   padding: 20px;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullOverlayContent {
+  flex: 1;
+  overflow: hidden;
 }
 
 #confirmMessage {
