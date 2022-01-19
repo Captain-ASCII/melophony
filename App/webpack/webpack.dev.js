@@ -5,10 +5,12 @@ const webpack = require('webpack')
 
 module.exports = merge(common, {
     devServer: {
-        historyApiFallback: true,
-        // https: true,
-        contentBase: path.join(__dirname, '..', 'public/'),
-        publicPath: 'http://localhost:1958/',
+        historyApiFallback: {
+          index: 'public/index.html'
+        },
+        host: '0.0.0.0',
+        contentBase: path.join(__dirname, '..'),
+        publicPath: 'http://0.0.0.0:1958/',
         port: 1958,
         hotOnly: true
     },
