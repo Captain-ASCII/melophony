@@ -1,8 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import JWT from 'jwt-client'
 
-import { RequestCustomizer } from '@utils/ApiManager'
-
 import { selectApiManager } from '@selectors/App'
 
 import Field from '@components/Field'
@@ -29,7 +27,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
 
   const apiManager = selectApiManager()
 
-  const handleResponse = useCallback((status: number, data: any) => {
+  const handleResponse = useCallback(([status, data]) => {
     if (status !== 200) {
       const message = data.message ? data.message : "Error during login"
       setLoading(false)
@@ -43,7 +41,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   const login = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/login', { email, password }, new RequestCustomizer(handleResponse))
+    apiManager.post('/login', { email, password }).then(handleResponse)
   }, [ apiManager, email, password, handleResponse ])
 
   const formLogin = useCallback((event) => {
@@ -54,7 +52,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   const register = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/register', { userName, email, firstName, lastName, password }, new RequestCustomizer(handleResponse))
+    apiManager.post('/register', { userName, email, firstName, lastName, password }).then(handleResponse)
   }, [ apiManager, email, userName, firstName, lastName, password, handleResponse ])
 
   const switchMode = useCallback(() => setMode(mode === Mode.LOGIN ? Mode.REGISTER : Mode.LOGIN), [ mode ])

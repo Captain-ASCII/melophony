@@ -13,145 +13,122 @@ function timeout<T>(ms: number, promise: Promise<T>): Promise<T> {
   })
 }
 
-export class ApiRequest {
+const NETWORK_TIMEOUT = 15000
 
-  private method: string
-  private baseUrl: string
-  private path: string
-  private parameters: RequestInit
-  private headers: Headers
-
-  public constructor(baseUrl: string, method: string, path: string) {
-    this.method = method
-    this.baseUrl = baseUrl
-    this.path = path
-    this.headers = new Headers()
-    this.parameters = { method: method, headers: this.headers }
-  }
-
-  public withHeader(header: string, value: string): ApiRequest {
-    this.headers.append(header, value)
-    return this
-  }
-
-  public withBody(body: object): ApiRequest {
-    this.headers.append('Content-Type', 'application/json')
-    this.parameters.body = JSON.stringify(body)
-
-    return this
-  }
-
-  public getBaseUrl(): string {
-    return this.baseUrl
-  }
-
-  public getPath(): string {
-    return this.path
-  }
-
-  public getParams(): RequestInit {
-    return this.parameters
-  }
+interface QueryParams {
+  [key: string]: string;
 }
 
-export class RequestCustomizer {
+export class ApiClient {
 
-  private resultCallback: ((code: number, data: any | null) => void) | undefined
-  private timeout: number
+  protected serverUrl: string
+  protected resultCallback: (data: [number, any]) => [number, any]
 
-  public constructor(resultCallback: ((code: number, data: any | null) => void) | undefined = undefined, timeout = 20000) {
-    this.resultCallback = resultCallback
-    this.timeout = timeout
+  public constructor(serverUrl: string, onResult: (data: [number, any]) => [number, any]) {
+    this.serverUrl = serverUrl
+    this.resultCallback = onResult
   }
 
-  public onResult(code: number, data: any): void {
-    if (this.resultCallback) {
-      this.resultCallback(code, data)
+  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+    return this.send(this.serverUrl, 'GET', path, null, queryParams, headers)
+  }
+
+  public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+    return this.send(this.serverUrl, 'POST', path, body, queryParams, headers)
+  }
+
+  public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+    return this.send(this.serverUrl, 'PUT', path, body, queryParams, headers)
+  }
+
+  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+    return this.send(this.serverUrl, 'DELETE', path, null, queryParams, headers)
+  }
+
+  private getFetchParams(method: string, body: object, headers: Headers): RequestInit {
+    const result = {
+      method: method,
+      headers: headers
     }
+
+    if (body != null) {
+      return { ...result, body: JSON.stringify(body) }
+    }
+
+    return result
   }
 
-  public getTimeout(): number {
-    return this.timeout
+  private getQueryParamString(queryParams: QueryParams): string {
+    const list: Array<String> = []
+
+    for (const param in queryParams) {
+      list.push(param + '=' + queryParams[param])
+    }
+
+    return '?' + list.join('&')
   }
 
-  public static NULL = new RequestCustomizer()
-  public static DEFAULT: RequestCustomizer = new RequestCustomizer()
+  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any]> {
+    const fetchParams = this.getFetchParams(method, body, headers)
+    const queryParamString = this.getQueryParamString(queryParams)
 
-  public static setDefault(customizer: RequestCustomizer): void {
-    RequestCustomizer.DEFAULT = customizer
+    console.warn(`${baseUrl}${path}${queryParamString}`, fetchParams)
+
+    const json = timeout(
+      NETWORK_TIMEOUT,
+      fetch(`${baseUrl}${path}${queryParamString}`, fetchParams)
+        .then(async (response: Response): Promise<[number, any]> => [ response.status, await response.json() ])
+    )
+
+    if (method !== 'GET') {
+      json.then(this.resultCallback)
+    }
+
+    return json.catch((error: Error) => {
+      if (error instanceof ApiTimeoutError) {
+        Log.w('Unable to get information from the server')
+        return Promise.reject(this.resultCallback([408, null]))
+      } else {
+        Log.e('Error during API request', error)
+        return Promise.reject(this.resultCallback([500, null]))
+      }
+    })
   }
 }
 
-export default class ApiManager {
+export default class MelophonyApiClient extends ApiClient {
 
-  private serverUrl: string
-  private request: ApiRequest
   private tokenManager: TokenManager
 
-  public constructor(serverUrl: string, tokenManager: TokenManager) {
-    this.serverUrl = serverUrl
-    this.request = new ApiRequest('', 'GET', '')
+  public constructor(serverUrl: string, onResult: (data: [number, any]) => [number, any], tokenManager: TokenManager) {
+    super(serverUrl, onResult)
     this.tokenManager = tokenManager
   }
 
-  public clone(): ApiManager {
-    return new ApiManager(this.serverUrl, this.tokenManager)
+  public clone(): MelophonyApiClient {
+    return new MelophonyApiClient(this.serverUrl, this.resultCallback, this.tokenManager)
   }
 
-  public withServerAddress(address: string): ApiManager {
+  public withServerAddress(address: string): MelophonyApiClient {
     const clone = this.clone()
     clone.serverUrl = address
     return clone
   }
 
-  public createRequest(): ApiRequest {
-    this.request = new ApiRequest(this.serverUrl, 'GET', '')
-    return this.request
-  }
-
-  public get(path: string, customizer: RequestCustomizer = RequestCustomizer.NULL): Promise<[number, any]> {
-    this.request = new ApiRequest(this.serverUrl, 'GET', path)
-    return this.send(customizer)
-  }
-
-  public post(path: string, body: object, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
-    this.request = new ApiRequest(this.serverUrl, 'POST', path).withBody(body)
-    return this.send(customizer)
-  }
-
-  public put(path: string, body: object, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
-    this.request = new ApiRequest(this.serverUrl, 'PUT', path).withBody(body)
-    return this.send(customizer)
-  }
-
-  public delete(path: string, customizer: RequestCustomizer = RequestCustomizer.DEFAULT): Promise<[number, any]> {
-    this.request = new ApiRequest(this.serverUrl, 'DELETE', path)
-    return this.send(customizer)
-  }
-
-  private send(customizer: RequestCustomizer): Promise<[number, any]> {
-    this.tokenManager.addToken(this.request)
-    console.warn(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
-
-    const json = timeout(
-      customizer.getTimeout(),
-      fetch(`${this.request.getBaseUrl()}${this.request.getPath()}`, this.request.getParams())
-        .then(async (response: Response): Promise<[number, any]> => [ response.status, await response.json() ])
-    )
-
-    json.then((data: [number, any]) => {
-      this.tokenManager.keepToken(data[1])
-      customizer.onResult(data[0], data[1])
-    }).catch((error: Error) => {
-      if (error instanceof ApiTimeoutError) {
-        Log.w('Unable to get information from the server')
-        customizer.onResult(408, null)
-      } else {
-        Log.e('Error during API request', error)
-        throw new Error('Failure during network request')
+  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any]> {
+    if (this.tokenManager != null) {
+      if (this.tokenManager.getToken() != null) {
+        headers.append('Authorization', this.tokenManager.getToken())
       }
-    })
+    }
 
-    return json.then(data => [ data[0], data[1].data ])
+    const response = super.send(baseUrl, method, path, body, queryParams, headers)
+
+    return response.then((data: [number, any]) => {
+      if (this.tokenManager != null) {
+        this.tokenManager.keepToken(data[1])
+      }
+      return [ data[0], data[1].data ]
+    })
   }
 }

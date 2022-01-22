@@ -28,20 +28,24 @@ import { setPlaylistManager, setUser } from '@actions/App'
 import { setTracks } from '@actions/Track'
 import { setPlaylists } from '@actions/Playlist'
 
-import ApiManager, { RequestCustomizer } from '@utils/ApiManager'
+import ApiManager from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
 import TokenManager from '@utils/TokenManager'
 
 const configuration = store.getState().configuration
 
-const apiManager = new ApiManager(configuration.getServerAddress(), new TokenManager(() => {
-  JWT.forget()
-  init()
-}))
-
-RequestCustomizer.setDefault(new RequestCustomizer((code: number, body: any) => {
-  store.dispatch(addNotification(new Notification(body.message)))
-}))
+const apiManager = new ApiManager(
+  configuration.getServerAddress(),
+  (data: [number, any]) => {
+    const message = (data[1] != null) ? data[1].message : "Unable to contact server"
+    store.dispatch(addNotification(new Notification(message)))
+    return data
+  },
+  new TokenManager(() => {
+    JWT.forget()
+    init()
+  })
+)
 
 store.getState().app.apiManager = apiManager
 store.getState().app.playlist = new PlaylistManager([], false)

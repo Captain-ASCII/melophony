@@ -1,6 +1,5 @@
 
 import JWT from 'jwt-client'
-import { ApiRequest } from '@utils/ApiManager'
 
 export default class TokenManager {
 
@@ -27,7 +26,7 @@ export default class TokenManager {
     }
   }
 
-  public addToken(request: ApiRequest): void {
-    request.withHeader('Authorization', JWT.get())
+  public getToken(): string {
+    return JWT.get()
   }
 }
