@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams, Link } from 'react-router-dom'
 import Select, { StylesConfig } from 'react-select'
 
 import Artist from '@models/Artist'
@@ -83,7 +83,7 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const handleArtistNameSet = useCallback(artists => {
         setModifications(Object.assign(modifications, {'artists': artists.map((a: any) => a.value)}))
-        setCurrentTrack(track.withArtists(artists.map((a: any) => new Artist(a.value, a.label))))
+        setCurrentTrack(track.withArtists(artists.map((a: any) => Artist.fromObject(a))))
       }, [ artist, track ])
 
       const handleStartSet = useCallback(value => {
@@ -119,11 +119,11 @@ const TrackModificationScreen = (): JSX.Element => {
               <div className="input">
                 <i className="fa fa-male fa-2x icon" />
                 <Select
-                  isMulti isClearable id="artistNames" styles={colourStyles}
+                  isMulti isClearable className="multiSelect" id="artistNames" styles={colourStyles}
                   options={artistsNames} onChange={handleArtistNameSet}
                   defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />
-                <IconButton icon="plus" onClick={createArtist} />
+                <Link to={`/artist/create`}><IconButton icon="plus" /></Link>
               </div>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
