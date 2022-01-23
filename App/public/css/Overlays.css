@@ -37,6 +37,12 @@
   overflow: hidden;
 }
 
+.confirmBox {
+  background-color: var(--main-bg-color);
+  border-radius: 5px;
+  padding: 15px;
+}
+
 #confirmMessage {
   margin: 10px;
   font-size: 13px;

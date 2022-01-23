@@ -33,10 +33,12 @@ const ConfirmOverlay = (): JSX.Element | null => {
   return overlay ? (
     <div className="fullOverlayBackground" style={{display: 'flex'}}>
       <div className="fullOverlay">
-        <p id="confirmMessage" >{overlay.getMessage()}</p>
-        <div id="confirmActionBox">
-          <div id="cancelButton" className="button raised" onClick={cancel} >No</div>
-          <div id="confirmButton" className="button raised" onClick={confirm} >Yes</div>
+        <div className="confirmBox" >
+          <p id="confirmMessage" >{overlay.getMessage()}</p>
+          <div id="confirmActionBox">
+            <div id="cancelButton" className="button raised" onClick={cancel} >No</div>
+            <div id="confirmButton" className="button raised" onClick={confirm} >Yes</div>
+          </div>
         </div>
       </div>
     </div>
