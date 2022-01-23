@@ -1,5 +1,6 @@
-import React, {  } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import JWT from 'jwt-client'
 
 import StringUtils from '@utils/StringUtils'
 import ColorUtils from '@utils/ColorUtils'
@@ -18,10 +19,19 @@ const ArtistOverviewScreen = (): JSX.Element => {
     const artist = selectArtist(parseInt(id))
     const tracks = selectTracksOfArtist(parseInt(id))
 
+    const [background, setBackground] = useState({})
+
+    useEffect(() => {
+      setBackground(artist.getImageName() !== null
+        ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
+        : { backgroundColor: ColorUtils.getRandomColor() }
+      )
+    }, [])
+
     return (
       <div id="artistOverviewScreen" className="screen" >
-        <CloseButton additionalClass="floating mini top transparent" />
-        <div id="artistScreenHeader" style={{ backgroundColor: ColorUtils.getRandomColor() }}  >
+        <CloseButton additionalClass="floating mini top" />
+        <div id="artistScreenHeader" style={background}  >
           <h1>{artist.getName()}</h1>
         </div>
 
@@ -33,7 +43,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
         </div>
         <div className="delimiter" />
 
-        <TrackList tracks={tracks} displayType="itemList" />
+        <TrackList tracks={tracks} displayType="itemList" className="artistTrackList" />
       </div>
     )
   }

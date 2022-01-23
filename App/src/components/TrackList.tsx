@@ -66,9 +66,9 @@ const RTrack = ({ track, displayType }: { track: Track; displayType: string }): 
 
 
 
-const TrackList = ({ tracks, displayType }: { tracks: Array<Track>; displayType: string }): JSX.Element => {
+const TrackList = ({ tracks, displayType, className = '' }: { tracks: Array<Track>; displayType: string; className?: string }): JSX.Element => {
   return (
-    <div id={displayType} >
+    <div id={displayType} className={className} >
       {
         tracks.map((track) => {
           const blockStyle = {}

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import JWT from 'jwt-client'
 
 import { selectArtists } from '@selectors/Artist'
 
@@ -14,8 +15,11 @@ const ArtistsScreen = (): JSX.Element => {
 
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
+    const imageBackground = artist.getImageName() != null
+      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
+      : {}
     return (
-      <div className="artistListItem" key={artist.getId()} >
+      <div className="artistListItem" key={artist.getId()} style={imageBackground} >
         <Link to={`/artist/${artist.getId()}`} className="link" >
           <div className="name">
             <h5>{ artist.getName() }</h5>

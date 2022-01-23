@@ -1,14 +1,16 @@
 
 .artistListItem {
-  padding: 10px;
+  background-size: cover;
+  background-position: center;
 }
 
 .artistListItem > .link {
   flex: 1;
   align-self: stretch;
   display: flex;
-  align-items: center;
-  padding: 10px;
+  align-items: flex-end;
+  padding: 15px 10px;
+  max-width: 80%;
 }
 
 
@@ -17,11 +19,13 @@
 #artistScreen {}
 
 #artistScreenHeader {
-  height: 200px;
+  height: 500px;
   display: flex;
   padding: 10px;
   align-items: flex-end;
-  background: var(--warning-bg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 }
 
 #artistScreenHeader > h2 {

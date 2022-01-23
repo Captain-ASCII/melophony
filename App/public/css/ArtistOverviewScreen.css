@@ -1,6 +1,11 @@
 
 #artistOverviewScreen {
+  display: block;
   padding: 0;
+}
+
+.artistTrackList {
+  overflow-y: visible !important;
 }
 
 #titlesHeader {
