@@ -3,6 +3,7 @@ import { combineReducers, createStore, compose } from 'redux'
 import app from '@reducers/App'
 import artists from '@reducers/Artist'
 import configuration from '@reducers/Configuration'
+import listeners from '@reducers/Event'
 import notifications from '@reducers/Notification'
 import tracks from '@reducers/Track'
 import playlists from '@reducers/Playlist'
@@ -11,6 +12,7 @@ const reducer = combineReducers({
   app,
   artists,
   configuration,
+  listeners,
   notifications,
   tracks,
   playlists,
