@@ -51,6 +51,8 @@ class Playlist(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tracks = models.ManyToManyField(Track, through='melophony.PlaylistTrack')
+    imageUrl = models.CharField(max_length=512, null=True)
+    imageName = models.CharField(max_length=128, null=True)
 
 
 class PlaylistTrack(models.Model):

@@ -50,4 +50,5 @@ urlpatterns = [
     path('playlist', associate_methods(views.find_playlist, post_method=views.create_playlist), name='create_playlist'),
     path('playlist/<int:playlist_id>', associate_methods(views.get_playlist, views.update_playlist, views.delete_playlist)),
     path('playlists', views.list_playlists, name='list_playlists'),
+    path('playlist/image/<str:image_name>', associate_methods(views.get_playlist_image), name='get_playlist_image'),
 ]

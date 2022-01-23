@@ -1,6 +1,7 @@
 import datetime
 import os
 import logging
+from this import d
 import jwt
 import requests
 import shutil
@@ -23,6 +24,7 @@ logging.basicConfig(level=logging.INFO)
 
 TRACKS = 'tracks'
 ARTIST_IMAGES = 'artist_images'
+PLAYLIST_IMAGES = 'playlist_images'
 
 class Message:
     SUCCESS = "Success"
@@ -45,6 +47,40 @@ FILES_DIR = os.path.join(os.path.dirname(__file__), "files")
 def _file_path(directory, name, extension=None):
     suffix = '.' + extension if extension is not None else ''
     return os.path.join(FILES_DIR, directory, name + suffix)
+
+
+def _delete_associated_image(o_type, object_id):
+    instance = o_type.objects.get(pk=object_id)
+    if instance.imageName is not None and os.path.isfile(instance.imageName):
+        os.remove(instance.imageName)
+
+
+def _download_image(directory, image_url):
+    extension = image_url.rsplit('/')[-1].split('?')[0].rsplit('.')[-1]
+    image_name = str(uuid.uuid4()) + '.' + extension
+    image_path = _file_path(directory, image_name)
+
+    r = requests.get(image_url, stream=True)
+
+    if r.status_code == 200:
+        r.raw.decode_content = True
+
+        with open(image_path, 'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+
+        logging.info('Image sucessfully Downloaded: ', image_name)
+        return image_name
+    else:
+        logging.info('Image Couldn\'t be retreived')
+        return None
+
+
+def _get_image(directory, image_name):
+    try:
+        with open(_file_path(directory, image_name), 'rb') as f:
+            return HttpResponse(f.read(), content_type='image/jpeg')
+    except IOError:
+        logging.error("Error while opening image: " + image_name)
 
 
 def format(data, filters=None, foreign_keys=[], foreign_filters={}):
@@ -181,27 +217,8 @@ def get_artist(r, artist_id):
 
 def update_artist(r, artist, artist_id):
     if 'imageUrl' in artist:
-        db_artist = Artist.objects.get(pk=artist_id)
-        if db_artist.imageName is not None and os.path.isfile(db_artist.imageName):
-            os.remove(db_artist.imageName)
-
-        image_url = artist['imageUrl']
-        extension = image_url.rsplit('/')[-1].split('?')[0].rsplit('.')[-1]
-        image_name = str(uuid.uuid4()) + '.' + extension
-        image_path = _file_path(ARTIST_IMAGES, image_name)
-
-        r = requests.get(image_url, stream=True)
-
-        if r.status_code == 200:
-            r.raw.decode_content = True
-
-            with open(image_path, 'wb') as f:
-                shutil.copyfileobj(r.raw, f)
-
-            artist['imageName'] = image_name
-            logging.info('Image sucessfully Downloaded: ', image_name)
-        else:
-            logging.info('Image Couldn\'t be retreived')
+        _delete_associated_image(Artist, artist_id)
+        artist['imageName'] = _download_image(ARTIST_IMAGES, artist['imageUrl'])
 
     return response(format(update(Artist, artist_id, artist)))
 
@@ -215,11 +232,7 @@ def find_artist(r, body, artistName):
     return response()
 
 def get_artist_image(r, image_name):
-    try:
-        with open(_file_path(ARTIST_IMAGES, image_name), 'rb') as f:
-            return HttpResponse(f.read(), content_type='image/jpeg')
-    except IOError:
-        logging.error("Error while opening image: " + image_name)
+    return _get_image(ARTIST_IMAGES, image_name)
 
 
 # Albums
@@ -313,13 +326,19 @@ def get_playlist(r, playlist_id):
     return get(Playlist, playlist_id)
 
 def update_playlist(r, modifications, playlist_id):
-    tracks = modifications['tracks']
-    del modifications['tracks']
-    playlist = update(Playlist, playlist_id, modifications)
+    if 'imageUrl' in modifications:
+        _delete_associated_image(Playlist, playlist_id)
+        modifications['imageName'] = _download_image(PLAYLIST_IMAGES, modifications['imageUrl'])
 
-    PlaylistTrack.objects.filter(playlist_id=playlist.id).delete()
-    for index, track in enumerate(tracks):
-        PlaylistTrack.objects.create(track_id=track, playlist_id=playlist_id, order=index)
+    if 'tracks' in modifications:
+        tracks = modifications['tracks']
+        del modifications['tracks']
+
+        PlaylistTrack.objects.filter(playlist_id=playlist_id).delete()
+        for index, track in enumerate(tracks):
+            PlaylistTrack.objects.create(track_id=track, playlist_id=playlist_id, order=index)
+
+    playlist = update(Playlist, playlist_id, modifications)
 
     return response(format(playlist))
 
@@ -331,6 +350,9 @@ def list_playlists(r):
 
 def find_playlist(r, body, playlist):
     return response()
+
+def get_playlist_image(r, image_name):
+    return _get_image(PLAYLIST_IMAGES, image_name)
 
 
 # Files
