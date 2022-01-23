@@ -19,7 +19,7 @@
 }
 
 #pageHeader > *, .input > * {
-  margin: 10px;
+  margin: 10px !important;
 }
 
 #pageTitle {
