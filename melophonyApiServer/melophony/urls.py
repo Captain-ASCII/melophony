@@ -37,6 +37,7 @@ urlpatterns = [
     path('artist', associate_methods(views.find_artist, post_method=views.create_artist), name='create_artist'),
     path('artist/<int:artist_id>', associate_methods(views.get_artist, views.update_artist, views.delete_artist)),
     path('artists', views.list_artists, name='list_artists'),
+    path('artist/image/<str:image_name>', associate_methods(views.get_artist_image), name='get_artist_image'),
 
     path('album', associate_methods(views.find_album, post_method=views.create_album), name='create_album'),
     path('album/<int:album_id>', associate_methods(views.get_album, views.update_album, views.delete_album)),

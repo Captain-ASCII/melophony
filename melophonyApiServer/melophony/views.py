@@ -2,7 +2,10 @@ import datetime
 import os
 import logging
 import jwt
+import requests
+import shutil
 import threading
+import uuid
 import youtube_dl
 
 from django.contrib.auth import authenticate
@@ -17,6 +20,9 @@ from .utils import model_to_dict
 
 
 logging.basicConfig(level=logging.INFO)
+
+TRACKS = 'tracks'
+ARTIST_IMAGES = 'artist_images'
 
 class Message:
     SUCCESS = "Success"
@@ -36,8 +42,9 @@ class Status:
 FILES_DIR = os.path.join(os.path.dirname(__file__), "files")
 
 
-def _file_path(name):
-    return os.path.join(FILES_DIR, name + '.m4a')
+def _file_path(directory, name, extension=None):
+    suffix = '.' + extension if extension is not None else ''
+    return os.path.join(FILES_DIR, directory, name + suffix)
 
 
 def format(data, filters=None, foreign_keys=[], foreign_filters={}):
@@ -67,7 +74,7 @@ def act(action):
     try:
         return action()
     except Exception as e:
-        print(str(e))
+        logging.error(str(e))
         return None
 
 
@@ -111,10 +118,10 @@ def set_many_to_many(relation_array, objects):
 
 # Files
 
-def _download_file(video_id):
+def _download_yt_file(video_id):
     def download(video_id):
         ydl_opts = {
-            'outtmpl': _file_path(video_id),
+            'outtmpl': _file_path(TRACKS, video_id, 'm4a'),
             'format': 'bestaudio/best',
         }
 
@@ -145,7 +152,6 @@ def create_user(r, body):
         return response(status=Status.BAD_REQUEST, message='Something bad happened during registration, try again')
 
 def login(r, body):
-    print(body)
     user = authenticate(username=body['email'], password=body['password'])
     if user is not None:
         expiration_date = int((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())
@@ -174,6 +180,29 @@ def get_artist(r, artist_id):
     return get(Artist, artist_id)
 
 def update_artist(r, artist, artist_id):
+    if 'imageUrl' in artist:
+        db_artist = Artist.objects.get(pk=artist_id)
+        if db_artist.imageName is not None and os.path.isfile(db_artist.imageName):
+            os.remove(db_artist.imageName)
+
+        image_url = artist['imageUrl']
+        extension = image_url.rsplit('/')[-1].split('?')[0].rsplit('.')[-1]
+        image_name = str(uuid.uuid4()) + '.' + extension
+        image_path = _file_path(ARTIST_IMAGES, image_name)
+
+        r = requests.get(image_url, stream=True)
+
+        if r.status_code == 200:
+            r.raw.decode_content = True
+
+            with open(image_path, 'wb') as f:
+                shutil.copyfileobj(r.raw, f)
+
+            artist['imageName'] = image_name
+            logging.info('Image sucessfully Downloaded: ', image_name)
+        else:
+            logging.info('Image Couldn\'t be retreived')
+
     return response(format(update(Artist, artist_id, artist)))
 
 def delete_artist(r, artist_id):
@@ -184,6 +213,13 @@ def list_artists(r):
 
 def find_artist(r, body, artistName):
     return response()
+
+def get_artist_image(r, image_name):
+    try:
+        with open(_file_path(ARTIST_IMAGES, image_name), 'rb') as f:
+            return HttpResponse(f.read(), content_type='image/jpeg')
+    except IOError:
+        logging.error("Error while opening image: " + image_name)
 
 
 # Albums
@@ -219,10 +255,10 @@ def create_track(r, track):
     video_id, title, duration = _get_track_info(track['videoId'])
     if video_id is not None:
         file = _create_file({'videoId': video_id})
-        if os.path.exists(_file_path(video_id)):
+        if os.path.exists(_file_path(TRACKS, video_id, 'm4a')):
             logging.info('File already downloaded')
         else:
-            _download_file(video_id)
+            _download_yt_file(video_id)
 
         return response(format(create(Track, {
             'title': title,
@@ -300,7 +336,7 @@ def find_playlist(r, body, playlist):
 # Files
 
 def play_file(r, file_name):
-    file_path = _file_path(file_name)
+    file_path = _file_path(TRACKS, file_name, 'm4a')
     f = open(file_path, "rb")
     response = HttpResponse()
     response.write(f.read())

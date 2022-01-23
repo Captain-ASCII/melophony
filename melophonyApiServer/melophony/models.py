@@ -9,6 +9,8 @@ class Album(models.Model):
 
 class Artist(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
+    imageUrl = models.CharField(max_length=512, null=True)
+    imageName = models.CharField(max_length=128, null=True)
 
     def __str__(self):
         return f'{self.name} ({self.id})'
