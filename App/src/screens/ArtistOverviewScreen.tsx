@@ -19,36 +19,42 @@ const ArtistOverviewScreen = (): JSX.Element => {
     const artist = selectArtist(parseInt(id))
     const tracks = selectTracksOfArtist(parseInt(id))
 
-    const [background, setBackground] = useState({})
+    if (artist) {
+      const [background, setBackground] = useState({})
 
-    useEffect(() => {
-      setBackground(artist.getImageName() !== null
-        ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
-        : { backgroundColor: ColorUtils.getRandomColor() }
-      )
-    }, [])
+      useEffect(() => {
+        setBackground(artist.getImageName() !== null
+          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
+          : { backgroundColor: ColorUtils.getRandomColor() }
+        )
+      }, [])
 
-    return (
-      <div id="artistOverviewScreen" className="screen" >
-        <CloseButton additionalClass="floating mini top" />
-        <div id="artistScreenHeader" style={background}  >
-          <h1>{artist.getName()}</h1>
-        </div>
-
-        <div id="titlesHeader" >
-          <h2>Titres</h2>
-          <div className="displayActions">
-            <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="edit" title="Edit artist data" /></Link>
+      return (
+        <div id="artistOverviewScreen" className="screen" >
+          <CloseButton additionalClass="floating mini top" />
+          <div id="artistScreenHeader" style={background}  >
+            <h1>{artist.getName()}</h1>
           </div>
-        </div>
-        <div className="delimiter" />
 
-        <TrackList tracks={tracks} displayType="itemList" className="artistTrackList" />
-      </div>
-    )
+          <div id="titlesHeader" >
+            <h2>Titres</h2>
+            <div className="displayActions">
+              <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="edit" title="Edit artist data" /></Link>
+            </div>
+          </div>
+          <div className="delimiter" />
+
+          <TrackList tracks={tracks} displayType="itemList" className="artistTrackList" />
+        </div>
+      )
+    }
   }
 
-  return <div>Artist not found</div>
+  return (
+    <div className="screen uniqueCentered" >
+      <h2>Artist not found</h2>
+    </div>
+  )
 }
 
 export default ArtistOverviewScreen

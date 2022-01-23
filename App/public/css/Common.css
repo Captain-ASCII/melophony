@@ -209,6 +209,12 @@ p, h1, h2, h3, h4, h5, h6 {
   flex: 1;
 }
 
+.uniqueCentered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .trackContainer {
   flex-grow: 1;
   flex-basis: 150px;
