@@ -139,7 +139,7 @@ export default class Track {
 
   public getArtist(): Artist {
     if (this.artists.length == 0) {
-      return new Artist(-1, "Unknown")
+      return Artist.default()
     }
     return this.artists[0]
   }
