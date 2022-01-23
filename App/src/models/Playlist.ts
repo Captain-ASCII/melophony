@@ -6,22 +6,32 @@ export default class Playlist {
   private id: number
   private name: string
   private tracks: Array<Track>
+  private imageUrl: string
+  private imageName: string
 
-  public constructor(id: number, name: string, tracks: Array<Track>) {
+  public constructor(id: number, name: string, tracks: Array<Track>, imageUrl: string, imageName: string) {
     this.id = id
     this.name = name
     this.tracks = tracks
+    this.imageUrl = imageUrl
+    this.imageName = imageName
+  }
+
+  public static default() {
+    return new Playlist(-1, '', [], '', '')
   }
 
   public static fromObject(o: any): Playlist {
-    return new Playlist(o.id, o.name, o.tracks.map((track: any) => Track.fromObject(track)))
+    return new Playlist(o.id, o.name, o.tracks.map((track: any) => Track.fromObject(track)), o.imageUrl, o.imageName)
   }
 
   public clone(p: Playlist = this): Playlist {
     return new Playlist(
       p.id,
       p.name,
-      p.tracks
+      p.tracks,
+      p.imageUrl,
+      p.imageName
     )
   }
 
@@ -43,6 +53,12 @@ export default class Playlist {
     return clone
   }
 
+  public withImageUrl(url: string): Playlist {
+    const clone = this.clone()
+    clone.imageUrl = url
+    return clone
+  }
+
   public getId(): number {
     return this.id
   }
@@ -53,5 +69,13 @@ export default class Playlist {
 
   public getTracks(): Array<Track> {
     return this.tracks
+  }
+
+  public getImageUrl(): string {
+    return this.imageUrl
+  }
+
+  public getImageName(): string {
+    return this.imageName
   }
 }

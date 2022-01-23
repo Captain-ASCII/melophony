@@ -3,8 +3,12 @@
   display: flex;
 }
 
+.playlistCard {
+  align-items: flex-end !important;
+}
+
 .playlistInfo {
-  margin: 10px;
+  margin: 0 10px 45px;
 }
 
 .playlistTrackOperator > * {

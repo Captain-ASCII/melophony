@@ -1,11 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import JWT from 'jwt-client'
 
 import Playlist from '@models/Playlist'
 import PlaylistManager from '@models/PlaylistManager'
 
-
+import { selectConfiguration } from '@selectors/Configuration'
 import { selectPlaylistManager } from '@selectors/App'
 import { selectPlaylists } from '@selectors/Playlist'
 
@@ -16,15 +17,19 @@ import { setPlaylistManager } from '@actions/App'
 import IconButton from '@components/IconButton'
 
 
-const PlaylistCard = ({ playlist, playlistManager, index }: { playlist: Playlist; playlistManager: PlaylistManager; index: number }): JSX.Element => {
+const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: Playlist; playlistManager: PlaylistManager; serverAddress: string }): JSX.Element => {
   const dispatch = useDispatch()
 
   const runPlaylist = () => {
     dispatch(setPlaylistManager(playlistManager.withQueue(playlist.getTracks()).next()))
   }
 
+  const imageBackground = playlist.getImageName() != null
+    ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${serverAddress}/playlist/image/${playlist.getImageName()}?jwt=${JWT.get()})`}
+    : {}
+
   return (
-    <div className="playlistCard" >
+    <div className="playlistCard" style={imageBackground} >
       <div className="playlistInfo">
         <h5>{playlist.getName()}</h5>
         <p>{playlist.getTracks().length} tracks</p>
@@ -39,6 +44,7 @@ const PlaylistCard = ({ playlist, playlistManager, index }: { playlist: Playlist
 
 const PlaylistsScreen = (): JSX.Element => {
 
+  const configuration = selectConfiguration()
   const playlistManager = selectPlaylistManager()
   const playlists = selectPlaylists()
 
@@ -48,7 +54,14 @@ const PlaylistsScreen = (): JSX.Element => {
         <h2 id="pageTitle">Playlists</h2>
       </div>
       <div className="itemBlocks">
-        {playlists.map((playlist, index) => <PlaylistCard key={index} playlist={playlist} playlistManager={playlistManager} index={index} />)}
+        {
+          playlists.map((playlist, index) => {
+            return (
+              <PlaylistCard key={index} playlist={playlist} playlistManager={playlistManager}
+                serverAddress={configuration.getServerAddress()} />
+            )
+          })
+        }
       </div>
       <Link to={'/playlist/create'} ><IconButton className="floating" icon="plus" /></Link>
     </div>

@@ -1,9 +1,4 @@
 
-.artistListItem {
-  background-size: cover;
-  background-position: center;
-}
-
 .artistListItem > .link {
   flex: 1;
   align-self: stretch;
@@ -15,8 +10,6 @@
 
 
 /* Artist screen */
-
-#artistScreen {}
 
 #artistScreenHeader {
   height: 500px;

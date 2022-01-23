@@ -24,6 +24,7 @@ import CheckableItemList from '@components/CheckableItemList'
 import CloseButton from '@components/CloseButton'
 import Overlay from '@components/Overlay'
 import TextInput from '@components/TextInput'
+import ImageSearcher from '@components/ImageSearcher'
 
 
 const filteredTracks = (tracks: Array<Track>, filter: string): Array<Track> => tracks.filter((track: Track) =>
@@ -72,7 +73,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
   const [overlayVisible, setOverlay] = useState(false)
   const [visibleTracks, setVisibleTracks] = useState(tracks)
   const [selectedTracks, setSelectedTracks] = useState([])
-  const basePlaylist = location.pathname === '/playlist/create' ? new Playlist(-1, '', []) : selectPlaylist(parseInt(id))
+  const basePlaylist = location.pathname === '/playlist/create' ? Playlist.default() : selectPlaylist(parseInt(id))
   const [playlist, setPlaylist] = useState(basePlaylist)
 
   const handlePlaylistTitleChange = useCallback((title: string) => setPlaylist(playlist.withName(title)), [playlist, setPlaylist])
@@ -92,7 +93,11 @@ const PlaylistModificationScreen = (): JSX.Element => {
 
   const savePlaylist = useCallback(() => {
     const id = playlist.getId();
-    const modifications = { name: playlist.getName(), tracks: playlist.getTracks().map(t => t.getId()) }
+    const modifications = {
+      name: playlist.getName(),
+      tracks: playlist.getTracks().map(t => t.getId()),
+      imageUrl: playlist.getImageUrl(),
+    }
     if (id === -1) {
       apiManager.post('/playlist', modifications).then(([code, data]) => {
         if (code === 201) {
@@ -100,8 +105,9 @@ const PlaylistModificationScreen = (): JSX.Element => {
         }
       })
     } else {
-      apiManager.put(`/playlist/${id}`, modifications)
-      dispatch(setPlaylistInGlobalState(playlist))
+      apiManager.put(`/playlist/${id}`, modifications).then(([code, data]) => {
+        dispatch(setPlaylistInGlobalState(Playlist.fromObject(data)))
+      })
     }
     history.goBack()
   }, [apiManager, playlist])
@@ -116,6 +122,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
 
   const onTracksFilter = useCallback((filter: string) => setVisibleTracks(filteredTracks(tracks, filter)), [])
   const onTracksSelection = useCallback((tracks: Array<Track>) => setSelectedTracks(tracks), [])
+  const onImageSelected = useCallback((url: string) => setPlaylist(playlist.withImageUrl(url)), [playlist])
 
   const renderTrack = useCallback((track: Track) => {
     return (
@@ -152,6 +159,10 @@ const PlaylistModificationScreen = (): JSX.Element => {
             <Button title="Add" icon="plus" className="raised" onClick={addTracks} />
           </div>
         </Overlay>
+      </div>
+      <div className="input">
+        <i className="fa fa-image fa-2x icon" />
+        <ImageSearcher initialQuery={playlist.getName()} onSelect={onImageSelected} />
       </div>
       <div id="postActions" >
         { id && <Button icon="trash" className="raised alert" onClick={deletePlaylist} title="Delete" /> }
