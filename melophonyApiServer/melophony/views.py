@@ -68,7 +68,7 @@ def _download_image(directory, image_url):
         with open(image_path, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
-        logging.info('Image sucessfully Downloaded: ', image_name)
+        logging.info('Image sucessfully Downloaded: %s', image_name)
         return image_name
     else:
         logging.info('Image Couldn\'t be retreived')
@@ -316,11 +316,17 @@ def find_track(r, body, track):
 # Playlists
 
 def create_playlist(r, provided_playlist):
-    playlist = Playlist.objects.create(user=r.user, name=provided_playlist['name'])
-    for index, track in enumerate(provided_playlist['tracks']):
+    if 'imageUrl' in provided_playlist:
+        provided_playlist['imageName'] = _download_image(PLAYLIST_IMAGES, provided_playlist['imageUrl'])
+
+    tracks = provided_playlist['tracks']
+    del provided_playlist['tracks']
+
+    playlist = Playlist.objects.create(**provided_playlist, user=r.user)
+    for index, track in enumerate(tracks):
         PlaylistTrack.objects.create(track_id=track, playlist=playlist, order=index)
 
-    return response(format(playlist), message=Message.SUCCESS, status=Status.CREATED)
+    return response(format(playlist, foreign_keys=['tracks', 'artists', 'file']), message=Message.SUCCESS, status=Status.CREATED)
 
 def get_playlist(r, playlist_id):
     return get(Playlist, playlist_id)
