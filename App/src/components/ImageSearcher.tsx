@@ -57,7 +57,7 @@ const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSel
   const chooseImage = useCallback((url, index) => {
     onSelect(url)
     setSelected(index)
-  }, [])
+  }, [onSelect])
 
   return (
     <div className="imageSearchContainer" >
