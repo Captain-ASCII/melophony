@@ -37,6 +37,10 @@
   --disabled-color: #666;
 }*/
 
+.focus {
+  border: 2px solid white !important;
+}
+
 h1 {
   font-size: 36px;
 }
@@ -166,6 +170,7 @@ p, h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
 }
 
 .menuLink > .button {
@@ -252,10 +257,6 @@ p, h1, h2, h3, h4, h5, h6 {
   align-items: center;
   width: 36px;
   height: 36px;
-}
-
-.artistName {
-  width: 20%;
 }
 
 .duration {

@@ -1,13 +1,17 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import JWT from 'jwt-client'
 
 import { selectArtists } from '@selectors/Artist'
 
+import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
+
 import TextInput from '@components/TextInput'
 import IconButton from '@components/IconButton'
 
 const ArtistsScreen = (): JSX.Element => {
+  const ref = useRef(null)
+
   const artists = selectArtists()
   const [ filter, setFilter ] = useState('')
 
@@ -19,11 +23,9 @@ const ArtistsScreen = (): JSX.Element => {
       ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
       : {}
     return (
-      <div className="artistListItem" key={artist.getId()} style={imageBackground} >
-        <Link to={`/artist/${artist.getId()}`} className="link" >
-          <div className="name">
-            <h5>{ artist.getName() }</h5>
-          </div>
+      <div id={KeyboardManager.getId(artist)} className="artistListItem" key={artist.getId()} style={imageBackground} >
+        <Link id={KeyboardManager.getClickId(artist)} to={`/artist/${artist.getId()}`} className="link" >
+          <h5 className="artistName">{ artist.getName() }</h5>
         </Link>
         <div className="artistActions">
           <Link to={`/modify/artist/${artist.getId()}`}><IconButton className="floating mini" icon="pen" /></Link>
@@ -31,6 +33,16 @@ const ArtistsScreen = (): JSX.Element => {
       </div>
     )
   })
+
+  useEffect(() => {
+    const scroll = sessionStorage.getItem('artistsScroll')
+    if (scroll) {
+      ref.current.scrollTo({top: scroll})
+    }
+    return () => sessionStorage.setItem('artistsScroll', ref.current.scrollTop)
+  }, [])
+
+  KeyboardManager.addMainNodes(artists, {ref, redirectTo: AppIds.NO_OPERATION, withDifferentClickable: true}, 220)
 
   return (
     <div id="artistScreen" className="screen" >
@@ -41,7 +53,7 @@ const ArtistsScreen = (): JSX.Element => {
         </div>
       </div>
       <div className="delimiter" />
-      <div className="itemBlocks">{ artistsComponents }</div>
+      <div ref={ref} className="itemBlocks">{ artistsComponents }</div>
       <Link to={'/artist/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )

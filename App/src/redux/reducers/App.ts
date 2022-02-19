@@ -1,9 +1,9 @@
 
-import { AppAction, SET_PLAYLIST_MANAGER, SET_USER, SET_MEDIA_MANAGER, SET_API_MANAGER } from '@actions/App'
+import { AppAction, SET_PLAYLIST_MANAGER, SET_USER, SET_MEDIA_MANAGER, SET_API_MANAGER, SET_KEYBOARD_MANAGER } from '@actions/App'
 
 import AppStore from '@models/AppStore'
 
-const INITIAL = new AppStore(null, null, null, null)
+const INITIAL = new AppStore(null, null, null, null, null)
 
 const app = (state = INITIAL, action: AppAction): AppStore => {
   switch (action.type) {
@@ -15,6 +15,8 @@ const app = (state = INITIAL, action: AppAction): AppStore => {
       return state.withMediaManager(action.mediaManager)
     case SET_API_MANAGER:
       return state.withApiManager(action.apiManager)
+    case SET_KEYBOARD_MANAGER:
+      return state.withKeyboardManager(action.keyboardManager)
     default:
       return state
   }

@@ -15,14 +15,14 @@
   align-items: center;
 }
 
-#itemList {
+.itemList {
   flex: 1;
   align-self: stretch;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 
-#itemList > div {
+.itemList > div {
   width: 100%;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -34,16 +34,16 @@
   border-radius: 3px;
 }
 
-#itemList > div:hover {
+.itemList > div:hover {
   background-color: var(--main-hover-bg);
 }
 
-#itemList .stretchBox {
+.itemList .stretchBox {
   flex: 1;
   display: flex;
 }
 
-#itemList .title {
+.itemList .title {
   flex: 1;
 }
 
@@ -58,7 +58,7 @@
 
 
 
-#itemList > div > * {
+.itemList > div > * {
   text-overflow: ellipsis;
   display: flex;
   align-items: center;
@@ -66,7 +66,6 @@
 
 
 .itemBlocks {
-  flex: 1;
   display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -75,7 +74,7 @@
   padding-right: 10px;
 }
 
-.itemBlocks > div {
+.itemBlocks > * {
   display: flex;
   align-items: center;
   position: relative;

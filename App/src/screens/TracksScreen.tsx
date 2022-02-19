@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
 import MediaUtils from '@utils/MediaUtils'
+import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 
 import Track from '@models/Track'
 
@@ -102,6 +103,8 @@ const TracksScreen = (): JSX.Element => {
     setFilter(t)
   }, [ setFilter ])
 
+  KeyboardManager.addMainNodes(tracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, withDifferentClickable: true})
+
   return (
     <div id="trackScreen" className="screen" >
       <div id="contentHeader">
@@ -143,9 +146,7 @@ const TracksScreen = (): JSX.Element => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList tracks={_sort(filteredTracks(tracks, filter), configuration.getSortOrder(), configuration.getSortType())}
-        displayType={configuration.getDisplayType()}
-      />
+      <TrackList tracks={_sort(filteredTracks(tracks, filter), configuration.getSortOrder(), configuration.getSortType())} className="itemList" />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )

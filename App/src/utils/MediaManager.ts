@@ -7,6 +7,8 @@ import Track from '@models/Track'
 
 import { setPlaylistManager } from '@actions/App'
 
+import { Keys } from '@utils/KeyboardManager'
+
 export default class MediaManager {
 
   static EXTRACT_DURATION = 2000
@@ -22,13 +24,13 @@ export default class MediaManager {
     this.isPlayingExtract = isPlayingExtract
     this.extractTimeout = null
 
-    const onKeyDown = (event: any): void => {
-      const tag = event.target.tagName.toLowerCase()
-      if (event.keyCode == 32 && tag != 'input' && tag != 'textarea') {
-        this.playPause()
+    document.addEventListener('keydown', (event: any): void => {
+      if (event.code === Keys.PAGE_UP) {
+        this.previous()
+      } else if (event.code === Keys.PAGE_DOWN) {
+        this.next()
       }
-    }
-    window.addEventListener('keydown', e => onKeyDown(e))
+    })
   }
 
   clone(): MediaManager {

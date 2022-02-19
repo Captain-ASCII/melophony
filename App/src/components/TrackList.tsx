@@ -11,6 +11,7 @@ import MediaUtils from '@utils/MediaUtils'
 import IconButton from '@components/IconButton'
 
 import useLongPress from '../hooks/LongPressHook'
+import KeyboardManager from '@utils/KeyboardManager'
 
 const formatDuration = (duration: number): string => {
   const minutes = '0' + Math.floor(duration / 60)
@@ -18,7 +19,7 @@ const formatDuration = (duration: number): string => {
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const RTrack = ({ track, displayType }: { track: Track; displayType: string }): JSX.Element => {
+const RTrack = ({ track }: { track: Track }): JSX.Element => {
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -47,13 +48,12 @@ const RTrack = ({ track, displayType }: { track: Track; displayType: string }): 
   }
 
   return (
-    <div className="itemInfo" onClick={startPlay} {...longPress} >
+    <div id={KeyboardManager.getClickId(track)} className="itemInfo" onClick={startPlay} {...longPress} >
       <div className="mainTrackInfo" >
         <p className="title" >{track.getTitle()}</p>
         { renderArtistName() }
       </div>
       <div className="optionalTrackInfo" >
-        {/* <div id={`${track.getFile().getVideoId()}Progress`} className={displayType == 'itemList' ? 'progressBar' : ''}  /> */}
         <p className="duration" >{formatDuration(track.getDuration())}</p>
         <div className="itemActions">
           <IconButton icon="plus-square" onClick={handleEnqueue} />
@@ -66,23 +66,19 @@ const RTrack = ({ track, displayType }: { track: Track; displayType: string }): 
 
 
 
-const TrackList = ({ tracks, displayType, className = '' }: { tracks: Array<Track>; displayType: string; className?: string }): JSX.Element => {
+const TrackList = ({ tracks, className = '' }: { tracks: Array<Track>; className?: string }): JSX.Element => {
   return (
-    <div id={displayType} className={className} >
+    <div className={className} >
       {
         tracks.map((track) => {
           const blockStyle = {}
 
-          if (displayType == 'itemBlocks') {
-            // blockStyle = { backgroundImage: `url(${track.imageSrc.uri})` }
-          }
-
           return (
-            <div className="trackListItem" key={track.getId()} >
+            <div id={KeyboardManager.getId(track)} className="trackListItem" key={track.getId()} >
               <div className="ratioContainer" >
                 <div className="blockBackground" style={blockStyle} />
                 <div className="stretchBox" >
-                  <RTrack track={track} displayType={displayType} />
+                  <RTrack track={track} />
                 </div>
               </div>
             </div>

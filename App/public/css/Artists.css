@@ -5,9 +5,12 @@
   display: flex;
   align-items: flex-end;
   padding: 15px 10px;
-  max-width: 80%;
 }
 
+.artistName {
+  margin: 0 10px 20px 10px;
+  max-width: 65%;
+}
 
 /* Artist screen */
 

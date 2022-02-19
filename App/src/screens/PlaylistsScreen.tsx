@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import JWT from 'jwt-client'
@@ -12,9 +12,9 @@ import { selectPlaylists } from '@selectors/Playlist'
 
 import { setPlaylistManager } from '@actions/App'
 
-// import Card from '@components/Card'
-// import ClickableTextInput from '@components/ClickableTextInput'
 import IconButton from '@components/IconButton'
+
+import KeyboardManager from '@utils/KeyboardManager'
 
 
 const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: Playlist; playlistManager: PlaylistManager; serverAddress: string }): JSX.Element => {
@@ -29,31 +29,33 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
     : {}
 
   return (
-    <div className="playlistCard" style={imageBackground} >
+    <div id={KeyboardManager.getId(playlist)} className="playlistCard" style={imageBackground} >
       <div className="playlistInfo">
         <h5>{playlist.getName()}</h5>
         <p>{playlist.getTracks().length} tracks</p>
       </div>
       <Link to={`/modify/playlist/${playlist.getId()}`} ><IconButton className="floating mini" icon="pen" /></Link>
-      <IconButton className="floating mini second" icon="play" onClick={runPlaylist} />
+      <IconButton id={KeyboardManager.getClickId(playlist)} className="floating mini second" icon="play" onClick={runPlaylist} />
     </div>
   )
 }
 
 
-
 const PlaylistsScreen = (): JSX.Element => {
+  const ref = useRef(null)
 
   const configuration = selectConfiguration()
   const playlistManager = selectPlaylistManager()
   const playlists = selectPlaylists()
+
+  KeyboardManager.addMainNodes(playlists, {ref, withDifferentClickable: true}, 220)
 
   return (
     <div id="playlistScreen" className="screen" >
       <div id="pageHeader">
         <h2 id="pageTitle">Playlists</h2>
       </div>
-      <div className="itemBlocks">
+      <div ref={ref} className="itemBlocks">
         {
           playlists.map((playlist, index) => {
             return (

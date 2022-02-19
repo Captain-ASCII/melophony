@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
@@ -15,11 +15,11 @@ import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TracksScreen from '@screens/TracksScreen'
 
 import MediaUtils from '@utils/MediaUtils'
+import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 
 import { setConfiguration } from '@actions/Configuration'
-import { selectApiManager } from '@selectors/App'
 import { selectConfiguration } from '@selectors/Configuration'
-import { selectPlaylistManager } from '@selectors/App'
+import { selectApiManager, selectPlaylistManager } from '@selectors/App'
 
 import Button from '@components/Button'
 import ConfirmOverlay from '@components/ConfirmOverlay'
@@ -31,17 +31,15 @@ import RSwitch, { SwitchState } from '@components/Switch'
 import UserDrawer from '@components/UserDrawer'
 
 
-const MenuLink = ({ title, path, icon }: { title: string; path: string; icon: string }): JSX.Element => {
+const MenuLink = ({ id, title, path, icon }: { id: string; title: string; path: string; icon: string }): JSX.Element => {
   return (
     <Link to={path} >
-      <div className="menuLink buttonTitle hideWhenClosed">
+      <div id={id} className="menuLink buttonTitle hideWhenClosed">
         <Button icon={icon} title={title} onClick={() => {}} />
       </div>
     </Link>
   )
 }
-
-
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -60,16 +58,17 @@ const App = (): JSX.Element => {
     dispatch(setConfiguration(configuration.withServerAddress(value)))
   }, [ dispatch, configuration ])
 
+  KeyboardManager.addConstantNodes(AppIds.MENU, [AppIds.TRACKS_MENU, AppIds.PLAYLISTS_MENU, AppIds.ARTISTS_MENU], {top: AppIds.MELOPHONY, right: AppIds.MAIN_CONTENT})
+
   return(
     <Router>
       <div className="App">
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
             <UserDrawer />
-            <MenuLink path="/tracksharing" title="Music sharing" icon="share-alt" />
-            <MenuLink path="/tracks" title="Tracks" icon="music" />
-            <MenuLink path="/playlists" title="Playlists" icon="compact-disc" />
-            <MenuLink path="/artists" title="Artists" icon="user-friends" />
+            <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title="Tracks" icon="music" />
+            <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title="Playlists" icon="compact-disc" />
+            <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title="Artists" icon="user-friends" />
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
             </div>
@@ -97,7 +96,7 @@ const App = (): JSX.Element => {
         <div id="header">
           <div id="headerMenu" >
             <i id="menu" className="fa fa-bars fa-2x icon button" onClick={handleMenuSwitch} />
-            <Link to="/" >
+            <Link id={AppIds.MELOPHONY} to="/" >
               <div id="AppHeader">
                 <div className="logo" >
                   <img src="/public/img/melophony.png" style={{ height: '100%' }} />

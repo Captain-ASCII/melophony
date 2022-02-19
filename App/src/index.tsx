@@ -29,6 +29,7 @@ import { setTracks } from '@actions/Track'
 import { setPlaylists } from '@actions/Playlist'
 
 import ApiManager from '@utils/ApiManager'
+import KeyboardManager from '@utils/KeyboardManager'
 import MediaManager from '@utils/MediaManager'
 import TokenManager from '@utils/TokenManager'
 
@@ -50,6 +51,7 @@ const apiManager = new ApiManager(
 store.getState().app.apiManager = apiManager
 store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
+store.getState().app.keyboardManager = new KeyboardManager()
 
 async function getData(): Promise<void> {
 

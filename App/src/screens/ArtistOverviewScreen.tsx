@@ -4,6 +4,7 @@ import JWT from 'jwt-client'
 
 import StringUtils from '@utils/StringUtils'
 import ColorUtils from '@utils/ColorUtils'
+import KeyboardManager from '@utils/KeyboardManager'
 
 import { selectArtist } from '@selectors/Artist'
 import { selectTracksOfArtist } from '@selectors/Track'
@@ -29,6 +30,8 @@ const ArtistOverviewScreen = (): JSX.Element => {
         )
       }, [])
 
+      KeyboardManager.addMainNodes(tracks, {withDifferentClickable: true, scrollableContainerId: 'artistOverviewScreen'})
+
       return (
         <div id="artistOverviewScreen" className="screen" >
           <CloseButton additionalClass="floating mini top" />
@@ -44,7 +47,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
           </div>
           <div className="delimiter" />
 
-          <TrackList tracks={tracks} displayType="itemList" className="artistTrackList" />
+          <TrackList tracks={tracks} className="artistTrackList itemList" />
         </div>
       )
     }
