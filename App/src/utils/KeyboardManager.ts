@@ -121,25 +121,21 @@ class ContainedNode extends Node {
 
   public up(context: Context): string {
     context[this.contextKey] = this.getId()
-    console.warn("Setting node to: " + context[this.contextKey])
     return super.up(context)
   }
 
   public down(context: Context): string {
     context[this.contextKey] = this.getId()
-    console.warn("Setting node to: " + context[this.contextKey])
     return super.down(context)
   }
 
   public left(context: Context): string {
     context[this.contextKey] = this.getId()
-    console.warn("Setting node to: " + context[this.contextKey])
     return super.left(context)
   }
 
   public right(context: Context): string {
     context[this.contextKey] = this.getId()
-    console.warn("Setting node to: " + context[this.contextKey])
     return super.right(context)
   }
 }
@@ -213,8 +209,6 @@ export default class KeyboardManager {
   private tryRedirect(node: Node, context: Context): Node {
     const redirection = node.redirect(context)
     if (redirection != null) {
-      console.warn("currently in: " + this.current.getId() + ' ' + node)
-      console.warn("redirect to: " + redirection)
       return this.goTo(redirection)
     }
     return node
@@ -237,7 +231,6 @@ export default class KeyboardManager {
       const currentElement = document.getElementById(this.current.getId())
 
       if (event.code === 'Enter') {
-        console.warn("Clicking on: " + this.current.getClickId())
         document.getElementById(this.current.getClickId()).click()
         this.current = this.tryRedirect(this.current, this.context)
         if (this.current.getRedirectionOnClick()) {
