@@ -32,8 +32,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
       const message = data.message ? data.message : "Error during login"
       setLoading(false)
       setErrorMessage(message)
-    } else if (data.token && JWT.validate(data.token)) {
-      JWT.keep(data.token)
+    } else if (apiManager.hasValidToken()) {
       getRequiredData()
     }
   }, [ getRequiredData ])

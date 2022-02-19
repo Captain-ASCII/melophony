@@ -115,6 +115,10 @@ export default class MelophonyApiClient extends ApiClient {
     return clone
   }
 
+  public hasValidToken(): boolean {
+    return this.tokenManager.hasValidToken()
+  }
+
   protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any]> {
     if (this.tokenManager != null) {
       if (this.tokenManager.getToken() != null) {

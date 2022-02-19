@@ -29,4 +29,8 @@ export default class TokenManager {
   public getToken(): string {
     return JWT.get()
   }
+
+  public hasValidToken(): boolean {
+    return JWT.validate(JWT.read(this.getToken()))
+  }
 }
