@@ -17,6 +17,7 @@ import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
 import IconButton from '@components/IconButton'
 import { Objects } from '@utils/Immutable'
+import { QueryParameters } from '@utils/ApiManager'
 
 const colourStyles: StylesConfig = {
   container: (styles: any) => ({ ...styles, flex: 1 }),
@@ -47,7 +48,7 @@ function getValidTime(time: number, track: Track): number {
 const TrackModificationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { id } = useParams()
+  const { id } = useParams<QueryParameters>()
 
   if (id) {
     const [ track, setCurrentTrack ]  = useState(selectTrack(parseInt(id)))

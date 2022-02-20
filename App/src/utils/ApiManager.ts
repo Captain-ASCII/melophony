@@ -19,6 +19,10 @@ interface QueryParams {
   [key: string]: string;
 }
 
+type QueryParameters = {
+  id: string;
+}
+
 export class ApiClient {
 
   protected serverUrl: string
@@ -136,3 +140,5 @@ export default class MelophonyApiClient extends ApiClient {
     })
   }
 }
+
+export { QueryParameters }

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
+import { QueryParameters } from '@utils/ApiManager'
 
 import Artist from '@models/Artist'
 import Event from '@models/Event'
@@ -22,7 +23,7 @@ import ImageSearcher from '@components/ImageSearcher'
 
 const ArtistModificationScreen = (): JSX.Element => {
   const history = useHistory()
-  const { id } = useParams()
+  const { id } = useParams<QueryParameters>()
 
   if (id) {
     const [ artist, setArtistState ] = useState(selectArtist(parseInt(id)))
