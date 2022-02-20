@@ -5,6 +5,7 @@ import { SortableContainer, SortableElement, SortableHandle } from 'react-sortab
 import { arrayMoveImmutable } from 'array-move';
 
 import { Arrays } from '@utils/Immutable'
+import { QueryParameters } from '@utils/ApiManager'
 
 import Playlist from '@models/Playlist'
 import Track from '@models/Track'
@@ -64,7 +65,7 @@ const TrackHandle = SortableHandle(() => <i className="fa fa-bars fa-2x"></i>)
 const PlaylistModificationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { id } = useParams()
+  const { id } = useParams<QueryParameters>()
   const location = useLocation()
 
   const apiManager = selectApiManager()

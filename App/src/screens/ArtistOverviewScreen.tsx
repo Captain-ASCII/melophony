@@ -5,6 +5,7 @@ import JWT from 'jwt-client'
 import StringUtils from '@utils/StringUtils'
 import ColorUtils from '@utils/ColorUtils'
 import KeyboardManager from '@utils/KeyboardManager'
+import { QueryParameters } from '@utils/ApiManager'
 
 import { selectArtist } from '@selectors/Artist'
 import { selectTracksOfArtist } from '@selectors/Track'
@@ -14,7 +15,7 @@ import TrackList from '@components/TrackList'
 import IconButton from '@components/IconButton'
 
 const ArtistOverviewScreen = (): JSX.Element => {
-  const { id } = useParams()
+  const { id } = useParams<QueryParameters>()
 
   if (id && StringUtils.isNumber(id)) {
     const artist = selectArtist(parseInt(id))
