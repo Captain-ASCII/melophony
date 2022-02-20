@@ -1,3 +1,4 @@
+import logging
 import json
 
 from django.http import Http404
@@ -5,6 +6,8 @@ from django.urls import path
 
 from . import views
 from .views import Status, response
+
+logging.basicConfig(level=logging.INFO)
 
 
 def associate_methods(get_method=None, put_method=None, delete_method=None, post_method=None):
@@ -21,6 +24,7 @@ def associate_methods(get_method=None, put_method=None, delete_method=None, post
             else:
                 raise Http404('No endpoint available for: {} {}'.format(request.method, request.path))
         except Exception as e:
+            logging.error('Error while processing request: ', e)
             return response(status=Status.ERROR, message='An error occured: {}'.format(e))
 
     return forward
