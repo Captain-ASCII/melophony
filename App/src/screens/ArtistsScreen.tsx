@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import JWT from 'jwt-client'
 
 import { selectArtists } from '@selectors/Artist'
+import { selectConfiguration } from '@selectors/Configuration'
 
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 
@@ -12,6 +13,7 @@ import IconButton from '@components/IconButton'
 const ArtistsScreen = (): JSX.Element => {
   const ref = useRef(null)
 
+  const configuration = selectConfiguration()
   const artists = selectArtists()
   const [ filter, setFilter ] = useState('')
 
@@ -20,7 +22,7 @@ const ArtistsScreen = (): JSX.Element => {
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
     const imageBackground = artist.getImageName() != null
-      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
+      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
       : {}
     return (
       <div id={KeyboardManager.getId(artist)} className="artistListItem" key={artist.getId()} style={imageBackground} >

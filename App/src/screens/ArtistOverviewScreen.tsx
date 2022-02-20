@@ -9,6 +9,7 @@ import { QueryParameters } from '@utils/ApiManager'
 
 import { selectArtist } from '@selectors/Artist'
 import { selectTracksOfArtist } from '@selectors/Track'
+import { selectConfiguration } from '@selectors/Configuration'
 
 import CloseButton from '@components/CloseButton'
 import TrackList from '@components/TrackList'
@@ -20,13 +21,14 @@ const ArtistOverviewScreen = (): JSX.Element => {
   if (id && StringUtils.isNumber(id)) {
     const artist = selectArtist(parseInt(id))
     const tracks = selectTracksOfArtist(parseInt(id))
+    const configuration = selectConfiguration()
 
     if (artist) {
       const [background, setBackground] = useState({})
 
       useEffect(() => {
         setBackground(artist.getImageName() !== null
-          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(http://localhost:1804/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
+          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
           : { backgroundColor: ColorUtils.getRandomColor() }
         )
       }, [])
