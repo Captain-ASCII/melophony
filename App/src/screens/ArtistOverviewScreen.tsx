@@ -22,19 +22,20 @@ const ArtistOverviewScreen = (): JSX.Element => {
     const artist = selectArtist(parseInt(id))
     const tracks = selectTracksOfArtist(parseInt(id))
     const configuration = selectConfiguration()
+    const [background, setBackground] = useState({})
 
-    if (artist) {
-      const [background, setBackground] = useState({})
-
-      useEffect(() => {
+    useEffect(() => {
+      if (artist) {
         setBackground(artist.getImageName() !== null
           ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
           : { backgroundColor: ColorUtils.getRandomColor() }
         )
-      }, [])
+      }
+    }, [])
 
-      KeyboardManager.addMainNodes(tracks, {withDifferentClickable: true, scrollableContainerId: 'artistOverviewScreen'})
+    KeyboardManager.addMainNodes(tracks, {withDifferentClickable: true, scrollableContainerId: 'artistOverviewScreen'})
 
+    if (artist) {
       return (
         <div id="artistOverviewScreen" className="screen" >
           <CloseButton additionalClass="floating mini top" />
