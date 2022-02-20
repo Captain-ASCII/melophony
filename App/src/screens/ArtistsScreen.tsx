@@ -6,6 +6,7 @@ import { selectArtists } from '@selectors/Artist'
 import { selectConfiguration } from '@selectors/Configuration'
 
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
+import { getFromSession, bindToSession } from '@utils/SessionUtils'
 
 import TextInput from '@components/TextInput'
 import IconButton from '@components/IconButton'
@@ -15,9 +16,13 @@ const ArtistsScreen = (): JSX.Element => {
 
   const configuration = selectConfiguration()
   const artists = selectArtists()
-  const [ filter, setFilter ] = useState('')
+  const [ filter, setFilter ] = useState(getFromSession('artistsFilter'))
+  bindToSession('artistsFilter', filter)
 
-  const handleFilter = useCallback(value => setFilter(value), [])
+  const handleFilter = useCallback(value => {
+    setFilter(value)
+    sessionStorage.setItem('artistsFilter', value)
+  }, [])
 
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
@@ -36,13 +41,7 @@ const ArtistsScreen = (): JSX.Element => {
     )
   })
 
-  useEffect(() => {
-    const scroll = sessionStorage.getItem('artistsScroll')
-    if (scroll) {
-      ref.current.scrollTo({top: scroll})
-    }
-    return () => sessionStorage.setItem('artistsScroll', ref.current.scrollTop)
-  }, [])
+  bindToSession('artistsScroll', () => ref.current.scrollTop, (value) => ref.current.scrollTo({top: value}))
 
   KeyboardManager.addMainNodes(artists, {ref, redirectTo: AppIds.NO_OPERATION, withDifferentClickable: true}, 220)
 
@@ -51,7 +50,7 @@ const ArtistsScreen = (): JSX.Element => {
       <div id="contentHeader">
         <h1>Artistes</h1>
         <div className="searchbar">
-          <TextInput id="trackSearch" icon="search" onInput={handleFilter} />
+          <TextInput id="trackSearch" icon="search" initialValue={filter} onInput={handleFilter} />
         </div>
       </div>
       <div className="delimiter" />

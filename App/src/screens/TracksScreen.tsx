@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { Arrays } from '@utils/Immutable'
 import MediaUtils from '@utils/MediaUtils'
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
+import { bindToSession, getFromSession } from '@utils/SessionUtils'
 
 import Track from '@models/Track'
 
@@ -63,7 +64,8 @@ const TracksScreen = (): JSX.Element => {
   const tracks = selectTracks()
   const playlist = selectPlaylistManager()
 
-  const [ filter, setFilter ] = useState('')
+  const [ filter, setFilter ] = useState(getFromSession('tracksFilter'))
+  bindToSession('tracksFilter', filter)
 
   const changeTrackDisplay = useCallback(type => {
     dispatch(setConfiguration(configuration.withDisplayType(type)))
@@ -100,6 +102,7 @@ const TracksScreen = (): JSX.Element => {
 
   const handleFilterSet = useCallback((t: string) => {
     changeTopValue('itemValue', t !== '' ? '65px' : '0')
+    sessionStorage.setItem('tracksFilter', t)
     setFilter(t)
   }, [ setFilter ])
 
@@ -111,7 +114,7 @@ const TracksScreen = (): JSX.Element => {
         <h1>Titres</h1>
         <div id="toolBar">
           <div className="searchbar">
-            <TextInput id="trackSearch" icon="search" onInput={handleFilterSet} />
+            <TextInput id="trackSearch" icon="search" initialValue={filter} onInput={handleFilterSet} />
           </div>
           <div id="sortBar" >
             <CustomSelect onSelection={sort} icon="" placeholder="Order" >
