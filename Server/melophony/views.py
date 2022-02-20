@@ -68,7 +68,7 @@ def _download_image(directory, image_url):
         with open(image_path, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
-        logging.info('Image sucessfully Downloaded: %s', image_name)
+        logging.info('Image successfully Downloaded: %s', image_name)
         return image_name
     else:
         logging.info('Image Couldn\'t be retreived')
@@ -213,7 +213,7 @@ def create_artist(r, artist):
     return response(format(create(Artist, artist)), message=Message.CREATED, status=Status.CREATED)
 
 def get_artist(r, artist_id):
-    return get(Artist, artist_id)
+    return response(get(Artist, artist_id))
 
 def update_artist(r, artist, artist_id):
     if 'imageUrl' in artist:
@@ -241,7 +241,7 @@ def create_album(r, album):
     return response(format(create(Album, album)), message=Message.CREATED, status=Status.CREATED)
 
 def get_album(r, album_id):
-    return get(Album, album_id)
+    return response(get(Album, album_id))
 
 def update_album(r, album, album_id):
     return response(format(update(Album, album_id, album)))
@@ -288,7 +288,7 @@ def create_track(r, track):
         return response(status=Status.ERROR, message='Could not get track information')
 
 def get_track(r, track_id):
-    return get(Track, track_id, recursive=True)
+    return response(get(Track, track_id, recursive=True))
 
 def update_track(r, changes, track_id):
     if 'artists' in changes:
@@ -329,7 +329,7 @@ def create_playlist(r, provided_playlist):
     return response(format(playlist, foreign_keys=['tracks', 'artists', 'file']), message=Message.SUCCESS, status=Status.CREATED)
 
 def get_playlist(r, playlist_id):
-    return get(Playlist, playlist_id)
+    return response(get(Playlist, playlist_id))
 
 def update_playlist(r, modifications, playlist_id):
     if 'imageUrl' in modifications:
