@@ -2,6 +2,7 @@ const Express = require('express')
 const fs = require('fs')
 const https = require('https')
 const path = require('path')
+const expressStaticGzip = require('express-static-gzip')
 
 const PORT = 443
 
@@ -12,7 +13,13 @@ app.use(function(request, _, next) {
   next()
 })
 
-app.use('/public', Express.static('public'))
+app.use('/public', expressStaticGzip(path.join(__dirname, 'public'), {
+  enableBrotli: true,
+  orderPreference: ['br', 'gz'],
+  setHeaders: function (res, path) {
+    res.setHeader("Cache-Control", "public, max-age=31536000");
+  }
+}))
 
 app.get('/*', function (_, res) {
   res.sendFile(path.join(__dirname, 'public/index.html'), function (err) {

@@ -12,8 +12,11 @@ build
 dist
 nohup.out
 bundle.js
-current_melophony_pid.txt
+bundle.js.gz
+bundle.js.br
 bundle.js.map
+bundle.js.LICENSE.txt
+current_melophony_pid.txt
 .vscode
 venv
 db.sqlite3
