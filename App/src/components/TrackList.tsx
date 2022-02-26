@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
+import { FixedSizeList as List } from 'react-window'
 
 import { selectPlaylistManager } from '@selectors/App'
 import { setPlaylistManager } from '@actions/App'
@@ -19,7 +20,7 @@ const formatDuration = (duration: number): string => {
   return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
 }
 
-const RTrack = ({ track }: { track: Track }): JSX.Element => {
+const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => {
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -48,7 +49,7 @@ const RTrack = ({ track }: { track: Track }): JSX.Element => {
   }
 
   return (
-    <div id={KeyboardManager.getClickId(track)} className="itemInfo" onClick={startPlay} {...longPress} >
+    <div id={KeyboardManager.getId(track)} className="itemInfo" onClick={startPlay} {...longPress} style={style} >
       <div className="mainTrackInfo" >
         <p className="title" >{track.getTitle()}</p>
         { renderArtistName() }
@@ -67,25 +68,13 @@ const RTrack = ({ track }: { track: Track }): JSX.Element => {
 
 
 const TrackList = ({ tracks, className = '' }: { tracks: Array<Track>; className?: string }): JSX.Element => {
-  return (
-    <div className={className} >
-      {
-        tracks.map((track) => {
-          const blockStyle = {}
 
-          return (
-            <div id={KeyboardManager.getId(track)} className="trackListItem" key={track.getId()} >
-              <div className="ratioContainer" >
-                <div className="blockBackground" style={blockStyle} />
-                <div className="stretchBox" >
-                  <RTrack track={track} />
-                </div>
-              </div>
-            </div>
-          )
-        })
-      }
-    </div>
+  const renderer = ({index, style, data}: {index: number, style: any, data: Array<Track>}) => {
+    return <RTrack style={style} track={data[index]} />
+  }
+
+  return (
+    <List className={className} height={1000} itemCount={tracks.length} itemSize={36} width={'100%'} itemData={tracks} >{renderer}</List>
   )
 }
 

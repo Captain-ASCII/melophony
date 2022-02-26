@@ -3,7 +3,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 10px;
 }
 
 .itemInfo {
@@ -12,10 +11,12 @@
 
 .mainTrackInfo {
   flex: 3;
+  margin: 0 10px;
 }
 
 .optionalTrackInfo {
   flex: 1;
+  margin: 0 10px;
 }
 
 .itemActions {

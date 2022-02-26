@@ -106,7 +106,7 @@ const TracksScreen = (): JSX.Element => {
     setFilter(t)
   }, [ setFilter ])
 
-  KeyboardManager.addMainNodes(tracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, withDifferentClickable: true})
+  KeyboardManager.addMainNodes(tracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, containerLevel: 2})
 
   return (
     <div id="trackScreen" className="screen" >

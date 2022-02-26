@@ -33,7 +33,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
       }
     }, [])
 
-    KeyboardManager.addMainNodes(tracks, {withDifferentClickable: true, scrollableContainerId: 'artistOverviewScreen'})
+    KeyboardManager.addMainNodes(tracks, {withDifferentClickable: true, containerLevel: 3})
 
     if (artist) {
       return (

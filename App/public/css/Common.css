@@ -128,7 +128,7 @@ a {
 }
 
 p, h1, h2, h3, h4, h5, h6 {
-  font-family: "MontSerrat";
+  font-family: "MontSerrat", "Ubuntu", sans-serif;
   align-items: center;
   margin: 0;
 }
@@ -239,7 +239,6 @@ p, h1, h2, h3, h4, h5, h6 {
 .trackInfo {
   padding: 3px;
   font-size: 12px;
-  font-family: "MontSerrat";
   color: var(--main-color);
   position: absolute;
   bottom: 0;

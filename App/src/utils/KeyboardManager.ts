@@ -17,7 +17,7 @@ interface Options {
   right?: string;
   withDifferentClickable?: boolean;
   redirectTo?: string;
-  scrollableContainerId?: string;
+  containerLevel?: number;
   ref?: React.MutableRefObject<any>;
 }
 
@@ -34,10 +34,10 @@ class Node {
   protected rightId: string
   private redirectionOnClick: string
   private clickId: string
-  private scrollableContainerId: string
+  private containerLevel: number
 
   public constructor(id: string, up: string, down: string, left: string, right: string,
-    redirectionOnClick: string = null, clickId: string = null, scrollableContainerId: string = null) {
+    redirectionOnClick: string = null, clickId: string = null, containerLevel: number = 1) {
 
     this.id = id
     this.upId = up
@@ -46,7 +46,7 @@ class Node {
     this.rightId = right
     this.redirectionOnClick = redirectionOnClick
     this.clickId = clickId
-    this.scrollableContainerId = scrollableContainerId
+    this.containerLevel = containerLevel
   }
 
   public getId(): string {
@@ -60,8 +60,8 @@ class Node {
     return this.id
   }
 
-  public getScrollableContainerId(): string {
-    return this.scrollableContainerId
+  public getContainerLevel(): number {
+    return this.containerLevel
   }
 
   public up(context: Context): string {
@@ -114,8 +114,8 @@ class ContainedNode extends Node {
   private contextKey: string
 
   public constructor(id: string, up: string, down: string, left: string, right: string,
-    contextKey: string, redirectTo: string, clickId: string = null, scrollableContainerId: string = null) {
-    super(id, up, down, left, right, redirectTo, clickId, scrollableContainerId)
+    contextKey: string, redirectTo: string, clickId: string = null, containerLevel: number = null) {
+    super(id, up, down, left, right, redirectTo, clickId, containerLevel)
     this.contextKey = contextKey
   }
 
@@ -151,7 +151,7 @@ export default class KeyboardManager {
 
   public static CLICK_SUFFIX = "_clickable"
   public static LAST_FOCUSED = 'lastFocused'
-  public static OFFSET = 400
+  public static OFFSET = 150
   public static SMOOTH_DURATION = 150
   public static MOUNT_DELAY = 200
 
@@ -177,7 +177,7 @@ export default class KeyboardManager {
   }
 
   public withNodes(containerId: string, nodes: Array<string>, nbColumns: number = 1,
-    { top, bottom, left, right, withDifferentClickable, redirectTo, scrollableContainerId }: Options = {}): KeyboardManager {
+    { top, bottom, left, right, withDifferentClickable, redirectTo, containerLevel }: Options = {}): KeyboardManager {
 
     for (let i = 0; i < nodes.length; i++) {
       const isFirstRow = i < nbColumns
@@ -191,7 +191,10 @@ export default class KeyboardManager {
       const rightNode = isRightColumn ? (right ? right : nodes[i]) : nodes[Math.min(i + 1, nodes.length)]
       const clickId = withDifferentClickable ? KeyboardManager.getClickIdFromId(nodes[i]) : null
 
-      this.nodes.set(nodes[i], new ContainedNode(nodes[i], upNode, downNode, leftNode, rightNode, containerId, redirectTo, clickId, scrollableContainerId))
+      this.nodes.set(nodes[i], new ContainedNode(
+        nodes[i], upNode, downNode, leftNode, rightNode,
+        containerId, redirectTo, clickId, containerLevel
+      ))
     }
     delete this.context[containerId]
     this.nodes.set(containerId, new ContainerNode(containerId, nodes[0]))
@@ -270,8 +273,10 @@ export default class KeyboardManager {
   private scrollAndFocus() {
     const newElement = document.getElementById(this.current.getId())
     if (newElement) {
-      const scrollableContainerId = this.current.getScrollableContainerId()
-      const container = scrollableContainerId ? document.getElementById(scrollableContainerId) : newElement.parentElement
+      let container = newElement
+      for (let i = 0; i < this.current.getContainerLevel(); i++) {
+        container = container.parentElement
+      }
 
       const moveTime = this.timestamp()
       const behavior = moveTime - this.lastMove > KeyboardManager.SMOOTH_DURATION ? 'smooth' : 'auto'
