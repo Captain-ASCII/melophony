@@ -3,3 +3,4 @@ pyjwt
 youtube_dl
 gunicorn
 requests
+Pillow

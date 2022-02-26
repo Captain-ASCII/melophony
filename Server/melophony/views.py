@@ -9,6 +9,8 @@ import threading
 import uuid
 import youtube_dl
 
+from pathlib import Path
+from PIL import Image
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import models
@@ -56,8 +58,7 @@ def _delete_associated_image(o_type, object_id):
 
 
 def _download_image(directory, image_url):
-    extension = image_url.rsplit('/')[-1].split('?')[0].rsplit('.')[-1]
-    image_name = str(uuid.uuid4()) + '.' + extension
+    image_name = str(uuid.uuid4()) + '.tmp'
     image_path = _file_path(directory, image_name)
 
     r = requests.get(image_url, stream=True)
@@ -68,19 +69,39 @@ def _download_image(directory, image_url):
         with open(image_path, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
-        logging.info('Image successfully Downloaded: %s', image_name)
-        return image_name
+        logging.info('Image successfully Downloaded, convert to webp: %s', image_name)
+        return _convert_to_webp(image_path)
     else:
         logging.info('Image Couldn\'t be retreived')
         return None
 
 
+def _convert_to_webp(source_path):
+    source = Path(source_path)
+    try:
+        destination = source.with_suffix(".webp")
+        image = Image.open(source)
+        image.save(destination, format="webp")
+        logging.info('Image successfully converted to WebP: %s', source)
+        os.remove(source_path)
+        return destination
+    except Exception as e:
+        print("Unable to convert image: " + str(source) + ' ' + str(e))
+        return source
+
+
 def _get_image(directory, image_name):
     try:
-        with open(_file_path(directory, image_name), 'rb') as f:
-            return HttpResponse(f.read(), content_type='image/jpeg')
+        image_path = _file_path(directory, image_name)
+        if os.path.exists(image_path):
+            with open(image_path, 'rb') as f:
+                ok_response = HttpResponse(f.read(), content_type='image/webp')
+                ok_response['Cache-Control'] = 'max-age=31536000'
+                return ok_response
+        return response(status=Status.ERROR, message="No image")
     except IOError:
         logging.error("Error while opening image: " + image_name)
+        return response(status=Status.ERROR, message=Message.ERROR)
 
 
 def format(data, filters=None, foreign_keys=[], foreign_filters={}):
