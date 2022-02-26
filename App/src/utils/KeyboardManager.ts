@@ -114,7 +114,7 @@ class ContainedNode extends Node {
   private contextKey: string
 
   public constructor(id: string, up: string, down: string, left: string, right: string,
-    contextKey: string, redirectTo: string, clickId: string = null, containerLevel: number = null) {
+    contextKey: string, redirectTo: string, clickId: string = null, containerLevel: number = 1) {
     super(id, up, down, left, right, redirectTo, clickId, containerLevel)
     this.contextKey = contextKey
   }
