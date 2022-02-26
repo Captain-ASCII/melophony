@@ -16,6 +16,7 @@ bundle.js.gz
 bundle.js.br
 bundle.js.map
 bundle.js.LICENSE.txt
+App.min.css
 current_melophony_pid.txt
 .vscode
 venv

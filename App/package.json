@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack/webpack.dev.js",
-    "build": "webpack -p --config webpack/webpack.prod.js",
+    "minify": "cat $(find public/css -not -name '*App*' | grep -E '*\\.css') > full.tmp.css && lessc -clean-css full.tmp.css public/App.min.css && rm full.tmp.css",
+    "bundle": "webpack -p --config webpack/webpack.prod.js",
+    "build": "npm run minify && npm run bundle",
     "production": "sudo nodejs server.js"
   },
   "author": "Daniel Ben-Lulu",
@@ -28,6 +30,8 @@
     "eslint-plugin-react": "^7.18.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "less": "^4.1.2",
+    "less-plugin-clean-css": "^1.5.1",
     "nodemon": "^2.0.15",
     "react-hot-loader": "^4.12.14",
     "source-map-loader": "^0.2.4",
