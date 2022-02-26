@@ -10,7 +10,7 @@ module.exports = merge(common, {
         },
         host: '0.0.0.0',
         contentBase: path.join(__dirname, '..'),
-        publicPath: 'http://0.0.0.0:1958/',
+        publicPath: 'http://0.0.0.0:1958/public',
         port: 1958,
         hotOnly: true
     },
