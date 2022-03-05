@@ -304,7 +304,7 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
-        }), message=Message.CREATED, status=Status.CREATED))
+        })), message=Message.CREATED, status=Status.CREATED)
     else:
         return response(status=Status.ERROR, message='Could not get track information')
 
