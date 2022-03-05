@@ -51,7 +51,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
           </div>
           <div className="delimiter" />
 
-          <TrackList tracks={tracks} className="artistTrackList itemList" />
+          <TrackList tracks={tracks} height={360} className="artistTrackList itemList" />
         </div>
       )
     }

@@ -44,14 +44,31 @@
   }
 
   .sidebar.left {
-    display: none;
+    position: absolute;
+    left: 0%;
+    background-color: var(--main-dark-bg);
+    z-index: 1000;
+    height: 100%;
+    padding: 15px 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+    transition: transform 0.5s;
+  }
+
+  .sidebar.left.opened {
+    width: 60%;
+    transform: translateX(0);
+  }
+
+  .sidebar.left.closed {
+    width: 60%;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.left.closed .hideWhenClosed {
+    display: block !important;
   }
 
   /* Track Screen */
-
-  #menu {
-    display: none !important;
-  }
 
   #trackScreen {
     margin: 0;
@@ -67,30 +84,25 @@
   }
 
   #contentHeader {
-    position: absolute;
-    z-index: 999;
-    width: 100%;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 10px;
-    transition: top 0.4s ease-in-out;
+    background-color: var(--main-bg-color);
+    border-bottom: 1px solid #444;
+    margin: 10px;
   }
 
   .searchbar {
     flex: 1;
   }
 
+  .focus {
+    border: none !important;
+  }
+
   #toolBar {
-    height: 50px;
     flex: 1;
     display: flex;
     justify-content: space-around;
     align-items: center;
     border-radius: 10px;
-    background-color: #222;
-    margin: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
   .delimiter {
@@ -99,20 +111,6 @@
 
   .itemBlocks {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-
-  .itemBlocks, .itemList {
-    height: 100%;
-    position: relative;
-    transition: top 0.4s ease-in-out;
-  }
-
-  #trackScreen .itemList, #artistScreen .itemBlocks {
-    top: 65px;
-  }
-
-  .itemInfo {
-    margin:  10px 0;
   }
 
   .mainTrackInfo {
@@ -125,14 +123,14 @@
 
   .mainTrackInfo > .title {
     font-weight: bold;
-    margin: 10px 0;
+    margin: 5px 0;
   }
 
   .itemActions {
     margin: 0;
   }
 
-  .progressBar, .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream, #sortBar {
+  .progressBar, .displayActions > .fa-list, .displayActions > .fa-th, .displayActions > .fa-stream {
     display: none !important;
   }
 
@@ -148,9 +146,6 @@
 
   #toolBar input[type="text"] {
     min-width: auto;
-    background: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
   }
 
   #footer {

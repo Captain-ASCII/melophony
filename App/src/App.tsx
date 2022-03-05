@@ -31,11 +31,11 @@ import RSwitch, { SwitchState } from '@components/Switch'
 import UserDrawer from '@components/UserDrawer'
 
 
-const MenuLink = ({ id, title, path, icon }: { id: string; title: string; path: string; icon: string }): JSX.Element => {
+const MenuLink = ({ id, title, path, icon, hideMenu }: { id: string; title: string; path: string; icon: string; hideMenu: () => void }): JSX.Element => {
   return (
     <Link to={path} >
       <div id={id} className="menuLink buttonTitle hideWhenClosed">
-        <Button icon={icon} title={title} onClick={() => {}} />
+        <Button icon={icon} title={title} onClick={hideMenu} />
       </div>
     </Link>
   )
@@ -53,6 +53,11 @@ const App = (): JSX.Element => {
   const synchronize = useCallback(() => apiManager.get('synchronize'), [ apiManager ])
 
   const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'), [ setMenu ])
+  const hideMenu = useCallback(() => {
+    if (MediaUtils.isMobileScreen()) {
+      setMenu('closed')
+    }
+  }, [ setMenu ])
 
   const switchServerAddress = useCallback((value: string) => {
     dispatch(setConfiguration(configuration.withServerAddress(value)))
@@ -66,9 +71,9 @@ const App = (): JSX.Element => {
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
             <UserDrawer />
-            <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title="Tracks" icon="music" />
-            <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title="Playlists" icon="compact-disc" />
-            <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title="Artists" icon="user-friends" />
+            <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title="Tracks" icon="music" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title="Playlists" icon="compact-disc" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title="Artists" icon="user-friends" hideMenu={hideMenu} />
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
             </div>

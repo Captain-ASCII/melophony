@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { FixedSizeList as List } from 'react-window'
@@ -67,14 +67,21 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
 
 
 
-const TrackList = ({ tracks, className = '' }: { tracks: Array<Track>; className?: string }): JSX.Element => {
+const TrackList = ({ tracks, className = '', height }: { tracks: Array<Track>; className?: string; height: number }): JSX.Element => {
+
+  const [size, setSize] = useState(MediaUtils.isMobileScreen() ? 66 : 36)
+
+  useEffect(() => {
+    window.addEventListener('resize', () => setSize(MediaUtils.isMobileScreen() ? 66 : 36))
+  })
+
 
   const renderer = ({index, style, data}: {index: number, style: any, data: Array<Track>}) => {
     return <RTrack style={style} track={data[index]} />
   }
 
   return (
-    <List className={className} height={1000} itemCount={tracks.length} itemSize={36} width={'100%'} itemData={tracks} >{renderer}</List>
+    <List className={className} height={height} itemCount={tracks.length} itemSize={size} width={'100%'} itemData={tracks} >{renderer}</List>
   )
 }
 

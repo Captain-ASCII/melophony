@@ -149,7 +149,7 @@ const TracksScreen = (): JSX.Element => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList tracks={_sort(filteredTracks(tracks, filter), configuration.getSortOrder(), configuration.getSortType())} className="itemList" />
+      <TrackList height={1000} tracks={tracks} className="itemList" />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )
