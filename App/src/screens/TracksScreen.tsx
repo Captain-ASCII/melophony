@@ -11,11 +11,11 @@ import { bindToSession, getFromSession } from '@utils/SessionUtils'
 import Track from '@models/Track'
 
 import { selectConfiguration } from '@selectors/Configuration'
-import { selectPlaylistManager } from '@selectors/App'
+import { selectPlaylistManager, selectKeyboardManager } from '@selectors/App'
 import { selectTracks } from '@selectors/Track'
 
 import { setConfiguration } from '@actions/Configuration'
-import { setPlaylistManager } from '@actions/App'
+import { setPlaylistManager, setKeyboardManager } from '@actions/App'
 import { setTracks } from '@actions/Track'
 
 import CustomSelect from '@components/Select'
@@ -60,12 +60,13 @@ function changeTopValue(elementId: string, value: string): void {
 const TracksScreen = (): JSX.Element => {
   const dispatch = useDispatch()
 
-  const configuration = selectConfiguration()
-  const tracks = selectTracks()
-  const playlist = selectPlaylistManager()
-
   const [ filter, setFilter ] = useState(getFromSession('tracksFilter'))
   bindToSession('tracksFilter', filter)
+
+  const keyboardManager = selectKeyboardManager()
+  const configuration = selectConfiguration()
+  const tracks = _sort(filteredTracks(selectTracks(), filter), configuration.getSortOrder(), configuration.getSortType())
+  const playlist = selectPlaylistManager()
 
   const changeTrackDisplay = useCallback(type => {
     dispatch(setConfiguration(configuration.withDisplayType(type)))
@@ -79,6 +80,7 @@ const TracksScreen = (): JSX.Element => {
   const switchOrder = useCallback((value: string) => {
     dispatch(setTracks(Arrays.reverse(tracks)))
     dispatch(setConfiguration(configuration.withSortOrder(value)))
+    dispatch(setKeyboardManager(keyboardManager.goTo(AppIds.NO_OPERATION)))
   }, [ dispatch, configuration, tracks ])
 
   const switchMode = useCallback((value: boolean) => {

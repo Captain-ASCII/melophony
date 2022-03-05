@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import { setKeyboardManager } from '@actions/App'
 import { selectKeyboardManager } from '@selectors/App'
+import MediaUtils from './MediaUtils';
 
 
 
@@ -160,7 +161,7 @@ export default class KeyboardManager {
       [AppIds.MELOPHONY, new Node(AppIds.MELOPHONY, AppIds.MELOPHONY, AppIds.MENU, AppIds.MELOPHONY, AppIds.MELOPHONY)],
       [AppIds.NO_OPERATION, new Node(AppIds.NO_OPERATION, AppIds.MELOPHONY, AppIds.MAIN_CONTENT, AppIds.MENU, AppIds.MELOPHONY)],
     ])
-    this.isEnabled = true
+    this.isEnabled = !MediaUtils.isMobileScreen()
     this.current = this.nodes.get(AppIds.MELOPHONY)
     this.context = { currentNode: null }
     this.lastMove = this.timestamp()
@@ -206,19 +207,20 @@ export default class KeyboardManager {
     if (this.nodes.has(nextId)) {
       return this.tryRedirect(this.nodes.get(nextId), context)
     }
-    return this.goTo(AppIds.MELOPHONY)
+    return this.nodes.get(AppIds.MELOPHONY)
   }
 
   private tryRedirect(node: Node, context: Context): Node {
     const redirection = node.redirect(context)
     if (redirection != null) {
-      return this.goTo(redirection)
+      return this.nodes.get(redirection)
     }
     return node
   }
 
-  private goTo(nodeId: string): Node {
-    return this.nodes.get(nodeId)
+  public goTo(nodeId: string): KeyboardManager {
+    this.current = this.nodes.get(nodeId)
+    return this
   }
 
   public enable(isEnabled: boolean): void {
@@ -238,7 +240,7 @@ export default class KeyboardManager {
         this.current = this.tryRedirect(this.current, this.context)
         if (this.current.getRedirectionOnClick()) {
           this.context[KeyboardManager.LAST_FOCUSED] = this.current.getId()
-          this.current = this.goTo(this.current.getRedirectionOnClick())
+          this.goTo(this.current.getRedirectionOnClick())
         }
       } else {
         if (currentElement) {
@@ -246,13 +248,13 @@ export default class KeyboardManager {
         }
 
         if (event.code === Keys.HOME) {
-          this.current = this.goTo(AppIds.MELOPHONY)
+          this.goTo(AppIds.MELOPHONY)
           document.getElementById(this.current.getId()).click()
         } else if (event.code === Keys.ESCAPE) {
           const closeButton = document.getElementById('closeButton')
           if (closeButton) {
             closeButton.click()
-            this.current = this.goTo(this.context[KeyboardManager.LAST_FOCUSED])
+            this.goTo(this.context[KeyboardManager.LAST_FOCUSED])
             setTimeout(this.scrollAndFocus.bind(this), KeyboardManager.MOUNT_DELAY)
           }
         } else if (event.code === Keys.ARROW_UP) {
@@ -286,15 +288,7 @@ export default class KeyboardManager {
     }
   }
 
-  public static addNodes(containerId: string, objects: Array<RemotelyClickable>, options: Options = {}, columnWidth: number = 1000) {
-    KeyboardManager.addConstantNodes(containerId, objects.map(o => KeyboardManager.getId(o)), options, columnWidth)
-  }
-
-  public static addMainNodes(objects: Array<RemotelyClickable>, options: Options = {}, columnWidth: number = 1000) {
-    KeyboardManager.addConstantNodes(AppIds.MAIN_CONTENT, objects.map(o => KeyboardManager.getId(o)), {top: AppIds.MELOPHONY, left: AppIds.MENU, ...options}, columnWidth)
-  }
-
-  public static addConstantNodes(containerId: string, nodes: Array<string>, options: Options = {}, columnWidth: number = 1000) {
+  public static addNodes(dependencies: Array<RemotelyClickable>, containerId: string, nodes: Array<string>, options: Options = {}, columnWidth: number = 1000) {
     const dispatch = useDispatch()
     const keyboardManager = selectKeyboardManager()
 
@@ -303,7 +297,15 @@ export default class KeyboardManager {
         const nbColumns = options.ref ? Math.max(1, Math.floor(options.ref.current.offsetWidth / columnWidth)) : 1
         dispatch(setKeyboardManager(keyboardManager.withNodes(containerId, nodes, nbColumns, options)))
       }
-    }, [])
+    }, dependencies)
+  }
+
+  public static addMainNodes(objects: Array<RemotelyClickable>, options: Options = {}, columnWidth: number = 1000) {
+    KeyboardManager.addNodes(objects, AppIds.MAIN_CONTENT, objects.map(o => KeyboardManager.getId(o)), {top: AppIds.MELOPHONY, left: AppIds.MENU, ...options}, columnWidth)
+  }
+
+  public static addConstantNodes(containerId: string, nodes: Array<string>, options: Options = {}, columnWidth: number = 1000) {
+    this.addNodes([], containerId, nodes, options, columnWidth)
   }
 
   public static getId(object: RemotelyClickable): string {
