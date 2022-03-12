@@ -99,8 +99,14 @@ const TrackModificationScreen = (): JSX.Element => {
         setCurrentTrack(track.withEndTime(time))
       }, [ track ])
 
+      const handleDurationSet = useCallback(value => {
+        setModifications(Object.assign(modifications, {'duration': value}))
+        setCurrentTrack(track.withDuration(value))
+      }, [ track ])
+
       const handleStartSetFromEvent = useCallback(event => handleStartSet(getInt(event.target.value)), [ handleStartSet ])
       const handleEndSetFromEvent = useCallback(event => handleEndSet(getInt(event.target.value)), [ handleEndSet ])
+      const handleDurationSetFromEvent = useCallback(event => handleDurationSet(getInt(event.target.value)), [ handleEndSet ])
 
       return (
         <div className="screen" >
@@ -127,13 +133,6 @@ const TrackModificationScreen = (): JSX.Element => {
                 <Link to={`/artist/create`}><IconButton icon="plus" /></Link>
               </div>
               <div className="input">
-                <i className="fa fa-ruler fa-2x icon" />
-                <input
-                  type="text" className="form-data" id="duration"
-                  disabled defaultValue={track.getDuration()}
-                />
-              </div>
-              <div className="input">
                 <i className="fa fa-step-backward fa-2x icon" />
                 <input type="text" value={track.getStartTime()} onChange={handleStartSetFromEvent} />
               </div>
@@ -145,6 +144,14 @@ const TrackModificationScreen = (): JSX.Element => {
               <div className="input">
                 <i className="fa fa-fingerprint fa-2x icon" />
                 <input type="text" disabled defaultValue={track.getId()} />
+              </div>
+              <div className="input">
+                <i className="fa fa-ruler fa-2x icon" />
+                <input
+                  type="text" className="form-data" id="duration"
+                  defaultValue={track.getDuration()} onChange={handleDurationSetFromEvent}
+                />
+                <i className="fas fa-exclamation-triangle fa-2x icon" title="Should not be changed, to reduce size of track, set track end" />
               </div>
               <div className="input">
                 <i className="fa fa-clock fa-2x icon" />
