@@ -297,7 +297,7 @@ export default class KeyboardManager {
         const nbColumns = options.ref ? Math.max(1, Math.floor(options.ref.current.offsetWidth / columnWidth)) : 1
         dispatch(setKeyboardManager(keyboardManager.withNodes(containerId, nodes, nbColumns, options)))
       }
-    }, dependencies)
+    }, [dependencies])
   }
 
   public static addMainNodes(objects: Array<RemotelyClickable>, options: Options = {}, columnWidth: number = 1000) {
