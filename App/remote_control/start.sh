@@ -1,5 +1,6 @@
 
 product_name="SG.Ltd SG Control Mic"
+current_dir=$(dirname $0)
 
 echo "Initialize remote control for Melophony..."
 
@@ -11,6 +12,6 @@ for device in $devices; do
 done;
 
 echo "Start mapper"
-./hid_mapper --lookup-id --manufacturer '0c40' --product '7a1c' --map 'remote_command.map' &
+$current_dir/hid_mapper --lookup-id --manufacturer '0c40' --product '7a1c' --map "$current_dir/remote_command.map"
 
 echo "Done"
