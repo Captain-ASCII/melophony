@@ -9,6 +9,8 @@ import { setPlaylistManager } from '@actions/App'
 
 import { Keys } from '@utils/KeyboardManager'
 
+function doNothing() { }
+
 export default class MediaManager {
 
   static EXTRACT_DURATION = 2000
@@ -16,6 +18,10 @@ export default class MediaManager {
   private audio: HTMLAudioElement
 
   private onPlayPauseCallback: (isPlaying: boolean) => void
+  private onPlayDone: () => void
+  private onError: (event: ErrorEvent) => any
+  private onKey: (event: KeyboardEvent) => void
+  private isPlayable: boolean
   private isPlayingExtract: boolean
   private extractTimeout: any
 
@@ -23,17 +29,26 @@ export default class MediaManager {
     this.audio = audio
     this.isPlayingExtract = isPlayingExtract
     this.extractTimeout = null
+    this.isPlayable = true
+    this.onPlayDone = doNothing
+    this.onError = doNothing
+    this.onKey = this.handleKey.bind(this)
 
-    document.addEventListener('keydown', (event: any): void => {
-      if (event.code === Keys.PAGE_UP) {
-        this.previous()
-      } else if (event.code === Keys.PAGE_DOWN) {
-        this.next()
-      }
-    })
+    document.addEventListener('keydown', this.onKey)
+  }
+
+  private handleKey(event: KeyboardEvent): void {
+    if (event.code === Keys.PAGE_UP) {
+      this.previous()
+    } else if (event.code === Keys.P) {
+      this.playPause()
+    } else if (event.code === Keys.PAGE_DOWN) {
+      this.next()
+    }
   }
 
   clone(): MediaManager {
+    document.removeEventListener('keydown', this.onKey)
     return new MediaManager(this.audio, this.isPlayingExtract)
   }
 
@@ -67,12 +82,25 @@ export default class MediaManager {
 
   setTrack(track: Track | null): void {
     if (this.audio !== null && track !== null) {
-      this.audio.addEventListener('error', (event: any) => {
-        if (event.target.error && event.target.error.code == 4) {
-          this.next()
-        }
-      })
+      const nextTrackTask = this.getTrackSetTask(track)
+      if (this.isPlayable) {
+        nextTrackTask()
+      } else {
+        this.onPlayDone = nextTrackTask
+      }
+    }
+  }
 
+  private getTrackSetTask(track: Track): () => void {
+    return () => {
+      this.audio.removeEventListener('error', this.onError)
+      this.onError = (event: any) => {
+        console.error("Error while playing track: ", track.getTitle(), event)
+        this.next()
+      }
+      this.audio.addEventListener('error', this.onError)
+
+      this.isPlayable = false
       this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
       this.audio.currentTime = track.getStartTime()
 
@@ -82,6 +110,7 @@ export default class MediaManager {
         }
       }
       this.setElementHTML('currentTrackInfo', `${track.getArtist().getName()} - ${track.getTitle()}`)
+      this.onPlayDone = doNothing
     }
   }
 
@@ -93,7 +122,13 @@ export default class MediaManager {
       this.audio.onended = (): void => {
         this.next()
       }
-      this.audio.play()
+      this.audio.play().then(() => {
+        this.onPlayDone()
+      }).catch(error => {
+        console.error("Error while playing source: ", this.audio.src, error)
+      }).finally(() => {
+        this.isPlayable = true
+      })
     }
     if (this.onPlayPauseCallback) {
       this.onPlayPauseCallback(true)
@@ -110,15 +145,13 @@ export default class MediaManager {
   }
 
   previous(): void {
+    this.audio.pause()
     store.dispatch(setPlaylistManager(store.getState().app.playlist.previous()))
-    this.setTrack(store.getState().app.playlist.getCurrent())
-    this.play()
   }
 
   next(): void {
+    this.audio.pause()
     store.dispatch(setPlaylistManager(store.getState().app.playlist.next()))
-    this.setTrack(store.getState().app.playlist.getCurrent())
-    this.play()
   }
 
   playPause(): void {

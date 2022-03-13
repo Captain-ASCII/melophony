@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams, Link } from 'react-router-dom'
-import Select, { StylesConfig } from 'react-select'
+import Select from 'react-select'
 
 import Artist from '@models/Artist'
 import Track from '@models/Track'
@@ -18,20 +18,8 @@ import CloseButton from '@components/CloseButton'
 import IconButton from '@components/IconButton'
 import { Objects } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
+import { SelectStyles } from '@utils/SelectStyles'
 
-const colourStyles: StylesConfig = {
-  container: (styles: any) => ({ ...styles, flex: 1 }),
-  valueContainer: (styles: any) => ({...styles, height: 30 }),
-  control: (styles: any) => ({ ...styles, backgroundColor: '#22252c', borderWidth: 0, minHeight: 36, height: 36, flex: 1 }),
-  option: (styles: any) => ({...styles, backgroundColor: '#22252c' }),
-  placeholder: (styles: any) => ({...styles, fontSize: 13 }),
-  input: (styles: any) => ({...styles, color: 'white', fontSize: 13}),
-  multiValue: (styles: any) => ({ ...styles, backgroundColor: '#2c84F8' }),
-  multiValueLabel: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
-  menuList: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
-  multiValueRemove: (styles: any) => ({...styles, ':hover': {color: '#dc2d1b'}}),
-  menu: (styles: any) => ({...styles, backgroundColor: '#22252c'})
-}
 
 function getInt(v: string): number {
   const n = parseInt(v)
@@ -126,7 +114,7 @@ const TrackModificationScreen = (): JSX.Element => {
               <div className="input">
                 <i className="fa fa-male fa-2x icon" />
                 <Select
-                  isMulti isClearable className="multiSelect" id="artistNames" styles={colourStyles}
+                  isMulti isClearable className="multiSelect" id="artistNames" styles={SelectStyles}
                   options={artistsNames} onChange={handleArtistNameSet}
                   defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />

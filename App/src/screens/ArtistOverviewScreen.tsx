@@ -8,7 +8,7 @@ import KeyboardManager from '@utils/KeyboardManager'
 import { QueryParameters } from '@utils/ApiManager'
 
 import { selectArtist } from '@selectors/Artist'
-import { selectTracksOfArtist } from '@selectors/Track'
+import { selectTracks } from '@selectors/Track'
 import { selectConfiguration } from '@selectors/Configuration'
 
 import CloseButton from '@components/CloseButton'
@@ -20,7 +20,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
 
   if (id && StringUtils.isNumber(id)) {
     const artist = selectArtist(parseInt(id))
-    const tracks = selectTracksOfArtist(parseInt(id))
+    const tracks = selectTracks().filter((track => track.getArtist().getId() === parseInt(id)))
     const configuration = selectConfiguration()
     const [background, setBackground] = useState({})
 
