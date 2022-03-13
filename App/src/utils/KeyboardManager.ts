@@ -149,6 +149,7 @@ export default class KeyboardManager {
   private current: Node
   private context: Context
   private lastMove: number
+  private onKey: (event: KeyboardEvent) => void
 
   public static CLICK_SUFFIX = "_clickable"
   public static LAST_FOCUSED = 'lastFocused'
@@ -165,6 +166,7 @@ export default class KeyboardManager {
     this.current = this.nodes.get(AppIds.MELOPHONY)
     this.context = { currentNode: null }
     this.lastMove = this.timestamp()
+    this.onKey = this.handleKey.bind(this)
     this.bindKeys()
   }
 
@@ -232,44 +234,47 @@ export default class KeyboardManager {
       return
     }
 
-    document.addEventListener('keydown', event => {
-      const currentElement = document.getElementById(this.current.getId())
+    document.removeEventListener('keydown', this.onKey)
+    document.addEventListener('keydown', this.onKey)
+  }
 
-      if (event.code === 'Enter') {
-        document.getElementById(this.current.getClickId()).click()
-        this.current = this.tryRedirect(this.current, this.context)
-        if (this.current.getRedirectionOnClick()) {
-          this.context[KeyboardManager.LAST_FOCUSED] = this.current.getId()
-          this.goTo(this.current.getRedirectionOnClick())
-        }
-      } else {
-        if (currentElement) {
-          currentElement.classList.remove('focus')
-        }
+  private handleKey(event: KeyboardEvent) {
+    const currentElement = document.getElementById(this.current.getId())
 
-        if (event.code === Keys.HOME) {
-          this.goTo(AppIds.MELOPHONY)
-          document.getElementById(this.current.getId()).click()
-        } else if (event.code === Keys.ESCAPE) {
-          const closeButton = document.getElementById('closeButton')
-          if (closeButton) {
-            closeButton.click()
-            this.goTo(this.context[KeyboardManager.LAST_FOCUSED])
-            setTimeout(this.scrollAndFocus.bind(this), KeyboardManager.MOUNT_DELAY)
-          }
-        } else if (event.code === Keys.ARROW_UP) {
-          this.current = this.move(this.current.up, this.context)
-        } else if (event.code === Keys.ARROW_DOWN) {
-          this.current = this.move(this.current.down, this.context)
-        } else if (event.code === Keys.ARROW_LEFT) {
-          this.current = this.move(this.current.left, this.context)
-        } else if (event.code === Keys.ARROW_RIGHT) {
-          this.current = this.move(this.current.right, this.context)
-        }
-
-        this.scrollAndFocus()
+    if (event.code === 'Enter') {
+      document.getElementById(this.current.getClickId()).click()
+      this.current = this.tryRedirect(this.current, this.context)
+      if (this.current.getRedirectionOnClick()) {
+        this.context[KeyboardManager.LAST_FOCUSED] = this.current.getId()
+        this.goTo(this.current.getRedirectionOnClick())
       }
-    })
+    } else {
+      if (currentElement) {
+        currentElement.classList.remove('focus')
+      }
+
+      if (event.code === Keys.HOME) {
+        this.goTo(AppIds.MELOPHONY)
+        document.getElementById(this.current.getId()).click()
+      } else if (event.code === Keys.ESCAPE) {
+        const closeButton = document.getElementById('closeButton')
+        if (closeButton) {
+          closeButton.click()
+          this.goTo(this.context[KeyboardManager.LAST_FOCUSED])
+          setTimeout(this.scrollAndFocus.bind(this), KeyboardManager.MOUNT_DELAY)
+        }
+      } else if (event.code === Keys.ARROW_UP) {
+        this.current = this.move(this.current.up, this.context)
+      } else if (event.code === Keys.ARROW_DOWN) {
+        this.current = this.move(this.current.down, this.context)
+      } else if (event.code === Keys.ARROW_LEFT) {
+        this.current = this.move(this.current.left, this.context)
+      } else if (event.code === Keys.ARROW_RIGHT) {
+        this.current = this.move(this.current.right, this.context)
+      }
+
+      this.scrollAndFocus()
+    }
   }
 
   private scrollAndFocus() {
@@ -342,6 +347,7 @@ class Keys {
   public static ARROW_RIGHT = 'ArrowRight'
   public static PAGE_UP = 'PageUp'
   public static PAGE_DOWN = 'PageDown'
+  public static P = 'KeyP'
 }
 
 

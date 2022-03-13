@@ -20,6 +20,7 @@ export default class MediaManager {
   private onPlayPauseCallback: (isPlaying: boolean) => void
   private onPlayDone: () => void
   private onError: (event: ErrorEvent) => any
+  private onKey: (event: KeyboardEvent) => void
   private isPlayable: boolean
   private isPlayingExtract: boolean
   private extractTimeout: any
@@ -31,17 +32,24 @@ export default class MediaManager {
     this.isPlayable = true
     this.onPlayDone = doNothing
     this.onError = doNothing
+    this.onKey = this.handleKey.bind(this)
 
-    document.addEventListener('keydown', (event: any): void => {
-      if (event.code === Keys.PAGE_UP) {
-        this.previous()
-      } else if (event.code === Keys.PAGE_DOWN) {
-        this.next()
-      }
-    })
+    document.addEventListener('keydown', this.onKey)
+  }
+
+  private handleKey(event: KeyboardEvent): void {
+    console.warn(event)
+    if (event.code === Keys.PAGE_UP) {
+      this.previous()
+    } else if (event.code === Keys.P) {
+      this.playPause()
+    } else if (event.code === Keys.PAGE_DOWN) {
+      this.next()
+    }
   }
 
   clone(): MediaManager {
+    document.removeEventListener('keydown', this.onKey)
     return new MediaManager(this.audio, this.isPlayingExtract)
   }
 
