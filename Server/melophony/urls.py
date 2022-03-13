@@ -33,7 +33,7 @@ urlpatterns = [
     path('login', associate_methods(post_method=views.login), name='login'),
     path('register', associate_methods(post_method=views.create_user), name='register'),
 
-    path('file/<str:file_name>', views.play_file, name='play_file'),
+    path('file/<str:file_name>', associate_methods(views.play_file, post_method=views.download_again), name='file_management'),
 
     path('user', associate_methods(views.get_user, post_method=views.create_user), name='create_user'),
     path('user/<int:user_id>', associate_methods(views.get_user, views.update_user, views.delete_user)),

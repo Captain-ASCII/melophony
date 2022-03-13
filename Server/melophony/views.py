@@ -175,10 +175,15 @@ def set_many_to_many(relation_array, objects):
 
 # Files
 
-def _download_yt_file(video_id):
+def _download_yt_file(video_id, force_download=False):
+    file_path = _file_path(TRACKS, video_id, 'm4a')
+    if force_download and os.path.exists(file_path):
+        logging.info("Removing file: %s", file_path)
+        os.remove(file_path)
+
     def download(video_id):
         ydl_opts = {
-            'outtmpl': _file_path(TRACKS, video_id, 'm4a'),
+            'outtmpl': file_path,
             'format': 'bestaudio/best',
         }
 
@@ -386,10 +391,18 @@ def get_playlist_image(r, image_name):
 
 def play_file(r, file_name):
     file_path = _file_path(TRACKS, file_name, 'm4a')
-    f = open(file_path, "rb")
-    response = HttpResponse()
-    response.write(f.read())
-    response['Content-Type'] = 'audio/mp4'
-    response['Accept-Ranges'] = 'bytes'
-    response['Content-Length'] = os.path.getsize(file_path)
-    return response
+    if os.path.exists(file_path):
+        f = open(file_path, "rb")
+        http_response = HttpResponse()
+        http_response.write(f.read())
+        http_response['Content-Type'] = 'audio/mp4'
+        http_response['Accept-Ranges'] = 'bytes'
+        http_response['Content-Length'] = os.path.getsize(file_path)
+        return http_response
+    else:
+        return response(message='File does not exist', status=Status.ERROR)
+
+def download_again(r, parameters, file_name):
+    force_download = parameters['forceDownload'] if 'forceDownload' in parameters else False
+    _download_yt_file(file_name, force_download)
+    return response(message='Download started', status=Status.SUCCESS)
