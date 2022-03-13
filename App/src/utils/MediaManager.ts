@@ -38,7 +38,6 @@ export default class MediaManager {
   }
 
   private handleKey(event: KeyboardEvent): void {
-    console.warn(event)
     if (event.code === Keys.PAGE_UP) {
       this.previous()
     } else if (event.code === Keys.P) {
