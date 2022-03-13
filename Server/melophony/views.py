@@ -299,7 +299,15 @@ def create_track(r, track):
         else:
             _download_yt_file(video_id)
 
-        return response(format(create(Track, {
+        artists = track['artists'] if 'artists' in track else []
+        if 'artistName' in track and track['artistName'] != '':
+            artist = create(Artist, {'name': track['artistName']})
+            artists = [artist]
+
+        if 'title' in track:
+            title = track['title']
+
+        track = create(Track, {
             'title': title,
             'album': None,
             'file': file,
@@ -309,20 +317,28 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
-        })), message=Message.CREATED, status=Status.CREATED)
+        })
+
+        if len(artists) > 0:
+            _set_artists(track.id, artists)
+
+        return response(format(track, foreign_keys=['artists', 'file']), message=Message.CREATED, status=Status.CREATED)
     else:
         return response(status=Status.ERROR, message='Could not get track information')
 
 def get_track(r, track_id):
     return response(get(Track, track_id, recursive=True))
 
+def _set_artists(track_id, artists):
+    track = Track.objects.get(pk=track_id)
+    track.artists.clear()
+    for artist in artists:
+        track.artists.add(artist)
+
 def update_track(r, changes, track_id):
     if 'artists' in changes:
         try:
-            track = Track.objects.get(pk=track_id)
-            track.artists.clear()
-            for artist in changes['artists']:
-                track.artists.add(artist)
+            _set_artists(track_id, changes['artists'])
             del changes['artists']
         except Exception as e:
             return response(status=Status.ERROR, message=f'Error while updating artists: {e}')
