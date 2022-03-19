@@ -27,7 +27,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
     useEffect(() => {
       if (artist) {
         setBackground(artist.getImageName() !== null
-          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
+          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
           : { backgroundColor: ColorUtils.getRandomColor() }
         )
       }

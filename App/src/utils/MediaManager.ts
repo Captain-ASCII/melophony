@@ -101,7 +101,7 @@ export default class MediaManager {
       this.audio.addEventListener('error', this.onError)
 
       this.isPlayable = false
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
+      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
       this.audio.currentTime = track.getStartTime()
 
       this.audio.ontimeupdate = (): void => {
@@ -170,7 +170,7 @@ export default class MediaManager {
       this.audio.onended = (): boolean => false
 
       if (!this.isPlayingExtract) {
-        this.audio.src = `${store.getState().configuration.getServerAddress()}/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
+        this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
         this.isPlayingExtract = true
       }
       this.audio.currentTime = time

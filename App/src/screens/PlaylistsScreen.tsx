@@ -25,7 +25,7 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
   }
 
   const imageBackground = playlist.getImageName() != null
-    ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${serverAddress}/playlist/image/${playlist.getImageName()}?jwt=${JWT.get()})`}
+    ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${serverAddress}/api/playlist/image/${playlist.getImageName()}?jwt=${JWT.get()})`}
     : {}
 
   return (

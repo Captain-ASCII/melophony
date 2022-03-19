@@ -27,7 +27,7 @@ const ArtistsScreen = (): JSX.Element => {
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
     const imageBackground = artist.getImageName() != null
-      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
+      ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/image/${artist.getImageName()}?jwt=${JWT.get()})`}
       : {}
     return (
       <div id={KeyboardManager.getId(artist)} className="artistListItem" key={artist.getId()} style={imageBackground} >
