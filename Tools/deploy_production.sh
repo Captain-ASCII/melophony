@@ -1,3 +1,4 @@
+#!/bin/bash
 
 echo "Deploy Melophony's Nginx assets"
 
