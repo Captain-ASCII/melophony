@@ -90,7 +90,7 @@ const App = (): JSX.Element => {
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
               <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
-              <Route path="/" exact component={TracksScreen} />
+              <Route path="/*" component={TracksScreen} />
             </Switch>
           </div>
           <div className="sidebar right" >

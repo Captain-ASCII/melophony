@@ -28,25 +28,27 @@ export class ApiClient {
   protected serverUrl: string
   protected resultCallback: (data: [number, any]) => [number, any]
 
+  private static BASE_NODE = '/api'
+
   public constructor(serverUrl: string, onResult: (data: [number, any]) => [number, any]) {
     this.serverUrl = serverUrl
     this.resultCallback = onResult
   }
 
   public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
-    return this.send(this.serverUrl, 'GET', path, null, queryParams, headers)
+    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'GET', path, null, queryParams, headers)
   }
 
   public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
-    return this.send(this.serverUrl, 'POST', path, body, queryParams, headers)
+    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'POST', path, body, queryParams, headers)
   }
 
   public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
-    return this.send(this.serverUrl, 'PUT', path, body, queryParams, headers)
+    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'PUT', path, body, queryParams, headers)
   }
 
   public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
-    return this.send(this.serverUrl, 'DELETE', path, null, queryParams, headers)
+    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'DELETE', path, null, queryParams, headers)
   }
 
   private getFetchParams(method: string, body: object, headers: Headers): RequestInit {

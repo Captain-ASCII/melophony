@@ -2,24 +2,35 @@
 import jwt
 import traceback
 
-from django.http import HttpResponse
-from django.utils.functional import SimpleLazyObject
 from django.contrib.auth.models import User
-from django.conf import LazySettings
-from django.contrib.auth.middleware import get_user
+from django.http import HttpResponse
+from django.shortcuts import redirect
+
 
 from .apps import MelophonyConfig
+from .urls import ALLOWED_PATHS, ALLOWED_STARTING_WITH_PATHS
 from .views import Status, response
 
-settings = LazySettings()
+class RedirectMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path.startswith('/api'):
+            return self.get_response(request)
+        else:
+            return redirect('/public/index.html')
 
 
 class JWTAuthenticationMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
+    def __is_in_allowed_paths(self, path):
+        return path in ALLOWED_PATHS or any([path.startswith(allowed) for allowed in ALLOWED_STARTING_WITH_PATHS])
+
     def __call__(self, request):
-        if request.path == '/login' or request.path == '/register' or request.path == '/favicon.ico' or request.path.startswith('/admin'):
+        if self.__is_in_allowed_paths(request.path):
             return self.get_response(request)
         else:
             token = request.META.get('HTTP_AUTHORIZATION', None)
