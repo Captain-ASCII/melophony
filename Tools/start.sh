@@ -8,6 +8,8 @@ source venv/bin/activate
 rm nohup.out
 nohup gunicorn -c gunicorn_conf.py melophonyApiServer.wsgi &
 
-cd $melophony_dir/App/
-rm nohup.out
-nohup npm run production &
+# Nginx service should be already started
+
+# cd $melophony_dir/App/
+# rm nohup.out
+# nohup npm run production &

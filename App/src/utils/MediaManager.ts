@@ -107,6 +107,7 @@ export default class MediaManager {
       this.audio.ontimeupdate = (): void => {
         if (this.audio.currentTime > track.getEndTime()) {
           this.next()
+          this.audio.ontimeupdate = null
         }
       }
       this.setElementHTML('currentTrackInfo', `${track.getArtist().getName()} - ${track.getTitle()}`)
@@ -121,6 +122,7 @@ export default class MediaManager {
 
       this.audio.onended = (): void => {
         this.next()
+        this.audio.ontimeupdate = null
       }
       this.audio.play().then(() => {
         this.onPlayDone()

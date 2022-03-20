@@ -114,7 +114,7 @@ const App = (): JSX.Element => {
             <IconButton onClick={synchronize} icon="download" />
             <RSwitch
               initial={configuration.getServerAddress()}
-              enabledState={new SwitchState('network-wired active', 'https://melophony.ddns.net')}
+              enabledState={new SwitchState('network-wired active', 'https://melophony-api.ddns.net')}
               disabledState={new SwitchState('network-wired', 'http://localhost:1958')}
               title="Should connect to network for data" onSwitch={switchServerAddress}
             />
