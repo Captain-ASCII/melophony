@@ -213,18 +213,25 @@ def create_user(r, body):
     except:
         return response(status=Status.BAD_REQUEST, message='Something bad happened during registration, try again')
 
+def _generate_new_token(user):
+    expiration_date = int((datetime.datetime.now() + datetime.timedelta(days=7)).timestamp())
+    return {'exp': expiration_date, 'user': {'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name}}
+
 def login(r, body):
     user = authenticate(username=body['email'], password=body['password'])
     if user is not None:
-        expiration_date = int((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())
-        jwt_data = {'exp': expiration_date, 'user': {'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name}}
+        jwt_data = _generate_new_token(user)
         return response(message='Successfully authenticated', token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))
     else:
         return response(status=Status.UNAUTHORIZED, message='Invalid credentials')
 
 def get_user(r):
-    user = get(User, r.user.id, ['username', 'first_name', 'last_name'])
-    return response({'userName': user['username'], 'firstName': user['first_name'], 'lastName': user['last_name']})
+    user = User.objects.get(pk=r.user.id)
+    jwt_data = _generate_new_token(user)
+    return response(
+        {'userName': user.username, 'firstName': user.first_name, 'lastName': user.last_name},
+        token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256")
+    )
 
 def update_user(r, user, user_id):
     return response(status=Status.ERROR, message="NOT IMPLEMENTED")
