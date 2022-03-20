@@ -6,7 +6,7 @@ import Log from '@utils/Log'
 import Configuration from '@models/Configuration'
 
 const MELOPHONY_CONFIGURATION = 'melophony-configuration'
-const INITIAL_CONFIG = new Configuration('https://melophony.ddns.net', true, true, 'date', 'ASC', 'itemList')
+const INITIAL_CONFIG = new Configuration('https://melophony-api.ddns.net', true, true, 'date', 'ASC', 'itemList')
 
 function inflate(): Configuration {
   const jsonConfiguration = localStorage.getItem(MELOPHONY_CONFIGURATION)
