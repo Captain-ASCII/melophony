@@ -50,8 +50,6 @@ const App = (): JSX.Element => {
 
   const [ menuState, setMenu ] = useState(MediaUtils.isMobileScreen() ? 'closed' : 'opened')
 
-  const synchronize = useCallback(() => apiManager.get('synchronize'), [ apiManager ])
-
   const handleMenuSwitch = useCallback(() => setMenu(prev => prev === 'opened' ? 'closed' : 'opened'), [ setMenu ])
   const hideMenu = useCallback(() => {
     if (MediaUtils.isMobileScreen()) {
@@ -109,15 +107,6 @@ const App = (): JSX.Element => {
                 <h1>Melophony</h1>
               </div>
             </Link>
-          </div>
-          <div id="headerActions">
-            <IconButton onClick={synchronize} icon="download" />
-            <RSwitch
-              initial={configuration.getServerAddress()}
-              enabledState={new SwitchState('network-wired active', 'https://melophony-api.ddns.net')}
-              disabledState={new SwitchState('network-wired', 'http://localhost:1958')}
-              title="Should connect to network for data" onSwitch={switchServerAddress}
-            />
           </div>
         </div>
         <NotificationToaster />

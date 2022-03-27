@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
-import MediaUtils from '@utils/MediaUtils'
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 import { bindToSession, getFromSession } from '@utils/SessionUtils'
 
@@ -48,15 +47,6 @@ function _sort(providedTracks: Array<Track>, sortOrder: string, type: string): A
   }
 }
 
-function changeTopValue(elementId: string, value: string): void {
-  if (MediaUtils.isMobileScreen()) {
-    const element = document.getElementById(elementId)
-    if (element) {
-      element.style.top = value
-    }
-  }
-}
-
 const TracksScreen = (): JSX.Element => {
   const dispatch = useDispatch()
 
@@ -88,24 +78,9 @@ const TracksScreen = (): JSX.Element => {
     dispatch(setPlaylistManager(playlist.withShuffleMode(value)))
   }, [ dispatch, configuration, playlist ])
 
-  useEffect(() => {
-    const listElement = document.getElementById('itemList')
-    if (listElement) {
-      let prevScrollpos = listElement.scrollTop
-
-      listElement.onscroll = function(): void {
-        const currentScrollPos = listElement.scrollTop
-        changeTopValue('contentHeader', prevScrollpos > currentScrollPos ? '0' : '-200px')
-        changeTopValue('itemList', prevScrollpos > currentScrollPos ? '65px' : '0')
-        prevScrollpos = currentScrollPos
-      }
-    }
-  }, [])
-
-  const handleFilterSet = useCallback((t: string) => {
-    changeTopValue('itemValue', t !== '' ? '65px' : '0')
-    sessionStorage.setItem('tracksFilter', t)
-    setFilter(t)
+  const handleFilterSet = useCallback((filter: string) => {
+    sessionStorage.setItem('tracksFilter', filter)
+    setFilter(filter)
   }, [ setFilter ])
 
   KeyboardManager.addMainNodes(tracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, containerLevel: 2})
