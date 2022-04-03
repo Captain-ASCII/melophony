@@ -32,7 +32,7 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
   }, [ dispatch, playlist, track ])
 
   const stopPropagation = useCallback((e: React.MouseEvent): void => e.stopPropagation(), [])
-  const handleEnqueue = useCallback((e: React.MouseEvent) => {
+  const handleEnqueue = useCallback((data:any, e: React.MouseEvent) => {
     e.stopPropagation()
     dispatch(setPlaylistManager(playlist.enqueue(track)))
   }, [ dispatch, playlist, track ])
