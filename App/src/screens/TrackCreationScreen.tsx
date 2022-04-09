@@ -30,7 +30,16 @@ const TrackCreationScreen = (): JSX.Element => {
   const [ artistName, setArtistName ] = useState('')
   const [ artists, setArtists ] = useState([])
 
-  const handleInput = useCallback(event => setVideoId(event.target.value), [setVideoId])
+  const handleInput = useCallback(event => {
+    const value = event.target.value
+    const searchForParam = value.match(/v=(.*)?(&|$)/)
+    if (searchForParam) {
+      console.warn(searchForParam[1])
+      setVideoId(searchForParam[1])
+    } else {
+      setVideoId(value)
+    }
+  }, [setVideoId])
   const handleTitleSet = useCallback(event => setTitle(event.target.value), [setTitle])
   const handleArtistNameSet = useCallback(event => setArtistName(event.target.value), [setArtistName])
   const handleArtistsSet = useCallback(selection => {
@@ -55,8 +64,8 @@ const TrackCreationScreen = (): JSX.Element => {
       <div className="input">
         <i className="fab fa-youtube fa-2x icon" />
         <input
-          type="text" className="form-data" onInput={handleInput}
-          id="videoId" defaultValue="" placeholder="Youtube video ID"
+          type="text" className="form-data" onChange={handleInput} value={videoId}
+          id="videoId" placeholder="Youtube video ID / Full Youtube URL"
         />
       </div>
       <div className="input">

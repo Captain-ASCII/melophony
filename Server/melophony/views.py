@@ -1,11 +1,11 @@
 import datetime
-import os
-import logging
-from this import d
 import jwt
+import logging
+import os
 import requests
 import shutil
 import threading
+import traceback
 import uuid
 import youtube_dl
 
@@ -18,7 +18,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, JsonResponse
 
 from .apps import MelophonyConfig
-from .models import Album, Artist, File, Track, Playlist, PlaylistTrack
+from .models import Artist, File, Track, Playlist, PlaylistTrack
 from .utils import model_to_dict
 
 
@@ -98,7 +98,7 @@ def _get_image(directory, image_name):
                 ok_response = HttpResponse(f.read(), content_type='image/webp')
                 ok_response['Cache-Control'] = 'max-age=31536000'
                 return ok_response
-        return response(status=Status.ERROR, message="No image")
+        return response(status=Status.ERROR, message="Error opening image")
     except IOError:
         logging.error("Error while opening image: " + image_name)
         return response(status=Status.ERROR, message=Message.ERROR)
@@ -116,7 +116,7 @@ def format(data, filters=None, foreign_keys=[], foreign_filters={}):
         return model_to_dict(data, filters, foreign_keys, foreign_filters)
 
 
-def response(data=None, status=Status.SUCCESS, message=Message.SUCCESS, token=None):
+def response(data=None, status=Status.SUCCESS, message=None, token=None):
     data = {'message': message, 'data': data}
     if token is not None:
         data['token'] = token
@@ -135,8 +135,9 @@ def act(action):
         return None
 
 
-def create(o_type, obj):
-    return act(lambda: o_type.objects.create(**obj))
+def create(o_type, obj, extra={}):
+    merged = {**obj, **extra}
+    return act(lambda: o_type.objects.create(**merged))
 
 
 def get(o_type, id, filters=None, foreign_keys=[], foreign_filters={}):
@@ -147,10 +148,12 @@ def get(o_type, id, filters=None, foreign_keys=[], foreign_filters={}):
         return None
 
 
-def get_all(o_type, filters=None, foreign_keys=[], foreign_filters={}):
+def get_all(o_type, filters={}, key_filters=None, foreign_keys=[], foreign_filters={}):
     try:
         objects = o_type.objects.all()
-        return [format(o, filters, foreign_keys, foreign_filters) for o in objects]
+        if filters:
+            objects = objects.filter(**filters)
+        return [format(o, key_filters, foreign_keys, foreign_filters) for o in objects]
     except Exception:
         return None
 
@@ -203,14 +206,29 @@ def _create_file(file):
 
 # Users
 
+def _check_user_exists(username):
+    try:
+        User.objects.get(username=username) is not None
+    except User.DoesNotExist:
+        return None
+
+    return username
+
+
 def create_user(r, body):
     try:
+        if _check_user_exists(body['userName']) is not None:
+            return response(status=Status.BAD_REQUEST, message='Username already in use')
+
         user = User.objects.create_user(body['userName'], body['email'], body['password'])
         user.first_name = body['firstName']
         user.last_name = body['lastName']
         user.save()
-        return response(status=Status.CREATED)
-    except:
+        jwt_data = _generate_new_token(user)
+
+        return response(status=Status.CREATED, token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))
+    except Exception as e:
+        traceback.print_exc()
         return response(status=Status.BAD_REQUEST, message='Something bad happened during registration, try again')
 
 def _generate_new_token(user):
@@ -218,7 +236,7 @@ def _generate_new_token(user):
     return {'exp': expiration_date, 'user': {'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name}}
 
 def login(r, body):
-    user = authenticate(username=body['email'], password=body['password'])
+    user = authenticate(username=body['userName'], password=body['password'])
     if user is not None:
         jwt_data = _generate_new_token(user)
         return response(message='Successfully authenticated', token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))
@@ -243,7 +261,7 @@ def delete_user(r, user_id):
 # Artists
 
 def create_artist(r, artist):
-    return response(format(create(Artist, artist)), message=Message.CREATED, status=Status.CREATED)
+    return response(format(create(Artist, artist, {'user': r.user})), message=Message.CREATED, status=Status.CREATED)
 
 def get_artist(r, artist_id):
     return response(get(Artist, artist_id))
@@ -253,40 +271,19 @@ def update_artist(r, artist, artist_id):
         _delete_associated_image(Artist, artist_id)
         artist['imageName'] = _download_image(ARTIST_IMAGES, artist['imageUrl'])
 
-    return response(format(update(Artist, artist_id, artist)))
+    return response(format(update(Artist, artist_id, artist)), message='Artist updated successfully')
 
 def delete_artist(r, artist_id):
     return response(delete(Artist, artist_id))
 
 def list_artists(r):
-    return response(format(Artist.objects.all()))
+    return response(get_all(Artist, filters={'user': r.user.id}))
 
 def find_artist(r, body, artistName):
     return response()
 
 def get_artist_image(r, image_name):
     return _get_image(ARTIST_IMAGES, image_name)
-
-
-# Albums
-
-def create_album(r, album):
-    return response(format(create(Album, album)), message=Message.CREATED, status=Status.CREATED)
-
-def get_album(r, album_id):
-    return response(get(Album, album_id))
-
-def update_album(r, album, album_id):
-    return response(format(update(Album, album_id, album)))
-
-def delete_album(r, album_id):
-    return response(delete(Album, album_id))
-
-def list_albums(r):
-    return response(format(Album.objects.all()))
-
-def find_album(r, body, artistName):
-    return response()
 
 
 # Tracks
@@ -308,7 +305,7 @@ def create_track(r, track):
 
         artists = track['artists'] if 'artists' in track else []
         if 'artistName' in track and track['artistName'] != '':
-            artist = create(Artist, {'name': track['artistName']})
+            artist = create(Artist, {'name': track['artistName'], 'user': r.user})
             artists = [artist]
 
         if 'title' in track:
@@ -316,7 +313,6 @@ def create_track(r, track):
 
         track = create(Track, {
             'title': title,
-            'album': None,
             'file': file,
             'duration': duration,
             'startTime': 0,
@@ -324,6 +320,7 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
+            'user': r.user
         })
 
         if len(artists) > 0:
@@ -350,13 +347,13 @@ def update_track(r, changes, track_id):
         except Exception as e:
             return response(status=Status.ERROR, message=f'Error while updating artists: {e}')
 
-    return response(format(update(Track, track_id, changes)))
+    return response(format(update(Track, track_id, changes)), message='Track updated successfully')
 
 def delete_track(r, track_id):
     return response(delete(Track, track_id))
 
 def list_tracks(r):
-    return response(get_all(Track, foreign_keys=['artists', 'file']))
+    return response(get_all(Track, filters={'user': r.user.id}, foreign_keys=['artists', 'file']))
 
 def find_track(r, body, track):
     return response()
@@ -365,7 +362,7 @@ def find_track(r, body, track):
 # Playlists
 
 def create_playlist(r, provided_playlist):
-    if 'imageUrl' in provided_playlist:
+    if 'imageUrl' in provided_playlist and provided_playlist['imageUrl'] != '':
         provided_playlist['imageName'] = _download_image(PLAYLIST_IMAGES, provided_playlist['imageUrl'])
 
     tracks = provided_playlist['tracks']
@@ -395,13 +392,13 @@ def update_playlist(r, modifications, playlist_id):
 
     playlist = update(Playlist, playlist_id, modifications)
 
-    return response(format(playlist))
+    return response(format(playlist), message='Playlist updated successfully')
 
 def delete_playlist(r, playlist_id):
     return response(delete(Playlist, playlist_id))
 
 def list_playlists(r):
-    return response(get_all(Playlist, foreign_keys=['tracks', 'artists', 'file']))
+    return response(get_all(Playlist, filters={'user': r.user.id}, foreign_keys=['tracks', 'artists', 'file']))
 
 def find_playlist(r, body, playlist):
     return response()

@@ -5,6 +5,7 @@ import traceback
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.conf import settings
 
 
 from .apps import MelophonyConfig
@@ -16,7 +17,7 @@ class RedirectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith('/api'):
+        if request.path.startswith('/api') or (settings.DEBUG and request.path.startswith('/admin')):
             return self.get_response(request)
         else:
             return redirect('/public/index.html')

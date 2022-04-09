@@ -37,8 +37,7 @@ const configuration = store.getState().configuration
 
 const apiManager = new ApiManager(
   configuration.getServerAddress(),
-  (data: [number, any]) => {
-    const message = (data[1] != null) ? data[1].message : "Unable to contact server"
+  ([status, data, message]: [number, any, string]) => {
     store.dispatch(addNotification(new Notification(message)))
     return data
   },

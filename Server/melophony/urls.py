@@ -52,10 +52,6 @@ urlpatterns = [
     path('api/artists', views.list_artists, name='list_artists'),
     path('api/artist/image/<str:image_name>', associate_methods(views.get_artist_image), name='get_artist_image'),
 
-    path('api/album', associate_methods(views.find_album, post_method=views.create_album), name='create_album'),
-    path('api/album/<int:album_id>', associate_methods(views.get_album, views.update_album, views.delete_album)),
-    path('api/albums', views.list_albums, name='list_albums'),
-
     path('api/track', associate_methods(views.find_track, post_method=views.create_track), name='create_track'),
     path('api/track/<int:track_id>', associate_methods(views.get_track, views.update_track, views.delete_track)),
     path('api/tracks', views.list_tracks, name='list_tracks'),
