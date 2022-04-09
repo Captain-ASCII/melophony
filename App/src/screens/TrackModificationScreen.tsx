@@ -9,9 +9,11 @@ import Track from '@models/Track'
 import { selectApiManager } from '@selectors/App'
 import { selectArtist, selectArtists } from '@selectors/Artist'
 import { selectTrack } from '@selectors/Track'
+import { selectMediaManager } from '@selectors/App'
 
 import { setTrack } from '@actions/Track'
 
+import Button from '@components/Button'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
@@ -43,9 +45,11 @@ const TrackModificationScreen = (): JSX.Element => {
 
     if (track) {
       const apiManager = selectApiManager()
+      const mediaManager = selectMediaManager()
 
       const [ modifications, setModifications ] = useState({})
       const [ artist, setArtist ]  = useState(selectArtist(track.getArtist().getId()))
+      const [ isPreparedForModification, setPreparedForModification ] = useState(false)
 
       const save = useCallback(() => {
         if (!Objects.isEmpty(modifications)) {
@@ -95,6 +99,12 @@ const TrackModificationScreen = (): JSX.Element => {
       const handleStartSetFromEvent = useCallback(event => handleStartSet(getInt(event.target.value)), [ handleStartSet ])
       const handleEndSetFromEvent = useCallback(event => handleEndSet(getInt(event.target.value)), [ handleEndSet ])
       const handleDurationSetFromEvent = useCallback(event => handleDurationSet(getInt(event.target.value)), [ handleEndSet ])
+
+      const prepareTrackForModification = useCallback(event => {
+        mediaManager.prepareTrack(track,  () => {
+          setPreparedForModification(true)
+        })
+      }, [mediaManager, setPreparedForModification])
 
       return (
         <div className="screen" >
@@ -168,7 +178,8 @@ const TrackModificationScreen = (): JSX.Element => {
               <h2>Track duration</h2>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
-                <InputRange track={track} multiRange onStartSet={handleStartSet} onEndSet={handleEndSet} />
+                <Button id="trackModificationButton" className="raised" title="Modify track length" onClick={prepareTrackForModification} />
+                <InputRange track={track} multiRange disabled={!isPreparedForModification} onStartSet={handleStartSet} onEndSet={handleEndSet} />
               </div>
             </div>
           </div>

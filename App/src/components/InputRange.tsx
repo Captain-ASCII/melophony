@@ -10,8 +10,9 @@ const getPercentage = (value: number, track: Track): number => {
 
 let intervalHandle: any
 
-const InputRange = ({ track, multiRange, asReader, onStartSet, onEndSet }:
-  { track: Track | null; multiRange?: boolean; asReader?: boolean; onStartSet?: (v: number) => void; onEndSet?: (v: number) => void }): JSX.Element | null => {
+const InputRange = ({ track, multiRange, disabled = false, asReader, onStartSet, onEndSet }:
+  { track: Track | null; multiRange?: boolean; asReader?: boolean; disabled?: boolean;
+    onStartSet?: (v: number) => void; onEndSet?: (v: number) => void }): JSX.Element | null => {
 
   if (track) {
     const [ leftValue, setLeftValue ] = useState(getPercentage(track.getStartTime(), track))
@@ -49,7 +50,7 @@ const InputRange = ({ track, multiRange, asReader, onStartSet, onEndSet }:
     } else {
       handler = useCallback(event => {
         const value = event.target.value
-        mediaManager.playExtract(track, value)
+        mediaManager.playExtract(value)
         setRightValue(100 - getPercentage(value, track))
         onEndSet(Math.max(0, parseInt(value) + (MediaManager.EXTRACT_DURATION / 1000)))
       }, [ onEndSet, mediaManager, track ])
@@ -59,10 +60,12 @@ const InputRange = ({ track, multiRange, asReader, onStartSet, onEndSet }:
     const handleMainInput = handler
     const handleSecondaryInput = useCallback(event => {
       const value = event.target.value
-      mediaManager.playExtract(track, value)
+      mediaManager.playExtract(value)
       setLeftValue(getPercentage(value, track))
       onStartSet(parseInt(value))
     }, [ onStartSet, mediaManager, track ])
+
+    const disabledClass = disabled ? 'disabled' : ''
 
     return (
       <div id="tracker" className="multi-range" >
@@ -70,17 +73,17 @@ const InputRange = ({ track, multiRange, asReader, onStartSet, onEndSet }:
         {
           multiRange &&
           <input
-            className="rangeDeactivate" type='range'
-            min={0} max={track.getDuration()} defaultValue={track.getStartTime()}
+            className={`rangeDeactivate ${disabledClass}`} type='range'
+            min={0} max={track.getDuration()} defaultValue={track.getStartTime()} disabled={disabled}
             step="0.5" onInput={handleSecondaryInput}
           />
         }
         <input
-          ref={trackerRef} className={`mainRange ${multiRange ? 'rangeDeactivate' : ''}`} type='range'
-          min={0} max={max} defaultValue={defaultValue}
+          ref={trackerRef} className={`mainRange ${multiRange ? 'rangeDeactivate' : ''} ${disabledClass}`} type='range'
+          min={0} max={max} defaultValue={defaultValue} disabled={disabled}
           step="0.5" onInput={handleMainInput}
         />
-        <div className="trackBar" style={{left: `${leftValue}%`, right: `${rightValue}%`}}  />
+        <div className={`trackBar ${disabledClass}`} style={{left: `${leftValue}%`, right: `${rightValue}%`}}  />
       </div>
       )
   }

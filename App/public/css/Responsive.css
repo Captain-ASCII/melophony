@@ -6,6 +6,7 @@
   }
 
   h2 {
+    margin-top: 10px;
     font-size: 24px;
   }
 
@@ -138,6 +139,7 @@
 
   .columns > div {
     min-width: auto;
+    margin: 5px;
   }
 
   ::-webkit-scrollbar {
@@ -177,6 +179,10 @@
     width: 100%;
     position: relative;
     top: -5px;
+  }
+
+  #tracker {
+    margin: 10px 0;
   }
 
   .input > * {

@@ -2,8 +2,8 @@ import React, { useCallback } from 'react'
 
 import Log from '@utils/Log'
 
-const Button = <T extends unknown>({ onClick, title, icon, data, className = '' }:
-{ onClick: (d: T) => void; title?: string; icon?: string; data?: T; className?: string }): JSX.Element => {
+const Button = <T extends unknown>({ onClick, title, icon, data, id = '', className = '' }:
+{ onClick: (d: T) => void; title?: string; icon?: string; data?: T; id?:string; className?: string }): JSX.Element => {
   const handleClick = useCallback(() => {
     if (onClick) {
       onClick(data)
@@ -13,7 +13,7 @@ const Button = <T extends unknown>({ onClick, title, icon, data, className = '' 
   }, [ onClick, data ])
 
   return (
-    <div className={`button ${className}`} onClick={handleClick} >
+    <div id={id} className={`button ${className}`} onClick={handleClick} >
       { icon && <i className={`fa fa-${icon} icon button`}  /> }
       { title && <p className="buttonTitle" >{ title }</p> }
       <div className="overlay" ></div>
