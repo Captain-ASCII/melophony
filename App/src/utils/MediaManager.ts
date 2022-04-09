@@ -25,9 +25,8 @@ export default class MediaManager {
   private isPlayingExtract: boolean
   private extractTimeout: any
 
-  constructor(audio: HTMLAudioElement = null, isPlayingExtract = false) {
+  constructor(audio: HTMLAudioElement = null) {
     this.audio = audio
-    this.isPlayingExtract = isPlayingExtract
     this.extractTimeout = null
     this.isPlayable = true
     this.onPlayDone = doNothing
@@ -49,7 +48,7 @@ export default class MediaManager {
 
   clone(): MediaManager {
     document.removeEventListener('keydown', this.onKey)
-    return new MediaManager(this.audio, this.isPlayingExtract)
+    return new MediaManager(this.audio)
   }
 
   withAudio(audio: HTMLAudioElement): MediaManager {
@@ -167,14 +166,23 @@ export default class MediaManager {
     }
   }
 
-  playExtract(track: Track, time: number): void {
+  prepareTrack(track: Track, loadedCallback: () => void): void {
+    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`)
+    .then((response) => {
+      if (response.status === 200) {
+        response.blob().then((blob) => {
+          const audioBlob = (window.webkitURL || window.URL).createObjectURL(blob)
+          this.audio.src = audioBlob
+          loadedCallback()
+        })
+      }
+    })
+  }
+
+  playExtract(time: number): void {
     if (this.audio !== null) {
       this.audio.onended = (): boolean => false
 
-      if (!this.isPlayingExtract) {
-        this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
-        this.isPlayingExtract = true
-      }
       this.audio.currentTime = time
       this.audio.play()
       if (this.extractTimeout) {
@@ -182,7 +190,6 @@ export default class MediaManager {
       }
       this.extractTimeout = setTimeout(() => {
         this.audio.pause()
-        this.isPlayingExtract = false
       }, MediaManager.EXTRACT_DURATION)
     }
   }
