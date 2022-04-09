@@ -26,28 +26,28 @@ type QueryParameters = {
 export class ApiClient {
 
   protected serverUrl: string
-  protected resultCallback: (data: [number, any]) => [number, any]
+  protected resultCallback: (data: [number, any, string]) => [number, any, string]
 
   private static BASE_NODE = '/api'
 
-  public constructor(serverUrl: string, onResult: (data: [number, any]) => [number, any]) {
+  public constructor(serverUrl: string, onResult: (data: [number, any, string]) => [number, any, string]) {
     this.serverUrl = serverUrl
     this.resultCallback = onResult
   }
 
-  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
     return this.send(this.serverUrl + ApiClient.BASE_NODE, 'GET', path, null, queryParams, headers)
   }
 
-  public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+  public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
     return this.send(this.serverUrl + ApiClient.BASE_NODE, 'POST', path, body, queryParams, headers)
   }
 
-  public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+  public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
     return this.send(this.serverUrl + ApiClient.BASE_NODE, 'PUT', path, body, queryParams, headers)
   }
 
-  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any]> {
+  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
     return this.send(this.serverUrl + ApiClient.BASE_NODE, 'DELETE', path, null, queryParams, headers)
   }
 
@@ -74,7 +74,7 @@ export class ApiClient {
     return '?' + list.join('&')
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any]> {
+  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
     const fetchParams = this.getFetchParams(method, body, headers)
     const queryParamString = this.getQueryParamString(queryParams)
 
@@ -83,20 +83,16 @@ export class ApiClient {
     const json = timeout(
       NETWORK_TIMEOUT,
       fetch(`${baseUrl}${path}${queryParamString}`, fetchParams)
-        .then(async (response: Response): Promise<[number, any]> => [ response.status, await response.json() ])
+        .then(async (response: Response): Promise<[number, any, string]> => [ response.status, await response.json(), null ])
     )
-
-    if (method !== 'GET') {
-      json.then(this.resultCallback)
-    }
 
     return json.catch((error: Error) => {
       if (error instanceof ApiTimeoutError) {
         Log.w('Unable to get information from the server')
-        return Promise.reject(this.resultCallback([408, null]))
+        return Promise.reject(this.resultCallback([408, null, null]))
       } else {
         Log.e('Error during API request', error)
-        return Promise.reject(this.resultCallback([500, null]))
+        return Promise.reject(this.resultCallback([500, null, null]))
       }
     })
   }
@@ -106,7 +102,7 @@ export default class MelophonyApiClient extends ApiClient {
 
   private tokenManager: TokenManager
 
-  public constructor(serverUrl: string, onResult: (data: [number, any]) => [number, any], tokenManager: TokenManager) {
+  public constructor(serverUrl: string, onResult: (data: [number, any, string]) => [number, any, string], tokenManager: TokenManager) {
     super(serverUrl, onResult)
     this.tokenManager = tokenManager
   }
@@ -125,7 +121,7 @@ export default class MelophonyApiClient extends ApiClient {
     return this.tokenManager.hasValidToken()
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any]> {
+  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
     if (this.tokenManager != null) {
       if (this.tokenManager.getToken() != null) {
         headers.append('Authorization', this.tokenManager.getToken())
@@ -134,11 +130,18 @@ export default class MelophonyApiClient extends ApiClient {
 
     const response = super.send(baseUrl, method, path, body, queryParams, headers)
 
-    return response.then((data: [number, any]) => {
+    return response.then((data: [number, any, string]) => {
       if (this.tokenManager != null) {
         this.tokenManager.keepToken(data[1])
       }
-      return [ data[0], data[1].data ]
+      const message = 'message' in data[1] ? data[1].message : null
+      const result: [number, any, string] = [ data[0], data[1].data, message ]
+
+      if (this.resultCallback && this.hasValidToken() && message != null) {
+        this.resultCallback(result)
+      }
+
+      return result
     })
   }
 }

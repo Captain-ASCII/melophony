@@ -1,11 +1,11 @@
 import datetime
-import os
-import logging
-from this import d
 import jwt
+import logging
+import os
 import requests
 import shutil
 import threading
+import traceback
 import uuid
 import youtube_dl
 
@@ -98,7 +98,7 @@ def _get_image(directory, image_name):
                 ok_response = HttpResponse(f.read(), content_type='image/webp')
                 ok_response['Cache-Control'] = 'max-age=31536000'
                 return ok_response
-        return response(status=Status.ERROR, message="No image")
+        return response(status=Status.ERROR, message="Error opening image")
     except IOError:
         logging.error("Error while opening image: " + image_name)
         return response(status=Status.ERROR, message=Message.ERROR)
@@ -116,7 +116,7 @@ def format(data, filters=None, foreign_keys=[], foreign_filters={}):
         return model_to_dict(data, filters, foreign_keys, foreign_filters)
 
 
-def response(data=None, status=Status.SUCCESS, message=Message.SUCCESS, token=None):
+def response(data=None, status=Status.SUCCESS, message=None, token=None):
     data = {'message': message, 'data': data}
     if token is not None:
         data['token'] = token
@@ -203,14 +203,29 @@ def _create_file(file):
 
 # Users
 
+def _check_user_exists(username):
+    try:
+        User.objects.get(username=username) is not None
+    except User.DoesNotExist:
+        return None
+
+    return username
+
+
 def create_user(r, body):
     try:
+        if _check_user_exists(body['userName']) is not None:
+            return response(status=Status.BAD_REQUEST, message='Username already in use')
+
         user = User.objects.create_user(body['userName'], body['email'], body['password'])
         user.first_name = body['firstName']
         user.last_name = body['lastName']
         user.save()
-        return response(status=Status.CREATED)
-    except:
+        jwt_data = _generate_new_token(user)
+
+        return response(status=Status.CREATED, token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))
+    except Exception as e:
+        traceback.print_exc()
         return response(status=Status.BAD_REQUEST, message='Something bad happened during registration, try again')
 
 def _generate_new_token(user):
@@ -253,7 +268,7 @@ def update_artist(r, artist, artist_id):
         _delete_associated_image(Artist, artist_id)
         artist['imageName'] = _download_image(ARTIST_IMAGES, artist['imageUrl'])
 
-    return response(format(update(Artist, artist_id, artist)))
+    return response(format(update(Artist, artist_id, artist)), message='Artist updated successfully')
 
 def delete_artist(r, artist_id):
     return response(delete(Artist, artist_id))
@@ -350,7 +365,7 @@ def update_track(r, changes, track_id):
         except Exception as e:
             return response(status=Status.ERROR, message=f'Error while updating artists: {e}')
 
-    return response(format(update(Track, track_id, changes)))
+    return response(format(update(Track, track_id, changes)), message='Track updated successfully')
 
 def delete_track(r, track_id):
     return response(delete(Track, track_id))
@@ -395,7 +410,7 @@ def update_playlist(r, modifications, playlist_id):
 
     playlist = update(Playlist, playlist_id, modifications)
 
-    return response(format(playlist))
+    return response(format(playlist), message='Playlist updated successfully')
 
 def delete_playlist(r, playlist_id):
     return response(delete(Playlist, playlist_id))

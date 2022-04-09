@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react'
-import JWT from 'jwt-client'
 
 import { selectApiManager } from '@selectors/App'
 
@@ -27,9 +26,8 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
 
   const apiManager = selectApiManager()
 
-  const handleResponse = useCallback(([status, data]) => {
-    if (status !== 200) {
-      const message = data.message ? data.message : "Error during login"
+  const handleResponse = useCallback(([status, data, message]) => {
+    if (status !== 200 && status !== 201) {
       setLoading(false)
       setErrorMessage(message)
     } else if (apiManager.hasValidToken()) {
