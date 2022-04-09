@@ -1,3 +1,5 @@
+
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -7,6 +9,7 @@ class Artist(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     imageUrl = models.CharField(max_length=512, null=True)
     imageName = models.CharField(max_length=128, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.name} ({self.id})'
@@ -28,6 +31,7 @@ class File(models.Model):
 class Track(models.Model):
     title = models.CharField(max_length=255, blank=False, default=None)
     file = models.ForeignKey(File, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     artists = models.ManyToManyField(Artist)
     creationDate = models.DateTimeField(auto_now_add=True)
     duration = models.IntegerField()
@@ -44,7 +48,7 @@ class Track(models.Model):
 
 class Playlist(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tracks = models.ManyToManyField(Track, through='melophony.PlaylistTrack')
     imageUrl = models.CharField(max_length=512, null=True)
     imageName = models.CharField(max_length=128, null=True)

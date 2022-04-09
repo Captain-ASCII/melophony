@@ -135,8 +135,9 @@ def act(action):
         return None
 
 
-def create(o_type, obj):
-    return act(lambda: o_type.objects.create(**obj))
+def create(o_type, obj, extra={}):
+    merged = {**obj, **extra}
+    return act(lambda: o_type.objects.create(**merged))
 
 
 def get(o_type, id, filters=None, foreign_keys=[], foreign_filters={}):
@@ -147,10 +148,12 @@ def get(o_type, id, filters=None, foreign_keys=[], foreign_filters={}):
         return None
 
 
-def get_all(o_type, filters=None, foreign_keys=[], foreign_filters={}):
+def get_all(o_type, filters={}, key_filters=None, foreign_keys=[], foreign_filters={}):
     try:
         objects = o_type.objects.all()
-        return [format(o, filters, foreign_keys, foreign_filters) for o in objects]
+        if filters:
+            objects = objects.filter(**filters)
+        return [format(o, key_filters, foreign_keys, foreign_filters) for o in objects]
     except Exception:
         return None
 
@@ -258,7 +261,7 @@ def delete_user(r, user_id):
 # Artists
 
 def create_artist(r, artist):
-    return response(format(create(Artist, artist)), message=Message.CREATED, status=Status.CREATED)
+    return response(format(create(Artist, artist, {'user': r.user})), message=Message.CREATED, status=Status.CREATED)
 
 def get_artist(r, artist_id):
     return response(get(Artist, artist_id))
@@ -274,7 +277,7 @@ def delete_artist(r, artist_id):
     return response(delete(Artist, artist_id))
 
 def list_artists(r):
-    return response(format(Artist.objects.all()))
+    return response(get_all(Artist, filters={'user': r.user.id}))
 
 def find_artist(r, body, artistName):
     return response()
@@ -302,7 +305,7 @@ def create_track(r, track):
 
         artists = track['artists'] if 'artists' in track else []
         if 'artistName' in track and track['artistName'] != '':
-            artist = create(Artist, {'name': track['artistName']})
+            artist = create(Artist, {'name': track['artistName'], 'user': r.user})
             artists = [artist]
 
         if 'title' in track:
@@ -317,6 +320,7 @@ def create_track(r, track):
             'playCount': 0,
             'rating': 0,
             'progress': 0,
+            'user': r.user
         })
 
         if len(artists) > 0:
@@ -349,7 +353,7 @@ def delete_track(r, track_id):
     return response(delete(Track, track_id))
 
 def list_tracks(r):
-    return response(get_all(Track, foreign_keys=['artists', 'file']))
+    return response(get_all(Track, filters={'user': r.user.id}, foreign_keys=['artists', 'file']))
 
 def find_track(r, body, track):
     return response()
@@ -358,7 +362,7 @@ def find_track(r, body, track):
 # Playlists
 
 def create_playlist(r, provided_playlist):
-    if 'imageUrl' in provided_playlist:
+    if 'imageUrl' in provided_playlist and provided_playlist['imageUrl'] != '':
         provided_playlist['imageName'] = _download_image(PLAYLIST_IMAGES, provided_playlist['imageUrl'])
 
     tracks = provided_playlist['tracks']
@@ -394,7 +398,7 @@ def delete_playlist(r, playlist_id):
     return response(delete(Playlist, playlist_id))
 
 def list_playlists(r):
-    return response(get_all(Playlist, foreign_keys=['tracks', 'artists', 'file']))
+    return response(get_all(Playlist, filters={'user': r.user.id}, foreign_keys=['tracks', 'artists', 'file']))
 
 def find_playlist(r, body, playlist):
     return response()
