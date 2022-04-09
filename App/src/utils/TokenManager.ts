@@ -31,6 +31,10 @@ export default class TokenManager {
   }
 
   public hasValidToken(): boolean {
-    return JWT.validate(JWT.read(this.getToken()))
+    const token = this.getToken()
+    if (token != null) {
+      return JWT.validate(JWT.read(this.getToken()))
+    }
+    return false
   }
 }
