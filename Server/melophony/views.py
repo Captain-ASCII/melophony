@@ -233,7 +233,7 @@ def _generate_new_token(user):
     return {'exp': expiration_date, 'user': {'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name}}
 
 def login(r, body):
-    user = authenticate(username=body['email'], password=body['password'])
+    user = authenticate(username=body['userName'], password=body['password'])
     if user is not None:
         jwt_data = _generate_new_token(user)
         return response(message='Successfully authenticated', token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))

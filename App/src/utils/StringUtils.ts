@@ -13,4 +13,8 @@ export default class Utils {
   static isNumber(value: string): boolean {
     return !isNaN(parseInt(value))
   }
+
+  static notNullNorEmpty(value: string): boolean {
+    return value != null && value !== ''
+  }
 }

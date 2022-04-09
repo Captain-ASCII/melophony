@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react'
 
+import StringUtils from '@utils/StringUtils'
+
 import { selectApiManager } from '@selectors/App'
 
 import Field from '@components/Field'
@@ -38,8 +40,8 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   const login = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/login', { email, password }).then(handleResponse)
-  }, [ apiManager, email, password, handleResponse ])
+    apiManager.post('/login', { userName, password }).then(handleResponse)
+  }, [ apiManager, userName, password, handleResponse ])
 
   const formLogin = useCallback((event) => {
     event.preventDefault()
@@ -47,9 +49,14 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
   }, [login])
 
   const register = useCallback(() => {
-    setLoading(true)
-    setErrorMessage('')
-    apiManager.post('/register', { userName, email, firstName, lastName, password }).then(handleResponse)
+    if (StringUtils.notNullNorEmpty(userName) && StringUtils.notNullNorEmpty(password)
+    &&  StringUtils.notNullNorEmpty(firstName) && StringUtils.notNullNorEmpty(lastName)) {
+      setLoading(true)
+      setErrorMessage('')
+      apiManager.post('/register', { userName, email, firstName, lastName, password }).then(handleResponse)
+    } else {
+      setErrorMessage('Please, fill every mandatory fields')
+    }
   }, [ apiManager, email, userName, firstName, lastName, password, handleResponse ])
 
   const switchMode = useCallback(() => setMode(mode === Mode.LOGIN ? Mode.REGISTER : Mode.LOGIN), [ mode ])
@@ -67,7 +74,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
         </div>
         <div id="loginInputs" >
           <form onSubmit={formLogin} >
-            <Field title="Email" id="email" icon="at" onInput={setEmail} />
+            <Field title="User name" id="userName" icon="user" onInput={setUserName} />
             <Field title="Password" id="password" icon="key" type="password" onInput={setPassword} />
             <input type="submit" style={{display: 'none'}} />
           </form>
@@ -88,8 +95,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
           {
             mode === Mode.REGISTER && (
               <>
-                  <Field title="Repeat your password" id="repeatPassword" icon="key" type="password" onInput={setPassword} />
-                  <Field title="User name" id="userName" icon="user" onInput={setUserName} />
+                  <Field title="Email (optional)" id="email" icon="at" onInput={setEmail} />
                   <Field title="First name" id="firstName" icon="user" onInput={setFirstName} />
                   <Field title="Last name" id="lastName" icon="user" onInput={setLastName} />
                   <Button title="Register" icon="thumbs-up" onClick={register} />

@@ -56,8 +56,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = ['melophony.authentication.EmailBackend']
-
 ROOT_URLCONF = 'melophonyApiServer.urls'
 
 TEMPLATES = [
