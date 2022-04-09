@@ -11,6 +11,12 @@ input[type=range] {
   /*transform: translateY(-50%);*/
 }
 
+
+#tracker {
+  flex: 1;
+  min-width: min(500px, 100%);
+}
+
 input[type=range]::-webkit-slider-runnable-track {
   -webkit-appearance: none;
   height: 6px;
@@ -31,9 +37,13 @@ input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   border-radius: 10px;
-  background: #3c94FF;
+  background: var(--primary-bg);
   border-radius: 100px;
   visibility: visible;
+}
+
+input[type=range].disabled::-webkit-slider-thumb {
+  background: var(--disabled-color);
 }
 
 input[type=range]::-webkit-slider-thumb:hover {
@@ -68,11 +78,20 @@ input[type=range]::-webkit-slider-thumb:hover {
 }
 
 .multi-range > .trackSlider {
-  background-color: #555;
+  background-color: var(--main-hover-bg);
   border-radius: 3px;
 }
 
 .multi-range > .trackBar {
-  background-color: #3c94FF;
+  background-color: var(--primary-bg);
   border-radius: 3px;
+}
+
+.multi-range > .trackBar.disabled {
+  background-color: var(--disabled-color);
+}
+
+#trackModificationButton {
+  min-width: 200px;
+  flex: 0 0;
 }
