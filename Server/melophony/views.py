@@ -18,7 +18,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, JsonResponse
 
 from .apps import MelophonyConfig
-from .models import Album, Artist, File, Track, Playlist, PlaylistTrack
+from .models import Artist, File, Track, Playlist, PlaylistTrack
 from .utils import model_to_dict
 
 
@@ -283,27 +283,6 @@ def get_artist_image(r, image_name):
     return _get_image(ARTIST_IMAGES, image_name)
 
 
-# Albums
-
-def create_album(r, album):
-    return response(format(create(Album, album)), message=Message.CREATED, status=Status.CREATED)
-
-def get_album(r, album_id):
-    return response(get(Album, album_id))
-
-def update_album(r, album, album_id):
-    return response(format(update(Album, album_id, album)))
-
-def delete_album(r, album_id):
-    return response(delete(Album, album_id))
-
-def list_albums(r):
-    return response(format(Album.objects.all()))
-
-def find_album(r, body, artistName):
-    return response()
-
-
 # Tracks
 
 def _get_track_info(video_id):
@@ -331,7 +310,6 @@ def create_track(r, track):
 
         track = create(Track, {
             'title': title,
-            'album': None,
             'file': file,
             'duration': duration,
             'startTime': 0,
