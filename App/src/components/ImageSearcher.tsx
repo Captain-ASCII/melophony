@@ -28,7 +28,7 @@ const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSel
   const searchImages = useCallback(() => setRealQuery(imageQuery), [imageQuery, setRealQuery])
 
   useEffect(() => {
-    const googleApi = new ApiClient('https://www.googleapis.com', null)
+    const googleApi = new ApiClient('https://www.googleapis.com')
 
     async function loadImages() {
       if (realQuery !== undefined && realQuery !== '') {

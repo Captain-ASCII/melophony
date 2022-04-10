@@ -72,7 +72,7 @@ def _download_image(directory, image_url):
         logging.info('Image successfully Downloaded, convert to webp: %s', image_name)
         return _convert_to_webp(image_path)
     else:
-        logging.info('Image Couldn\'t be retreived')
+        logging.info('Image Couldn\'t be retrieved')
         return None
 
 
@@ -84,7 +84,7 @@ def _convert_to_webp(source_path):
         image.save(destination, format="webp")
         logging.info('Image successfully converted to WebP: %s', source)
         os.remove(source_path)
-        return destination
+        return destination.name
     except Exception as e:
         print("Unable to convert image: " + str(source) + ' ' + str(e))
         return source
@@ -303,8 +303,10 @@ def create_track(r, track):
         else:
             _download_yt_file(video_id)
 
-        artists = track['artists'] if 'artists' in track else []
-        if 'artistName' in track and track['artistName'] != '':
+        artists = []
+        if 'artists' in track and track['artists']:
+            artists = track['artists']
+        elif 'artistName' in track and track['artistName'] != '':
             artist = create(Artist, {'name': track['artistName'], 'user': r.user})
             artists = [artist]
 

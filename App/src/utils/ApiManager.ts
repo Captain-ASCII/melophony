@@ -26,29 +26,29 @@ type QueryParameters = {
 export class ApiClient {
 
   protected serverUrl: string
+  protected baseNode: string
   protected resultCallback: (data: [number, any, string]) => [number, any, string]
 
-  private static BASE_NODE = '/api'
-
-  public constructor(serverUrl: string, onResult: (data: [number, any, string]) => [number, any, string]) {
+  public constructor(serverUrl: string, baseNode = "", onResult: (data: [number, any, string]) => [number, any, string] = () => [-1, {}, ""]) {
     this.serverUrl = serverUrl
+    this.baseNode = baseNode
     this.resultCallback = onResult
   }
 
   public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'GET', path, null, queryParams, headers)
+    return this.send(this.serverUrl + this.baseNode, 'GET', path, null, queryParams, headers)
   }
 
   public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'POST', path, body, queryParams, headers)
+    return this.send(this.serverUrl + this.baseNode, 'POST', path, body, queryParams, headers)
   }
 
   public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'PUT', path, body, queryParams, headers)
+    return this.send(this.serverUrl + this.baseNode, 'PUT', path, body, queryParams, headers)
   }
 
   public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + ApiClient.BASE_NODE, 'DELETE', path, null, queryParams, headers)
+    return this.send(this.serverUrl + this.baseNode, 'DELETE', path, null, queryParams, headers)
   }
 
   private getFetchParams(method: string, body: object, headers: Headers): RequestInit {
@@ -103,7 +103,7 @@ export default class MelophonyApiClient extends ApiClient {
   private tokenManager: TokenManager
 
   public constructor(serverUrl: string, onResult: (data: [number, any, string]) => [number, any, string], tokenManager: TokenManager) {
-    super(serverUrl, onResult)
+    super(serverUrl, "/api", onResult)
     this.tokenManager = tokenManager
   }
 

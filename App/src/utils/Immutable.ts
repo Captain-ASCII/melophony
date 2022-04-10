@@ -37,6 +37,10 @@ class Arrays {
     return [...array, element]
   }
 
+  static concat<T>(array: Array<T>, elements: Array<T>): Array<T> {
+    return [...array, ...elements]
+  }
+
   static pop<T>(array: Array<T>): [T, Array<T>] {
     return [ array[0], array.slice(1) ]
   }
