@@ -303,8 +303,10 @@ def create_track(r, track):
         else:
             _download_yt_file(video_id)
 
-        artists = track['artists'] if 'artists' in track else []
-        if 'artistName' in track and track['artistName'] != '':
+        artists = []
+        if 'artists' in track and track['artists']:
+            artists = track['artists']
+        elif 'artistName' in track and track['artistName'] != '':
             artist = create(Artist, {'name': track['artistName'], 'user': r.user})
             artists = [artist]
 
