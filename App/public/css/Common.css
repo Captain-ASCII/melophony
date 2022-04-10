@@ -18,6 +18,11 @@
   --disabled-color: #666;
 }
 
+@font-face {
+  font-family: MontSerrat;
+  src: url("file:///android_asset/fonts/Montserrat.ttf")
+}
+
 /*:root{
   --primary-bg: #2c84F8;
   --primary-hover-bg: #3c94FF;
@@ -73,7 +78,7 @@ html, body, #root {
   height: 100%;
   width: 100%;
   margin: 0;
-  font-family: "Roboto", "Ubuntu", "Open Sans";
+  font-family: "MontSerrat", "Roboto", "Ubuntu", "Open Sans";
   font-size: 0.85em;
   color: var(--main-color);
   overflow-x: hidden;
