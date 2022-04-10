@@ -32,7 +32,7 @@ const TrackCreationScreen = (): JSX.Element => {
 
   const handleInput = useCallback(event => {
     const value = event.target.value
-    const searchForParam = value.match(/v=(.*)?(&|$)/)
+    const searchForParam = value.match(/v=(.*?)(&|$)/)
     if (searchForParam) {
       console.warn(searchForParam[1])
       setVideoId(searchForParam[1])
