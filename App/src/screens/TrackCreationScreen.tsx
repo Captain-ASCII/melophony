@@ -3,12 +3,14 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 
+import Artist from '@models/Artist'
 import Track from '@models/Track'
 
 import { selectApiManager } from '@selectors/App'
 import { selectArtists } from '@selectors/Artist'
 import { selectTracks } from '@selectors/Track'
 import { setTracks } from '@actions/Track'
+import { setArtists as setArtistsInState } from '@actions/Artist'
 
 import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
@@ -23,7 +25,8 @@ const TrackCreationScreen = (): JSX.Element => {
 
   const apiManager = selectApiManager()
   const tracks = selectTracks()
-  const artistsNames = selectArtists().map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
+  const allArtists = selectArtists()
+  const artistsNames = allArtists.map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
   const [ videoId, setVideoId ] = useState('')
   const [ title, setTitle ] = useState('')
@@ -49,7 +52,11 @@ const TrackCreationScreen = (): JSX.Element => {
   const requestServerDownload = useCallback(() => {
     apiManager.post('/track', { videoId, title, artists, artistName }).then(([code, data]) => {
       if (code === 201) {
-        dispatch(setTracks(Arrays.add(tracks, Track.fromObject(data))))
+        const newTrack = Track.fromObject(data)
+        dispatch(setTracks(Arrays.add(tracks, newTrack)))
+        if (allArtists.every((a: Artist) => a.getId() !== newTrack.getArtist().getId())) {
+          dispatch(setArtistsInState(Arrays.concat(allArtists, data.artists.map((a: any) => Artist.fromObject(a)))))
+        }
       }
     })
     history.goBack()
