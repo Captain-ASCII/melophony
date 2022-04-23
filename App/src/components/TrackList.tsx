@@ -3,13 +3,15 @@ import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { FixedSizeList as List } from 'react-window'
 
+import { addNotification } from '@actions/Notification'
 import { selectPlaylistManager } from '@selectors/App'
 import { setPlaylistManager } from '@actions/App'
 
 import Track from '@models/Track'
+import Notification from '@models/Notification'
 import MediaUtils from '@utils/MediaUtils'
 
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 import useLongPress from '../hooks/LongPressHook'
 import KeyboardManager from '@utils/KeyboardManager'
@@ -17,7 +19,7 @@ import KeyboardManager from '@utils/KeyboardManager'
 const formatDuration = (duration: number): string => {
   const minutes = '0' + Math.floor(duration / 60)
   const seconds = '0' + (duration % 60)
-  return `${minutes.substr(-2)} : ${seconds.substr(-2)}`
+  return `${minutes.slice(-2)} : ${seconds.slice(-2)}`
 }
 
 const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => {
@@ -35,6 +37,7 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
   const handleEnqueue = useCallback((data:any, e: React.MouseEvent) => {
     e.stopPropagation()
     dispatch(setPlaylistManager(playlist.enqueue(track)))
+    dispatch(addNotification(new Notification('Track added to playlist')))
   }, [ dispatch, playlist, track ])
 
   const renderArtistName = (): JSX.Element => {
@@ -49,7 +52,7 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
   }
 
   return (
-    <div id={KeyboardManager.getId(track)} className="itemInfo" onClick={startPlay} {...longPress} style={style} >
+    <div id={KeyboardManager.getId(track)} className="itemInfo" onClick={startPlay} style={style} >
       <div className="mainTrackInfo" >
         <p className="title" >{track.getTitle()}</p>
         { renderArtistName() }
@@ -57,8 +60,8 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
       <div className="optionalTrackInfo" >
         <p className="duration" >{formatDuration(track.getDuration())}</p>
         <div className="itemActions">
-          <IconButton icon="plus-square" onClick={handleEnqueue} />
-          <Link to={`/modify/track/${track.getId()}`} onClick={stopPropagation} ><IconButton icon="pen" /></Link>
+          <Button icon="plus-square" onClick={handleEnqueue} />
+          <Link to={`/modify/track/${track.getId()}`} onClick={stopPropagation} ><Button icon="pen" /></Link>
         </div>
       </div>
     </div>
@@ -75,10 +78,9 @@ const TrackList = ({ tracks, className = '', height }: { tracks: Array<Track>; c
     window.addEventListener('resize', () => setSize(MediaUtils.isMobileScreen() ? 66 : 36))
   })
 
-
-  const renderer = ({index, style, data}: {index: number, style: any, data: Array<Track>}) => {
+  const renderer = useCallback(({index, style, data}: {index: number, style: any, data: Array<Track>}) => {
     return <RTrack style={style} track={data[index]} />
-  }
+  }, [])
 
   return (
     <List className={className} height={height} itemCount={tracks.length} itemSize={size} width={'100%'} itemData={tracks} >{renderer}</List>

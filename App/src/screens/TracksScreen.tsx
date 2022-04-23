@@ -50,13 +50,17 @@ function _sort(providedTracks: Array<Track>, sortOrder: string, type: string): A
 const TracksScreen = (): JSX.Element => {
   const dispatch = useDispatch()
 
-  const [ filter, setFilter ] = useState(getFromSession('tracksFilter'))
+  const [filter, setFilter] = useState(getFromSession('tracksFilter'))
   bindToSession('tracksFilter', filter)
 
   const keyboardManager = selectKeyboardManager()
   const configuration = selectConfiguration()
-  const tracks = _sort(filteredTracks(selectTracks(), filter), configuration.getSortOrder(), configuration.getSortType())
+  const tracks = selectTracks()
   const playlist = selectPlaylistManager()
+
+  const [displayedTracks, setDisplayedTracks] = useState(
+    _sort(filteredTracks(tracks, filter), configuration.getSortOrder(), configuration.getSortType())
+  )
 
   const changeTrackDisplay = useCallback(type => {
     dispatch(setConfiguration(configuration.withDisplayType(type)))
@@ -64,14 +68,14 @@ const TracksScreen = (): JSX.Element => {
 
   const sort = useCallback(type => {
     dispatch(setConfiguration(configuration.withSortType(type)))
-    dispatch(setTracks(_sort(tracks, configuration.getSortOrder(), type)))
+    dispatch(setDisplayedTracks(_sort(tracks, configuration.getSortOrder(), type)))
   }, [ dispatch, configuration, tracks ])
 
   const switchOrder = useCallback((value: string) => {
-    dispatch(setTracks(Arrays.reverse(tracks)))
+    setDisplayedTracks(Arrays.reverse(displayedTracks))
     dispatch(setConfiguration(configuration.withSortOrder(value)))
     dispatch(setKeyboardManager(keyboardManager.goTo(AppIds.NO_OPERATION)))
-  }, [ dispatch, configuration, tracks ])
+  }, [ dispatch, configuration, displayedTracks ])
 
   const switchMode = useCallback((value: boolean) => {
     dispatch(setConfiguration(configuration.withShuffleMode(value)))
@@ -83,7 +87,7 @@ const TracksScreen = (): JSX.Element => {
     setFilter(filter)
   }, [ setFilter ])
 
-  KeyboardManager.addMainNodes(tracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, containerLevel: 2})
+  KeyboardManager.addMainNodes(displayedTracks, {top: AppIds.MELOPHONY, left: AppIds.MENU, containerLevel: 2})
 
   return (
     <div id="trackScreen" className="screen" >
@@ -126,7 +130,7 @@ const TracksScreen = (): JSX.Element => {
         </div>
       </div>
       <div className="delimiter" />
-      <TrackList height={1000} tracks={tracks} className="itemList" />
+      <TrackList height={1000} tracks={displayedTracks} className="itemList" />
       <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
     </div>
   )
