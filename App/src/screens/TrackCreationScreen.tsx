@@ -55,10 +55,10 @@ const TrackCreationScreen = (): JSX.Element => {
 
   const handleInput = useCallback(event => {
     const value = event.target.value
-    const searchForParam = value.match(/v=(.*?)(&|$)/)
-    if (searchForParam) {
-      setVideoId(searchForParam[1])
-      lookForInfo(searchForParam[1])
+    const searchForParam = value.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
+    if (searchForParam && searchForParam[7] && searchForParam[7].length == 11) {
+      setVideoId(searchForParam[7])
+      lookForInfo(searchForParam[7])
     } else {
       setVideoId(value)
       if (value.length === 11) {
