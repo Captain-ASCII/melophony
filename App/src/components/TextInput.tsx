@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 const TextInput = ({ id, icon, type, onInput, placeHolder = '', initialValue = '' }:
 { id?: string; type?: string; placeHolder?: string; icon?: string; onInput: (t: string) => void; initialValue?: string }): JSX.Element => {
@@ -24,7 +24,7 @@ const TextInput = ({ id, icon, type, onInput, placeHolder = '', initialValue = '
         id={id} type={type || 'text'} value={value} placeholder={placeHolder}
         onInput={handleInput} onChange={handleChange}
       />
-      <IconButton icon="times" className="clear-icon" onClick={handleReset} />
+      <Button icon="times" className="clear-icon" onClick={handleReset} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 class SwitchState<T> {
 
@@ -24,7 +24,7 @@ class SwitchState<T> {
 }
 
 const Switch = <U extends unknown>({ initial, onSwitch, title, enabledState, disabledState, onOff }:
-  { initial: U; onSwitch: (t: U) => void; title: string; enabledState: SwitchState<U>; disabledState: SwitchState<U>, onOff?: boolean }): JSX.Element => {
+  { initial: U; onSwitch: (t: U) => void; title?: string; enabledState: SwitchState<U>; disabledState: SwitchState<U>, onOff?: boolean }): JSX.Element => {
   const [ active, setActive ] = useState(initial === enabledState.getValue())
   const [ iconState, setIconState ] = useState(active ? enabledState.getIcon() : disabledState.getIcon())
 
@@ -37,7 +37,7 @@ const Switch = <U extends unknown>({ initial, onSwitch, title, enabledState, dis
     setIconState(iconState)
   }, [ active, disabledState, enabledState, onSwitch ])
 
-  return <IconButton icon={iconState} className={onOff && active ? 'active' : ''} onClick={handleSwitch} title={title} />
+  return <Button icon={iconState} className={onOff && active ? 'active' : ''} onClick={handleSwitch} title={title} />
 }
 
 // Switch.propTypes = {

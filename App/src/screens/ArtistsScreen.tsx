@@ -9,7 +9,7 @@ import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 import { getFromSession, bindToSession } from '@utils/SessionUtils'
 
 import TextInput from '@components/TextInput'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 const ArtistsScreen = (): JSX.Element => {
   const ref = useRef(null)
@@ -35,7 +35,7 @@ const ArtistsScreen = (): JSX.Element => {
           <h5 className="artistName">{ artist.getName() }</h5>
         </Link>
         <div className="artistActions">
-          <Link to={`/modify/artist/${artist.getId()}`}><IconButton className="floating mini" icon="pen" /></Link>
+          <Link to={`/modify/artist/${artist.getId()}`}><Button className="floating mini" icon="pen" /></Link>
         </div>
       </div>
     )

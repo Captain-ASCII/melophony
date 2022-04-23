@@ -8,7 +8,6 @@ import { setUser } from '@actions/App'
 import { selectUser } from '@selectors/App'
 
 import Button from '@components/Button'
-import IconButton from '@components/IconButton'
 
 class DrawerState {
   public opened: boolean
@@ -46,7 +45,7 @@ const UserDrawer = (): JSX.Element => {
     <div id="userDrawer" >
       <div id="userName" >
         <p id="userMessage" ><span className="hideWhenClosed">Hello </span>{ user.getFirstName() }</p>
-        <IconButton className="hideWhenClosed" icon={drawerState.icon} onClick={openClose} />
+        <Button className="hideWhenClosed" icon={drawerState.icon} onClick={openClose} />
       </div>
       <div id="userSpace" style={{ maxHeight: drawerState.maxHeight }} >
         <Button className="raised alert hideWhenClosed" icon="times-circle" onClick={disconnect} title="Disconnect" />

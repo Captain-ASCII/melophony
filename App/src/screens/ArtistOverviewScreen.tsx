@@ -13,7 +13,7 @@ import { selectConfiguration } from '@selectors/Configuration'
 
 import CloseButton from '@components/CloseButton'
 import TrackList from '@components/TrackList'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 const ArtistOverviewScreen = (): JSX.Element => {
   const { id } = useParams<QueryParameters>()
@@ -46,7 +46,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
           <div id="titlesHeader" >
             <h2>Titres</h2>
             <div className="displayActions">
-              <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="edit" title="Edit artist data" /></Link>
+              <Link to={`/modify/artist/${artist.getId()}`}><Button icon="edit" title="Edit artist data" /></Link>
             </div>
           </div>
           <div className="delimiter" />

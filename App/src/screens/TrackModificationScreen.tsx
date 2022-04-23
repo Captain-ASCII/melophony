@@ -13,11 +13,10 @@ import { selectMediaManager } from '@selectors/App'
 
 import { setTrack } from '@actions/Track'
 
-import Button from '@components/Button'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 import { Objects } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
 import { SelectStyles } from '@utils/SelectStyles'
@@ -128,7 +127,7 @@ const TrackModificationScreen = (): JSX.Element => {
                   options={artistsNames} onChange={handleArtistNameSet}
                   defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />
-                <Link to={`/artist/create`}><IconButton icon="plus" /></Link>
+                <Link to={`/artist/create`}><Button icon="plus" /></Link>
               </div>
               <div className="input">
                 <i className="fa fa-step-backward fa-2x icon" />

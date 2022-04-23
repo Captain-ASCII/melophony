@@ -104,24 +104,24 @@ const TracksScreen = (): JSX.Element => {
             </CustomSelect>
             <Switch
               enabledState={new SwitchState('sort-amount-up', 'ASC')} disabledState={new SwitchState('sort-amount-down', 'DESC')}
-              title="Sort order" onSwitch={switchOrder} initial={configuration.getSortType()}
+              onSwitch={switchOrder} initial={configuration.getSortType()}
             />
           </div>
           <div className="displayActions">
             <Switch
               enabledState={new SwitchState('random active', true)} disabledState={new SwitchState('random', false)}
-              onOff title="Switch track playing mode" onSwitch={switchMode} initial={configuration.getShuffleMode()}
+              onOff onSwitch={switchMode} initial={configuration.getShuffleMode()}
             />
             { /*
-            <IconButton
+            <Button
               icon="list" data="itemList" onClick={changeTrackDisplay}
               title="Track list"
             />
-            <IconButton
+            <Button
               icon="th" data="itemBlocks" onClick={changeTrackDisplay}
               title="Track blocks"
             />
-            <IconButton
+            <Button
               icon="stream" data="groupedItems" onClick={changeTrackDisplay}
               title="Tracks for each artist"
             />
