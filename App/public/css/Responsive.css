@@ -166,12 +166,8 @@
     width: 65%;
     height: 48px;
     white-space: nowrap;
-  }
-
-  #currentTrackInfo {
-    width: 100%;
     overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: 65%;
   }
 
   #footer #tracker {
@@ -198,5 +194,24 @@
   #artistScreenHeader {
     height: 400px;
     background-size: cover;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  #currentTrackInfo {
+    white-space: nowrap;
+    display: inline-block;
+    padding: 0;
+    animation: marquee 8s linear infinite;
+  }
+
+  #currentTrackInfo > p {
+    display: inline-block;
+    margin: 0 20px;
+  }
+
+  @keyframes marquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-25%, 0, 0); }
   }
 }

@@ -65,7 +65,7 @@ const Player = (): JSX.Element => {
         <IconButton icon="forward" onClick={next} />
       </div>
       <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
-        <div id="currentTrackInfo"  />
+        <div id="currentTrackInfo" />
       </Link>
       <InputRange track={currentTrack} asReader />
     </>
