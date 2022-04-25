@@ -6,7 +6,9 @@ import { selectPlaylistManager } from '@selectors/App'
 import Track from '@models/Track'
 
 const PlayList = ({ tracks }: { tracks: Array<Track> }): JSX.Element => {
-  const rTracks = tracks.map(track => (<p key={track.getId()} className="hideWhenClosed" >{ track.getTitle() }</p>))
+  const rTracks = tracks.map((track, index) => (
+    <p key={`${track.getId()}_${index}`} className="hideWhenClosed" >{ track.getTitle() }</p>
+  ))
   const rPlaylist = selectPlaylistManager().getList().map(track => (<p key={track.getId()} className="hideWhenClosed" >{ track.getTitle() }</p>))
 
   const renderPlaylist = () => {
