@@ -5,9 +5,11 @@ import User from '@models/User'
 import ApiManager from '@utils/ApiManager'
 import MediaManager from '@utils/MediaManager'
 import KeyboardManager from '@utils/KeyboardManager'
+import { Language } from '@utils/TranslationUtils'
 
 export const SET_PLAYLIST_MANAGER = 'SET_PLAYLIST_MANAGER'
 export const SET_USER = 'SET_USER'
+export const SET_LANGUAGE = 'SET_LANGUAGE'
 
 interface SetPlaylistManagerAction {
   type: typeof SET_PLAYLIST_MANAGER;
@@ -18,8 +20,14 @@ interface SetUserAction {
   user: User;
 }
 
+interface SetLanguage {
+  type: typeof SET_LANGUAGE;
+  language: Language
+}
+
 export const setPlaylistManager = (playlist: PlaylistManager): AppAction => ({ type: SET_PLAYLIST_MANAGER, playlist })
 export const setUser = (user: User): AppAction => ({ type: SET_USER, user })
+export const setLanguage = (language: Language): AppAction => ({ type: SET_LANGUAGE, language })
 
 export const SET_API_MANAGER = 'SET_API_MANAGER'
 export const SET_MEDIA_MANAGER = 'SET_MEDIA_MANAGER'
@@ -42,4 +50,4 @@ export const setMediaManager = (mediaManager: MediaManager): AppAction => ({ typ
 export const setApiManager = (apiManager: ApiManager): AppAction => ({ type: SET_API_MANAGER, apiManager })
 export const setKeyboardManager = (keyboardManager: KeyboardManager): AppAction => ({ type: SET_KEYBOARD_MANAGER, keyboardManager })
 
-export type AppAction = SetPlaylistManagerAction | SetUserAction | SetMediaManagerAction | SetApiManagerAction | SetKeyboardManagerAction
+export type AppAction = SetPlaylistManagerAction | SetUserAction | SetMediaManagerAction | SetApiManagerAction | SetKeyboardManagerAction | SetLanguage

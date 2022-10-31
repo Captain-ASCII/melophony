@@ -5,8 +5,10 @@ import Log from '@utils/Log'
 
 import Configuration from '@models/Configuration'
 
+import { EN_TRANSLATION_KEY } from '@utils/TranslationUtils'
+
 const MELOPHONY_CONFIGURATION = 'melophony-configuration'
-const INITIAL_CONFIG = new Configuration('https://melophony-api.ddns.net', true, true, 'date', 'ASC', 'itemList')
+const INITIAL_CONFIG = new Configuration('https://melophony-api.ddns.net', true, true, 'date', 'ASC', 'itemList', EN_TRANSLATION_KEY)
 
 function inflate(): Configuration {
   const jsonConfiguration = localStorage.getItem(MELOPHONY_CONFIGURATION)
@@ -14,15 +16,17 @@ function inflate(): Configuration {
     try {
       const c: any = JSON.parse(jsonConfiguration)
       return new Configuration(
-        c.serverAddress,
-        c.networkEnabled,
-        c.shuffleMode,
-        c.sortType,
-        c.sortOrder,
-        c.displayType
+        c.serverAddress || 'https://melophony-api.ddns.net',
+        c.networkEnabled || true,
+        c.shuffleMode || true,
+        c.sortType || 'date',
+        c.sortOrder || 'ASC',
+        c.displayType || 'itemList',
+        c.language || EN_TRANSLATION_KEY
       )
     } catch (error) {
-      Log.e('Unable to parse configuration', error)
+      const errorLog: any = error
+      Log.e('Unable to parse configuration', errorLog)
     }
   }
   return INITIAL_CONFIG

@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
 
 import Artist from '@models/Artist'
 import Event from '@models/Event'
@@ -77,7 +78,7 @@ const ArtistModificationScreen = (): JSX.Element => {
       return (
         <div className="screen" >
           <div id="pageHeader">
-            <h2 id="pageTitle">Modify an artist</h2>
+            <h2 id="pageTitle">{ _("artist.modification.title") }</h2>
             <CloseButton />
           </div>
           <div className="input">
@@ -97,8 +98,8 @@ const ArtistModificationScreen = (): JSX.Element => {
             <ImageSearcher initialQuery={artist.getName()} onSelect={setArtistImage} />
           </div>
           <div id="postActions" >
-            <Button icon="save" className="raised" onClick={save} title="Save" />
-            <Button icon="trash" className="raised alert" onClick={deleteArtist} title="Delete" />
+            <Button icon="save" className="raised" onClick={save} title={_("artist.modification.save")} />
+            <Button icon="trash" className="raised alert" onClick={deleteArtist} title={_("artist.modification.delete")} />
           </div>
         </div>
       )

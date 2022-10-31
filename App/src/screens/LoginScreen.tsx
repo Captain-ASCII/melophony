@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 
 import StringUtils from '@utils/StringUtils'
+import { _ } from '@utils/TranslationUtils'
 
 import { selectApiManager } from '@selectors/App'
 
@@ -69,13 +70,13 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
       </div>
       <div id="loginBox" >
         <div id="loginText" >
-          <h2>Login</h2>
-          <p>Please provide your username & password to authenticate and get access to your tracks</p>
+          <h2>{ _("login.screen.title") }</h2>
+          <p>{ _("login.notice.subtitle") }</p>
         </div>
         <div id="loginInputs" >
           <form onSubmit={formLogin} >
-            <Field title="User name" id="userName" icon="user" onInput={setUserName} />
-            <Field title="Password" id="password" icon="key" type="password" onInput={setPassword} />
+            <Field title={_("login.user.name.field")} id="userName" icon="user" onInput={setUserName} />
+            <Field title={_("login.password.field")} id="password" icon="key" type="password" onInput={setPassword} />
             <input type="submit" style={{display: 'none'}} />
           </form>
           { (loading || errorMessage) &&
@@ -87,19 +88,19 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
           {
             mode === Mode.LOGIN && (
               <>
-                <Button title="Login" icon="sign-in-alt" onClick={login} />
-                <Button title="Join the kiwis" icon="kiwi-bird" onClick={switchMode} />
+                <Button title={_("login.login.button")} icon="sign-in-alt" onClick={login} />
+                <Button title={_("login.register.mode.button")} icon="kiwi-bird" onClick={switchMode} />
               </>
             )
           }
           {
             mode === Mode.REGISTER && (
               <>
-                  <Field title="Email (optional)" id="email" icon="at" onInput={setEmail} />
-                  <Field title="First name" id="firstName" icon="user" onInput={setFirstName} />
-                  <Field title="Last name" id="lastName" icon="user" onInput={setLastName} />
-                  <Button title="Register" icon="thumbs-up" onClick={register} />
-                  <Button title="Back to login" icon="sign-in-alt" onClick={switchMode} />
+                  <Field title={_("login.email.field")} id="email" icon="at" onInput={setEmail} />
+                  <Field title={_("login.first.name.field")} id="firstName" icon="user" onInput={setFirstName} />
+                  <Field title={_("login.last.name.field")} id="lastName" icon="user" onInput={setLastName} />
+                  <Button title={_("login.register.button")} icon="thumbs-up" onClick={register} />
+                  <Button title={_("login.back.to.login.button")} icon="sign-in-alt" onClick={switchMode} />
               </>
             )
           }

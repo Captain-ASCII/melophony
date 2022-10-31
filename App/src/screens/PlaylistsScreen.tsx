@@ -15,6 +15,7 @@ import { setPlaylistManager } from '@actions/App'
 import Button from '@components/Button'
 
 import KeyboardManager from '@utils/KeyboardManager'
+import { _ } from '@utils/TranslationUtils'
 
 
 const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: Playlist; playlistManager: PlaylistManager; serverAddress: string }): JSX.Element => {
@@ -32,7 +33,7 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
     <div id={KeyboardManager.getId(playlist)} className="playlistCard" style={imageBackground} >
       <div className="playlistInfo">
         <h5>{playlist.getName()}</h5>
-        <p>{playlist.getTracks().length} tracks</p>
+        <p>{_("playlists.tracks.number", [playlist.getTracks().length]) }</p>
       </div>
       <Link to={`/modify/playlist/${playlist.getId()}`} ><Button className="floating mini" icon="pen" /></Link>
       <Button id={KeyboardManager.getClickId(playlist)} className="floating mini second" icon="play" onClick={runPlaylist} />

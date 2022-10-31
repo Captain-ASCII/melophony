@@ -7,6 +7,7 @@ import { selectConfiguration } from '@selectors/Configuration'
 
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
 import { getFromSession, bindToSession } from '@utils/SessionUtils'
+import { _ } from '@utils/TranslationUtils'
 
 import TextInput from '@components/TextInput'
 import Button from '@components/Button'
@@ -48,7 +49,7 @@ const ArtistsScreen = (): JSX.Element => {
   return (
     <div id="artistScreen" className="screen" >
       <div id="contentHeader">
-        <h1>Artistes</h1>
+        <h1>{ _("artists.screen.title") }</h1>
         <div className="searchbar">
           <TextInput id="trackSearch" icon="search" initialValue={filter} onInput={handleFilter} />
         </div>

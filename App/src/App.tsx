@@ -13,9 +13,11 @@ import PlaylistModificationScreen from '@screens/PlaylistModificationScreen'
 import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TracksScreen from '@screens/TracksScreen'
+import UserConfigurationScreen from '@screens/UserConfigurationScreen'
 
 import MediaUtils from '@utils/MediaUtils'
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
+import { _ } from '@utils/TranslationUtils'
 
 import { setConfiguration } from '@actions/Configuration'
 import { selectConfiguration } from '@selectors/Configuration'
@@ -26,11 +28,10 @@ import Button from '@components/Button'
 import NotificationToaster from '@components/NotificationToaster'
 import Player from '@components/Player'
 import PlayList from '@components/PlayList'
-import RSwitch, { SwitchState } from '@components/Switch'
 import UserDrawer from '@components/UserDrawer'
 
 
-const MenuLink = ({ id, title, path, icon, hideMenu }: { id: string; title: string; path: string; icon: string; hideMenu: () => void }): JSX.Element => {
+const MenuLink = ({ id, title, path, icon, hideMenu }: { id: string; title: Str; path: string; icon: string; hideMenu: () => void }): JSX.Element => {
   return (
     <Link to={path} >
       <div id={id} className="menuLink buttonTitle hideWhenClosed">
@@ -68,9 +69,9 @@ const App = (): JSX.Element => {
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
             <UserDrawer />
-            <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title="Tracks" icon="music" hideMenu={hideMenu} />
-            <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title="Playlists" icon="compact-disc" hideMenu={hideMenu} />
-            <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title="Artists" icon="user-friends" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title={_("sidemenu.tracks")} icon="music" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title={_("sidemenu.playlists")} icon="compact-disc" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title={_("sidemenu.artists")} icon="user-friends" hideMenu={hideMenu} />
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
             </div>
@@ -87,6 +88,7 @@ const App = (): JSX.Element => {
               <Route path="/modify/artist/:id" component={ArtistModificationScreen} />
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
               <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
+              <Route path="/user" component={UserConfigurationScreen} />
               <Route path="/*" component={TracksScreen} />
             </Switch>
           </div>

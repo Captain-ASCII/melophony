@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { ApiClient } from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
 
 import Button from '@components/Button'
 import TextInput from '@components/TextInput'
@@ -63,7 +64,7 @@ const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSel
     <div className="imageSearchContainer" >
       <div className="imageSearchInputs" >
         <TextInput initialValue={imageQuery} onInput={handleQueryInput} />
-        <Button icon="search" className="raised" onClick={searchImages} title="Get images" />
+        <Button icon="search" className="raised" onClick={searchImages} title={_("image.search.button")} />
       </div>
       <div className="imageSearchImages" >
         { imageUrls.map((url, index) => <Image key={index} index={index} url={url} onSelect={chooseImage} selected={selected === index} />)}

@@ -19,6 +19,7 @@
       "@reducers/*": ["redux/reducers/*"],
       "@selectors/*": ["redux/selectors/*"],
       "@store": ["redux/store/Store.ts"],
+      "@data/*": ["data/*"],
       "@utils/*": ["utils/*"],
       "@screens/*": ["screens/*"]
     }

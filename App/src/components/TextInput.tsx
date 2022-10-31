@@ -2,10 +2,15 @@ import React, { useCallback, useState } from 'react'
 
 import Button from '@components/Button'
 
-const TextInput = ({ id, icon, type, onInput, placeHolder = '', initialValue = '' }:
-{ id?: string; type?: string; placeHolder?: string; icon?: string; onInput: (t: string) => void; initialValue?: string }): JSX.Element => {
+import { useTranslation } from '@utils/TranslationUtils'
 
-  const [ value, setValue ] = useState(initialValue)
+const TextInput = ({ id, icon, type, onInput, placeHolder = '', value = null, initialValue = '', disabled = false, className = '' }:
+{ id?: string; type?: string; placeHolder?: string; icon?: string;
+  onInput?: (t: string) => void; value?: string | number; initialValue?: string; disabled?: boolean;
+  className?: string
+}): JSX.Element => {
+
+  const [ internalValue, setValue ] = useState(initialValue)
 
   const input = useCallback(text => {
     setValue(text)
@@ -21,10 +26,10 @@ const TextInput = ({ id, icon, type, onInput, placeHolder = '', initialValue = '
     <div className={`text-input ${icon ? "with-icon" : ""}`}>
       { icon && <i className={`fa fa-${icon} icon`} /> }
       <input
-        id={id} type={type || 'text'} value={value} placeholder={placeHolder}
-        onInput={handleInput} onChange={handleChange}
+        id={id} type={type || 'text'} value={value === null ? internalValue : value} placeholder={useTranslation(placeHolder, null)}
+        onInput={handleInput} onChange={handleChange} disabled={disabled} className={className}
       />
-      <Button icon="times" className="clear-icon" onClick={handleReset} />
+      { !disabled && <Button icon="times" className="clear-icon" onClick={handleReset} /> }
     </div>
   )
 }

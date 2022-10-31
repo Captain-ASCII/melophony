@@ -6,6 +6,7 @@ import { arrayMoveImmutable } from 'array-move';
 
 import { Arrays } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
 
 import Playlist from '@models/Playlist'
 import Track from '@models/Track'
@@ -35,7 +36,7 @@ const filteredTracks = (tracks: Array<Track>, filter: string): Array<Track> => t
 const AddTrackOverlayHeader = ({ filter }: { filter: (v: string) => void }): JSX.Element => {
   return (
     <div className="playlistAddTrackHeader" >
-      <h3 style={{margin: 10}}>Add tracks</h3>
+      <h3 style={{margin: 10}}>{ _("playlist.modification.add.tracks.header") }</h3>
       <TextInput icon="filter" onInput={filter} />
     </div>
   )
@@ -137,17 +138,17 @@ const PlaylistModificationScreen = (): JSX.Element => {
   return (
     <div className="screen" >
       <div id="pageHeader">
-        <h2 id="pageTitle">Playlist</h2>
+        <h2 id="pageTitle">{ _("playlist.modification.screen.title") }</h2>
         <CloseButton />
       </div>
       <div className="input">
         <i className="fa fa-fingerprint fa-2x icon" />
-        <TextInput placeHolder="Name of the playlist" initialValue={playlist.getName()} onInput={handlePlaylistTitleChange} />
+        <TextInput placeHolder={"playlist.modification.playlist.name.placeholder"} initialValue={playlist.getName()} onInput={handlePlaylistTitleChange} />
       </div>
       <div className="input">
         <i className="fa fa-music fa-2x icon" />
         <TrackList playlist={playlist} removeTrack={removeTrack} onSortEnd={sortPlaylist} lockAxis="y" lockToContainerEdges lockOffset="0%" useDragHandle />
-        <Button title="Add" icon="plus" onClick={showOverlay} className="responsiveShrink" />
+        <Button title={_("playlist.modification.add.tracks.button")} icon="plus" onClick={showOverlay} className="responsiveShrink" />
         <Overlay isOpen={overlayVisible} onChange={setOverlay} className="addTrackOverlay" >
           <div>
             <AddTrackOverlayHeader filter={onTracksFilter} />
@@ -157,7 +158,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
             onSelect={onTracksSelection} renderItem={renderTrack}
           />
           <div>
-            <Button title="Add" icon="plus" className="raised" onClick={addTracks} />
+            <Button title={_("playlist.modification.add.tracks.button")} icon="plus" className="raised" onClick={addTracks} />
           </div>
         </Overlay>
       </div>
@@ -166,8 +167,8 @@ const PlaylistModificationScreen = (): JSX.Element => {
         <ImageSearcher initialQuery={playlist.getName()} onSelect={onImageSelected} />
       </div>
       <div id="postActions" >
-        { id && <Button icon="trash" className="raised alert" onClick={deletePlaylist} title="Delete" /> }
-        <Button icon="save" className="raised" onClick={savePlaylist} title="Save" />
+        { id && <Button icon="trash" className="raised alert" onClick={deletePlaylist} title={_("playlist.modification.button.delete")} /> }
+        <Button icon="save" className="raised" onClick={savePlaylist} title={_("playlist.modification.button.save")} />
       </div>
     </div>
   )

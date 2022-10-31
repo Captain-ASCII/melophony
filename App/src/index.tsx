@@ -32,6 +32,7 @@ import ApiManager from '@utils/ApiManager'
 import KeyboardManager from '@utils/KeyboardManager'
 import MediaManager from '@utils/MediaManager'
 import TokenManager from '@utils/TokenManager'
+import { getLanguage } from '@utils/TranslationUtils'
 
 const configuration = store.getState().configuration
 
@@ -51,6 +52,7 @@ store.getState().app.apiManager = apiManager
 store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
 store.getState().app.keyboardManager = new KeyboardManager()
+store.getState().app.language = getLanguage(configuration.getLanguage())
 
 async function getData(): Promise<void> {
 

@@ -1,8 +1,11 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import JWT from 'jwt-client'
+import { Link } from 'react-router-dom'
 
 import { init } from '@index'
+
+import { _ } from '@utils/TranslationUtils'
 
 import { setUser } from '@actions/App'
 import { selectUser } from '@selectors/App'
@@ -44,11 +47,12 @@ const UserDrawer = (): JSX.Element => {
   return (
     <div id="userDrawer" >
       <div id="userName" >
-        <p id="userMessage" ><span className="hideWhenClosed">Hello </span>{ user.getFirstName() }</p>
+        <p id="userMessage" ><span className="hideWhenClosed">{ _("sidemenu.user.hello") }</span>{ user.getFirstName() }</p>
+        <Link className="hideWhenClosed" to="/user" ><Button icon="cog" /></Link>
         <Button className="hideWhenClosed" icon={drawerState.icon} onClick={openClose} />
       </div>
       <div id="userSpace" style={{ maxHeight: drawerState.maxHeight }} >
-        <Button className="raised alert hideWhenClosed" icon="times-circle" onClick={disconnect} title="Disconnect" />
+        <Button className="raised alert hideWhenClosed" icon="times-circle" onClick={disconnect} title={_("sidemenu.user.disconnect")} />
       </div>
     </div>
   )

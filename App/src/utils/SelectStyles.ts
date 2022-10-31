@@ -7,6 +7,7 @@ export const SelectStyles: StylesConfig = {
   option: (styles: any) => ({...styles, backgroundColor: '#22252c' }),
   placeholder: (styles: any) => ({...styles, fontSize: 13 }),
   input: (styles: any) => ({...styles, color: 'white', fontSize: 13}),
+  singleValue: (styles: any) => ({...styles , color: 'white'}),
   multiValue: (styles: any) => ({ ...styles, backgroundColor: '#2c84F8' }),
   multiValueLabel: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
   menuList: (styles: any) => ({...styles, color: 'white', fontSize: 13, fontFamily: 'Arial'}),
