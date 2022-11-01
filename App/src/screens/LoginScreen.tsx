@@ -10,14 +10,14 @@ import Button from '@components/Button'
 import SessionConfigurator from '@components/SessionConfigurator'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 
+import ApiManager from '@utils/ApiManager'
+
 enum Mode {
   LOGIN,
   REGISTER
 }
 
-const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.Element => {
-
-
+const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiManager) => void }): JSX.Element => {
   const [ mode, setMode ] = useState(Mode.LOGIN)
   const [ loading, setLoading ] = useState(false)
   const [ email, setEmail ] = useState('')
@@ -34,7 +34,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: () => void }): JSX.
       setLoading(false)
       setErrorMessage(message)
     } else if (apiManager.hasValidToken()) {
-      getRequiredData()
+      getRequiredData(apiManager)
     }
   }, [ getRequiredData ])
 

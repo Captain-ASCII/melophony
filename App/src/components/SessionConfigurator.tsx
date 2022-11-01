@@ -11,9 +11,10 @@ import { selectApiManager } from '@selectors/App'
 
 import Select from '@components/Select'
 
+import ApiManager from '@utils/ApiManager'
 import { _ } from '@utils/TranslationUtils'
 
-const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Element => {
+const SessionConfigurator = ({ onChange }: { onChange?: (apiManager: ApiManager) => void }): JSX.Element => {
 
   const dispatch = useDispatch()
 
@@ -34,10 +35,11 @@ const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Eleme
   }, [])
 
   const configureNetwork = useCallback((value: string) => {
+    const newApiManager = apiManager.withServerAddress(value)
     dispatch(setConfiguration(configuration.withServerAddress(value)))
-    dispatch(setApiManager(apiManager.withServerAddress(value)))
+    dispatch(setApiManager(newApiManager))
     if (onChange) {
-      onChange()
+      onChange(newApiManager)
     }
   }, [ dispatch, onChange, apiManager, configuration ])
 
