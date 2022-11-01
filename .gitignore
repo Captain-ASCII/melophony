@@ -2,7 +2,6 @@ node_modules
 *.m4a
 package-lock.json
 logs.txt
-data
 images
 .well-known
 npm-debug.log
