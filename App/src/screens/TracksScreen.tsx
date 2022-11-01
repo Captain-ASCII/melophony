@@ -38,6 +38,9 @@ function _sort(providedTracks: Array<Track>, sortOrder: string, type: string): A
     case 'artist':
       sortFct = (a:Track, b: Track): number => a.getArtist().getName().localeCompare(b.getArtist().getName())
       break
+    case 'duration':
+      sortFct = (a:Track, b: Track): number => a.getDuration() - b.getDuration()
+      break
     default:
       sortFct = (): number => -1
   }
@@ -62,10 +65,7 @@ const TracksScreen = (): JSX.Element => {
   const [sortOrder, setSortOrder] = useState(configuration.getSortOrder())
   const [sortType, setSortType] = useState(configuration.getSortType())
 
-  const fullSort = (filter: string, sortOrder: string, sortType: string) => {
-    console.warn(tracks[0], filter, sortOrder, sortType)
-    return _sort(filteredTracks(tracks, filter), sortOrder, sortType)
-  }
+  const fullSort = (filter: string, sortOrder: string, sortType: string) => _sort(filteredTracks(tracks, filter), sortOrder, sortType)
 
   const [displayedTracks, setDisplayedTracks] = useState(fullSort(filter, sortOrder, sortType))
 
@@ -88,7 +88,6 @@ const TracksScreen = (): JSX.Element => {
   }, [ dispatch, configuration, playlist ])
 
   const handleFilterSet = useCallback((filter: string) => {
-    // sessionStorage.setItem('tracksFilter', filter)
     setFilter(filter)
     setDisplayedTracks(fullSort(filter, sortOrder, sortType))
   }, [ setFilter, filter, sortOrder, sortType ])
@@ -108,6 +107,7 @@ const TracksScreen = (): JSX.Element => {
               <option value="title">{_("tracks.sort.option.title")}</option>
               <option value="date">{_("tracks.sort.option.date")}</option>
               <option value="artist">{_("tracks.sort.option.artist")}</option>
+              <option value="duration">{_("tracks.sort.option.duration")}</option>
             </CustomSelect>
             <Switch
               enabledState={new SwitchState('sort-amount-up', 'ASC')} disabledState={new SwitchState('sort-amount-down', 'DESC')}
