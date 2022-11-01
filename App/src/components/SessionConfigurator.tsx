@@ -11,7 +11,10 @@ import { selectApiManager } from '@selectors/App'
 
 import Select from '@components/Select'
 
-const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Element => {
+import ApiManager from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
+
+const SessionConfigurator = ({ onChange }: { onChange?: (apiManager: ApiManager) => void }): JSX.Element => {
 
   const dispatch = useDispatch()
 
@@ -32,10 +35,11 @@ const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Eleme
   }, [])
 
   const configureNetwork = useCallback((value: string) => {
+    const newApiManager = apiManager.withServerAddress(value)
     dispatch(setConfiguration(configuration.withServerAddress(value)))
-    dispatch(setApiManager(apiManager.withServerAddress(value)))
+    dispatch(setApiManager(newApiManager))
     if (onChange) {
-      onChange()
+      onChange(newApiManager)
     }
   }, [ dispatch, onChange, apiManager, configuration ])
 
@@ -44,12 +48,13 @@ const SessionConfigurator = ({ onChange }: { onChange?: () => void }): JSX.Eleme
       <i id="sessionParametersIcon" onClick={displaySessionParameters} className="fa fa-cog icon button" />
       <div id="sessionParameters">
         <Select
-          placeholder="Network configuration"
+          placeholder={_("login.network.configuration.select.placeholder")}
           icon="network-wired"
           onSelection={configureNetwork}
           >
-          <option value="https://melophony-api.ddns.net" >Online</option>
-          <option value="http://localhost:1804" >Local</option>
+          <option value="https://melophony-api.ddns.net" >{ _("login.network.configuration.full.online") }</option>
+          <option value="https://melophony-api.ddns.net:1804" >{ _("login.network.configuration.home.online") }</option>
+          <option value="http://localhost:1804" >{ _("login.network.configuration.full.local") }</option>
         </Select>
       </div>
     </>

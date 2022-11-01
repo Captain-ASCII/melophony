@@ -8,7 +8,7 @@ import { selectPlaylistManager } from '@selectors/App'
 import { setPlaylistManager, setMediaManager } from '@actions/App'
 
 import InputRange from '@components/InputRange'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 const Player = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -60,12 +60,12 @@ const Player = (): JSX.Element => {
         <p>If you are reading this, it is because your browser does not support the audio element.</p>
       </audio>
       <div id="controls">
-        <IconButton icon="backward" onClick={previous} />
-        <IconButton icon={isPlaying ? 'pause' : 'play'} onClick={playPause} />
-        <IconButton icon="forward" onClick={next} />
+        <Button icon="backward" onClick={previous} />
+        <Button icon={isPlaying ? 'pause' : 'play'} onClick={playPause} />
+        <Button icon="forward" onClick={next} />
       </div>
       <Link to={getCurrentTrackUrl} id="currentTrackInfoLink" >
-        <div id="currentTrackInfo"  />
+        <div id="currentTrackInfo" />
       </Link>
       <InputRange track={currentTrack} asReader />
     </>

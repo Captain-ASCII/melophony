@@ -5,9 +5,9 @@ import StringUtils from '@utils/StringUtils'
 class Option {
 
   private value: string
-  private name: string
+  private name: Str
 
-  constructor(value: string, name: string) {
+  constructor(value: string, name: Str) {
     this.value = value
     this.name = name
   }
@@ -16,13 +16,13 @@ class Option {
     return this.value
   }
 
-  getName(): string {
+  getName(): Str {
     return this.name
   }
 }
 
 const Select = ({ children, placeholder, onSelection, icon }:
-  { children: Array<JSX.Element>; placeholder: string; icon: string; onSelection: (value: string) => void }): JSX.Element => {
+  { children: Array<JSX.Element>; placeholder: Str; icon: string; onSelection: (value: string) => void }): JSX.Element => {
 
   const optionsId = StringUtils.generateId()
 

@@ -4,10 +4,10 @@ export default function useLongPress(callback = () => {}, ms = 300) {
   const [startLongPress, setStartLongPress] = useState(false)
 
   useEffect(() => {
-    let timerId: NodeJS.Timeout
+    let timerId: number
 
     if (startLongPress) {
-      timerId = setTimeout(callback, ms);
+      timerId = window.setTimeout(callback, ms);
     } else {
       clearTimeout(timerId);
     }

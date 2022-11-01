@@ -14,10 +14,12 @@ import { setArtists as setArtistsInState } from '@actions/Artist'
 
 import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
+import TextInput from '@components/TextInput'
 
 import { SelectStyles } from '@utils/SelectStyles'
 import { Arrays } from '@utils/Immutable'
 import { ApiClient } from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
 
 const YOUTUBE_URL = "https://www.youtube.com"
 
@@ -53,12 +55,11 @@ const TrackCreationScreen = (): JSX.Element => {
     }
   }
 
-  const handleInput = useCallback(event => {
-    const value = event.target.value
-    const searchForParam = value.match(/v=(.*?)(&|$)/)
-    if (searchForParam) {
-      setVideoId(searchForParam[1])
-      lookForInfo(searchForParam[1])
+  const handleInput = useCallback(value => {
+    const searchForParam = value.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
+    if (searchForParam && searchForParam[7] && searchForParam[7].length == 11) {
+      setVideoId(searchForParam[7])
+      lookForInfo(searchForParam[7])
     } else {
       setVideoId(value)
       if (value.length === 11) {
@@ -66,10 +67,9 @@ const TrackCreationScreen = (): JSX.Element => {
       }
     }
   }, [setVideoId])
-  const handleTitleSet = useCallback(event => setTitle(event.target.value), [setTitle])
-  const handleArtistNameSet = useCallback(event => setArtistName(event.target.value), [setArtistName])
+  const handleTitleSet = useCallback(value => setTitle(value), [setTitle])
+  const handleArtistNameSet = useCallback(value => setArtistName(value), [setArtistName])
   const handleArtistsSet = useCallback(selection => {
-    console.warn(selection)
     setArtists(selection.map((a: any) => a.value))
     setArtistName(selection.length > 0 ? selection[0].label : "")
   }, [setArtists])
@@ -90,31 +90,28 @@ const TrackCreationScreen = (): JSX.Element => {
   return (
     <div id="AddTrackScreen" className="screen" >
       <div id="pageHeader">
-        <h2 id="pageTitle">Add a new track</h2>
+        <h2 id="pageTitle">{ _("track.creation.screen.title") }</h2>
         <CloseButton />
       </div>
       <div className="input">
         <i className="fab fa-youtube fa-2x icon" />
-        <input
-          type="text" className="form-data" onChange={handleInput} value={videoId}
-          id="videoId" placeholder="Youtube video ID / Full Youtube URL"
-        />
+        <TextInput placeHolder="track.creation.youtube.video.id.placeholder" value={videoId} onInput={handleInput} />
       </div>
       <div className="input">
         <i className="fa fa-music fa-2x icon" />
-        <input type="text" className="form-data" id="title" value={title} placeholder="Title" onChange={handleTitleSet} />
+        <TextInput placeHolder="track.creation.track.title.placeholder" value={title} onInput={handleTitleSet} />
       </div>
       <div className="input">
         <i className="fa fa-male fa-2x icon" />
         <Select
-          isMulti isClearable className="multiSelect" id="artistNames" placeholder="Artists..." styles={SelectStyles}
+          isMulti isClearable className="multiSelect" id="artistNames" placeholder={_("track.creation.artist.list.placeholder")} styles={SelectStyles}
           options={artistsNames} onChange={handleArtistsSet} value={artistsNames.filter(option => option.label === artistName)}
         />
         <i className="fa fa-plus fa-2x icon" />
-        <input type="text" className="form-data" id="title" value={artistName} placeholder="New artist" onChange={handleArtistNameSet} />
+        <TextInput placeHolder="track.creation.artist.creation.placeholder" value={artistName} onInput={handleArtistNameSet} />
       </div>
       <div id="postActions">
-        <Button icon="download" className="raised" onClick={requestServerDownload} title="Download" />
+        <Button icon="download" className="raised" onClick={requestServerDownload} title={_("track.creation.download")} />
       </div>
     </div>
   )

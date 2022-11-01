@@ -12,9 +12,10 @@ import { selectPlaylists } from '@selectors/Playlist'
 
 import { setPlaylistManager } from '@actions/App'
 
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 import KeyboardManager from '@utils/KeyboardManager'
+import { _ } from '@utils/TranslationUtils'
 
 
 const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: Playlist; playlistManager: PlaylistManager; serverAddress: string }): JSX.Element => {
@@ -32,10 +33,10 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
     <div id={KeyboardManager.getId(playlist)} className="playlistCard" style={imageBackground} >
       <div className="playlistInfo">
         <h5>{playlist.getName()}</h5>
-        <p>{playlist.getTracks().length} tracks</p>
+        <p>{_("playlists.tracks.number", [playlist.getTracks().length]) }</p>
       </div>
-      <Link to={`/modify/playlist/${playlist.getId()}`} ><IconButton className="floating mini" icon="pen" /></Link>
-      <IconButton id={KeyboardManager.getClickId(playlist)} className="floating mini second" icon="play" onClick={runPlaylist} />
+      <Link to={`/modify/playlist/${playlist.getId()}`} ><Button className="floating mini" icon="pen" /></Link>
+      <Button id={KeyboardManager.getClickId(playlist)} className="floating mini second" icon="play" onClick={runPlaylist} />
     </div>
   )
 }
@@ -65,7 +66,7 @@ const PlaylistsScreen = (): JSX.Element => {
           })
         }
       </div>
-      <Link to={'/playlist/create'} ><IconButton className="floating" icon="plus" /></Link>
+      <Link to={'/playlist/create'} ><Button className="floating" icon="plus" /></Link>
     </div>
   )
 }

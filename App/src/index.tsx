@@ -32,10 +32,11 @@ import ApiManager from '@utils/ApiManager'
 import KeyboardManager from '@utils/KeyboardManager'
 import MediaManager from '@utils/MediaManager'
 import TokenManager from '@utils/TokenManager'
+import { getLanguage } from '@utils/TranslationUtils'
 
 const configuration = store.getState().configuration
 
-const apiManager = new ApiManager(
+const baseApiManager = new ApiManager(
   configuration.getServerAddress(),
   ([status, data, message]: [number, any, string]) => {
     store.dispatch(addNotification(new Notification(message)))
@@ -47,12 +48,13 @@ const apiManager = new ApiManager(
   })
 )
 
-store.getState().app.apiManager = apiManager
+store.getState().app.apiManager = baseApiManager
 store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
 store.getState().app.keyboardManager = new KeyboardManager()
+store.getState().app.language = getLanguage(configuration.getLanguage())
 
-async function getData(): Promise<void> {
+async function getData(apiManager: ApiManager): Promise<void> {
 
   const tracksResponse = await apiManager.get('/tracks')
   const playlistsResponse = await apiManager.get('/playlists')
@@ -78,7 +80,7 @@ async function getData(): Promise<void> {
   )
 }
 
-async function tryAuthentication(): Promise<void> {
+async function tryAuthentication(apiManager: ApiManager): Promise<void> {
   apiManager.get('/user').then(response => {
     if (response[0] != 200) {
       JWT.forget()
@@ -89,7 +91,7 @@ async function tryAuthentication(): Promise<void> {
         document.getElementById('root')
       )
     } else {
-      getData()
+      getData(apiManager)
     }
   })
 }
@@ -97,11 +99,11 @@ async function tryAuthentication(): Promise<void> {
 async function init(): Promise<void> {
   ReactDOM.render(
     <Provider store={store} >
-      <SplashScreen getRequiredData={getData} />
+      <SplashScreen onNetworkConfiguration={tryAuthentication} />
     </Provider>,
     document.getElementById('root')
   )
-  tryAuthentication()
+  tryAuthentication(baseApiManager)
 }
 
 export { init }

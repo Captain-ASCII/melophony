@@ -10,6 +10,9 @@ import Artist from '@models/Artist'
 
 import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
+import TextInput from '@components/TextInput'
+
+import { _ } from '@utils/TranslationUtils'
 
 const ArtistCreationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -34,18 +37,15 @@ const ArtistCreationScreen = (): JSX.Element => {
   return (
     <div id="AddTrackScreen" className="screen" >
       <div id="pageHeader">
-        <h2 id="pageTitle">Add a new artist</h2>
+        <h2 id="pageTitle">{ _("artist.creation.screen.title") }</h2>
         <CloseButton />
       </div>
       <div className="input">
         <i className="fa fa-solid fa-user fa-2x icon" />
-        <input
-          type="text" className="form-data" onInput={handleInput}
-          id="artistName" defaultValue="" placeholder="Artist name"
-        />
+        <TextInput placeHolder="artist.creation.name.placeholder" onInput={handleInput} />
       </div>
       <div id="postActions">
-        <Button icon="plus" className="raised" onClick={createArtist} title="Add" />
+        <Button icon="plus" className="raised" onClick={createArtist} title={_("artist.creation.add.button")} />
       </div>
     </div>
   )

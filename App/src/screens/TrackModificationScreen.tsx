@@ -13,14 +13,15 @@ import { selectMediaManager } from '@selectors/App'
 
 import { setTrack } from '@actions/Track'
 
-import Button from '@components/Button'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
+import TextInput from '@components/TextInput'
 import { Objects } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
 import { SelectStyles } from '@utils/SelectStyles'
+import { _ } from '@utils/TranslationUtils'
 
 
 function getInt(v: string): number {
@@ -69,9 +70,9 @@ const TrackModificationScreen = (): JSX.Element => {
         apiManager.post('/artist', artist)
       }, [ apiManager, artist ])
 
-      const handleTitleSet = useCallback(event => {
-        setModifications(Object.assign(modifications, {'title': event.target.value}))
-        setCurrentTrack(track.withTitle(event.target.value))
+      const handleTitleSet = useCallback(value => {
+        setModifications(Object.assign(modifications, {'title': value}))
+        setCurrentTrack(track.withTitle(value))
       }, [ track ])
 
       const handleArtistNameSet = useCallback(artists => {
@@ -96,11 +97,11 @@ const TrackModificationScreen = (): JSX.Element => {
         setCurrentTrack(track.withDuration(value))
       }, [ track ])
 
-      const handleStartSetFromEvent = useCallback(event => handleStartSet(getInt(event.target.value)), [ handleStartSet ])
-      const handleEndSetFromEvent = useCallback(event => handleEndSet(getInt(event.target.value)), [ handleEndSet ])
-      const handleDurationSetFromEvent = useCallback(event => handleDurationSet(getInt(event.target.value)), [ handleEndSet ])
+      const handleStartSetFromEvent = useCallback(value => handleStartSet(getInt(value)), [ handleStartSet ])
+      const handleEndSetFromEvent = useCallback(value => handleEndSet(getInt(value)), [ handleEndSet ])
+      const handleDurationSetFromEvent = useCallback(value => handleDurationSet(getInt(value)), [ handleEndSet ])
 
-      const prepareTrackForModification = useCallback(event => {
+      const prepareTrackForModification = useCallback(_ => {
         mediaManager.prepareTrack(track,  () => {
           setPreparedForModification(true)
         })
@@ -109,17 +110,14 @@ const TrackModificationScreen = (): JSX.Element => {
       return (
         <div className="screen" >
           <div id="pageHeader">
-            <h2 id="pageTitle">Track modification</h2>
+            <h2 id="pageTitle">{ _("track.modification.title") }</h2>
             <CloseButton />
           </div>
           <div className="columns">
             <div>
               <div className="input">
                 <i className="fa fa-music fa-2x icon" />
-                <input
-                  type="text" className="form-data" id="title"
-                  defaultValue={track.getTitle()} onInput={handleTitleSet}
-                />
+                <TextInput placeHolder="track.modification.title.placeholder" initialValue={track.getTitle()} onInput={handleTitleSet} />
               </div>
               <div className="input">
                 <i className="fa fa-male fa-2x icon" />
@@ -128,64 +126,58 @@ const TrackModificationScreen = (): JSX.Element => {
                   options={artistsNames} onChange={handleArtistNameSet}
                   defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />
-                <Link to={`/artist/create`}><IconButton icon="plus" /></Link>
+                <Link to={`/artist/create`}><Button icon="plus" /></Link>
               </div>
               <div className="input">
                 <i className="fa fa-step-backward fa-2x icon" />
-                <input type="text" value={track.getStartTime()} onChange={handleStartSetFromEvent} />
+                <TextInput placeHolder="track.modification.start.placeholder" value={track.getStartTime()} onInput={handleStartSetFromEvent} />
               </div>
               <div className="input">
                 <i className="fa fa-step-forward fa-2x icon" />
-                <input type="text" value={track.getEndTime()} onChange={handleEndSetFromEvent} />
+                <TextInput placeHolder="track.modification.stop.placeholder" value={track.getEndTime()} onInput={handleEndSetFromEvent} />
               </div>
 
               <div className="input">
                 <i className="fa fa-fingerprint fa-2x icon" />
-                <input type="text" disabled defaultValue={track.getId()} />
+                <TextInput disabled value={track.getId()} />
               </div>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
-                <input
-                  type="text" className="form-data" id="duration"
-                  defaultValue={track.getDuration()} onChange={handleDurationSetFromEvent}
-                />
+                <TextInput placeHolder="track.modification.length.placeholder" value={track.getDuration()} onInput={handleDurationSetFromEvent} />
                 <i className="fas fa-exclamation-triangle fa-2x icon" title="Should not be changed, to reduce size of track, set track end" />
               </div>
               <div className="input">
                 <i className="fa fa-clock fa-2x icon" />
-                <input type="text" disabled defaultValue={track.getCreationDate().toISOString()} />
+                <TextInput disabled value={track.getCreationDate().toISOString()} />
               </div>
               <div className="input">
                 <i className="fa fa-file-contract fa-2x icon" />
-                <input
-                  type="text" disabled className={track.getFile().getState()}
-                  defaultValue={track.getFile().getState()}
-                />
+                <TextInput disabled className={track.getFile().getState()} value={track.getFile().getState()} />
               </div>
               <div className="input">
                 <i className="fab fa-youtube fa-2x icon" />
-                <input type="text" className="form-data" id="videoId" disabled defaultValue={track.getFile().getVideoId()} />
+                <TextInput disabled value={track.getFile().getVideoId()} />
               </div>
             </div>
             <div id="serverInformation">
-              <h2 style={{ marginLeft: 5 }} >Actions</h2>
+              <h2>{ _("track.modification.actions") }</h2>
               <div className="actions">
-                <div className="button raised" onClick={requestServerDownload} >Download</div>
-                <div className="button raised alert" onClick={deleteItem} >Delete</div>
+                <Button className="raised" onClick={requestServerDownload} title={_("track.modification.actions.download")} />
+                <Button className="raised alert" onClick={deleteItem} title={_("track.modification.actions.delete")} />
               </div>
             </div>
             <div id="trackBarModifier">
               <h2>Track duration</h2>
               <div className="input">
                 <i className="fa fa-ruler fa-2x icon" />
-                <Button id="trackModificationButton" className="raised" title="Modify track length" onClick={prepareTrackForModification} />
+                <Button id="trackModificationButton" className="raised" title={_("track.modification.enable.length")} onClick={prepareTrackForModification} />
                 <InputRange track={track} multiRange disabled={!isPreparedForModification} onStartSet={handleStartSet} onEndSet={handleEndSet} />
               </div>
             </div>
           </div>
 
           <div id="postActions" >
-            <div id="saveButton" className="button raised" onClick={save} >Save</div>
+            <Button id="saveButton" className="raised" onClick={save} title={_("track.modification.save")} />
           </div>
         </div>
       )

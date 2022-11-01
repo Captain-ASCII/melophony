@@ -30,6 +30,10 @@
   cursor: pointer;
 }
 
+#currentTrackInfo > p {
+  display: inline-block;
+}
+
 #currentTrackInfo:hover {
   background-color: var(--main-hover-bg);
 }

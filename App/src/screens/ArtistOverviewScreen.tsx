@@ -6,6 +6,7 @@ import StringUtils from '@utils/StringUtils'
 import ColorUtils from '@utils/ColorUtils'
 import KeyboardManager from '@utils/KeyboardManager'
 import { QueryParameters } from '@utils/ApiManager'
+import { _ } from '@utils/TranslationUtils'
 
 import { selectArtist } from '@selectors/Artist'
 import { selectTracks } from '@selectors/Track'
@@ -13,7 +14,7 @@ import { selectConfiguration } from '@selectors/Configuration'
 
 import CloseButton from '@components/CloseButton'
 import TrackList from '@components/TrackList'
-import IconButton from '@components/IconButton'
+import Button from '@components/Button'
 
 const ArtistOverviewScreen = (): JSX.Element => {
   const { id } = useParams<QueryParameters>()
@@ -44,9 +45,9 @@ const ArtistOverviewScreen = (): JSX.Element => {
           </div>
 
           <div id="titlesHeader" >
-            <h2>Titres</h2>
+            <h2>{ _("artist.overview.tracks.title") }</h2>
             <div className="displayActions">
-              <Link to={`/modify/artist/${artist.getId()}`}><IconButton icon="edit" title="Edit artist data" /></Link>
+              <Link to={`/modify/artist/${artist.getId()}`}><Button icon="edit" title={_("artist.overview.edit.button")} /></Link>
             </div>
           </div>
           <div className="delimiter" />

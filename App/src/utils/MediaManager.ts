@@ -7,6 +7,7 @@ import Track from '@models/Track'
 
 import { setPlaylistManager } from '@actions/App'
 
+import MediaUtils from '@utils/MediaUtils'
 import { Keys } from '@utils/KeyboardManager'
 
 function doNothing() { }
@@ -74,7 +75,13 @@ export default class MediaManager {
     if (document !== undefined) {
       const element = document.getElementById(id)
       if (element) {
-        element.innerHTML = value
+        const nbElements = MediaUtils.isThinMobileScreen() ? 4 : 1
+        element.innerHTML = null
+        for (let i = 0; i < nbElements; i++) {
+          const pTag = document.createElement('p')
+          pTag.innerHTML = value
+          element.append(pTag)
+        }
       }
     }
   }

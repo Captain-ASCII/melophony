@@ -24,6 +24,8 @@ from .utils import model_to_dict
 
 logging.basicConfig(level=logging.INFO)
 
+RANGE_SEPARATOR = ', '
+PACKET_SIZE = 200000
 TRACKS = 'tracks'
 ARTIST_IMAGES = 'artist_images'
 PLAYLIST_IMAGES = 'playlist_images'
@@ -414,15 +416,37 @@ def get_playlist_image(r, image_name):
 def play_file(r, file_name):
     file_path = _file_path(TRACKS, file_name, 'm4a')
     if os.path.exists(file_path):
-        f = open(file_path, "rb")
-        http_response = HttpResponse()
-        http_response.write(f.read())
-        http_response['Content-Type'] = 'audio/mp4'
-        http_response['Accept-Ranges'] = 'bytes'
-        http_response['Content-Length'] = os.path.getsize(file_path)
-        return http_response
+        with open(file_path, "rb") as f:
+            full_length = os.path.getsize(file_path)
+            start, end, partial = _get_range(r, full_length)
+            http_response = HttpResponse()
+            if partial:
+                http_response.status_code = 206
+                http_response['Content-Range'] = f'bytes {start}-{end-1}/{full_length}'
+            http_response['Accept-Ranges'] = 'bytes'
+            http_response['Content-Length'] = end - start
+            http_response['Content-Type'] = 'audio/x-m4a'
+            http_response.write(f.read()[start:end])
+            return http_response
     else:
         return response(message='File does not exist', status=Status.ERROR)
+
+def _get_range(request, file_size):
+    start = 0
+    end = file_size
+
+    if 'Range' in request.headers and request.headers['Range'].startswith('bytes='):
+        range_header = request.headers['Range'][6:]
+        if RANGE_SEPARATOR in range_header:
+            return response(message='Multiple range not handled', status=Status.ERROR)
+
+        [requested_start, requested_end] = range_header.split('-')
+        start = file_size - requested_end if requested_start == '' else int(requested_start)
+        end = file_size if requested_end == '' else int(requested_end)
+
+    end = min(file_size, start + PACKET_SIZE)
+
+    return start, end, (end - start) != (file_size)
 
 def download_again(r, parameters, file_name):
     force_download = parameters['forceDownload'] if 'forceDownload' in parameters else False

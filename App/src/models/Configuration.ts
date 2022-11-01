@@ -7,14 +7,24 @@ export default class Configuration {
   private sortType: string
   private sortOrder: string
   private displayType: string
+  private language: string
 
-  public constructor(serverAddress: string, networkEnabled: boolean, shuffleMode: boolean, sortType: string, sortOrder: string, displayType: string) {
+  public constructor(
+    serverAddress: string,
+    networkEnabled: boolean,
+    shuffleMode: boolean,
+    sortType: string,
+    sortOrder: string,
+    displayType: string,
+    language: string
+  ) {
     this.serverAddress = serverAddress
     this.networkEnabled = networkEnabled
     this.shuffleMode = shuffleMode
     this.sortType = sortType
     this.sortOrder = sortOrder
     this.displayType = displayType
+    this.language = language
   }
 
   public withServerAddress(address: string): Configuration {
@@ -47,6 +57,11 @@ export default class Configuration {
     return this
   }
 
+  public withLanguage(language: string): Configuration {
+    this.language = language
+    return this
+  }
+
   public getServerAddress(): string {
     return this.serverAddress
   }
@@ -69,6 +84,10 @@ export default class Configuration {
 
   public getDisplayType(): string {
     return this.displayType
+  }
+
+  public getLanguage(): string {
+    return this.language
   }
 
 }

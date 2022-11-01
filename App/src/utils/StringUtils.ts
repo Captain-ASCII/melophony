@@ -17,4 +17,10 @@ export default class Utils {
   static notNullNorEmpty(value: string): boolean {
     return value != null && value !== ''
   }
+
+  static format(source: string, args: Array<any> = []): string {
+    return source.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] !== undefined ? args[number] : match
+    })
+  }
 }
