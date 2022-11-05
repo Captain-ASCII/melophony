@@ -19,6 +19,7 @@ import { selectApiManager } from '@selectors/App'
 
 import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
+import Screen from '@components/Screen'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import ImageSearcher from '@components/ImageSearcher'
 
@@ -76,11 +77,7 @@ const ArtistModificationScreen = (): JSX.Element => {
       const setArtistImage = useCallback(url => setArtistState(artist.withImageUrl(url)), [artist])
 
       return (
-        <div className="screen" >
-          <div id="pageHeader">
-            <h2 id="pageTitle">{ _("artist.modification.title") }</h2>
-            <CloseButton />
-          </div>
+        <Screen title={ _("artist.modification.title") } >
           <div className="input">
             <i className="fa fa-male fa-2x icon" />
             <input
@@ -101,7 +98,7 @@ const ArtistModificationScreen = (): JSX.Element => {
             <Button icon="save" className="raised" onClick={save} title={_("artist.modification.save")} />
             <Button icon="trash" className="raised alert" onClick={deleteArtist} title={_("artist.modification.delete")} />
           </div>
-        </div>
+        </Screen>
       )
     }
   }

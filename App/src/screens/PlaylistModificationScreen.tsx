@@ -23,7 +23,7 @@ import { selectPlaylist } from '@selectors/Playlist';
 
 import Button from '@components/Button'
 import CheckableItemList from '@components/CheckableItemList'
-import CloseButton from '@components/CloseButton'
+import Screen from '@components/Screen'
 import Overlay from '@components/Overlay'
 import TextInput from '@components/TextInput'
 import ImageSearcher from '@components/ImageSearcher'
@@ -136,11 +136,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
   }, [])
 
   return (
-    <div className="screen" >
-      <div id="pageHeader">
-        <h2 id="pageTitle">{ _("playlist.modification.screen.title") }</h2>
-        <CloseButton />
-      </div>
+    <Screen title={ _("playlist.modification.screen.title") }>
       <div className="input">
         <i className="fa fa-fingerprint fa-2x icon" />
         <TextInput placeHolder={"playlist.modification.playlist.name.placeholder"} initialValue={playlist.getName()} onInput={handlePlaylistTitleChange} />
@@ -170,7 +166,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
         { id && <Button icon="trash" className="raised alert" onClick={deletePlaylist} title={_("playlist.modification.button.delete")} /> }
         <Button icon="save" className="raised" onClick={savePlaylist} title={_("playlist.modification.button.save")} />
       </div>
-    </div>
+    </Screen>
   )
 }
 

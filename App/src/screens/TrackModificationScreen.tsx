@@ -16,6 +16,7 @@ import { setTrack } from '@actions/Track'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
+import Screen from '@components/Screen'
 import Button from '@components/Button'
 import TextInput from '@components/TextInput'
 import { Objects } from '@utils/Immutable'
@@ -108,11 +109,7 @@ const TrackModificationScreen = (): JSX.Element => {
       }, [mediaManager, setPreparedForModification])
 
       return (
-        <div className="screen" >
-          <div id="pageHeader">
-            <h2 id="pageTitle">{ _("track.modification.title") }</h2>
-            <CloseButton />
-          </div>
+        <Screen title={ _("track.modification.title") }>
           <div className="columns">
             <div>
               <div className="input">
@@ -179,7 +176,7 @@ const TrackModificationScreen = (): JSX.Element => {
           <div id="postActions" >
             <Button id="saveButton" className="raised" onClick={save} title={_("track.modification.save")} />
           </div>
-        </div>
+        </Screen>
       )
     }
   }

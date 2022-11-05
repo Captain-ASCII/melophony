@@ -9,7 +9,7 @@ import { setArtists } from '@actions/Artist'
 import Artist from '@models/Artist'
 
 import Button from '@components/Button'
-import CloseButton from '@components/CloseButton'
+import Screen from '@components/Screen'
 import TextInput from '@components/TextInput'
 
 import { _ } from '@utils/TranslationUtils'
@@ -35,11 +35,7 @@ const ArtistCreationScreen = (): JSX.Element => {
   }, [ history, apiManager, artistName ])
 
   return (
-    <div id="AddTrackScreen" className="screen" >
-      <div id="pageHeader">
-        <h2 id="pageTitle">{ _("artist.creation.screen.title") }</h2>
-        <CloseButton />
-      </div>
+    <Screen id="AddTrackScreen" title={_("artist.creation.screen.title")} >
       <div className="input">
         <i className="fa fa-solid fa-user fa-2x icon" />
         <TextInput placeHolder="artist.creation.name.placeholder" onInput={handleInput} />
@@ -47,7 +43,7 @@ const ArtistCreationScreen = (): JSX.Element => {
       <div id="postActions">
         <Button icon="plus" className="raised" onClick={createArtist} title={_("artist.creation.add.button")} />
       </div>
-    </div>
+    </Screen>
   )
 }
 

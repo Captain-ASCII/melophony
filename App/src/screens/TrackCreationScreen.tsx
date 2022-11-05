@@ -13,7 +13,7 @@ import { setTracks } from '@actions/Track'
 import { setArtists as setArtistsInState } from '@actions/Artist'
 
 import Button from '@components/Button'
-import CloseButton from '@components/CloseButton'
+import Screen from '@components/Screen'
 import TextInput from '@components/TextInput'
 
 import { SelectStyles } from '@utils/SelectStyles'
@@ -88,11 +88,7 @@ const TrackCreationScreen = (): JSX.Element => {
   }, [ history, apiManager, videoId, title, artistName, artists ])
 
   return (
-    <div id="AddTrackScreen" className="screen" >
-      <div id="pageHeader">
-        <h2 id="pageTitle">{ _("track.creation.screen.title") }</h2>
-        <CloseButton />
-      </div>
+    <Screen id="AddTrackScreen" title={ _("track.creation.screen.title") } >
       <div className="input">
         <i className="fab fa-youtube fa-2x icon" />
         <TextInput placeHolder="track.creation.youtube.video.id.placeholder" value={videoId} onInput={handleInput} />
@@ -113,7 +109,7 @@ const TrackCreationScreen = (): JSX.Element => {
       <div id="postActions">
         <Button icon="download" className="raised" onClick={requestServerDownload} title={_("track.creation.download")} />
       </div>
-    </div>
+    </Screen>
   )
 }
 
