@@ -52,8 +52,8 @@ const SessionConfigurator = ({ onChange }: { onChange?: (apiManager: ApiManager)
           icon="network-wired"
           onSelection={configureNetwork}
           >
-          <option value="https://melophony-api.ddns.net" >{ _("login.network.configuration.full.online") }</option>
-          <option value="https://melophony-api.ddns.net:1804" >{ _("login.network.configuration.home.online") }</option>
+          <option value="https://melophony.ddns.net" >{ _("login.network.configuration.full.online") }</option>
+          <option value="https://melophony.ddns.net:1804" >{ _("login.network.configuration.home.online") }</option>
           <option value="http://localhost:1804" >{ _("login.network.configuration.full.local") }</option>
         </Select>
       </div>

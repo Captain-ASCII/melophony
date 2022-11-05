@@ -30,8 +30,8 @@ app.get('/*', function (_, res) {
 })
 
 https.createServer({
-  key: fs.readFileSync('/etc/letsencrypt/live/melophony-api.ddns.net/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/melophony-api.ddns.net/cert.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/melophony.ddns.net/cert.pem'),
 }, app).listen(PORT, function() {
   console.log(`Production app started, (PORT: ${PORT})`)
 })
