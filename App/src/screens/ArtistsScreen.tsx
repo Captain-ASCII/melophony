@@ -51,7 +51,7 @@ const ArtistsScreen = (): JSX.Element => {
       <div id="contentHeader">
         <h1>{ _("artists.screen.title") }</h1>
         <div className="searchbar">
-          <TextInput id="trackSearch" icon="search" initialValue={filter} onInput={handleFilter} />
+          <TextInput id="trackSearch" icon="search" initialValue={filter} placeHolder="artists.search.placeholder" onInput={handleFilter} />
         </div>
       </div>
       <div className="delimiter" />

@@ -100,7 +100,7 @@ const TracksScreen = (): JSX.Element => {
         <h1>{ _("tracks.title") }</h1>
         <div id="toolBar">
           <div className="searchbar">
-            <TextInput id="trackSearch" icon="search" initialValue={filter} onInput={handleFilterSet} />
+            <TextInput id="trackSearch" icon="search" initialValue={filter} placeHolder="tracks.search.placeholder" onInput={handleFilterSet} />
           </div>
           <div id="sortBar" >
             <CustomSelect onSelection={handleSetType} icon="" placeholder={_(`tracks.sort.option.${configuration.getSortType()}`)} >
