@@ -1,11 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
-
 import { Link } from 'react-router-dom'
 
 import { Arrays } from '@utils/Immutable'
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
-import { bindToSession, getFromSession } from '@utils/SessionUtils'
 import { _ } from "@utils/TranslationUtils"
 
 import Track from '@models/Track'
@@ -21,6 +19,8 @@ import CustomSelect from '@components/Select'
 import Switch, { SwitchState } from '@components/Switch'
 import TextInput from '@components/TextInput'
 import TrackList from '@components/TrackList'
+import Button from '@components/Button'
+
 
 const filteredTracks = (tracks: Array<Track>, filter: string): Array<Track> => tracks.filter((track: Track) =>
   `${track.getArtist().getName()}${track.getTitle()}`.toUpperCase().indexOf(filter.toUpperCase()) > -1)
@@ -124,7 +124,7 @@ const TracksScreen = (): JSX.Element => {
       </div>
       <div className="delimiter" />
       <TrackList height={1000} tracks={displayedTracks} className="itemList" />
-      <Link to={'/track/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
+      <Link to={'/track/create'} ><Button className="floating" icon="plus" /></Link>
     </div>
   )
 }

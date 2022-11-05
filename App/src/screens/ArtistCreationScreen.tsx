@@ -10,6 +10,7 @@ import Artist from '@models/Artist'
 
 import Button from '@components/Button'
 import Screen from '@components/Screen'
+import InputWithIcon from '@components/InputWithIcon'
 import TextInput from '@components/TextInput'
 
 import { _ } from '@utils/TranslationUtils'
@@ -36,10 +37,9 @@ const ArtistCreationScreen = (): JSX.Element => {
 
   return (
     <Screen id="AddTrackScreen" title={_("artist.creation.screen.title")} >
-      <div className="input">
-        <i className="fa fa-solid fa-user fa-2x icon" />
+      <InputWithIcon icon="user" >
         <TextInput placeHolder="artist.creation.name.placeholder" onInput={handleInput} />
-      </div>
+      </InputWithIcon>
       <div id="postActions">
         <Button icon="plus" className="raised" onClick={createArtist} title={_("artist.creation.add.button")} />
       </div>

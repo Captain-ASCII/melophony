@@ -1,6 +1,8 @@
 
 import React from 'react'
 
+import Icon from '@components/Icon'
+
 class MessageType {
 
   private className: string
@@ -28,7 +30,7 @@ class MessageType {
 const StatusMessage = ({ message, type }: { message: string; type: MessageType }): JSX.Element => {
   return (
     <div className={`statusMessage ${type.getClassName()}`} >
-      <i className={`fa fa-${type.getIcon()} icon`} />
+      <Icon icon={type.getIcon()} />
       <p className="message" >{ message }</p>
     </div>
   )

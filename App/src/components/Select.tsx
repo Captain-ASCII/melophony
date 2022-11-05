@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
+import Icon from '@components/Icon'
+
 import StringUtils from '@utils/StringUtils'
 
 class Option {
@@ -67,9 +69,9 @@ const Select = ({ children, placeholder, onSelection, icon }:
     <div className="select" >
       <select style={{ display: 'none' }} >{ children }</select>
       <div className="commonSelect selectCurrent" onClick={openDropDown} >
-        { icon ? <i className={`fa fa-${icon}`} ></i> : false }
+        { icon ? <Icon icon={icon} /> : false }
         { selectedOption.getName() }
-        <i className="fa fa-chevron-down" ></i>
+        <Icon icon="chevron-down" />
       </div>
       <div id={optionsId} className="options" >{ options }</div>
     </div>

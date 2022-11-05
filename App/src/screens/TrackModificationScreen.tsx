@@ -16,6 +16,8 @@ import { setTrack } from '@actions/Track'
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import CloseButton from '@components/CloseButton'
+import InputWithIcon from '@components/InputWithIcon'
+import Icon from '@components/Icon'
 import Screen from '@components/Screen'
 import Button from '@components/Button'
 import TextInput from '@components/TextInput'
@@ -112,49 +114,40 @@ const TrackModificationScreen = (): JSX.Element => {
         <Screen title={ _("track.modification.title") }>
           <div className="columns">
             <div>
-              <div className="input">
-                <i className="fa fa-music fa-2x icon" />
+              <InputWithIcon icon="music" >
                 <TextInput placeHolder="track.modification.title.placeholder" initialValue={track.getTitle()} onInput={handleTitleSet} />
-              </div>
-              <div className="input">
-                <i className="fa fa-male fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="male" >
                 <Select
                   isMulti isClearable className="multiSelect" id="artistNames" styles={SelectStyles}
                   options={artistsNames} onChange={handleArtistNameSet}
                   defaultValue={track.getArtists().map(a => ({value: a.getId(), label: a.getName()}))}
                 />
                 <Link to={`/artist/create`}><Button icon="plus" /></Link>
-              </div>
-              <div className="input">
-                <i className="fa fa-step-backward fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="step-backward" >
                 <TextInput placeHolder="track.modification.start.placeholder" value={track.getStartTime()} onInput={handleStartSetFromEvent} />
-              </div>
-              <div className="input">
-                <i className="fa fa-step-forward fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="step-forward" >
                 <TextInput placeHolder="track.modification.stop.placeholder" value={track.getEndTime()} onInput={handleEndSetFromEvent} />
-              </div>
+              </InputWithIcon>
 
-              <div className="input">
-                <i className="fa fa-fingerprint fa-2x icon" />
+              <InputWithIcon icon="fingerprint" >
                 <TextInput disabled value={track.getId()} />
-              </div>
-              <div className="input">
-                <i className="fa fa-ruler fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="ruler" >
                 <TextInput placeHolder="track.modification.length.placeholder" value={track.getDuration()} onInput={handleDurationSetFromEvent} />
-                <i className="fas fa-exclamation-triangle fa-2x icon" title="Should not be changed, to reduce size of track, set track end" />
-              </div>
-              <div className="input">
-                <i className="fa fa-clock fa-2x icon" />
+                <Icon icon="exclamation-triangle" size="2x" collection="fas" title="Should not be changed, to reduce size of track, set track end" />
+              </InputWithIcon>
+              <InputWithIcon icon="clock" >
                 <TextInput disabled value={track.getCreationDate().toISOString()} />
-              </div>
-              <div className="input">
-                <i className="fa fa-file-contract fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="file-contract" >
                 <TextInput disabled className={track.getFile().getState()} value={track.getFile().getState()} />
-              </div>
-              <div className="input">
-                <i className="fab fa-youtube fa-2x icon" />
+              </InputWithIcon>
+              <InputWithIcon icon="youtube" collection="fab" >
                 <TextInput disabled value={track.getFile().getVideoId()} />
-              </div>
+              </InputWithIcon>
             </div>
             <div id="serverInformation">
               <h2>{ _("track.modification.actions") }</h2>
@@ -165,11 +158,10 @@ const TrackModificationScreen = (): JSX.Element => {
             </div>
             <div id="trackBarModifier">
               <h2>Track duration</h2>
-              <div className="input">
-                <i className="fa fa-ruler fa-2x icon" />
+              <InputWithIcon icon="ruler" >
                 <Button id="trackModificationButton" className="raised" title={_("track.modification.enable.length")} onClick={prepareTrackForModification} />
                 <InputRange track={track} multiRange disabled={!isPreparedForModification} onStartSet={handleStartSet} onEndSet={handleEndSet} />
-              </div>
+              </InputWithIcon>
             </div>
           </div>
 

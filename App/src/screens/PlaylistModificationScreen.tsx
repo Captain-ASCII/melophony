@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { arrayMoveImmutable } from 'array-move';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
+import { arrayMoveImmutable } from 'array-move'
 
 import { Arrays } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
@@ -19,7 +19,7 @@ import {
 
 import { selectApiManager } from '@selectors/App'
 import { selectTracks } from '@selectors/Track'
-import { selectPlaylist } from '@selectors/Playlist';
+import { selectPlaylist } from '@selectors/Playlist'
 
 import Button from '@components/Button'
 import CheckableItemList from '@components/CheckableItemList'
@@ -27,6 +27,8 @@ import Screen from '@components/Screen'
 import Overlay from '@components/Overlay'
 import TextInput from '@components/TextInput'
 import ImageSearcher from '@components/ImageSearcher'
+import InputWithIcon from '@components/InputWithIcon'
+import Icon from '@components/Icon'
 
 
 const filteredTracks = (tracks: Array<Track>, filter: string): Array<Track> => tracks.filter((track: Track) =>
@@ -61,7 +63,7 @@ const TrackItem = SortableElement(({ track, trackIndex, removeTrack }: { track: 
   )
 })
 
-const TrackHandle = SortableHandle(() => <i className="fa fa-bars fa-2x"></i>)
+const TrackHandle = SortableHandle(() => <Icon icon="bars" size="2x" />)
 
 const PlaylistModificationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -137,12 +139,10 @@ const PlaylistModificationScreen = (): JSX.Element => {
 
   return (
     <Screen title={ _("playlist.modification.screen.title") }>
-      <div className="input">
-        <i className="fa fa-fingerprint fa-2x icon" />
+      <InputWithIcon icon="fingerprint" >
         <TextInput placeHolder={"playlist.modification.playlist.name.placeholder"} initialValue={playlist.getName()} onInput={handlePlaylistTitleChange} />
-      </div>
-      <div className="input">
-        <i className="fa fa-music fa-2x icon" />
+      </InputWithIcon>
+      <InputWithIcon icon="music" >
         <TrackList playlist={playlist} removeTrack={removeTrack} onSortEnd={sortPlaylist} lockAxis="y" lockToContainerEdges lockOffset="0%" useDragHandle />
         <Button title={_("playlist.modification.add.tracks.button")} icon="plus" onClick={showOverlay} className="responsiveShrink" />
         <Overlay isOpen={overlayVisible} onChange={setOverlay} className="addTrackOverlay" >
@@ -157,11 +157,10 @@ const PlaylistModificationScreen = (): JSX.Element => {
             <Button title={_("playlist.modification.add.tracks.button")} icon="plus" className="raised" onClick={addTracks} />
           </div>
         </Overlay>
-      </div>
-      <div className="input">
-        <i className="fa fa-image fa-2x icon" />
+        </InputWithIcon>
+      <InputWithIcon icon="image" >
         <ImageSearcher initialQuery={playlist.getName()} onSelect={onImageSelected} />
-      </div>
+      </InputWithIcon>
       <div id="postActions" >
         { id && <Button icon="trash" className="raised alert" onClick={deletePlaylist} title={_("playlist.modification.button.delete")} /> }
         <Button icon="save" className="raised" onClick={savePlaylist} title={_("playlist.modification.button.save")} />

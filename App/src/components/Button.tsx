@@ -1,9 +1,18 @@
 import React, { useCallback, useState } from 'react'
 
-import Log from '@utils/Log'
+import Icon from '@components/Icon'
 
-const Button = <T extends unknown>({ onClick, title = '', icon, data, id = '', className = '' }:
-{ onClick?: (d: T, event?: React.MouseEvent) => void; title?: Str; icon?: string; data?: T; id?:string; className?: string }): JSX.Element => {
+export interface ButtonParameters<T> {
+  title?: Str;
+  icon?: string;
+  iconSize?: string;
+  onClick?: (d: T, event?: React.MouseEvent) => void;
+  data?: T;
+  id?:string;
+  className?: string
+}
+
+const Button = <T extends unknown>({ onClick, title = '', icon, iconSize, data, id = '', className = '' }: ButtonParameters<T>): JSX.Element => {
 
   const handleClick = useCallback((event) => {
     if (onClick) {
@@ -15,7 +24,7 @@ const Button = <T extends unknown>({ onClick, title = '', icon, data, id = '', c
 
   return (
     <div id={id} className={`button ${iconClassName} ${className}`} tabIndex={0} onClick={handleClick} >
-      { icon && <i className={`fa fa-${icon} icon button`}  /> }
+      { icon && <Icon icon={icon} size={iconSize} /> }
       { title && <p className="buttonTitle" >{ title }</p> }
       <div className="overlay" ></div>
     </div>

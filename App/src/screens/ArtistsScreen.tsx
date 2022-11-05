@@ -56,7 +56,7 @@ const ArtistsScreen = (): JSX.Element => {
       </div>
       <div className="delimiter" />
       <div ref={ref} className="itemBlocks">{ artistsComponents }</div>
-      <Link to={'/artist/create'} ><div className="button icon floating"><i className="fa fa-plus icon" /></div></Link>
+      <Link to={'/artist/create'} ><Button className="floating" icon="plus" /></Link>
     </div>
   )
 }

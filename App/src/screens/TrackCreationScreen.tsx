@@ -15,6 +15,8 @@ import { setArtists as setArtistsInState } from '@actions/Artist'
 import Button from '@components/Button'
 import Screen from '@components/Screen'
 import TextInput from '@components/TextInput'
+import InputWithIcon from '@components/InputWithIcon'
+import Icon from '@components/Icon'
 
 import { SelectStyles } from '@utils/SelectStyles'
 import { Arrays } from '@utils/Immutable'
@@ -89,23 +91,20 @@ const TrackCreationScreen = (): JSX.Element => {
 
   return (
     <Screen id="AddTrackScreen" title={ _("track.creation.screen.title") } >
-      <div className="input">
-        <i className="fab fa-youtube fa-2x icon" />
+      <InputWithIcon icon="youtube" collection="fab">
         <TextInput placeHolder="track.creation.youtube.video.id.placeholder" value={videoId} onInput={handleInput} />
-      </div>
-      <div className="input">
-        <i className="fa fa-music fa-2x icon" />
+      </InputWithIcon>
+      <InputWithIcon icon="music">
         <TextInput placeHolder="track.creation.track.title.placeholder" value={title} onInput={handleTitleSet} />
-      </div>
-      <div className="input">
-        <i className="fa fa-male fa-2x icon" />
+      </InputWithIcon>
+      <InputWithIcon icon="male">
         <Select
           isMulti isClearable className="multiSelect" id="artistNames" placeholder={_("track.creation.artist.list.placeholder")} styles={SelectStyles}
           options={artistsNames} onChange={handleArtistsSet} value={artistsNames.filter(option => option.label === artistName)}
         />
-        <i className="fa fa-plus fa-2x icon" />
+        <Icon icon="plus" size="2x" />
         <TextInput placeHolder="track.creation.artist.creation.placeholder" value={artistName} onInput={handleArtistNameSet} />
-      </div>
+      </InputWithIcon>
       <div id="postActions">
         <Button icon="download" className="raised" onClick={requestServerDownload} title={_("track.creation.download")} />
       </div>

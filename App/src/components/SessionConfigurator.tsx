@@ -10,6 +10,7 @@ import { setApiManager } from '@actions/App'
 import { selectApiManager } from '@selectors/App'
 
 import Select from '@components/Select'
+import Button from '@components/Button'
 
 import ApiManager from '@utils/ApiManager'
 import { _ } from '@utils/TranslationUtils'
@@ -45,7 +46,7 @@ const SessionConfigurator = ({ onChange }: { onChange?: (apiManager: ApiManager)
 
   return (
     <>
-      <i id="sessionParametersIcon" onClick={displaySessionParameters} className="fa fa-cog icon button" />
+      <Button id="sessionParametersIcon" onClick={displaySessionParameters} icon="cog" />
       <div id="sessionParameters">
         <Select
           placeholder={_("login.network.configuration.select.placeholder")}

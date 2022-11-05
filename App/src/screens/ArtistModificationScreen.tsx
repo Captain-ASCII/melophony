@@ -19,6 +19,8 @@ import { selectApiManager } from '@selectors/App'
 
 import Button from '@components/Button'
 import CloseButton from '@components/CloseButton'
+import InputWithIcon from '@components/InputWithIcon'
+import TextInput from '@components/TextInput'
 import Screen from '@components/Screen'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
 import ImageSearcher from '@components/ImageSearcher'
@@ -78,22 +80,19 @@ const ArtistModificationScreen = (): JSX.Element => {
 
       return (
         <Screen title={ _("artist.modification.title") } >
-          <div className="input">
-            <i className="fa fa-male fa-2x icon" />
+          <InputWithIcon icon="male" >
             <input
               type="text" list="artistNames" className="form-data"
               id="name" autoComplete="off" defaultValue={artist.getName()} onInput={setName}
             />
             <datalist id="artistNames">{artistsNames}</datalist>
-          </div>
-          <div className="input">
-            <i className="fa fa-fingerprint fa-2x icon" />
-            <input type="text" disabled defaultValue={artist.getId()} />
-          </div>
-          <div className="input">
-            <i className="fa fa-image fa-2x icon" />
+          </InputWithIcon>
+          <InputWithIcon icon="fingerprint" >
+            <TextInput disabled value={artist.getId()}/>
+          </InputWithIcon>
+          <InputWithIcon icon="image" >
             <ImageSearcher initialQuery={artist.getName()} onSelect={setArtistImage} />
-          </div>
+          </InputWithIcon>
           <div id="postActions" >
             <Button icon="save" className="raised" onClick={save} title={_("artist.modification.save")} />
             <Button icon="trash" className="raised alert" onClick={deleteArtist} title={_("artist.modification.delete")} />

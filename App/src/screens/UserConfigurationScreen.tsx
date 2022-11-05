@@ -9,6 +9,7 @@ import { selectConfiguration } from '@selectors/Configuration'
 
 import Button from '@components/Button'
 import Screen from '@components/Screen'
+import InputWithIcon from '@components/InputWithIcon'
 
 import { SelectStyles } from '@utils/SelectStyles'
 
@@ -32,12 +33,11 @@ const UserConfigurationScreen = (): JSX.Element => {
 
   return (
     <Screen id="UserConfigurationScreen" title={ _("user.configuration.screen.title") } >
-      <div className="input">
-        <i className="fa fa-solid fa-flag fa-2x icon" />
+      <InputWithIcon icon="flag" >
         <Select id="languages" className="multiSelect" placeholder={_("user.configuration.languages.placeholder")} styles={SelectStyles}
           options={LANGUAGE_OPTIONS} onChange={handleLanguageSet} value={{value: language.key, label: language.name}}
         />
-      </div>
+      </InputWithIcon>
       <div id="postActions">
         <Button icon="save" className="raised" onClick={saveInfo} title={_("user.configuration.save.button")} />
       </div>

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
 import Button from '@components/Button'
+import Icon from '@components/Icon'
 
 import { useTranslation } from '@utils/TranslationUtils'
 
@@ -24,7 +25,7 @@ const TextInput = ({ id, icon, type, onInput, placeHolder = '', value = null, in
 
   return (
     <div className={`text-input ${icon ? "with-icon" : ""}`}>
-      { icon && <i className={`fa fa-${icon} icon`} /> }
+      { icon && <Icon icon={icon} /> }
       <input
         id={id} type={type || 'text'} value={value === null ? internalValue : value} placeholder={useTranslation(placeHolder, null)}
         onInput={handleInput} onChange={handleChange} disabled={disabled} className={className}
