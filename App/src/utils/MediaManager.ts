@@ -8,6 +8,7 @@ import Track from '@models/Track'
 import { setPlaylistManager } from '@actions/App'
 
 import MediaUtils from '@utils/MediaUtils'
+import Log from '@utils/Log'
 import { Keys } from '@utils/KeyboardManager'
 
 function doNothing() { }
@@ -101,7 +102,7 @@ export default class MediaManager {
     return () => {
       this.audio.removeEventListener('error', this.onError)
       this.onError = (event: any) => {
-        console.error("Error while playing track: ", track.getTitle(), event)
+        Log.e("Error while playing track: ", track.getTitle(), event)
         this.next()
       }
       this.audio.addEventListener('error', this.onError)
@@ -133,7 +134,7 @@ export default class MediaManager {
       this.audio.play().then(() => {
         this.onPlayDone()
       }).catch(error => {
-        console.error("Error while playing source: ", this.audio.src, error)
+        Log.e("Error while playing source: ", this.audio.src, error)
       }).finally(() => {
         this.isPlayable = true
       })

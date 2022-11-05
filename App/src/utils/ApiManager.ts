@@ -78,8 +78,6 @@ export class ApiClient {
     const fetchParams = this.getFetchParams(method, body, headers)
     const queryParamString = this.getQueryParamString(queryParams)
 
-    console.warn(`${baseUrl}${path}${queryParamString}`, fetchParams)
-
     const json = timeout(
       NETWORK_TIMEOUT,
       fetch(`${baseUrl}${path}${queryParamString}`, fetchParams)
