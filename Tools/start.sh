@@ -5,7 +5,7 @@ melophony_dir=${script_dir%"/Tools"}
 
 cd $melophony_dir/Server/
 source venv/bin/activate
-rm nohup.out
+rm -f nohup.out
 nohup gunicorn -c gunicorn_conf.py melophonyApiServer.wsgi &
 
 # Nginx service should be already started
