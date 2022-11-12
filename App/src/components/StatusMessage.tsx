@@ -27,7 +27,7 @@ class MessageType {
   static SUCCESS = new MessageType('success', 'check-circle')
 }
 
-const StatusMessage = ({ message, type }: { message: string; type: MessageType }): JSX.Element => {
+const StatusMessage = ({ message, type }: { message: Str; type: MessageType }): JSX.Element => {
   return (
     <div className={`statusMessage ${type.getClassName()}`} >
       <Icon icon={type.getIcon()} />

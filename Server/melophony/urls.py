@@ -44,10 +44,9 @@ urlpatterns = [
 
     path('api/file/<str:file_name>', associate_methods(views.play_file, post_method=views.download_again), name='file_management'),
 
-    path('api/user', associate_methods(views.get_user, post_method=views.create_user), name='create_user'),
-    path('api/user/<int:user_id>', associate_methods(views.get_user, views.update_user, views.delete_user)),
+    path('api/user', associate_methods(views.get_user, views.update_user, views.delete_user, views.create_user), name='user_management'),
 
-    path('api/artist', associate_methods(views.find_artist, post_method=views.create_artist), name='create_artist'),
+    path('api/artist', associate_methods(views.find_artist, post_method=views.create_artist), name='artist_management'),
     path('api/artist/<int:artist_id>', associate_methods(views.get_artist, views.update_artist, views.delete_artist)),
     path('api/artists', views.list_artists, name='list_artists'),
     path('api/artist/image/<str:image_name>', associate_methods(views.get_artist_image), name='get_artist_image'),

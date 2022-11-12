@@ -46,4 +46,9 @@
 #loadingBox {
   display: flex;
   justify-content: center;
+  margin: 10px;
+}
+
+#loadingGif {
+  height: 60px;
 }

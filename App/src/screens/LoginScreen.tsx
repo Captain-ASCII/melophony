@@ -9,6 +9,7 @@ import Field from '@components/Field'
 import Button from '@components/Button'
 import SessionConfigurator from '@components/SessionConfigurator'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
+import Loader from '@components/Loader'
 
 import ApiManager from '@utils/ApiManager'
 
@@ -66,7 +67,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
     <div id="loginScreen" className="screen" >
       <div id="logoBox">
         <img src="/public/img/melophony.png" />
-        <h1>Melophony</h1>r()
+        <h1>Melophony</h1>
       </div>
       <div id="loginBox" >
         <div id="loginText" >
@@ -81,7 +82,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
           </form>
           { (loading || errorMessage) &&
             <div id="statusBox">
-              { loading && <div id="loadingBox" ><img src="/public/img/loading.gif" id="loadingGif" /></div> }
+              { loading && <Loader /> }
               { errorMessage && <StatusMessage message={errorMessage} type={MessageType.WARNING} /> }
             </div>
           }

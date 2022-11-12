@@ -23,7 +23,7 @@ export const EN_TRANSLATIONS: { [key: string]: string; } = {
   "sidemenu.playlist.current": "Playlist",
   "sidemenu.playlist.tracks.number": "Track(s)",
   "tracks.title": "Tracks",
-  "tracks.search.placeholder": "Look for a track (title / artist name)",
+  "tracks.search.placeholder": "Look for a track",
   "tracks.sort.select.placeholder": "Order",
   "tracks.sort.option.title": "By title",
   "tracks.sort.option.date": "By date of download",
@@ -65,5 +65,8 @@ export const EN_TRANSLATIONS: { [key: string]: string; } = {
   "artist.overview.edit.button": "Edit artist information",
   "user.configuration.screen.title": "User configuration",
   "user.configuration.languages.placeholder": "Select language",
-  "user.configuration.save.button": "Save"
+  "user.configuration.save.button": "Save",
+  "user.configuration.password.placeholder": "New password",
+  "user.configuration.password.repeat.placeholder": "Repeat new password",
+  "user.configuration.password.not.equal.alert": "Passwords don't match"
 }

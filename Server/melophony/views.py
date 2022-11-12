@@ -253,11 +253,15 @@ def get_user(r):
         token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256")
     )
 
-def update_user(r, user, user_id):
-    return response(status=Status.ERROR, message="NOT IMPLEMENTED")
+def update_user(r, user):
+    current_user = User.objects.get(pk=r.user.id)
+    if 'password' in user:
+        current_user.set_password(user['password'])
+    current_user.save()
+    return response(None, message="User updated successfully")
 
-def delete_user(r, user_id):
-    return response(delete(User, user_id))
+def delete_user(r):
+    return response(delete(User, r.user.id))
 
 
 # Artists

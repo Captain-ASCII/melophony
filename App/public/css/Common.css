@@ -66,6 +66,10 @@ h5 {
   font-size: 14px;
 }
 
+.title {
+  margin: 10px 0;
+}
+
 * {
   box-sizing: border-box;
   user-select: none;

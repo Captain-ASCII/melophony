@@ -65,5 +65,8 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "artist.overview.edit.button": "Modifier les informations de l'artiste",
   "user.configuration.screen.title": "Données personnelles",
   "user.configuration.languages.placeholder": "Sélectionner une langue",
-  "user.configuration.save.button": "Enregistrer"
+  "user.configuration.save.button": "Enregistrer",
+  "user.configuration.password.placeholder": "Nouveau mot de passe",
+  "user.configuration.password.repeat.placeholder": "Répéter le nouveau mot de passe",
+  "user.configuration.password.not.equal.alert": "Les mots de passe sont différents"
 }

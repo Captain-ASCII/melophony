@@ -22,7 +22,7 @@ input[type="text"] {
   position: relative;
 }
 
-.text-input > .icon {
+.text-input > .input-icons, .text-input > .icon {
   position: absolute;
 }
 
@@ -30,7 +30,7 @@ input[type="text"] {
   left: 5px;
 }
 
-.text-input > .clear-icon {
+.text-input > .right-icon {
   right: 5px;
 }
 

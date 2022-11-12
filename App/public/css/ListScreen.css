@@ -15,6 +15,10 @@
   align-items: center;
 }
 
+#sortBar > * {
+  margin: 5px;
+}
+
 .itemList {
   flex: 1;
   align-self: stretch;
