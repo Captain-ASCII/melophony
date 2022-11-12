@@ -20,7 +20,9 @@ class RedirectMiddleware:
         if request.path.startswith('/api') or (settings.DEBUG and request.path.startswith('/admin')):
             return self.get_response(request)
         else:
-            return redirect('/public/index.html')
+            hostname = request.get_host().split(':')[0]
+            port = ':1958' if settings.DEBUG else ''
+            return redirect(f'{request.scheme}://{hostname}{port}/public/index.html')
 
 
 class JWTAuthenticationMiddleware:
