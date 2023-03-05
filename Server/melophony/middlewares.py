@@ -54,7 +54,7 @@ class JWTAuthenticationMiddleware:
 
 
 class CORSMiddleware:
-    ALLOWED_METHODS = ['get', 'post', 'put', 'delete', 'options']
+    ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -63,6 +63,6 @@ class CORSMiddleware:
         response = HttpResponse() if request.method == 'OPTIONS' else self.get_response(request)
         response['allow'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
         response['Access-Control-Allow-Headers'] = "*"
-        response['Access-Control-Allow-Origin'] = "*"
+        response['Access-Control-Allow-Origin'] = "*" if settings.DEBUG else "https://melophony.ddns.net"
         response['Access-Control-Allow-Methods'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
         return response
