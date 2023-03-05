@@ -8,10 +8,10 @@ import Track from '@models/Track'
 
 import { selectApiManager } from '@selectors/App'
 import { selectArtist, selectArtists } from '@selectors/Artist'
-import { selectTrack } from '@selectors/Track'
+import { selectTrack, selectTracks } from '@selectors/Track'
 import { selectMediaManager } from '@selectors/App'
 
-import { setTrack } from '@actions/Track'
+import { setTrack, setTracks } from '@actions/Track'
 
 import InputRange from '@components/InputRange'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
@@ -21,7 +21,7 @@ import Icon from '@components/Icon'
 import Screen from '@components/Screen'
 import Button from '@components/Button'
 import TextInput from '@components/TextInput'
-import { Objects } from '@utils/Immutable'
+import { Arrays, Objects } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
 import { SelectStyles } from '@utils/SelectStyles'
 import { _ } from '@utils/TranslationUtils'
@@ -50,6 +50,7 @@ const TrackModificationScreen = (): JSX.Element => {
     if (track) {
       const apiManager = selectApiManager()
       const mediaManager = selectMediaManager()
+      const tracks = selectTracks()
 
       const [ modifications, setModifications ] = useState({})
       const [ artist, setArtist ]  = useState(selectArtist(track.getArtist().getId()))
@@ -67,7 +68,14 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getVideoId()}`, { forceDownload: true }), [ apiManager, track ])
 
-      const deleteItem = useCallback(() => apiManager.delete(`/track/${track.getId()}`), [ apiManager, track ])
+      const deleteItem = useCallback(() => {
+        apiManager.delete(`/track/${track.getId()}`).then(([code, data]) => {
+          if (code === 200) {
+            dispatch(setTracks(Arrays.remove(tracks, t => t.getId() === track.getId())))
+          }
+        })
+        history.goBack()
+      }, [ apiManager, track ])
 
       const createArtist = useCallback(() => {
         apiManager.post('/artist', artist)

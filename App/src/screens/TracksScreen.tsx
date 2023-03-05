@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -68,6 +68,10 @@ const TracksScreen = (): JSX.Element => {
   const fullSort = (filter: string, sortOrder: string, sortType: string) => _sort(filteredTracks(tracks, filter), sortOrder, sortType)
 
   const [displayedTracks, setDisplayedTracks] = useState(fullSort(filter, sortOrder, sortType))
+
+  useEffect(() => {
+    setDisplayedTracks(fullSort(filter, sortOrder, sortType))
+  }, [tracks])
 
   const handleSetType = useCallback(type => {
     setSortType(type)
