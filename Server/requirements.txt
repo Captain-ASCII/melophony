@@ -1,6 +1,6 @@
 django
 pyjwt
-youtube_dl
+yt_dlp
 gunicorn
 requests
 Pillow

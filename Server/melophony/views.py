@@ -7,7 +7,7 @@ import shutil
 import threading
 import traceback
 import uuid
-import youtube_dl
+from yt_dlp import YoutubeDL
 
 from pathlib import Path
 from PIL import Image
@@ -192,7 +192,7 @@ def _download_yt_file(video_id, force_download=False):
             'format': 'bestaudio/best',
         }
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with YoutubeDL(ydl_opts) as ydl:
             ydl.download([f'http://www.youtube.com/watch?v={video_id}'])
 
     t = threading.Thread(target=download, args=(video_id,))
@@ -295,7 +295,7 @@ def get_artist_image(r, image_name):
 # Tracks
 
 def _get_track_info(video_id):
-    with youtube_dl.YoutubeDL() as ydl:
+    with YoutubeDL() as ydl:
         result = ydl.extract_info(f'http://www.youtube.com/watch?v={video_id}', download=False)
         return (result['id'], result['title'], result['duration']) if result else (None, None, None)
 
