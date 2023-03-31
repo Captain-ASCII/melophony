@@ -14,6 +14,7 @@ import TrackCreationScreen from '@screens/TrackCreationScreen'
 import TrackModificationScreen from '@screens/TrackModificationScreen'
 import TracksScreen from '@screens/TracksScreen'
 import UserConfigurationScreen from '@screens/UserConfigurationScreen'
+import NetworkStatisticsScreen from '@screens/NetworkStatisticsScreen'
 
 import MediaUtils from '@utils/MediaUtils'
 import KeyboardManager, { AppIds } from '@utils/KeyboardManager'
@@ -72,6 +73,7 @@ const App = (): JSX.Element => {
             <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title={_("sidemenu.tracks")} icon="music" hideMenu={hideMenu} />
             <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title={_("sidemenu.playlists")} icon="compact-disc" hideMenu={hideMenu} />
             <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title={_("sidemenu.artists")} icon="user-friends" hideMenu={hideMenu} />
+            <MenuLink id={AppIds.ARTISTS_MENU} path="/netstats" title={_("sidemenu.netstats")} icon="network-wired" hideMenu={hideMenu} />
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
             </div>
@@ -89,6 +91,7 @@ const App = (): JSX.Element => {
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
               <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
               <Route path="/user" component={UserConfigurationScreen} />
+              <Route path="/netstats" component={NetworkStatisticsScreen} />
               <Route path="/*" component={TracksScreen} />
             </Switch>
           </div>

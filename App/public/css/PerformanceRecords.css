@@ -1,0 +1,16 @@
+
+.perfRecordHeader {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.perfRecords > li:nth-child(even) {
+  background-color: var(--main-hover-bg);
+}
+
+.perfRecordHeader > .recordName {
+  width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,30 +1,30 @@
 @import url("Common.css");
 
-@import url("Artists.css");
 @import url("ArtistOverviewScreen.css");
+@import url("Artists.css");
 @import url("CheckableItemList.css");
 @import url("ColumnLayout.css");
 @import url("CustomSelect.css");
 @import url("Field.css");
 @import url("Footer.css");
 @import url("Header.css");
-@import url("Items.css");
 @import url("ImageSearcher.css");
 @import url("Inputs.css");
+@import url("Items.css");
 @import url("ListScreen.css");
+@import url("LoginScreen.css");
+@import url("ModificationScreen.css");
 @import url("MultiRange.css");
 @import url("Notifications.css");
 @import url("Overlays.css");
+@import url("PerformanceRecords.css");
 @import url("PlaylistScreen.css");
 @import url("ProgressBars.css");
 @import url("Screens.css");
 @import url("Splash.css");
 @import url("Status.css");
 @import url("StatusMessage.css");
-@import url("ModificationScreen.css");
 @import url("Tracks.css");
 @import url("UserDrawer.css");
-
-@import url("LoginScreen.css");
 
 @import url("Responsive.css");
