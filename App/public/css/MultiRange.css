@@ -14,7 +14,6 @@ input[type=range] {
 
 #tracker {
   flex: 1;
-  min-width: min(500px, 90%);
 }
 
 input[type=range]::-webkit-slider-runnable-track {

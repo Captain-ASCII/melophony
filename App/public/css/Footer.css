@@ -18,26 +18,62 @@
   margin: 5px;
 }
 
-#currentTrackInfoLink {
-  width: 30%;
+#currentTrackInfo {
+  height: var(--footer-height);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: stretch;
+  font-size: 14px;
+  padding: 10px;
+  width: 500px;
 }
 
-#currentTrackInfo {
-  font-size: 16px;
+#trackTime {
+  background-color: var(--main-dark-bg);
+  padding: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex: 0 0 125px;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#currentTime {
+  padding: 0 3px;
+  flex: 0 0 47%;
+}
+
+#timeSlash {
+  margin: 0 3px;
+}
+
+#duration {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.currentTrackInfoLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   transition: background-color 0.3s;
+  margin: 3px;
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
+  overflow: hidden;
 }
 
-#currentTrackInfo > p {
-  display: inline-block;
-}
-
-#currentTrackInfo:hover {
+.currentTrackInfoLink:hover {
   background-color: var(--main-hover-bg);
 }
 
-#footer #tracker {
-  width: 60%;
+#trackTitle {
+  font-weight: bold;
+}
+
+#left, #bubble, #right {
+  display: none;
 }

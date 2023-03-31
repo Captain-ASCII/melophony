@@ -23,4 +23,15 @@ export default class Utils {
       return typeof args[number] !== undefined ? args[number] : match
     })
   }
+
+  static leftPaddedString(source: any, pad: string, length: number): string {
+    return (new Array(length + 1).join(pad) + source).slice(-length)
+  }
+
+  static formatTime(time: number, base = 60) {
+    if (isNaN(time)) {
+      return '00:00'
+    }
+    return Utils.leftPaddedString(Math.floor(time / base), '0', 2) + ':' + Utils.leftPaddedString(Math.floor(time % base), '0', 2)
+  }
 }

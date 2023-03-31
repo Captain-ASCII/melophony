@@ -117,7 +117,6 @@ export default class MediaManager {
           this.audio.ontimeupdate = null
         }
       }
-      this.setElementHTML('currentTrackInfo', `${track.getArtist().getName()} - ${track.getTitle()}`)
       this.onPlayDone = doNothing
     }
   }

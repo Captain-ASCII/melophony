@@ -16,6 +16,9 @@
 
   --main-dark-bg: #22252c;
   --disabled-color: #666;
+
+  --header-height: 80px;
+  --footer-height: 80px;
 }
 
 @font-face {
