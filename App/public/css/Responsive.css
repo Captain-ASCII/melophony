@@ -170,14 +170,14 @@
     flex: 1 0;
   }
 
-  #footer #tracker {
+  #footer .tracker {
     flex-shrink: 0;
     width: 100%;
     position: relative;
     top: -5px;
   }
 
-  #tracker {
+  .tracker {
     display: none;
   }
 
