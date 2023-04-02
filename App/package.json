@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack/webpack.dev.js",
-    "minify": "cat $(cat public/css/App.css | grep import | sed -E 's/@import url\\(\"(.*)\"\\);/public\\\/css\\\/\\1/g') > full.tmp.css && lessc -clean-css full.tmp.css public/App.min.css && rm full.tmp.css",
+    "minify": "cat $(cat public/css/App.css | grep import | sed -E 's/@import url\\(\"(.*)\"\\);/public\\/css\\/\\1/g') > full.tmp.css && lessc -clean-css full.tmp.css public/App.min.css && rm full.tmp.css",
     "bundle": "webpack -p --config webpack/webpack.prod.js",
     "build": "npm run minify && npm run bundle",
     "production": "sudo nodejs server.js"
@@ -18,7 +18,7 @@
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",
     "@types/react-redux": "^7.1.7",
-    "@types/react-router-dom": "^5.1.3",
+    "@types/react-router-dom": "5.3.3",
     "@types/react-window": "^1.8.5",
     "@types/ws": "^7.2.3",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
@@ -36,9 +36,9 @@
     "react-hot-loader": "^4.12.14",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
-    "ts-loader": "^6.2.2",
+    "ts-loader": "^9.4.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.8.3",
+    "typescript": "^4.9.5",
     "webpack": "^5.69.1",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.1",
@@ -55,11 +55,12 @@
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-redux": "^7.1.3",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "5.3.0",
     "react-select": "^5.2.1",
     "react-sortable-hoc": "^2.0.0",
     "react-window": "^1.8.6",
     "redux": "^4.0.4",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.3",
+    "uuid": "^9.0.0"
   }
 }
