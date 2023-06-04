@@ -2,10 +2,14 @@ import logging
 import json
 
 from django.http import Http404
-from django.urls import path, re_path
+from django.urls import path
 
-from . import views
-from .views import Status, response
+from melophony.views.utils import Status, response
+from melophony.views.file_views import play_file, add_file
+from melophony.views.user_views import get_user, update_user, delete_user, create_user, login
+from melophony.views.artist_views import create_artist, get_artist, update_artist, delete_artist, list_artists, get_artist_image
+from melophony.views.track_views import create_track, get_track, update_track, delete_track, list_tracks
+from melophony.views.playlist_views import create_playlist, get_playlist, update_playlist, delete_playlist, list_playlists, get_playlist_image
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,24 +43,24 @@ def associate_methods(get_method=None, put_method=None, delete_method=None, post
     return forward
 
 urlpatterns = [
-    path('api/login', associate_methods(post_method=views.login), name='login'),
-    path('api/register', associate_methods(post_method=views.create_user), name='register'),
+    path('api/login', associate_methods(post_method=login), name='login'),
+    path('api/register', associate_methods(post_method=create_user), name='register'),
 
-    path('api/file/<str:file_name>', associate_methods(views.play_file, post_method=views.download_again), name='file_management'),
+    path('api/file/<str:file_name>', associate_methods(play_file, post_method=add_file), name='file_management'),
 
-    path('api/user', associate_methods(views.get_user, views.update_user, views.delete_user, views.create_user), name='user_management'),
+    path('api/user', associate_methods(get_user, update_user, delete_user, create_user), name='user_management'),
 
-    path('api/artist', associate_methods(views.find_artist, post_method=views.create_artist), name='artist_management'),
-    path('api/artist/<int:artist_id>', associate_methods(views.get_artist, views.update_artist, views.delete_artist)),
-    path('api/artists', views.list_artists, name='list_artists'),
-    path('api/artist/image/<str:image_name>', associate_methods(views.get_artist_image), name='get_artist_image'),
+    path('api/artist', associate_methods(post_method=create_artist), name='artist_management'),
+    path('api/artist/<int:artist_id>', associate_methods(get_artist, update_artist, delete_artist)),
+    path('api/artist/<int:artist_id>/image', associate_methods(get_artist_image), name='get_artist_image'),
+    path('api/artists', list_artists, name='list_artists'),
 
-    path('api/track', associate_methods(views.find_track, post_method=views.create_track), name='create_track'),
-    path('api/track/<int:track_id>', associate_methods(views.get_track, views.update_track, views.delete_track)),
-    path('api/tracks', views.list_tracks, name='list_tracks'),
+    path('api/track', associate_methods(post_method=create_track), name='create_track'),
+    path('api/track/<int:track_id>', associate_methods(get_track, update_track, delete_track)),
+    path('api/tracks', list_tracks, name='list_tracks'),
 
-    path('api/playlist', associate_methods(views.find_playlist, post_method=views.create_playlist), name='create_playlist'),
-    path('api/playlist/<int:playlist_id>', associate_methods(views.get_playlist, views.update_playlist, views.delete_playlist)),
-    path('api/playlists', views.list_playlists, name='list_playlists'),
-    path('api/playlist/image/<str:image_name>', associate_methods(views.get_playlist_image), name='get_playlist_image'),
+    path('api/playlist', associate_methods(post_method=create_playlist), name='create_playlist'),
+    path('api/playlist/<int:playlist_id>', associate_methods(get_playlist, update_playlist, delete_playlist)),
+    path('api/playlists', list_playlists, name='list_playlists'),
+    path('api/playlist/image/<str:image_name>', associate_methods(get_playlist_image), name='get_playlist_image'),
 ]

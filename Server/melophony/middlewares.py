@@ -8,9 +8,9 @@ from django.shortcuts import redirect
 from django.conf import settings
 
 
-from .apps import MelophonyConfig
-from .urls import ALLOWED_PATHS, ALLOWED_STARTING_WITH_PATHS
-from .views import Status, response
+from melophony.apps import MelophonyConfig
+from melophony.urls import ALLOWED_PATHS, ALLOWED_STARTING_WITH_PATHS
+from melophony.views.utils import Status, response
 
 class RedirectMiddleware:
     def __init__(self, get_response):
