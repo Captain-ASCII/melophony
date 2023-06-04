@@ -62,5 +62,5 @@ urlpatterns = [
     path('api/playlist', associate_methods(post_method=create_playlist), name='create_playlist'),
     path('api/playlist/<int:playlist_id>', associate_methods(get_playlist, update_playlist, delete_playlist)),
     path('api/playlists', list_playlists, name='list_playlists'),
-    path('api/playlist/image/<str:image_name>', associate_methods(get_playlist_image), name='get_playlist_image'),
+    path('api/playlist/<int:playlist_id>/image', associate_methods(get_playlist_image), name='get_playlist_image'),
 ]
