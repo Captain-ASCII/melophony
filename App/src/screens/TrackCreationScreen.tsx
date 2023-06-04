@@ -35,14 +35,14 @@ const TrackCreationScreen = (): JSX.Element => {
   const allArtists = selectArtists()
   const artistsNames = allArtists.map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
-  const [ videoId, setVideoId ] = useState('')
+  const [ fileId, setFileId ] = useState('')
   const [ title, setTitle ] = useState('')
   const [ artistName, setArtistName ] = useState('')
   const [ artists, setArtists ] = useState([])
 
-  const lookForInfo = async function(videoId: string) {
+  const lookForInfo = async function(fileId: string) {
     const apiClient = new ApiClient(YOUTUBE_URL)
-    const [code, result] = await apiClient.get('/oembed', {'format': 'json', 'url': encodeURIComponent(YOUTUBE_URL + "/watch?v=" + videoId)})
+    const [code, result] = await apiClient.get('/oembed', {'format': 'json', 'url': encodeURIComponent(YOUTUBE_URL + "/watch?v=" + fileId)})
     if (code === 200) {
       const fullTitle = result['title'].replace(/ \(Official Video\)/i, '')
       const parts = fullTitle.split(/ [-/]+ /)
@@ -60,15 +60,15 @@ const TrackCreationScreen = (): JSX.Element => {
   const handleInput = useCallback(value => {
     const searchForParam = value.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
     if (searchForParam && searchForParam[7] && searchForParam[7].length == 11) {
-      setVideoId(searchForParam[7])
+      setFileId(searchForParam[7])
       lookForInfo(searchForParam[7])
     } else {
-      setVideoId(value)
+      setFileId(value)
       if (value.length === 11) {
         lookForInfo(value)
       }
     }
-  }, [setVideoId])
+  }, [setFileId])
   const handleTitleSet = useCallback(value => setTitle(value), [setTitle])
   const handleArtistNameSet = useCallback(value => setArtistName(value), [setArtistName])
   const handleArtistsSet = useCallback(selection => {
@@ -77,7 +77,7 @@ const TrackCreationScreen = (): JSX.Element => {
   }, [setArtists])
 
   const requestServerDownload = useCallback(() => {
-    apiManager.post('/track', { videoId, title, artists, artistName }).then(([code, data]) => {
+    apiManager.post('/track', { fileId, title, artists, artistName }).then(([code, data]) => {
       if (code === 201) {
         const newTrack = Track.fromObject(data)
         dispatch(setTracks(Arrays.add(tracks, newTrack)))
@@ -87,12 +87,12 @@ const TrackCreationScreen = (): JSX.Element => {
       }
     })
     history.goBack()
-  }, [ history, apiManager, videoId, title, artistName, artists ])
+  }, [ history, apiManager, fileId, title, artistName, artists ])
 
   return (
     <Screen id="AddTrackScreen" title={ _("track.creation.screen.title") } >
       <InputWithIcon icon="youtube" collection="fab">
-        <TextInput placeHolder="track.creation.youtube.video.id.placeholder" value={videoId} onInput={handleInput} />
+        <TextInput placeHolder="track.creation.youtube.video.id.placeholder" value={fileId} onInput={handleInput} />
       </InputWithIcon>
       <InputWithIcon icon="music">
         <TextInput placeHolder="track.creation.track.title.placeholder" value={title} onInput={handleTitleSet} />

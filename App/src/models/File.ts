@@ -2,18 +2,18 @@
 export default class File {
 
   private id: string
-  private videoId: string
+  private fileId: string
   private state: string
 
-  public constructor(id: string, videoId: string, state: string) {
+  public constructor(id: string, fileId: string, state: string) {
     this.id = id
-    this.videoId = videoId
+    this.fileId = fileId
     this.state = state
   }
 
   public static fromObject(o: any): File | null {
     if (o) {
-      return new File(o.id, o.videoId, o.state)
+      return new File(o.id, o.fileId, o.state)
     }
     return null
   }
@@ -23,8 +23,8 @@ export default class File {
     return this
   }
 
-  public withVideoId(videoId: string): File {
-    this.videoId = videoId
+  public withFileId(fileId: string): File {
+    this.fileId = fileId
     return this
   }
 
@@ -37,8 +37,8 @@ export default class File {
     return this.id
   }
 
-  public getVideoId(): string {
-    return this.videoId
+  public getFileId(): string {
+    return this.fileId
   }
 
   public getState(): string {

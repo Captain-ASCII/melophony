@@ -108,7 +108,7 @@ export default class MediaManager {
       this.audio.addEventListener('error', this.onError)
 
       this.isPlayable = false
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
+      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getFileId()}?jwt=${JWT.get()}`
       this.audio.currentTime = track.getStartTime()
 
       this.audio.ontimeupdate = (): void => {
@@ -174,7 +174,7 @@ export default class MediaManager {
   }
 
   prepareTrack(track: Track, loadedCallback: () => void): void {
-    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`)
+    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getFileId()}?jwt=${JWT.get()}`)
     .then((response) => {
       if (response.status === 200) {
         response.blob().then((blob) => {

@@ -66,7 +66,7 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const artistsNames = selectArtists().map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
-      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getVideoId()}`, { forceDownload: true }), [ apiManager, track ])
+      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getFileId()}`, { forceDownload: true }), [ apiManager, track ])
 
       const deleteItem = useCallback(() => {
         apiManager.delete(`/track/${track.getId()}`).then(([code, data]) => {
@@ -154,7 +154,7 @@ const TrackModificationScreen = (): JSX.Element => {
                 <TextInput disabled className={track.getFile().getState()} value={track.getFile().getState()} />
               </InputWithIcon>
               <InputWithIcon icon="youtube" collection="fab" >
-                <TextInput disabled value={track.getFile().getVideoId()} />
+                <TextInput disabled value={track.getFile().getFileId()} />
               </InputWithIcon>
             </div>
             <div id="serverInformation">

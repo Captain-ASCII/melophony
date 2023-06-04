@@ -24,7 +24,7 @@ class File(models.Model):
         ERROR = 'ERROR', _('ERROR')
         DOWNLOADING = 'DOWNLOADING', _('DOWNLOADING')
 
-    videoId =  models.CharField(max_length=255, blank=False, default=None)
+    fileId =  models.CharField(max_length=255, blank=False, default=None)
     state = models.CharField(max_length=50, choices=FILE_STATE.choices, default=FILE_STATE.INITIAL)
 
 
