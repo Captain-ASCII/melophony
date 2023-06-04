@@ -4,3 +4,6 @@ yt_dlp
 gunicorn
 requests
 Pillow
+
+# Tests
+mock
