@@ -6,11 +6,10 @@ from django.http import HttpResponse
 
 from melophony.models import File
 
-from melophony.views.utils import response, Status, get_file_path
+from melophony.views.utils import response, Status, get_file_path, TRACKS_DIR
 from melophony.track_providers import get_provider
 
 
-TRACKS_DIR = 'tracks'
 RANGE_SEPARATOR = ', '
 PACKET_SIZE = 200000
 

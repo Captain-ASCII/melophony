@@ -5,8 +5,8 @@ from django.db import transaction
 
 from melophony.models import Artist, Track
 from melophony.track_providers import get_provider
-from melophony.views.file_views import create_file_object, add_file
-from melophony.views.utils import response, db_format, Message, Status, create, get, get_all, update, delete, set_many_to_many
+from melophony.views.file_views import create_file_object
+from melophony.views.utils import response, db_format, Message, Status, create, get, get_all, update, delete, set_many_to_many, get_file_path, TRACKS_DIR
 
 
 def create_track(r, track_request):
@@ -19,7 +19,7 @@ def create_track(r, track_request):
         return response(err_status=Status.NOT_FOUND, err_message='No provider found for key')
 
     if 'fileId' in track_request:
-        success, message = provider.add_file(track_request['fileId'], track_request)
+        success, message = provider.add_file(get_file_path(TRACKS_DIR, track_request['fileId'], 'm4a'), track_request)
         if not success:
             return response(err_status=Status.ERROR, err_message=message)
 
@@ -49,7 +49,7 @@ def create_track(r, track_request):
             artists = track_request['artists']
         elif 'artistName' in track_request and track_request['artistName'] != '':
             artist = create(Artist, {'name': track_request['artistName'], 'user': r.user})
-            artists = [artist]
+            artists = [artist.id]
 
         track = create(Track, track_info)
 

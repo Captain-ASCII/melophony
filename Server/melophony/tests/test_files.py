@@ -8,8 +8,8 @@ from mock import patch, mock_open, MagicMock
 
 from melophony.models import File
 from melophony.track_providers import TrackProvider, register_provider
-from melophony.views.file_views import play_file, add_file, create_file_object, TRACKS_DIR
-from melophony.views.utils import Status, get_file_path
+from melophony.views.file_views import play_file, add_file, create_file_object
+from melophony.views.utils import Status, get_file_path, TRACKS_DIR
 
 from melophony.tests.utils import get_request, check_response, PROVIDER_KEY
 

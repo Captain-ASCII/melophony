@@ -34,6 +34,7 @@ class Status:
 
 
 FILES_DIR = os.path.join(os.path.dirname(melophony.__file__), "files")
+TRACKS_DIR = 'tracks'
 
 
 # Response formatting
