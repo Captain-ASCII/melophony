@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+// @ts-ignore
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
 import { TrackCreationParameters } from '@screens/TrackCreationScreen'
@@ -16,8 +17,11 @@ import Log from '@utils/Log'
  * Therefore, all the providers components that can collect the information required for the back-end providers can be added.
  * The components must take the TrackProviderParameters interface as parameters and return a JSX.Element.
  *
+ * -----------------------------------------------
+ *
  * import React from 'react'
  * import { TrackProviderParameters, ProviderInfo } from './ProviderList'
+ * import { _, addTranslations } from '../utils/TranslationUtils'
  *
  * // Export the getProviders() method, the providers will be retrieved by Melophony and added automatically.
  * export { getProviders }
@@ -30,8 +34,13 @@ import Log from '@utils/Log'
  *
  * // A provider taking the TrackProviderParameters as arguments and returning the component used to get the information required for the back-end provider.
  * const TestProvider = ({ trackRequest, setTrackRequest } : TrackProviderParameters): JSX.Element => {
- *   return <div style={{textAlign: "center"}}><h1>This is a test provider</h1></div>
+ *   return <div style={{textAlign: "center"}}><h1>{_("test.provider.specific.translation")}</h1></div>
  * }
+ *
+ * // In order to provide translations that may not already be available in the language dictionaries,
+ * // The following call must be made to add the translations (in French and English here):
+ * addTranslations('fr', [{key:"test.provider.specific.translation", content: "Ceci est un service de test"}])
+ * addTranslations('en', [{key: "test.provider.specific.translation", content: "This is a test provider"}])
  *
  * */
 

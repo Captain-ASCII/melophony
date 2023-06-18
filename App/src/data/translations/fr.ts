@@ -32,7 +32,6 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "tracks.sort.option.duration": "Par durée",
   "track.creation.screen.title": "Ajouter un nouveau titre",
   "track.creation.download": "Télécharger",
-  "track.creation.youtube.video.id.placeholder": "ID vidéo Youtube / URL Youtube complètes (Assurez vous que les vidéos sont libres de droits)",
   "track.creation.track.title.placeholder": "Titre",
   "track.creation.artist.list.placeholder": "Artistes...",
   "track.creation.artist.creation.placeholder": "Nouvel artiste",
