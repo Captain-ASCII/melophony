@@ -99,6 +99,15 @@ class Objects {
   static isEmpty(object: {[key: string]: any}): boolean {
     return Object.keys(object).length === 0
   }
+
+  static containsKeys(object: {[key: string]: any}, keys: Array<string>): boolean {
+    for (const key of keys) {
+      if (!(key in object)) {
+        return false
+      }
+    }
+    return true
+  }
 }
 
 export { Arrays, Objects }

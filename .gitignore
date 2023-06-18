@@ -1,5 +1,6 @@
 node_modules
 *.m4a
+App/src/providers/*
 package-lock.json
 logs.txt
 images
@@ -24,3 +25,6 @@ __pycache__
 files
 Server/*/static
 Server/melophony/providers/*
+
+# Exceptions
+!src/providers/ProviderList.tsx
