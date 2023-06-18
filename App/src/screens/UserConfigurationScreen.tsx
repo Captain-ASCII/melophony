@@ -74,7 +74,7 @@ const UserConfigurationScreen = (): JSX.Element => {
       </InputWithIcon>
       { confirmationAlert && <StatusMessage message={_('user.configuration.password.not.equal.alert')} type={MessageType.WARNING} /> }
       <div id="postActions">
-        <Button icon="save" className="raised" onClick={saveInfo} title={_("user.configuration.save.button")} />
+        <Button icon="save" className="raised" disabled={confirmationAlert} onClick={saveInfo} title={_("user.configuration.save.button")} />
       </div>
     </Screen>
   )

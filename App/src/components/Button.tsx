@@ -7,23 +7,25 @@ export interface ButtonParameters<T> {
   icon?: string;
   iconSize?: string;
   onClick?: (d: T, event?: React.MouseEvent) => void;
+  disabled?: boolean;
   data?: T;
   id?:string;
-  className?: string
+  className?: string;
 }
 
-const Button = <T extends unknown>({ onClick, title = '', icon, iconSize, data, id = '', className = '' }: ButtonParameters<T>): JSX.Element => {
+const Button = <T extends unknown>({ onClick, disabled = false, title = '', icon, iconSize, data, id = '', className = '' }: ButtonParameters<T>): JSX.Element => {
 
   const handleClick = useCallback((event) => {
-    if (onClick) {
+    console.warn(disabled)
+    if (onClick && !disabled) {
       onClick(data, event)
     }
-  }, [ onClick, data ])
+  }, [ onClick, data, disabled ])
 
   const iconClassName = (icon && title === '') ? 'icon' : ''
 
   return (
-    <div id={id} className={`button ${iconClassName} ${className}`} tabIndex={0} onClick={handleClick} >
+    <div id={id} className={`button ${iconClassName} ${className} ${disabled ? 'disabled' : ''}`} tabIndex={0} onClick={handleClick} >
       { icon && <Icon icon={icon} size={iconSize} /> }
       { title && <p className="buttonTitle" >{ title }</p> }
       <div className="overlay" ></div>
