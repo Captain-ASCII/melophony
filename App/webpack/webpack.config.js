@@ -34,6 +34,7 @@ module.exports = {
       '@index': path.resolve(__dirname, '../src/index.tsx'),
       '@utils': path.resolve(__dirname, '../src/utils/'),
       '@screens': path.resolve(__dirname, '../src/screens/'),
+      '@providers': path.resolve(__dirname, '../src/providers/'),
 
       '@actions': path.resolve(__dirname, '../src/redux/actions/'),
       '@reducers': path.resolve(__dirname, '../src/redux/reducers/'),

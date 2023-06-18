@@ -21,6 +21,7 @@
       "@store": ["redux/store/Store.ts"],
       "@data/*": ["data/*"],
       "@utils/*": ["utils/*"],
+      "@providers/*": ["providers/*"],
       "@screens/*": ["screens/*"]
     }
   },
