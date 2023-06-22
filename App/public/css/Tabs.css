@@ -15,7 +15,7 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  border: none !important;
+  outline: none !important;
 }
 
 .tabList > li:hover {
@@ -28,12 +28,9 @@
   background-color: var(--primary-bg);
   border-radius: 3px;
   transition: transform 0.25s;
+  margin-bottom: 35px;
 }
 
 .tabList > li.tabSelected {
   color: var(--primary-bg);
-}
-
-.tabPanel {
-  margin-top: 50px;
 }
