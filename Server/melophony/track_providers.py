@@ -67,12 +67,13 @@ class TrackProviderInterface:
         pass
 
     @abstractmethod
-    def add_file(self, file_path, parameters):
+    def add_file(self, file_path, parameters, data):
         """
         Add a file to the track directory using the given parameters
 
         :param file_path: The path to the file to be added
         :param parameters: The parameters of the track request received from the front-office
+        :param data: The raw data sent with the parameters (for direct upload for example)
         :returns: a 2-tuple composed of a result boolean and a message (may explain why the request failed).
         """
         pass

@@ -27,7 +27,20 @@ def associate_methods(get_method=None, put_method=None, delete_method=None, post
     def forward(request, **kwargs):
         try:
             if request.method == 'POST' and post_method is not None:
-                return post_method(request, json.loads(request.body.decode('utf-8')), **kwargs)
+                json_body = None
+                file_data = None
+                contentType = request.headers.get('Content-Type')
+
+                if contentType == 'application/json':
+                    json_body = json.loads(request.body.decode('utf-8'))
+                elif contentType.startswith('multipart/form-data'):
+                    json_body = json.loads(request.POST['json'])
+                    file_data = request.FILES['data'] if 'data' in request.FILES else None
+
+                if json_body is None:
+                    raise Http404('No endpoint available for: {} {}'.format(request.method, request.path))
+
+                return post_method(request, json_body, file_data, **kwargs)
             elif request.method == 'GET' and get_method is not None:
                 return get_method(request, **kwargs)
             elif request.method == 'PUT' and put_method is not None:
