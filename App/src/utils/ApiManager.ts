@@ -39,26 +39,34 @@ export class ApiClient {
     return this.send(this.serverUrl + this.baseNode, 'GET', path, null, queryParams, headers)
   }
 
-  public post(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + this.baseNode, 'POST', path, body, queryParams, headers)
+  public post(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+    return this.send(this.serverUrl + this.baseNode, 'POST', path, JSON.stringify(json), queryParams, headers)
   }
 
-  public put(path: string, body: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + this.baseNode, 'PUT', path, body, queryParams, headers)
+  public postFile(path: string, json: object, file: File, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+    const formData = new FormData()
+    formData.append('data', file)
+    formData.append('json', JSON.stringify(json))
+    headers.set('Content-Type', 'multipart/form-data')
+    return this.send(this.serverUrl + this.baseNode, 'POST', path, formData, queryParams, headers)
+  }
+
+  public put(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+    return this.send(this.serverUrl + this.baseNode, 'PUT', path, JSON.stringify(json), queryParams, headers)
   }
 
   public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
     return this.send(this.serverUrl + this.baseNode, 'DELETE', path, null, queryParams, headers)
   }
 
-  private getFetchParams(method: string, body: object, headers: Headers): RequestInit {
+  private getFetchParams(method: string, body: string | FormData, headers: Headers): RequestInit {
     const result = {
       method: method,
       headers: headers
     }
 
     if (body != null) {
-      return { ...result, body: JSON.stringify(body) }
+      return { ...result, body }
     }
 
     return result
@@ -74,7 +82,13 @@ export class ApiClient {
     return '?' + list.join('&')
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
+  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    } else if (headers.get('Content-Type') === 'multipart/form-data') {
+      // Do not set Content-Type explictly, this causes the browser not adding the boundaries to the FormData.
+      headers.delete('Content-Type')
+    }
     const fetchParams = this.getFetchParams(method, body, headers)
     const queryParamString = this.getQueryParamString(queryParams)
 
@@ -119,7 +133,7 @@ export default class MelophonyApiClient extends ApiClient {
     return this.tokenManager.hasValidToken()
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: object, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
+  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
     if (this.tokenManager != null) {
       if (this.tokenManager.getToken() != null) {
         headers.append('Authorization', this.tokenManager.getToken())

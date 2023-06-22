@@ -153,7 +153,7 @@ const TrackModificationScreen = (): JSX.Element => {
               <InputWithIcon icon="file-contract" >
                 <TextInput disabled className={track.getFile().getState()} value={track.getFile().getState()} />
               </InputWithIcon>
-              <InputWithIcon icon="youtube" collection="fab" >
+              <InputWithIcon icon="file" >
                 <TextInput disabled value={track.getFile().getFileId()} />
               </InputWithIcon>
             </div>

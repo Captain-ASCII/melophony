@@ -8,6 +8,7 @@ import Icon from '@components/Icon'
 
 import { _ } from '@utils/TranslationUtils'
 import Log from '@utils/Log'
+import FileUploadProvider from './FileUploadProvider'
 
 /**
  * The following example of Providers.tsx file show how to register new providers in the front-end.
@@ -21,7 +22,7 @@ import Log from '@utils/Log'
  *
  * import React from 'react'
  * import { TrackProviderParameters, ProviderInfo } from './ProviderList'
- * import { _, addTranslations } from '../utils/TranslationUtils'
+ * import { _, addTranslations, FR_TRANSLATION_KEY, EN_TRANSLATION_KEY } from '../utils/TranslationUtils'
  *
  * // Export the getProviders() method, the providers will be retrieved by Melophony and added automatically.
  * export { getProviders }
@@ -39,8 +40,8 @@ import Log from '@utils/Log'
  *
  * // In order to provide translations that may not already be available in the language dictionaries,
  * // The following call must be made to add the translations (in French and English here):
- * addTranslations('fr', [{key:"test.provider.specific.translation", content: "Ceci est un service de test"}])
- * addTranslations('en', [{key: "test.provider.specific.translation", content: "This is a test provider"}])
+ * addTranslations(FR_TRANSLATION_KEY, [{key:"test.provider.specific.translation", content: "Ceci est un service de test"}])
+ * addTranslations(EN_TRANSLATION_KEY, [{key: "test.provider.specific.translation", content: "This is a test provider"}])
  *
  * */
 
@@ -49,12 +50,14 @@ export interface ProviderInfo {
   icon: string;
   collection?: string;
   providerKey: string;
-  Component: ({ trackRequest, setTrackRequest }: TrackProviderParameters) => JSX.Element;
+  Component: (providerCallbacks: TrackProviderParameters) => JSX.Element;
 }
 
 export interface TrackProviderParameters {
-  trackRequest: object;
-  setTrackRequest: (req: object) => void;
+  setExtraInfo: (info: object) => void;
+  setData: (data: any) => void;
+  setTitle: (title: string) => void;
+  setArtistName: (artistName: string) => void;
 }
 
 let PROVIDERS: ProviderInfo[] = []
@@ -62,6 +65,7 @@ let PROVIDERS: ProviderInfo[] = []
 // @ts-ignore
 import("@providers/Providers").then((module: any) => {
   PROVIDERS = module.getProviders();
+  PROVIDERS.push({name: "File Upload", icon: "upload", providerKey: "upload_file_provider", Component: FileUploadProvider},)
 }).catch(_ => Log.w("No more providers"))
 
 function setLine(index: number) {
@@ -70,7 +74,7 @@ function setLine(index: number) {
   document.getElementById("providersTabBar").style.transform = `translateX(${(step / 2) + (index * step)}px) translateX(-50%)`
 }
 
-const ProviderList = ({ trackRequest, setTrackRequest, setProviderKey } : TrackCreationParameters): JSX.Element => {
+const ProviderList = ({ setProviderKey, setExtraInfo, setData, setTitle, setArtistName } : TrackCreationParameters): JSX.Element => {
 
   const setProvider = (index: number) => {
     setLine(index)
@@ -88,7 +92,13 @@ const ProviderList = ({ trackRequest, setTrackRequest, setProviderKey } : TrackC
         </TabList>
         <div id="providersTabBar" className="tabBar"></div>
 
-        { PROVIDERS.map(({Component}, index) => <TabPanel className="tabPanel" key={index}><Component trackRequest={trackRequest} setTrackRequest={setTrackRequest} /></TabPanel>) }
+        {
+          PROVIDERS.map(({Component}, index) => (
+            <TabPanel className="tabPanel" key={index}>
+              <Component setExtraInfo={setExtraInfo} setData={setData} setTitle={setTitle} setArtistName={setArtistName} />
+            </TabPanel>
+          ))
+        }
       </Tabs>
     </>
   )
