@@ -27,4 +27,6 @@ Server/*/static
 Server/melophony/providers/*
 
 # Exceptions
-!src/providers/ProviderList.tsx
+!App/src/providers/ProviderList.tsx
+!App/src/providers/FileUploadProvider.tsx
+!Server/melophony/providers/upload_file_provider.py
