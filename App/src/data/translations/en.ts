@@ -1,4 +1,6 @@
 export const EN_TRANSLATIONS: { [key: string]: string; } = {
+  "switch.enabled": "Enabled",
+  "switch.disabled": "Disabled",
   "login.screen.title": "Login",
   "login.notice.subtitle": "Please provide your username & password to authenticate and get access to your tracks",
   "login.user.name.field": "User name",

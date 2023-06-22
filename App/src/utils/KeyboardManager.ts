@@ -162,7 +162,8 @@ export default class KeyboardManager {
       [AppIds.MELOPHONY, new Node(AppIds.MELOPHONY, AppIds.MELOPHONY, AppIds.MENU, AppIds.MELOPHONY, AppIds.MELOPHONY)],
       [AppIds.NO_OPERATION, new Node(AppIds.NO_OPERATION, AppIds.MELOPHONY, AppIds.MAIN_CONTENT, AppIds.MENU, AppIds.MELOPHONY)],
     ])
-    this.isEnabled = !MediaUtils.isMobileScreen()
+    // this.isEnabled = !MediaUtils.isMobileScreen()
+    this.isEnabled = false
     this.current = this.nodes.get(AppIds.MELOPHONY)
     this.context = { currentNode: null }
     this.lastMove = this.timestamp()

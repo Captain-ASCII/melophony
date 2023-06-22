@@ -1,4 +1,6 @@
 export const FR_TRANSLATIONS: { [key: string]: string; } = {
+  "switch.enabled": "Activé",
+  "switch.disabled": "Désactivé",
   "login.screen.title": "Connexion",
   "login.notice.subtitle": "Connectez vous avec votre nom d'utilisateur & votre mot de passe pour accéder à vos musiques préférées",
   "login.user.name.field": "Nom d'utilisateur",
