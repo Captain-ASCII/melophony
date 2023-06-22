@@ -328,7 +328,7 @@ p, h1, h2, h3, h4, h5, h6 {
   padding: 0px;
 }
 
-.button.icon.active {
+.button.active {
   border: 1px solid var(--primary-bg);
   color: var(--primary-bg);
   height: 34px;

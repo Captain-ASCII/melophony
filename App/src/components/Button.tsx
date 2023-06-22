@@ -16,7 +16,6 @@ export interface ButtonParameters<T> {
 const Button = <T extends unknown>({ onClick, disabled = false, title = '', icon, iconSize, data, id = '', className = '' }: ButtonParameters<T>): JSX.Element => {
 
   const handleClick = useCallback((event) => {
-    console.warn(disabled)
     if (onClick && !disabled) {
       onClick(data, event)
     }

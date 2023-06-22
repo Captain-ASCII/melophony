@@ -53,7 +53,7 @@ const baseApiManager = new ApiManager(
 store.getState().app.apiManager = baseApiManager
 store.getState().app.playlist = new PlaylistManager([], false)
 store.getState().app.mediaManager = new MediaManager()
-store.getState().app.keyboardManager = new KeyboardManager()
+store.getState().app.keyboardManager = new KeyboardManager(configuration.isKeyboardNavEnabled())
 store.getState().app.language = getLanguage(configuration.getLanguage())
 
 async function getData(apiManager: ApiManager): Promise<void> {

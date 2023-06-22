@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 
-import { selectApiManager } from '@selectors/App'
-import { setLanguage } from '@actions/App'
+import { selectApiManager, selectKeyboardManager } from '@selectors/App'
+import { setKeyboardManager, setLanguage } from '@actions/App'
 import { setConfiguration } from '@actions/Configuration'
 import { selectConfiguration } from '@selectors/Configuration'
 
@@ -12,6 +12,7 @@ import Button from '@components/Button'
 import Screen from '@components/Screen'
 import InputWithIcon from '@components/InputWithIcon'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
+import Switch, { SwitchState } from '@components/Switch'
 
 import { SelectStyles } from '@utils/SelectStyles'
 
@@ -25,6 +26,7 @@ const UserConfigurationScreen = (): JSX.Element => {
 
   const apiManager = selectApiManager()
   const configuration = selectConfiguration()
+  const keyboardManager = selectKeyboardManager()
 
   const [firstPassword, setFirstPassword] = useState('')
   const [secondPassword, setSecondPassword] = useState('')
@@ -43,7 +45,6 @@ const UserConfigurationScreen = (): JSX.Element => {
   }, [firstPassword, secondPassword])
 
   const saveInfo = useCallback(() => {
-    console.warn(password)
     if (password !== '') {
       apiManager.put('/user', { password })
     }
@@ -57,12 +58,24 @@ const UserConfigurationScreen = (): JSX.Element => {
     dispatch(setLanguage(lang))
   }, [])
 
+  const handleEnableKeyboard = useCallback((value: boolean) => {
+    dispatch(setConfiguration(configuration.withKeyboardNav(value)))
+    dispatch(setKeyboardManager(keyboardManager.enabled(value)))
+  }, [])
+
   return (
     <Screen id="UserConfigurationScreen" title={ _("user.configuration.screen.title") } >
       <Title title="Language" />
       <InputWithIcon icon="flag" >
         <Select id="languages" className="multiSelect" placeholder={_("user.configuration.languages.placeholder")} styles={SelectStyles}
           options={LANGUAGE_OPTIONS} onChange={handleLanguageSet} value={{value: language.key, label: language.name}}
+        />
+      </InputWithIcon>
+      <InputWithIcon icon="keyboard" >
+        <Switch onOff
+          enabledState={new SwitchState('toggle-on', true, _("switch.enabled"))}
+          disabledState={new SwitchState('toggle-off', false, _("switch.disabled"))}
+          onSwitch={handleEnableKeyboard} initial={configuration.isKeyboardNavEnabled()}
         />
       </InputWithIcon>
       <Title title="Password" />

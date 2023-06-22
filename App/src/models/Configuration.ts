@@ -8,6 +8,7 @@ export default class Configuration {
   private sortOrder: string
   private displayType: string
   private language: string
+  private keyboardNavEnabled: boolean
 
   public constructor(
     serverAddress: string,
@@ -16,7 +17,8 @@ export default class Configuration {
     sortType: string,
     sortOrder: string,
     displayType: string,
-    language: string
+    language: string,
+    keyboardNavEnabled: boolean
   ) {
     this.serverAddress = serverAddress
     this.networkEnabled = networkEnabled
@@ -25,6 +27,7 @@ export default class Configuration {
     this.sortOrder = sortOrder
     this.displayType = displayType
     this.language = language
+    this.keyboardNavEnabled = keyboardNavEnabled
   }
 
   public withServerAddress(address: string): Configuration {
@@ -62,6 +65,11 @@ export default class Configuration {
     return this
   }
 
+  public withKeyboardNav(enabled: boolean): Configuration {
+    this.keyboardNavEnabled = enabled
+    return this
+  }
+
   public getServerAddress(): string {
     return this.serverAddress
   }
@@ -88,6 +96,10 @@ export default class Configuration {
 
   public getLanguage(): string {
     return this.language
+  }
+
+  public isKeyboardNavEnabled(): boolean {
+    return this.keyboardNavEnabled
   }
 
 }
