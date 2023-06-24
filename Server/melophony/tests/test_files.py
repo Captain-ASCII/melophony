@@ -7,7 +7,7 @@ from django.test import TestCase
 from mock import patch, mock_open, MagicMock
 
 from melophony.models import File
-from melophony.track_providers import TrackProvider, register_provider
+from melophony.track_providers import TrackProviderInterface, register_provider
 from melophony.views.file_views import play_file, add_file, create_file_object
 from melophony.views.utils import Status, get_file_path, TRACKS_DIR
 
@@ -56,16 +56,16 @@ class FileTestCase(TestCase):
         if is_partial:
             self.assertEqual(response['Content-Range'], f'bytes {start}-{end-1}/{full_length}')
 
-    def test_add_file(self):
+    def test_force_add_file(self):
         # Missing provider key
         check_response(
-            self, add_file(self.request, 'fileId', {}),
+            self, add_file(self.request, 'fileId', {}, None),
             None, Status.BAD_REQUEST, 'providerKey must be provided to identify track provider'
         )
 
         # No provider found for key
         check_response(
-            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY}),
+            self, add_file(self.request, 'fileId', {'providerKey': 'provider_that_does_not_exist'}, None),
             None, Status.NOT_FOUND, 'No provider found for key'
         )
 
@@ -76,20 +76,20 @@ class FileTestCase(TestCase):
         test_provider.add_file = MagicMock()
         test_provider.add_file.return_value = False, error_message
         check_response(
-            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}),
-            None, Status.ERROR, error_message
+            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}, None),
+            None, Status.BAD_REQUEST, error_message
         )
 
         # Success
         register_provider(PROVIDER_KEY, TestProvider())
         check_response(
-            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}),
+            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}, None),
             None, Status.NO_CONTENT, 'File added successfully'
         )
 
         # Try to add file already present
         check_response(
-            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}),
+            self, add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}, None),
             None, Status.NO_CONTENT, 'File already exists'
         )
 
@@ -105,8 +105,8 @@ class FileTestCase(TestCase):
         self.assertEqual(File.objects.all().count(), 1)
 
 
-class TestProvider(TrackProvider):
-    def add_file(self, file_path, parameters):
+class TestProvider(TrackProviderInterface):
+    def add_file(self, file_path, parameters, data):
         testcase = unittest.TestCase()
         testcase.assertTrue('some_parameter' in parameters)
         with open(file_path, 'w') as f:

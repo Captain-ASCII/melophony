@@ -19,7 +19,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 class PlaylistTestCase(TestCase):
 
-    def setUp(self):
+    @patch('uuid.uuid4')
+    def setUp(self, patched_uuid):
         logging.debug('Run test: ' + str(self._testMethodName))
         self.maxDiff = None
         self.request = get_request()
@@ -27,7 +28,9 @@ class PlaylistTestCase(TestCase):
         create_artist(self.request, {'name': 'test_artist'})
         create_artist(self.request, {'name': 'test_artist_2'})
         register_provider(PROVIDER_KEY, TestProvider())
+        patched_uuid.return_value = 'fileId'
         create_track(self.request, {'providerKey': PROVIDER_KEY, 'fileId': 'fileId', 'artists': [1]})
+        patched_uuid.return_value = 'fileId_2'
         create_track(self.request, {'providerKey': PROVIDER_KEY, 'fileId': 'fileId_2', 'artists': [2]})
 
         create_playlist(self.request, {'name': 'playlist', 'tracks': [1, 2]})

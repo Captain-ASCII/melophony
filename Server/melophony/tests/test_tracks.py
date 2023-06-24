@@ -3,7 +3,7 @@ import logging
 
 from datetime import datetime
 from django.test import TestCase
-from mock import MagicMock
+from mock import MagicMock, patch
 
 from melophony.models import Track
 from melophony.track_providers import register_provider, unregister_provider
@@ -18,7 +18,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 class TrackTestCase(TestCase):
 
-    def setUp(self):
+    @patch('uuid.uuid4')
+    def setUp(self, patched_uuid):
         logging.debug('Run test: ' + str(self._testMethodName))
         self.maxDiff = None
         self.request = get_request()
@@ -26,11 +27,13 @@ class TrackTestCase(TestCase):
         create_artist(self.request, {'name': 'test_artist'})
         register_provider(PROVIDER_KEY, TestProvider())
         # Both tracks use the same file and the same artists
-        create_track(self.request, {'providerKey': PROVIDER_KEY, 'fileId': 'fileId', 'artists': [1]})
-        create_track(self.request, {'providerKey': PROVIDER_KEY, 'fileId': 'fileId', 'artists': [1]})
+        patched_uuid.return_value = 'fileId'
+        create_track(self.request, {'providerKey': PROVIDER_KEY, 'artists': [1]})
+        create_track(self.request, {'providerKey': PROVIDER_KEY, 'artists': [1]})
         unregister_provider(PROVIDER_KEY)
 
-    def test_create_track(self):
+    @patch('uuid.uuid4')
+    def test_create_track(self, patched_uuid):
         # Missing provider key
         check_response(
             self, create_track(self.request, {}),
@@ -42,18 +45,15 @@ class TrackTestCase(TestCase):
             None, Status.NOT_FOUND, 'No provider found for key'
         )
 
-        # Missing mandatory fileId parameter
+        # Error while adding file
         test_provider = TestProvider()
         register_provider(PROVIDER_KEY, test_provider)
         parameters = {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}
-        check_response(self, create_track(self.request, parameters), None, Status.BAD_REQUEST, 'Missing fileId parameter')
-
-        # Error while adding file
         error_message = 'Error while adding file'
         test_provider.add_file = MagicMock(return_value=(False, error_message))
-        parameters['fileId'] = 'test_fileId'
+        patched_uuid.return_value = 'test_fileId'
         parameters['title'] = 'provided_title'
-        check_response(self, create_track(self.request, parameters), None, Status.ERROR, error_message)
+        check_response(self, create_track(self.request, parameters), None, Status.BAD_REQUEST, error_message)
 
         # Success
         register_provider(PROVIDER_KEY, TestProvider())
@@ -82,7 +82,7 @@ class TrackTestCase(TestCase):
 
     def test_update_track(self):
         # Incorrect field provided
-        check_response(self, update_track(self.request, {'fileId': 'new_fileId'}, 1), None, Status.BAD_REQUEST, Message.ERROR)
+        check_response(self, update_track(self.request, {'doNotExist': 'new_DoNotExist'}, 1), None, Status.BAD_REQUEST, Message.ERROR)
 
         # Incorrect artists list
         create_artist(self.request, {'name': 'test_artist_2'})
