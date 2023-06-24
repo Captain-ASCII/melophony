@@ -14,6 +14,7 @@ from django.db import models, transaction
 from django.http import HttpResponse, JsonResponse
 
 from melophony.utils import model_to_dict
+from melophony.track_providers import get_provider
 
 
 class Message:
@@ -200,3 +201,37 @@ def get_image(directory, image_name):
     except IOError:
         logging.error("Error while opening image: " + image_name)
         return response(status=Status.ERROR, err_message=Message.ERROR)
+
+
+def get_required_provider(parameters):
+    """
+    Request to add a file through the provider associated with providerKey in parameters.
+    :param parameters: A dictionary containing the parameters of the request
+    :returns: A 3-tuple with the provider found or None, a result message and a status that can be returned to front-end
+    """
+    if 'providerKey' not in parameters:
+        return None, 'providerKey must be provided to identify track provider', Status.BAD_REQUEST
+
+    provider = get_provider(parameters['providerKey'])
+
+    if provider is None:
+        return None, 'No provider found for key', Status.NOT_FOUND
+
+    return provider, "Provider found", Status.SUCCESS
+
+
+def add_file_with_provider(provider, file_id, parameters, data):
+    """
+    Request to add a file through the provider associated with providerKey in parameters.
+    :param file_id: The file identifier that will be used to check or create the track file
+    :param parameters: A dictionary containing the parameters of the request
+    :param data: A raw bytes object containing the track file data
+    :returns: A 3-tuple with a boolean indicating the result, a result message associated, and a more accurate status that can be returned to front-end
+    """
+    file_path = get_file_path(TRACKS_DIR, file_id, 'm4a')
+    if os.path.exists(file_path):
+        logging.info('File already downloaded')
+        return True, 'File already exists', Status.NO_CONTENT
+
+    success, message = provider.add_file(file_path, parameters, data)
+    return success, message, Status.NO_CONTENT if success else Status.BAD_REQUEST

@@ -5,7 +5,7 @@ import logging
 from django.test import RequestFactory
 
 from melophony.models import User
-from melophony.track_providers import TrackProvider
+from melophony.track_providers import TrackProviderInterface
 from melophony.views.utils import Status, Message
 
 USER_NAME = 'test_user'
@@ -112,9 +112,9 @@ def get_expected_playlist(testcase, playlist_id, playlist_name='test_name', trac
     }
 
 
-class TestProvider(TrackProvider):
-    def get_extra_track_info(self, track_request):
+class TestProvider(TrackProviderInterface):
+    def get_extra_track_info(self, track_request, data):
         return "test_title", 100
 
-    def add_file(self, file_path, parameters):
+    def add_file(self, file_path, parameters, data):
         return True, 'File added successfully'

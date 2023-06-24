@@ -4,24 +4,21 @@ import uuid
 
 
 from melophony.models import Artist, Track
-from melophony.track_providers import get_provider
+from melophony.views.utils import get_required_provider, add_file_with_provider
 from melophony.views.file_views import create_file_object
 from melophony.views.utils import response, db_format, Message, Status, create, get, get_all, update, delete, set_many_to_many, get_file_path, TRACKS_DIR
 
 
-def create_track(r, track_request, data):
-    if 'providerKey' not in track_request:
-        return response(err_status=Status.BAD_REQUEST, err_message='providerKey must be provided to identify track provider')
-
-    provider = get_provider(track_request['providerKey'])
-
+def create_track(r, track_request, data=None):
+    provider, message, status = get_required_provider(track_request)
     if provider is None:
-        return response(err_status=Status.NOT_FOUND, err_message='No provider found for key')
+        return response(err_status=status, err_message=message)
 
     file_id = str(uuid.uuid4())
-    success, message = provider.add_file(get_file_path(TRACKS_DIR, file_id, 'm4a'), track_request, data)
+    logging.error(file_id)
+    success, message, status = add_file_with_provider(provider, file_id, track_request, data)
     if not success:
-        return response(err_status=Status.ERROR, err_message=message)
+        return response(err_status=status, err_message=message)
 
     file = create_file_object({'fileId': file_id})
 

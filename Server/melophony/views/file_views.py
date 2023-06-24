@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 from melophony.models import File
 
-from melophony.views.utils import response, Status, get_file_path, TRACKS_DIR
+from melophony.views.utils import response, Status, get_file_path, TRACKS_DIR, get_required_provider, add_file_with_provider
 from melophony.track_providers import get_provider
 
 
@@ -48,22 +48,17 @@ def _get_range(request, file_path):
 
     return start, end, (end - start) != (file_size), file_size
 
-def add_file(r, file_id, parameters):
-    file_path = get_file_path(TRACKS_DIR, file_id, 'm4a')
-    if os.path.exists(file_path):
-        logging.info('File already downloaded')
-        return response(status=Status.NO_CONTENT, message='File already exists')
-
-    if 'providerKey' not in parameters:
-        return response(err_status=Status.BAD_REQUEST, err_message='providerKey must be provided to identify track provider')
-
-    provider = get_provider(parameters['providerKey'])
-
+def add_file(r, file_id, parameters, data):
+    provider, message, status = get_required_provider(parameters)
+    logging.info(f'{provider}, {message}, {status}')
     if provider is None:
-        return response(err_status=Status.NOT_FOUND, err_message='No provider found for key')
+        return response(err_status=status, err_message=message)
 
-    success, message = provider.add_file(file_path, parameters)
-    return response(status=Status.NO_CONTENT if success else None, err_status=Status.ERROR, message=message, err_message=message)
+    success, message, status = add_file_with_provider(provider, file_id, parameters, data)
+    if not success:
+        return response(err_status=status, err_message=message)
+
+    return response(status=status, message=message)
 
 def create_file_object(file):
     filtered_file = File.objects.filter(fileId=file['fileId'])

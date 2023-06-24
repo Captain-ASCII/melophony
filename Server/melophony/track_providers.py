@@ -57,7 +57,7 @@ class TrackProviderInterface:
         pass
 
     @abstractmethod
-    def get_extra_track_info(self, track_request):
+    def get_extra_track_info(self, track_request, data):
         """
         Allow providers to add extra information to the track before creating a track in DB.
 
