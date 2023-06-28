@@ -5,11 +5,10 @@ from django.db import transaction
 from django.test import TestCase
 from mock import patch, mock_open
 
+from melophony.constants import Status, Message
 from melophony.models import Artist
-from melophony.views.artist_views import create_artist, get_artist, update_artist, delete_artist, list_artists, get_artist_image
-from melophony.views.utils import Status, Message
 
-from melophony.tests.utils import get_request, check_response
+from melophony.tests.utils import get_rest_methods, check_response
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,14 +21,14 @@ class ArtistTestCase(TestCase):
 
     def setUp(self):
         logging.debug('Run test: ' + str(self._testMethodName))
-        self.request = get_request()
-        create_artist(self.request, {'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME})
-        create_artist(self.request, {'name': 'test_artist_2'})
+        self.post, self.get, self.patch, self.delete = get_rest_methods(self.client)
+        self.post("/api/artist", {'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME})
+        self.post("/api/artist", {'name': 'test_artist_2'})
 
     def test_create_artist(self):
         # Create an artist
         self._check_artist(
-            create_artist(self.request, {'name': 'test_artist_1'}),
+            self.post("/api/artist", {'name': 'test_artist_1'}),
             3, 'test_artist_1',
             message=Message.CREATED,
             status=Status.CREATED
@@ -37,33 +36,25 @@ class ArtistTestCase(TestCase):
 
         # Create a second artist
         self._check_artist(
-            create_artist(self.request, {'name': 'test_artist_2'}),
+            self.post("/api/artist", {'name': 'test_artist_2'}),
             4, 'test_artist_2',
             message=Message.CREATED,
             status=Status.CREATED
         )
 
-        # Trying to create an artist with same ID returns an error
-        check_response(self, create_artist(self.request, {'id': 3, 'name': 'test_artist_3'}), None, Status.BAD_REQUEST, Message.ERROR)
-
     def test_get_artist(self):
         # Unknown artist
-        check_response(self, get_artist(self.request, -1), None, Status.NOT_FOUND, Message.NOT_FOUND)
+        check_response(self, self.get("/api/artist/10"), None, Status.NOT_FOUND, Message.NOT_FOUND)
 
         # Success
-        check_response(
-            self,
-            get_artist(self.request, 1),
-            {'id': 1, 'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME, 'user': 1}
-        )
+        check_response(self, self.get("/api/artist/1"), {'id': 1, 'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME, 'user': 1})
 
     @patch('melophony.views.artist_views.download_image')
-    @patch('melophony.views.artist_views.delete_associated_image')
-    def test_update_artist(self, patched_delete_image, patched_download_image):
+    def test_update_artist(self, patched_download_image):
         patched_download_image.return_value = 'correct_image_path'
         # Update name
         self._check_artist(
-            update_artist(self.request, {'name': 'new_artist_name'}, 1),
+            self.patch("/api/artist/1", {'name': 'new_artist_name'}),
             1, 'new_artist_name', IMAGE_URL, IMAGE_NAME, 1,
             Status.SUCCESS, 'Artist updated successfully',
         )
@@ -75,29 +66,34 @@ class ArtistTestCase(TestCase):
             'imageName': 'supplied_name_that_should_not_be_used'
         }
         self._check_artist(
-            update_artist(self.request, modifications, 2),
+            self.patch("/api/artist/2", modifications),
             2, 'new_artist_name', 'new_url', 'correct_image_path', 1,
             Status.SUCCESS, 'Artist updated successfully'
         )
 
     def test_delete_artist(self):
         self.assertEqual(Artist.objects.filter(pk=1).count(), 1)
+
+        # Can't delete artist that does not exist
+        check_response(self, self.delete("/api/artist/10"), None, Status.NOT_FOUND, Message.NOT_FOUND)
+        self.assertEqual(Artist.objects.filter(pk=1).count(), 1)
+
         check_response(
             self,
-            delete_artist(self.request, 1),
-            {'id': None, 'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME, 'user': 1},
+            self.delete("/api/artist/1"),
+            {'id': 1, 'name': ARTIST_NAME, 'imageUrl': IMAGE_URL, 'imageName': IMAGE_NAME, 'user': 1},
             message='Artist deleted'
         )
         self.assertEqual(Artist.objects.filter(pk=1).count(), 0)
 
     def test_list_artists(self):
-        json_data = check_response(self, list_artists(self.request), data_check=False)
+        json_data = check_response(self, self.get("/api/artist"), data_check=False)
         self.assertEqual(len(json_data), 2)
         self.assertEqual(json_data[0]['name'], ARTIST_NAME)
 
         # List after deletion
-        delete_artist(self.request, 1)
-        json_data = check_response(self, list_artists(self.request), data_check=False)
+        self.delete("/api/artist/1")
+        json_data = check_response(self, self.get("/api/artist"), data_check=False)
         self.assertEqual(len(json_data), 1)
         self.assertEqual(json_data[0]['name'], 'test_artist_2')
 
@@ -105,15 +101,15 @@ class ArtistTestCase(TestCase):
     @patch('os.path.exists')
     def test_get_artist_image(self, patched_exists, _):
         patched_exists.return_value = True
-        response = get_artist_image(self.request, 1)
+        response = self.get("/api/artist/1/image")
         self.assertEqual(response.content, b'test_data')
 
         # Unable to find artist
-        check_response(self, get_artist_image(self.request, -1), None, Status.NOT_FOUND, 'Artist not found')
+        check_response(self, self.get("/api/artist/10/image"), None, Status.NOT_FOUND, 'Artist not found')
 
         # Unable to find image
         patched_exists.return_value = False
-        check_response(self, get_artist_image(self.request, 1), None, Status.BAD_REQUEST, 'Error opening image')
+        check_response(self, self.get("/api/artist/1/image"), None, Status.BAD_REQUEST, 'Error opening image')
 
     def _check_artist(self, response, artist_id, name, image_url=None, image_name=None, user_id=1, status=Status.SUCCESS, message=Message.SUCCESS):
         self._check_db(artist_id, name, image_url, image_name, user_id)

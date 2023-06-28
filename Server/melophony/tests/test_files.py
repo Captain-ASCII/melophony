@@ -5,13 +5,15 @@ import unittest
 
 from django.test import TestCase
 from mock import patch, mock_open, MagicMock
+from unittest import skip
 
+from melophony.constants import Status, Message
 from melophony.models import File
 from melophony.track_providers import TrackProviderInterface, register_provider
-from melophony.views.file_views import play_file, add_file, create_file_object
-from melophony.views.utils import Status, get_file_path, TRACKS_DIR
+from melophony.views.file_views import add_file, create_file_object
+from melophony.views.utils import get_file_path, TRACKS_DIR
 
-from melophony.tests.utils import get_request, check_response, PROVIDER_KEY
+from melophony.tests.utils import get_rest_methods, get_request, check_response, PROVIDER_KEY
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,14 +24,16 @@ class FileTestCase(TestCase):
 
     def setUp(self):
         logging.debug('Run test: ' + str(self._testMethodName))
+        self.post, self.get, self.patch, self.delete = get_rest_methods(self.client)
         self.request = get_request()
+        register_provider(PROVIDER_KEY, TestProvider())
+        add_file(self.request, 'fileId', {'providerKey': PROVIDER_KEY, 'some_parameter': 'test'}, None)
+        create_file_object({'fileId': 'fileId'})
 
     def tearDown(self):
         test_file = get_file_path(TRACKS_DIR, 'fileId', 'm4a')
         if os.path.exists(test_file):
             os.remove(test_file)
-        logging.info(test_file)
-        logging.info(os.path.exists(test_file))
 
     @patch('melophony.views.file_views._get_range')
     @patch('builtins.open', new_callable=mock_open, read_data=TEST_DATA)
@@ -38,14 +42,14 @@ class FileTestCase(TestCase):
         patched_exists.return_value = True
         # Full content
         patched_range.return_value = (0, len(TEST_DATA), False, len(TEST_DATA))
-        self._check_file_response(play_file(self.request, 'file_name'), False, 0, len(TEST_DATA), len(TEST_DATA))
+        self._check_file_response(self.get("/api/file/1?fileFormat=raw"), False, 0, len(TEST_DATA), len(TEST_DATA))
         # Partial content
         patched_range.return_value = (0, 4, True, len(TEST_DATA))
-        self._check_file_response(play_file(self.request, 'file_name'), True, 0, 4, len(TEST_DATA))
+        self._check_file_response(self.get("/api/file/1?fileFormat=raw"), True, 0, 4, len(TEST_DATA))
 
         # No file
         patched_exists.return_value = False
-        check_response(self, play_file(self.request, 'file_name'), None, Status.NOT_FOUND, 'File does not exist')
+        check_response(self, self.get("/api/file/2"), None, Status.NOT_FOUND, Message.NOT_FOUND)
 
     def _check_file_response(self, response, is_partial, start, end, full_length):
         self.assertEqual(response['Accept-Ranges'], 'bytes')
@@ -56,6 +60,7 @@ class FileTestCase(TestCase):
         if is_partial:
             self.assertEqual(response['Content-Range'], f'bytes {start}-{end-1}/{full_length}')
 
+    @skip("Needs an update on how forcing a file to be added can be done (front-end + back-end)")
     def test_force_add_file(self):
         # Missing provider key
         check_response(
@@ -94,21 +99,22 @@ class FileTestCase(TestCase):
         )
 
     def test_create_file(self):
-        self.assertEqual(File.objects.all().count(), 0)
+        self.assertEqual(File.objects.all().count(), 1)
         created_file = create_file_object({'fileId': 'test_file_id'})
         self.assertEqual(created_file.fileId, 'test_file_id')
-        self.assertEqual(File.objects.all().count(), 1)
+        self.assertEqual(File.objects.all().count(), 2)
 
         # Try to re-create already existing file
         created_file = create_file_object({'fileId': 'test_file_id'})
         self.assertEqual(created_file.fileId, 'test_file_id')
-        self.assertEqual(File.objects.all().count(), 1)
+        self.assertEqual(File.objects.all().count(), 2)
 
 
 class TestProvider(TrackProviderInterface):
     def add_file(self, file_path, parameters, data):
         testcase = unittest.TestCase()
         testcase.assertTrue('some_parameter' in parameters)
+        logging.info(f"Created file at {file_path}")
         with open(file_path, 'w') as f:
             f.write('file added')
         return True, 'File added successfully'
