@@ -12,7 +12,7 @@ class RedirectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith('/api') or (settings.DEBUG and request.path.startswith('/admin')):
+        if request.path.startswith('/api') or settings.DEBUG:
             return self.get_response(request)
         else:
             hostname = request.get_host().split(':')[0]

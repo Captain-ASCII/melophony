@@ -7,6 +7,7 @@ filetype
 djangorestframework
 markdown
 django-filter
+drf_yasg
 
 # Tests
 mock
