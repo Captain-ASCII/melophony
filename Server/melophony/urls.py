@@ -14,7 +14,7 @@ from melophony.views.user_views import UserViewSet, login
 class OptionalSlashRouter(routers.DefaultRouter):
     def __init__(self):
         super().__init__()
-        self.trailing_slash = '/?'
+        self.trailing_slash = 's?/?'
 
 
 router = OptionalSlashRouter()
