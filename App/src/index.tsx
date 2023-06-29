@@ -94,7 +94,6 @@ function renderLoginScreen() {
 
 async function tryAuthentication(apiManager: ApiManager): Promise<void> {
   const currentToken = JWT.get()
-  console.warn(currentToken)
   if (currentToken !== null) {
     const userData = JWT.read(currentToken)
     apiManager.get(`/user/${userData.claim.user.id}`).then(response => {
