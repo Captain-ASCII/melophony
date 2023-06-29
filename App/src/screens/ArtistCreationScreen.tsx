@@ -24,7 +24,7 @@ const ArtistCreationScreen = (): JSX.Element => {
 
   const [ artistName, setArtistName ] = useState('')
 
-  const handleInput = useCallback(event => setArtistName(event.target.value), [])
+  const handleInput = useCallback(value => setArtistName(value), [])
 
   const createArtist = useCallback(() => {
     apiManager.post('/artist', { name: artistName }).then(([code, data]) => {
