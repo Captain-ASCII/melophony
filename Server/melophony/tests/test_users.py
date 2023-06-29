@@ -24,7 +24,7 @@ class UserTestCase(TestCase):
 
         # Success
         user = {'userName': 'test', 'email': 'hello@example.com', 'password': 'test', 'firstName': 'first', 'lastName': 'last'}
-        expected_user = {'userName': 'test', 'firstName': 'first', 'lastName': 'last'}
+        expected_user = {'id': 2, 'userName': 'test', 'firstName': 'first', 'lastName': 'last'}
         check_response(self, self.post("/api/user", user), expected_user, Status.CREATED, Message.CREATED)
 
         # Try to add user with same user name
@@ -68,7 +68,7 @@ class UserTestCase(TestCase):
     def test_delete_user(self):
         # Delete current user
         self.assertEqual(User.objects.all().count(), 1)
-        check_response(self, self.delete("/api/user/1"), self._get_user_data(), message='User deleted')
+        check_response(self, self.delete("/api/user/1"), self._get_user_data(user_id=None), message='User deleted')
         self.assertEqual(User.objects.all().count(), 0)
 
     def _check_db_user(self, username, password, email, first_name, last_name):
@@ -79,5 +79,5 @@ class UserTestCase(TestCase):
         self.assertEqual(user.first_name, first_name)
         self.assertEqual(user.last_name, last_name)
 
-    def _get_user_data(self, username=USER_NAME, first_name=USER_FIRST_NAME, last_name=USER_LAST_NAME):
-        return {'userName': username, 'firstName': first_name, 'lastName': last_name}
+    def _get_user_data(self, username=USER_NAME, first_name=USER_FIRST_NAME, last_name=USER_LAST_NAME, user_id=1):
+        return {'id': user_id, 'userName': username, 'firstName': first_name, 'lastName': last_name}
