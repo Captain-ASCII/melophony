@@ -14,6 +14,7 @@ In each section, a list of items composed as the following can be found:
 User aspect
 -----------
 
+* Create new account using the registration method of login screen, disconnect
 * Try to connect using incorrect credentials: shouldn't be able to access Melophony
 * Connect using a correct username and password: Access granted to Melophony
 * Disconnect and check that access is restricted: shouldn't be able to access Melophony anymore
