@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 
-import { selectApiManager, selectKeyboardManager } from '@selectors/App'
+import { selectApiManager, selectKeyboardManager, selectUser } from '@selectors/App'
 import { setKeyboardManager, setLanguage } from '@actions/App'
 import { setConfiguration } from '@actions/Configuration'
 import { selectConfiguration } from '@selectors/Configuration'
@@ -27,6 +27,7 @@ const UserConfigurationScreen = (): JSX.Element => {
   const apiManager = selectApiManager()
   const configuration = selectConfiguration()
   const keyboardManager = selectKeyboardManager()
+  const user = selectUser()
 
   const [firstPassword, setFirstPassword] = useState('')
   const [secondPassword, setSecondPassword] = useState('')
@@ -46,9 +47,12 @@ const UserConfigurationScreen = (): JSX.Element => {
 
   const saveInfo = useCallback(() => {
     if (password !== '') {
-      apiManager.put('/user', { password })
+      apiManager.patch(`/user/${user.getId()}`, { password }).then(([status, data, message]) => {
+        if (status === 200) {
+          history.goBack()
+        }
+      })
     }
-    history.goBack()
   }, [ history, password, apiManager ])
 
   const handleLanguageSet = useCallback(selection => {

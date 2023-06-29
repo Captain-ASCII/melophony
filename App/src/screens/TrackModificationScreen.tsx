@@ -58,7 +58,7 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const save = useCallback(() => {
         if (!Objects.isEmpty(modifications)) {
-          apiManager.put(`/track/${track.getId()}`, modifications)
+          apiManager.patch(`/track/${track.getId()}`, modifications)
           dispatch(setTrack(track))
         }
         history.goBack()
@@ -66,7 +66,7 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const artistsNames = selectArtists().map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
-      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getFileId()}`, { forceDownload: true }), [ apiManager, track ])
+      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getId()}`, { forceDownload: true }), [ apiManager, track ])
 
       const deleteItem = useCallback(() => {
         apiManager.delete(`/track/${track.getId()}`).then(([code, data]) => {

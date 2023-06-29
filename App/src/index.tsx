@@ -56,12 +56,12 @@ store.getState().app.mediaManager = new MediaManager()
 store.getState().app.keyboardManager = new KeyboardManager(configuration.isKeyboardNavEnabled())
 store.getState().app.language = getLanguage(configuration.getLanguage())
 
-async function getData(apiManager: ApiManager): Promise<void> {
+async function getData(apiManager: ApiManager, userId: number): Promise<void> {
 
   const tracksResponse = await apiManager.get('/tracks')
   const playlistsResponse = await apiManager.get('/playlists')
   const artistsResponse = await apiManager.get('/artists')
-  const userResponse = await apiManager.get('/user')
+  const userResponse = await apiManager.get(`/user/${userId}`)
 
   const tracks = tracksResponse[1].map((track: any) => Track.fromObject(track))
   const playlists = playlistsResponse[1].map((playlist: any) => Playlist.fromObject(playlist))
@@ -82,20 +82,31 @@ async function getData(apiManager: ApiManager): Promise<void> {
   )
 }
 
+function renderLoginScreen() {
+  JWT.forget()
+  ReactDOM.render(
+    <Provider store={store} >
+      <LoginScreen getRequiredData={getData} />
+    </Provider>,
+    document.getElementById('root')
+  )
+}
+
 async function tryAuthentication(apiManager: ApiManager): Promise<void> {
-  apiManager.get('/user').then(response => {
-    if (response[0] != 200) {
-      JWT.forget()
-      ReactDOM.render(
-        <Provider store={store} >
-          <LoginScreen getRequiredData={getData} />
-        </Provider>,
-        document.getElementById('root')
-      )
-    } else {
-      getData(apiManager)
-    }
-  })
+  const currentToken = JWT.get()
+  console.warn(currentToken)
+  if (currentToken !== null) {
+    const userData = JWT.read(currentToken)
+    apiManager.get(`/user/${userData.claim.user.id}`).then(response => {
+      if (response[0] != 200) {
+        renderLoginScreen()
+      } else {
+        getData(apiManager, userData.claim.user.id)
+      }
+    })
+  } else {
+    renderLoginScreen()
+  }
 }
 
 async function init(): Promise<void> {

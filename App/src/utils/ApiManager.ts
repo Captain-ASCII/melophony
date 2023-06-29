@@ -51,8 +51,8 @@ export class ApiClient {
     return this.send(this.serverUrl + this.baseNode, 'POST', path, formData, queryParams, headers)
   }
 
-  public put(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
-    return this.send(this.serverUrl + this.baseNode, 'PUT', path, JSON.stringify(json), queryParams, headers)
+  public patch(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+    return this.send(this.serverUrl + this.baseNode, 'PATCH', path, JSON.stringify(json), queryParams, headers)
   }
 
   public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {

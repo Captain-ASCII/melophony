@@ -109,7 +109,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
         }
       })
     } else {
-      apiManager.put(`/playlist/${id}`, modifications).then(([code, data]) => {
+      apiManager.patch(`/playlist/${id}`, modifications).then(([code, data]) => {
         dispatch(setPlaylistInGlobalState(Playlist.fromObject(data)))
       })
     }

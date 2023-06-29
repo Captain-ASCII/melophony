@@ -108,7 +108,7 @@ export default class MediaManager {
       this.audio.addEventListener('error', this.onError)
 
       this.isPlayable = false
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getFileId()}?jwt=${JWT.get()}`
+      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getId()}?fileFormat=raw&jwt=${JWT.get()}`
       this.audio.currentTime = track.getStartTime()
 
       this.audio.ontimeupdate = (): void => {
@@ -124,7 +124,7 @@ export default class MediaManager {
   play(): void {
     if (this.audio !== null && this.audio.src !== '') {
       // Reload for token (music is playing, we are considering the user is still there)
-      store.getState().app.apiManager.get('/user')
+      // store.getState().app.apiManager.get('/user')
 
       this.audio.onended = (): void => {
         this.next()

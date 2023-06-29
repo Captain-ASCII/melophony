@@ -18,7 +18,7 @@ enum Mode {
   REGISTER
 }
 
-const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiManager) => void }): JSX.Element => {
+const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiManager, userId: number) => void }): JSX.Element => {
   const [ mode, setMode ] = useState(Mode.LOGIN)
   const [ loading, setLoading ] = useState(false)
   const [ email, setEmail ] = useState('')
@@ -35,7 +35,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
       setLoading(false)
       setErrorMessage(message)
     } else if (apiManager.hasValidToken()) {
-      getRequiredData(apiManager)
+      getRequiredData(apiManager, data['id'])
     }
   }, [ getRequiredData ])
 
@@ -55,7 +55,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
     &&  StringUtils.notNullNorEmpty(firstName) && StringUtils.notNullNorEmpty(lastName)) {
       setLoading(true)
       setErrorMessage('')
-      apiManager.post('/register', { userName, email, firstName, lastName, password }).then(handleResponse)
+      apiManager.post('/user', { userName, email, firstName, lastName, password }).then(handleResponse)
     } else {
       setErrorMessage('Please, fill every mandatory fields')
     }
