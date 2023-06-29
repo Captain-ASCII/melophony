@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-g%3j01e26=t5sr!6feedoq3$jlp7-f+j5g6z)f*46&i(j18y#!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
+APPEND_SLASH = False
 ALLOWED_HOSTS = [
     'localho.st',
     '*'
@@ -41,17 +43,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'melophony.middlewares.RedirectMiddleware',
     'melophony.middlewares.CORSMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'melophony.middlewares.JWTAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -129,3 +130,17 @@ STATIC_ROOT = '/var/www/melophony.ddns.net/public'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'melophony.authentication.JWTSimpleAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'melophony.renderers.ApiRenderer',
+    )
+}

@@ -1,80 +1,96 @@
 
+import json
 import logging
 import uuid
 
+from rest_framework import viewsets
 
+from melophony.constants import Status, Message
 from melophony.models import Artist, Track
-from melophony.views.utils import get_required_provider, add_file_with_provider
+from melophony.permissions import IsOwnerOfInstance
+from melophony.serializers import TrackSerializer
+
 from melophony.views.file_views import create_file_object
-from melophony.views.utils import response, db_format, Message, Status, create, get, get_all, update, delete, set_many_to_many, get_file_path, TRACKS_DIR
+from melophony.views.utils import get_required_provider, add_file_with_provider, perform_update, perform_destroy
+from melophony.views.utils import response, set_many_to_many
 
 
-def create_track(r, track_request, data=None):
-    provider, message, status = get_required_provider(track_request)
-    if provider is None:
-        return response(err_status=status, err_message=message)
+class TrackViewSet(viewsets.ModelViewSet):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+    permission_classes = [IsOwnerOfInstance]
 
-    file_id = str(uuid.uuid4())
-    logging.error(file_id)
-    success, message, status = add_file_with_provider(provider, file_id, track_request, data)
-    if not success:
-        return response(err_status=status, err_message=message)
+    def get_queryset(self):
+        return Track.objects.filter(user=self.request.user)
 
-    file = create_file_object({'fileId': file_id})
+    def create(self, request):
+        data = None
+        contentType = request.headers.get('Content-Type')
+        if contentType is not None and contentType.startswith('multipart/form-data'):
+            track_request = json.loads(request.POST['json']) if 'json' in request.POST else None
+            data = request.FILES['data'] if 'data' in request.FILES else None
+        else:
+            track_request = request.data
 
-    track_info = {
-        'title': track_request['title'] if 'title' in track_request else 'Default title',
-        'file': file,
-        'duration': track_request['duration'] if 'duration' in track_request else 0,
-        'startTime': 0,
-        'endTime': track_request['duration'] if 'duration' in track_request else 0,
-        'playCount': 0,
-        'rating': 0,
-        'progress': 0,
-        'user': r.user
-    }
+        provider, message, status = get_required_provider(track_request)
+        if provider is None:
+            return response(err_status=status, err_message=message)
 
-    title, duration = provider.get_extra_track_info(track_request, data)
-    if title is not None:
-        track_info['title'] = title
-    if duration is not None:
-        track_info['duration'] = duration
-        track_info['endTime'] = duration
+        file_id = str(uuid.uuid4())
+        success, message, status = add_file_with_provider(provider, file_id, track_request, data)
+        if not success:
+            return response(err_status=status, err_message=message)
 
-    artists = []
-    if 'artists' in track_request and track_request['artists']:
-        artists = track_request['artists']
-    elif 'artistName' in track_request and track_request['artistName'] != '':
-        artist = create(Artist, {'name': track_request['artistName'], 'user': r.user})
-        artists = [artist.id]
+        file = create_file_object({'fileId': file_id})
 
-    track = create(Track, track_info)
+        track_info = {
+            'title': track_request['title'] if 'title' in track_request else 'Default title',
+            'file': file,
+            'duration': track_request['duration'] if 'duration' in track_request else 0,
+            'startTime': 0,
+            'endTime': track_request['duration'] if 'duration' in track_request else 0,
+            'playCount': 0,
+            'rating': 0,
+            'progress': 0,
+            'user': request.user
+        }
 
-    if len(artists) > 0:
-        set_many_to_many(track.artists, Artist, artists)
+        title, duration = provider.get_extra_track_info(track_request, data)
+        if title is not None:
+            track_info['title'] = title
+        if duration is not None:
+            track_info['duration'] = duration
+            track_info['endTime'] = duration
 
-    return response(db_format(track, foreign_keys=['artists', 'file']), message=Message.CREATED, status=Status.CREATED)
+        artists = []
+        if 'artists' in track_request and track_request['artists']:
+            artists = track_request['artists']
+        elif 'artistName' in track_request and track_request['artistName'] != '':
+            artist = Artist.objects.create(name=track_request['artistName'], user=request.user)
+            artists = [artist.id]
 
-def get_track(r, track_id):
-    return response(get(Track, track_id, formatted=True, foreign_keys=['artists', 'file']), err_status=Status.NOT_FOUND, err_message=Message.NOT_FOUND)
+        track = Track.objects.create(**track_info)
 
-def update_track(r, changes, track_id):
-    if 'artists' in changes:
-        try:
-            track = Track.objects.get(pk=track_id)
-            if track is None:
-                return response(err_status=Status.NOT_FOUND, err_message='No track found for provided id')
-            if not set_many_to_many(track.artists, Artist, changes['artists']):
+        if len(artists) > 0:
+            set_many_to_many(track.artists, Artist, artists)
+
+        return response(self.get_serializer(track).data, message=Message.CREATED, status=Status.CREATED)
+
+    def partial_update(self, request, pk):
+        track = self.get_object()
+        changes = request.data
+        if 'artists' in changes:
+            try:
+                if track is None:
+                    return response(err_status=Status.NOT_FOUND, err_message='No track found for provided id')
+                if not set_many_to_many(track.artists, Artist, changes['artists']):
+                    return response(err_status=Status.ERROR, err_message='Error while updating track artists')
+                del changes['artists']
+            except Exception as e:
+                logging.error(e)
                 return response(err_status=Status.ERROR, err_message='Error while updating track artists')
-            del changes['artists']
-        except Exception as e:
-            logging.error(e)
-            return response(err_status=Status.ERROR, err_message='Error while updating track artists')
 
-    return response(db_format(update(Track, track_id, changes), foreign_keys=['artists', 'file']), message='Track updated successfully')
+        return perform_update(self, 'Track updated successfully', track, changes)
 
-def delete_track(r, track_id):
-    return response(db_format(delete(Track, track_id), foreign_keys=['artists', 'file']), message='Track deleted')
-
-def list_tracks(r):
-    return response(get_all(Track, formatted=True, filters={'user': r.user.id}, foreign_keys=['artists', 'file']))
+    def destroy(self, request, pk):
+        return perform_destroy(self, 'Track deleted', request)
