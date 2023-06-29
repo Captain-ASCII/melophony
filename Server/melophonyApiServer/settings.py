@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import logging
+
 from pathlib import Path
+from melophony.utils import get_server_configuration
+
+logging.basicConfig(level=logging.INFO)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,11 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g%3j01e26=t5sr!6feedoq3$jlp7-f+j5g6z)f*46&i(j18y#!'
+configuration = get_server_configuration()
+if configuration is None:
+    configuration = {}
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SECRET_KEY = configuration.get("djangoSecretKey", None)
+DEBUG = configuration.get("isInDebugMode", False)
+
+logging.info(f"Debug mode enabled: {DEBUG}")
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 APPEND_SLASH = False

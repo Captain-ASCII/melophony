@@ -25,6 +25,7 @@ __pycache__
 files
 Server/*/static
 Server/melophony/providers/*
+Server/configuration/configuration.json
 
 # Exceptions
 !App/src/providers/ProviderList.tsx
