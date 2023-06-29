@@ -69,7 +69,7 @@ const App = (): JSX.Element => {
       <div className="App">
         <div className="main-container">
           <div className={`sidebar left ${menuState}`} >
-            <UserDrawer />
+            <UserDrawer hideMenu={hideMenu} />
             <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title={_("sidemenu.tracks")} icon="music" hideMenu={hideMenu} />
             <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title={_("sidemenu.playlists")} icon="compact-disc" hideMenu={hideMenu} />
             <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title={_("sidemenu.artists")} icon="user-friends" hideMenu={hideMenu} />
