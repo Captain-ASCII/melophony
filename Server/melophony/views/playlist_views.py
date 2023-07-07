@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 
 from melophony.constants import Status, Message
 from melophony.models import Playlist, PlaylistTrack, Track
+from melophony.negotiation import ImageNegotiation
 from melophony.serializers import PlaylistSerializer
 
 from melophony.views.utils import response, get, download_image, get_image, delete_associated_image, perform_update
@@ -71,9 +72,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
             return response(err_status=Status.BAD_REQUEST, err_message=str(e))
 
     @swagger_auto_schema(responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
-    @action(detail=True, methods=["GET"])
+    @action(detail=True, methods=["GET"], content_negotiation_class=ImageNegotiation)
     def image(self, request, pk):
-        playlist = get(Playlist, pk)
+        playlist = self.get_object()
         if playlist is not None:
             return get_image(PLAYLIST_IMAGES, playlist.imageName)
         return response(None, err_status=Status.NOT_FOUND, err_message='Playlist not found')

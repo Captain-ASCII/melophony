@@ -166,7 +166,7 @@ def get_image(directory, image_name):
                 ok_response = HttpResponse(f.read(), content_type='image/webp')
                 ok_response['Cache-Control'] = 'max-age=31536000'
                 return ok_response
-        return response(err_status=Status.ERROR, err_message="Error opening image")
+        return response(err_status=Status.NOT_FOUND, err_message="Image not found")
     except IOError:
         logging.error("Error while opening image: " + image_name)
         return response(err_status=Status.ERROR, err_message=Message.ERROR)

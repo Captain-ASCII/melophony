@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 
 from melophony.constants import Status
 from melophony.models import Artist
+from melophony.negotiation import ImageNegotiation
 from melophony.permissions import IsOwnerOfInstance
 from melophony.serializers import ArtistSerializer
 
@@ -36,9 +37,9 @@ class ArtistViewSet(viewsets.ModelViewSet):
         return perform_update(self, 'Artist updated successfully', artist, request.data)
 
     @swagger_auto_schema(responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
-    @action(detail=True, methods=["GET"])
+    @action(detail=True, methods=["GET"], content_negotiation_class=ImageNegotiation)
     def image(self, request, pk):
-        artist = get(Artist, pk)
+        artist = self.get_object()
         if artist is not None:
             return get_image(ARTIST_IMAGES, artist.imageName)
         return response(None, err_status=Status.NOT_FOUND, err_message='Artist not found')
