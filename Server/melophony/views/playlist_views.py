@@ -2,13 +2,16 @@
 import logging
 
 from django.db import transaction
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from melophony.constants import Status, Message
 from melophony.models import Playlist, PlaylistTrack, Track
 from melophony.serializers import PlaylistSerializer
 
-from melophony.views.utils import response, get, download_image, get_image, delete_associated_image, perform_update, perform_destroy
+from melophony.views.utils import response, get, download_image, get_image, delete_associated_image, perform_update
 
 
 PLAYLIST_IMAGES = 'playlist_images'
@@ -67,15 +70,13 @@ class PlaylistViewSet(viewsets.ModelViewSet):
             logging.error(e)
             return response(err_status=Status.BAD_REQUEST, err_message=str(e))
 
-    def destroy(self, request, pk):
-        return perform_destroy(self, 'Playlist deleted', request)
-
-
-def get_playlist_image(r, playlist_id):
-    playlist = get(Playlist, playlist_id)
-    if playlist is not None:
-        return get_image(PLAYLIST_IMAGES, playlist.imageName)
-    return response(None, err_status=Status.NOT_FOUND, err_message='Playlist not found')
+    @swagger_auto_schema(responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
+    @action(detail=True, methods=["GET"])
+    def image(self, request, pk):
+        playlist = get(Playlist, pk)
+        if playlist is not None:
+            return get_image(PLAYLIST_IMAGES, playlist.imageName)
+        return response(None, err_status=Status.NOT_FOUND, err_message='Playlist not found')
 
 
 def _set_playlist_tracks(playlist, tracks):

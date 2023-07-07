@@ -11,7 +11,7 @@ from melophony.permissions import IsOwnerOfInstance
 from melophony.serializers import TrackSerializer
 
 from melophony.views.file_views import create_file_object
-from melophony.views.utils import get_required_provider, add_file_with_provider, perform_update, perform_destroy
+from melophony.views.utils import get_required_provider, add_file_with_provider, perform_update
 from melophony.views.utils import response, set_many_to_many
 
 
@@ -91,6 +91,3 @@ class TrackViewSet(viewsets.ModelViewSet):
                 return response(err_status=Status.ERROR, err_message='Error while updating track artists')
 
         return perform_update(self, 'Track updated successfully', track, changes)
-
-    def destroy(self, request, pk):
-        return perform_destroy(self, 'Track deleted', request)

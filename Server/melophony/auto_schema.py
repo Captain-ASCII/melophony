@@ -31,3 +31,7 @@ class AutoSchema(SwaggerAutoSchema):
         else:
             return super(AutoSchema, self).get_request_body_schema(serializer)
 
+    def get_produces(self):
+        if self.get_operation_id().endswith('image'):
+            return ["image/webp"]
+        return super(AutoSchema, self).get_produces()

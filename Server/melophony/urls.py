@@ -6,9 +6,9 @@ from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from melophony.views.artist_views import ArtistViewSet, get_artist_image
+from melophony.views.artist_views import ArtistViewSet
 from melophony.views.file_views import FileViewSet
-from melophony.views.playlist_views import PlaylistViewSet, get_playlist_image
+from melophony.views.playlist_views import PlaylistViewSet
 from melophony.views.track_views import TrackViewSet
 from melophony.views.user_views import UserViewSet
 
@@ -16,7 +16,7 @@ from melophony.views.user_views import UserViewSet
 class OptionalSlashRouter(routers.DefaultRouter):
     def __init__(self):
         super().__init__()
-        self.trailing_slash = 's?/?'
+        self.trailing_slash = '/?'
 
 
 router = OptionalSlashRouter()
@@ -27,22 +27,21 @@ router.register(r'track', TrackViewSet)
 router.register(r'user', UserViewSet)
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Melophony API",
-      default_version='v1',
-      description="Melophony API schema",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="d.benlulu25@gmail.com",),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Melophony API",
+        default_version='v1',
+        description="Melophony API schema",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="d.benlulu25@gmail.com",),
+        license=openapi.License(name="BSD License"),
+    ),
+    url="https://melophony-api.ddns.net",
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 
 urlpatterns = [
-    path('api/artist/<int:artist_id>/image', get_artist_image),
-    path('api/playlist/<int:playlist_id>/image', get_playlist_image),
     path('api/', include(router.urls)),
 ]
 

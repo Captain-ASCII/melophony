@@ -1,12 +1,15 @@
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from melophony.constants import Status
 from melophony.models import Artist
 from melophony.permissions import IsOwnerOfInstance
 from melophony.serializers import ArtistSerializer
 
-from melophony.views.utils import response, perform_update, perform_destroy, get, download_image, get_image, delete_associated_image
+from melophony.views.utils import response, perform_update, get, download_image, get_image, delete_associated_image
 
 
 ARTIST_IMAGES = 'artist_images'
@@ -32,12 +35,10 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
         return perform_update(self, 'Artist updated successfully', artist, request.data)
 
-    def destroy(self, request, pk):
-        return perform_destroy(self, 'Artist deleted', request)
-
-
-def get_artist_image(r, artist_id):
-    artist = get(Artist, artist_id)
-    if artist is not None:
-        return get_image(ARTIST_IMAGES, artist.imageName)
-    return response(None, err_status=Status.NOT_FOUND, err_message='Artist not found')
+    @swagger_auto_schema(responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
+    @action(detail=True, methods=["GET"])
+    def image(self, request, pk):
+        artist = get(Artist, pk)
+        if artist is not None:
+            return get_image(ARTIST_IMAGES, artist.imageName)
+        return response(None, err_status=Status.NOT_FOUND, err_message='Artist not found')

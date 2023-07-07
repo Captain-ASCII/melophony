@@ -25,23 +25,12 @@ TRACKS_DIR = 'tracks'
 
 # Response formatting
 
-class ResponseWithMessage(Response):
-    def __init__(self, message, *args, **kwargs):
-        super(ResponseWithMessage, self).__init__(*args, **kwargs)
-        self.message = message
-
-
-def perform_destroy(viewset, message, request):
-    serializer = viewset.get_serializer(viewset.get_object())
-    super(viewsets.ModelViewSet, viewset).destroy(request)
-    return ResponseWithMessage(message, serializer.data)
-
 
 def perform_update(viewset, message, instance, data):
     serializer = viewset.get_serializer(instance, data=data, partial=True)
     serializer.is_valid(raise_exception=True)
     viewset.perform_update(serializer)
-    return ResponseWithMessage(message, serializer.data)
+    return Response(serializer.data)
 
 
 def response(data=None, status=Status.SUCCESS, err_status=Status.BAD_REQUEST, message=Message.SUCCESS, err_message=Message.ERROR, token=None):
@@ -169,7 +158,7 @@ def convert_to_webp(source_path):
 def get_image(directory, image_name):
     try:
         if image_name is None:
-            return response(status=Status.ERROR, err_message='Invalid path')
+            return response(err_status=Status.NO_CONTENT, err_message='Invalid path')
 
         image_path = get_file_path(directory, image_name)
         if os.path.exists(image_path):
@@ -177,7 +166,7 @@ def get_image(directory, image_name):
                 ok_response = HttpResponse(f.read(), content_type='image/webp')
                 ok_response['Cache-Control'] = 'max-age=31536000'
                 return ok_response
-        return response(status=Status.ERROR, err_message="Error opening image")
+        return response(err_status=Status.ERROR, err_message="Error opening image")
     except IOError:
         logging.error("Error while opening image: " + image_name)
-        return response(status=Status.ERROR, err_message=Message.ERROR)
+        return response(err_status=Status.ERROR, err_message=Message.ERROR)
