@@ -28,8 +28,9 @@ import ImageSearcher from '@components/ImageSearcher'
 const ArtistModificationScreen = (): JSX.Element => {
   const history = useHistory()
   const { id } = useParams<QueryParameters>()
+  const providedId = parseInt(id)
 
-  if (id) {
+  if (providedId && !Number.isNaN(providedId)) {
     const [ artist, setArtistState ] = useState(selectArtist(parseInt(id)))
     if (artist) {
       const dispatch = useDispatch()
