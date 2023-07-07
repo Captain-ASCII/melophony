@@ -22,6 +22,7 @@ class RedirectMiddleware:
 
 class CORSMiddleware:
     ALLOWED_METHODS = ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS']
+    ALLOWED_RESPONSE_HEADERS = ['Message', 'Token']
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -32,4 +33,5 @@ class CORSMiddleware:
         response['Access-Control-Allow-Headers'] = "*"
         response['Access-Control-Allow-Origin'] = "*" if settings.DEBUG else "https://melophony.ddns.net"
         response['Access-Control-Allow-Methods'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
+        response['Access-Control-Expose-Headers'] = ','.join(CORSMiddleware.ALLOWED_RESPONSE_HEADERS)
         return response

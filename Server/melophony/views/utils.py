@@ -37,12 +37,12 @@ def response(data=None, status=Status.SUCCESS, err_status=Status.BAD_REQUEST, me
     status = err_status if data is None and status is not Status.NO_CONTENT else status
     message = err_message if data is None and status is not Status.NO_CONTENT else message
 
-    data = {'message': message, 'data': data}
-    if token is not None:
-        data['token'] = token
-
-    r = JsonResponse(data)
+    r = JsonResponse(data if data else {})
     r.status_code = status
+    r.headers['Message'] = message
+
+    if token is not None:
+        r.headers['Token'] = token
 
     return r
 
