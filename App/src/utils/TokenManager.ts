@@ -1,5 +1,5 @@
 
-import JWT from 'jwt-client'
+import JWT, { JWTObject } from 'jwt-client'
 
 export default class TokenManager {
 
@@ -11,18 +11,20 @@ export default class TokenManager {
     this.timeoutId = null
   }
 
-  public keepToken(body: any): void {
-    if (body.token && JWT.validate(body.token)) {
-      JWT.keep(body.token)
-      const decoded = JWT.read(body.token)
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId)
-      }
-      this.timeoutId = window.setTimeout(() => {
-        if (this.tokenExpirationCallback) {
-          this.tokenExpirationCallback()
+  public keepToken(token: string): void {
+    if (token) {
+      const tokenObject = JWT.read(token)
+      if (tokenObject && JWT.validate(tokenObject)) {
+        JWT.keep(tokenObject)
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId)
         }
-      }, (decoded.claim.exp * 1000) - new Date().getTime());
+        this.timeoutId = window.setTimeout(() => {
+          if (this.tokenExpirationCallback) {
+            this.tokenExpirationCallback()
+          }
+        }, (tokenObject.claim.exp * 1000) - new Date().getTime());
+      }
     }
   }
 

@@ -31,6 +31,8 @@ class JWTSimpleAuthentication(authentication.BaseAuthentication):
             token = request.GET.get('jwt', None)
 
         if token is not None and token != 'null':
+            if token.startswith('Bearer '):
+                token = token[7:]
             try:
                 user_jwt = jwt.decode(token, MelophonyConfig.jwt_secret, algorithms=["HS256"])
                 if user_jwt is not None:
