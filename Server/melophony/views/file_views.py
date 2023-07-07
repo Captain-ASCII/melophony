@@ -9,7 +9,7 @@ from melophony.constants import Status
 from melophony.models import File
 from melophony.serializers import FileSerializer
 
-from melophony.permissions import IsAdminOrReadOnly
+from melophony.permissions import IsOwnerOfInstance
 from melophony.views.utils import response, get_file_path, TRACKS_DIR, get_required_provider, add_file_with_provider
 
 
@@ -19,7 +19,10 @@ PACKET_SIZE = 200000
 class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOfInstance]
+
+    def get_queryset(self):
+        return File.objects.filter(track__user=self.request.user)
 
     def retrieve(self, request, pk, format=None):
         response_format = request.GET.get('fileFormat', 'json')
