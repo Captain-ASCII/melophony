@@ -105,12 +105,12 @@ const PlaylistModificationScreen = (): JSX.Element => {
     if (id === -1) {
       apiManager.post('/playlist', modifications).then(([code, data]) => {
         if (code === 201) {
-          dispatch(addPlaylistInGlobalState(Playlist.fromObject(data)))
+          dispatch(addPlaylistInGlobalState(Playlist.fromObject(data, Arrays.toMap(tracks, (track) => track.getId()))))
         }
       })
     } else {
       apiManager.patch(`/playlist/${id}`, modifications).then(([code, data]) => {
-        dispatch(setPlaylistInGlobalState(Playlist.fromObject(data)))
+        dispatch(setPlaylistInGlobalState(Playlist.fromObject(data, Arrays.toMap(tracks, (track) => track.getId()))))
       })
     }
     history.goBack()

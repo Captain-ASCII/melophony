@@ -63,6 +63,14 @@ class Arrays {
     }
     return copy
   }
+
+  static toMap<T>(array: Array<T>, getId: (value: T) => number): Map<number, T> {
+    const result = new Map<number, T>()
+    for (const value of array) {
+      result.set(getId(value), value)
+    }
+    return result
+  }
 }
 
 class Objects {

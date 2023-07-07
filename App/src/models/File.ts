@@ -1,11 +1,11 @@
 
 export default class File {
 
-  private id: string
+  private id: number
   private fileId: string
   private state: string
 
-  public constructor(id: string, fileId: string, state: string) {
+  public constructor(id: number, fileId: string, state: string) {
     this.id = id
     this.fileId = fileId
     this.state = state
@@ -18,7 +18,11 @@ export default class File {
     return null
   }
 
-  public withId(id: string): File {
+  public static getFromFiles(allFiles: Map<number, File>, id: number): File {
+    return allFiles.get(id)
+  }
+
+  public withId(id: number): File {
     this.id = id
     return this
   }
@@ -33,7 +37,7 @@ export default class File {
     return this
   }
 
-  public getId(): string {
+  public getId(): number {
     return this.id
   }
 

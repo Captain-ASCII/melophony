@@ -6,6 +6,7 @@ import configuration from '@reducers/Configuration'
 import listeners from '@reducers/Event'
 import notifications from '@reducers/Notification'
 import tracks from '@reducers/Track'
+import files from '@reducers/File'
 import playlists from '@reducers/Playlist'
 
 const reducer = combineReducers({
@@ -15,6 +16,7 @@ const reducer = combineReducers({
   listeners,
   notifications,
   tracks,
+  files,
   playlists,
 })
 

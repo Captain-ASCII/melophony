@@ -9,6 +9,7 @@ import Icon from '@components/Icon'
 
 import { selectApiManager } from '@selectors/App'
 import { selectArtists } from '@selectors/Artist'
+import { selectFiles } from '@selectors/File'
 import { selectTracks } from '@selectors/Track'
 import { setTracks } from '@actions/Track'
 import { setArtists as setArtistsInState } from '@actions/Artist'
@@ -36,6 +37,7 @@ const TrackCreationScreen = (): JSX.Element => {
 
   const tracks = selectTracks()
   const allArtists = selectArtists()
+  const allFiles = selectFiles()
   const apiManager = selectApiManager()
 
   const artistsNames = allArtists.map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
@@ -73,7 +75,7 @@ const TrackCreationScreen = (): JSX.Element => {
 
     apiManager.postFile('/track', trackRequest, requestData).then(([code, data]) => {
       if (code === 201) {
-        const newTrack = Track.fromObject(data)
+        const newTrack = Track.fromObject(data, Arrays.toMap(allArtists, (artist) => artist.getId()), Arrays.toMap(allFiles, (file) => file.getId()))
         dispatch(setTracks(Arrays.add(tracks, newTrack)))
         if (allArtists.every((a: Artist) => a.getId() !== newTrack.getArtist().getId())) {
           dispatch(setArtistsInState(Arrays.concat(allArtists, data.artists.map((a: any) => Artist.fromObject(a)))))

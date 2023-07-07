@@ -15,6 +15,7 @@ import Artist from '@models/Artist'
 import Track from '@models/Track'
 import Playlist from '@models/Playlist'
 import User from '@models/User'
+import File from '@models/File'
 
 import Notification from '@models/Notification'
 import PlaylistManager from '@models/PlaylistManager'
@@ -58,20 +59,39 @@ store.getState().app.language = getLanguage(configuration.getLanguage())
 
 async function getData(apiManager: ApiManager, userId: number): Promise<void> {
 
-  const tracksResponse = await apiManager.get('/tracks')
-  const playlistsResponse = await apiManager.get('/playlists')
-  const artistsResponse = await apiManager.get('/artists')
+  const tracksResponse = await apiManager.get('/track')
+  const playlistsResponse = await apiManager.get('/playlist')
+  const artistsResponse = await apiManager.get('/artist')
+  const filesResponse = await apiManager.get('/file')
   const userResponse = await apiManager.get(`/user/${userId}`)
 
-  const tracks = tracksResponse[1].map((track: any) => Track.fromObject(track))
-  const playlists = playlistsResponse[1].map((playlist: any) => Playlist.fromObject(playlist))
-  const artists = artistsResponse[1].map((artist: any) => Artist.fromObject(artist))
+  const artistsArray: Array<any> = artistsResponse[1]
+  const filesArray: Array<any> = filesResponse[1]
+  const tracksArray: Array<any> = tracksResponse[1]
+  const playlistsArray: Array<any> = playlistsResponse[1]
+
+  const artists = artistsArray.reduce((map, artist: any) => {
+     map.set(artist.id, Artist.fromObject(artist))
+     return map
+  }, new Map())
+  const files = filesArray.reduce((map, file: any) => {
+     map.set(file.id, File.fromObject(file))
+     return map
+  }, new Map())
+  const tracks = tracksArray.reduce((map, track: any) => {
+     map.set(track.id, Track.fromObject(track, artists, files))
+     return map
+  }, new Map())
+  const playlists = playlistsArray.reduce((map, playlist: any) => {
+     map.set(playlist.id, Playlist.fromObject(playlist, tracks))
+     return map
+  }, new Map())
   const user = User.fromObject(userResponse[1])
 
-  store.dispatch(setArtists(artists))
-  store.dispatch(setTracks(tracks))
-  store.dispatch(setPlaylists(playlists))
-  store.dispatch(setPlaylistManager(new PlaylistManager(tracks, configuration.getShuffleMode())))
+  store.dispatch(setArtists(Array.from(artists.values())))
+  store.dispatch(setTracks(Array.from(tracks.values())))
+  store.dispatch(setPlaylists(Array.from(playlists.values())))
+  store.dispatch(setPlaylistManager(new PlaylistManager(Array.from(tracks.values()), configuration.getShuffleMode())))
   store.dispatch(setUser(user))
 
   ReactDOM.render(
