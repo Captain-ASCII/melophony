@@ -27,23 +27,23 @@ export class ApiClient {
 
   protected serverUrl: string
   protected baseNode: string
-  protected resultCallback: (data: [number, any, string]) => [number, any, string]
+  protected resultCallback: (data: [number, any, Headers]) => [number, any, Headers]
 
-  public constructor(serverUrl: string, baseNode = "", onResult: (data: [number, any, string]) => [number, any, string] = () => [-1, {}, ""]) {
+  public constructor(serverUrl: string, baseNode = "", onResult: (data: [number, any, Headers]) => [number, any, Headers] = () => [-1, {}, null]) {
     this.serverUrl = serverUrl
     this.baseNode = baseNode
     this.resultCallback = onResult
   }
 
-  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
     return this.send(this.serverUrl + this.baseNode, 'GET', path, null, queryParams, headers)
   }
 
-  public post(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+  public post(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
     return this.send(this.serverUrl + this.baseNode, 'POST', path, JSON.stringify(json), queryParams, headers)
   }
 
-  public postFile(path: string, json: object, file: File, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+  public postFile(path: string, json: object, file: File, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
     const formData = new FormData()
     formData.append('data', file)
     formData.append('json', JSON.stringify(json))
@@ -51,11 +51,11 @@ export class ApiClient {
     return this.send(this.serverUrl + this.baseNode, 'POST', path, formData, queryParams, headers)
   }
 
-  public patch(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+  public patch(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
     return this.send(this.serverUrl + this.baseNode, 'PATCH', path, JSON.stringify(json), queryParams, headers)
   }
 
-  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, string]> {
+  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
     return this.send(this.serverUrl + this.baseNode, 'DELETE', path, null, queryParams, headers)
   }
 
@@ -82,7 +82,7 @@ export class ApiClient {
     return '?' + list.join('&')
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
+  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, Headers]> {
     if (!headers.has('Content-Type')) {
       headers.set('Content-Type', 'application/json')
     } else if (headers.get('Content-Type') === 'multipart/form-data') {
@@ -95,7 +95,7 @@ export class ApiClient {
     const json = timeout(
       NETWORK_TIMEOUT,
       fetch(`${baseUrl}${path}${queryParamString}`, fetchParams)
-        .then(async (response: Response): Promise<[number, any, string]> => [ response.status, await response.json(), null ])
+        .then(async (response: Response): Promise<[number, any, Headers]> => [ response.status, await response.json(), response.headers ])
     )
 
     return json.catch((error: Error) => {
@@ -114,7 +114,7 @@ export default class MelophonyApiClient extends ApiClient {
 
   private tokenManager: TokenManager
 
-  public constructor(serverUrl: string, onResult: (data: [number, any, string]) => [number, any, string], tokenManager: TokenManager) {
+  public constructor(serverUrl: string, onResult: (data: [number, any, Headers]) => [number, any, Headers], tokenManager: TokenManager) {
     super(serverUrl, "/api", onResult)
     this.tokenManager = tokenManager
   }
@@ -133,7 +133,7 @@ export default class MelophonyApiClient extends ApiClient {
     return this.tokenManager.hasValidToken()
   }
 
-  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, string]> {
+  protected send(baseUrl: string, method: string, path: string, body: string | FormData, queryParams: QueryParams, headers: Headers): Promise<[number, any, Headers]> {
     if (this.tokenManager != null) {
       if (this.tokenManager.getToken() != null) {
         headers.append('Authorization', this.tokenManager.getToken())
@@ -142,12 +142,12 @@ export default class MelophonyApiClient extends ApiClient {
 
     const response = super.send(baseUrl, method, path, body, queryParams, headers)
 
-    return response.then((data: [number, any, string]) => {
+    return response.then(([status, body, headers]: [number, any, Headers]) => {
       if (this.tokenManager != null) {
-        this.tokenManager.keepToken(data[1])
+        this.tokenManager.keepToken(headers.get('Token'))
       }
-      const message = 'message' in data[1] ? data[1].message : null
-      const result: [number, any, string] = [ data[0], data[1].data, message ]
+      const message = headers.get('Message')
+      const result: [number, any, Headers] = [ status, body, headers ]
 
       if (this.resultCallback && this.hasValidToken() && message != null) {
         this.resultCallback(result)

@@ -39,7 +39,8 @@ const configuration = store.getState().configuration
 
 const baseApiManager = new ApiManager(
   configuration.getServerAddress(),
-  ([status, data, message]: [number, any, string]) => {
+  ([status, data, headers]: [number, any, Headers]) => {
+    const message = headers.get('Message')
     if (message != null) {
       store.dispatch(addNotification(new Notification(message)))
     }
