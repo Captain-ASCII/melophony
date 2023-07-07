@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import JWT from 'jwt-client'
@@ -7,7 +7,7 @@ import Playlist from '@models/Playlist'
 import PlaylistManager from '@models/PlaylistManager'
 
 import { selectConfiguration } from '@selectors/Configuration'
-import { selectPlaylistManager } from '@selectors/App'
+import { selectApiManager, selectPlaylistManager } from '@selectors/App'
 import { selectPlaylists } from '@selectors/Playlist'
 
 import { setPlaylistManager } from '@actions/App'
@@ -20,17 +20,21 @@ import { _ } from '@utils/TranslationUtils'
 
 const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: Playlist; playlistManager: PlaylistManager; serverAddress: string }): JSX.Element => {
   const dispatch = useDispatch()
+  const apiManager = selectApiManager()
 
   const runPlaylist = () => {
     dispatch(setPlaylistManager(playlistManager.withQueue(playlist.getTracks()).next()))
   }
 
-  const imageBackground = playlist.getImageName() != null
-    ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${serverAddress}/api/playlist/${playlist.getId()}/image?jwt=${JWT.get()})`}
-    : {}
+  const id = KeyboardManager.getId(playlist)
+
+  useEffect(() => apiManager.getImage(`${serverAddress}/api/playlist/${playlist.getId()}/image`, (url: string) => {
+    const img = document.getElementById(id)
+    img.style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${url})`
+  }), [])
 
   return (
-    <div id={KeyboardManager.getId(playlist)} className="playlistCard" style={imageBackground} >
+    <div id={id} className="playlistCard" >
       <div className="playlistInfo">
         <h5>{playlist.getName()}</h5>
         <p>{_("playlists.tracks.number", [playlist.getTracks().length]) }</p>
