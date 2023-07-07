@@ -7,6 +7,7 @@ import traceback
 
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from melophony.apps import MelophonyConfig
 from melophony.constants import Status, Message
@@ -21,16 +22,17 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [UserPermissions]
+    user_classes = True
 
     def create(self, request, *args, **kwargs):
         try:
             body = json.loads(request.body)
-            if _check_user_exists(body['userName']) is not None:
+            if _check_user_exists(body['username']) is not None:
                 return response(status=Status.BAD_REQUEST, err_message='Username already in use')
 
-            user = User.objects.create_user(body['userName'], body['email'], body['password'])
-            user.first_name = body['firstName']
-            user.last_name = body['lastName']
+            user = User.objects.create_user(body['username'], body['email'], body['password'])
+            user.first_name = body['first_name']
+            user.last_name = body['last_name']
             user.save()
             jwt_data = _generate_new_token(user)
 
@@ -52,18 +54,31 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.get_object()
         if 'password' in request.data:
             user.set_password(request.data['password'])
-        if 'firstName' in request.data:
-            user.first_name = request.data['firstName']
-        if 'lastName' in request.data:
-            user.last_name = request.data['lastName']
+        if 'first_name' in request.data:
+            user.first_name = request.data['first_name']
+        if 'last_name' in request.data:
+            user.last_name = request.data['last_name']
 
         user.save()
         return response(_user_data(user), message="User updated successfully")
 
-    def destroy(self, request, pk):
-        user = self.get_object()
-        user.delete()
-        return response(_user_data(user), message='User deleted')
+    @action(detail=False, methods=["POST"])
+    def login(self, request):
+        try:
+            body = json.loads(request.body)
+            user = authenticate(username=body['username'], password=body['password'])
+            if user is not None:
+                jwt_data = _generate_new_token(user)
+                return response(
+                    _user_data(user),
+                    message='Successfully authenticated',
+                    token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256")
+                )
+            else:
+                return response(err_status=Status.UNAUTHORIZED, err_message='Invalid credentials')
+        except Exception as e:
+            logging.exception(e)
+            return response(err_status=Status.BAD_REQUEST, err_message='Missing mandatory parameters: [username, password]')
 
 
 def _check_user_exists(username):
@@ -77,25 +92,8 @@ def _check_user_exists(username):
 
 def _generate_new_token(user):
     expiration_date = int((datetime.datetime.now() + datetime.timedelta(days=7)).timestamp())
-    return {'exp': expiration_date, 'user': {'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name}}
+    return {'exp': expiration_date, 'user': {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name}}
 
-
-def login(request):
-    try:
-        body = json.loads(request.body)
-        user = authenticate(username=body['userName'], password=body['password'])
-        if user is not None:
-            jwt_data = _generate_new_token(user)
-            return response(
-                _user_data(user),
-                message='Successfully authenticated',
-                token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256")
-            )
-        else:
-            return response(err_status=Status.UNAUTHORIZED, err_message='Invalid credentials')
-    except Exception as e:
-        logging.exception(e)
-        return response(err_status=Status.BAD_REQUEST, err_message='Missing mandatory parameters: [userName, password]')
 
 def _user_data(user):
-    return {'id': user.id, 'userName': user.username, 'firstName': user.first_name, 'lastName': user.last_name}
+    return {'id': user.id, 'username': user.username, 'first_name': user.first_name, 'last_name': user.last_name}

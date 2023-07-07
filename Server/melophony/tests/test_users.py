@@ -23,8 +23,8 @@ class UserTestCase(TestCase):
         check_response(self, self.post("/api/user", {}), None, Status.BAD_REQUEST, 'Something bad happened during registration, try again')
 
         # Success
-        user = {'userName': 'test', 'email': 'hello@example.com', 'password': 'test', 'firstName': 'first', 'lastName': 'last'}
-        expected_user = {'id': 2, 'userName': 'test', 'firstName': 'first', 'lastName': 'last'}
+        user = {'username': 'test', 'email': 'hello@example.com', 'password': 'test', 'first_name': 'first', 'last_name': 'last'}
+        expected_user = {'id': 2, 'username': 'test', 'first_name': 'first', 'last_name': 'last'}
         check_response(self, self.post("/api/user", user), expected_user, Status.CREATED, Message.CREATED)
 
         # Try to add user with same user name
@@ -32,18 +32,18 @@ class UserTestCase(TestCase):
 
     def test_login(self):
         # Missing parameters
-        check_response(self, self.post("/api/login", {}, auth=False), None, Status.BAD_REQUEST, 'Missing mandatory parameters: [userName, password]')
+        check_response(self, self.post("/api/user/login", {}, auth=False), None, Status.BAD_REQUEST, 'Missing mandatory parameters: [username, password]')
 
         # Invalid credentials
-        user_request = {'userName': 'not_existing', 'password': 'password'}
-        check_response(self, self.post("/api/login", user_request, auth=False), None, Status.UNAUTHORIZED, 'Invalid credentials')
+        user_request = {'username': 'not_existing', 'password': 'password'}
+        check_response(self, self.post("/api/user/login", user_request, auth=False), None, Status.UNAUTHORIZED, 'Invalid credentials')
 
-        user_request = {'userName': USER_NAME, 'password': 'password2'}
-        check_response(self, self.post("/api/login", user_request, auth=False), None, Status.UNAUTHORIZED, 'Invalid credentials')
+        user_request = {'username': USER_NAME, 'password': 'password2'}
+        check_response(self, self.post("/api/user/login", user_request, auth=False), None, Status.UNAUTHORIZED, 'Invalid credentials')
 
         # Login OK
-        user_request = {'userName': USER_NAME, 'password': USER_PASSWORD}
-        check_response(self, self.post("/api/login", user_request, auth=False), self._get_user_data(), Status.SUCCESS, 'Successfully authenticated')
+        user_request = {'username': USER_NAME, 'password': USER_PASSWORD}
+        check_response(self, self.post("/api/user/login", user_request, auth=False), self._get_user_data(), Status.SUCCESS, 'Successfully authenticated')
 
     def test_get_user(self):
         check_response(self, self.get("/api/user/1"), self._get_user_data())
@@ -53,11 +53,11 @@ class UserTestCase(TestCase):
         self._check_db_user(USER_NAME, USER_PASSWORD, USER_EMAIL, USER_FIRST_NAME, USER_LAST_NAME)
 
         user_modifications = {
-            'userName': 'cannot_change',
+            'username': 'cannot_change',
             'password': 'new_pass',
             'email': 'cannot_change',
-            'firstName': 'new_first',
-            'lastName': 'new_last'
+            'first_name': 'new_first',
+            'last_name': 'new_last'
         }
         new_user_data = self._get_user_data(USER_NAME, 'new_first', 'new_last')
         check_response(self, self.patch("/api/user/1", user_modifications), new_user_data, message='User updated successfully')
@@ -80,4 +80,4 @@ class UserTestCase(TestCase):
         self.assertEqual(user.last_name, last_name)
 
     def _get_user_data(self, username=USER_NAME, first_name=USER_FIRST_NAME, last_name=USER_LAST_NAME, user_id=1):
-        return {'id': user_id, 'userName': username, 'firstName': first_name, 'lastName': last_name}
+        return {'id': user_id, 'username': username, 'first_name': first_name, 'last_name': last_name}

@@ -68,7 +68,7 @@ def get_rest_methods(client):
         last_name=USER_LAST_NAME,
     )
 
-    response = client.post("/api/login", {"userName": USER_NAME, "password": USER_PASSWORD}, content_type="application/json")
+    response = client.post("/api/user/login", {"username": USER_NAME, "password": USER_PASSWORD}, content_type="application/json")
     json_data = json.loads(response.content)
     token = json_data["token"]
 

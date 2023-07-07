@@ -28,7 +28,7 @@ class IsAdminOrReadOnly(permissions.IsAdminUser):
 
 class UserPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
-        if view.action == 'create':
+        if view.action in ['create', 'login']:
             return True
         elif view.action == 'list':
             return request.user.is_authenticated and request.user.is_superuser

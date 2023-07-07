@@ -149,7 +149,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
-    'DEFAULT_RENDERER_CLASSES': (
-        'melophony.renderers.ApiRenderer',
-    )
+}
+
+SWAGGER_SETTINGS = {
+    "DEFAULT_AUTO_SCHEMA_CLASS":"melophony.auto_schema.AutoSchema"
 }

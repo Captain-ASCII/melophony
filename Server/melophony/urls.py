@@ -10,7 +10,7 @@ from melophony.views.artist_views import ArtistViewSet, get_artist_image
 from melophony.views.file_views import FileViewSet
 from melophony.views.playlist_views import PlaylistViewSet, get_playlist_image
 from melophony.views.track_views import TrackViewSet
-from melophony.views.user_views import UserViewSet, login
+from melophony.views.user_views import UserViewSet
 
 
 class OptionalSlashRouter(routers.DefaultRouter):
@@ -41,7 +41,6 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('api/login', login, name='login'),
     path('api/artist/<int:artist_id>/image', get_artist_image),
     path('api/playlist/<int:playlist_id>/image', get_playlist_image),
     path('api/', include(router.urls)),
