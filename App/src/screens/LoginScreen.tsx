@@ -31,8 +31,8 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
   const apiManager = selectApiManager()
 
   const handleResponse = useCallback(([status, data, message]) => {
+    setLoading(false)
     if (status !== 200 && status !== 201) {
-      setLoading(false)
       setErrorMessage(message)
     } else if (apiManager.hasValidToken()) {
       getRequiredData(apiManager, data['id'])
@@ -42,7 +42,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
   const login = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/login', { userName, password }).then(handleResponse)
+    apiManager.post('/user/login', { username: userName, password }).then(handleResponse)
   }, [ apiManager, userName, password, handleResponse ])
 
   const formLogin = useCallback((event) => {
@@ -55,7 +55,7 @@ const LoginScreen = ({ getRequiredData }: { getRequiredData: (apiManager: ApiMan
     &&  StringUtils.notNullNorEmpty(firstName) && StringUtils.notNullNorEmpty(lastName)) {
       setLoading(true)
       setErrorMessage('')
-      apiManager.post('/user', { userName, email, firstName, lastName, password }).then(handleResponse)
+      apiManager.post('/user', {username: userName, email, first_name: firstName, last_name: lastName, password}).then(handleResponse)
     } else {
       setErrorMessage('Please, fill every mandatory fields')
     }
