@@ -3,10 +3,14 @@ import logging
 import os
 
 from django.http import HttpResponse
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from melophony.constants import Status
 from melophony.models import File
+from melophony.negotiation import AudioFileNegotiation
 from melophony.serializers import FileSerializer
 
 from melophony.permissions import IsOwnerOfInstance
@@ -24,32 +28,32 @@ class FileViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return File.objects.filter(track__user=self.request.user)
 
-    def retrieve(self, request, pk, format=None):
-        response_format = request.GET.get('fileFormat', 'json')
-        if response_format == 'json':
-            return super(FileViewSet, self).retrieve(request, pk)
-        elif response_format == 'raw':
-            file = self.get_object()
-            file_path = get_file_path(TRACKS_DIR, file.fileId, 'm4a')
-            if os.path.exists(file_path):
-                with open(file_path, "rb") as f:
-                    start, end, partial, full_length = _get_range(request, file_path)
-                    http_response = HttpResponse()
-                    if partial:
-                        http_response.status_code = 206
-                        http_response['Content-Range'] = f'bytes {start}-{end-1}/{full_length}'
-                    http_response['Accept-Ranges'] = 'bytes'
-                    http_response['Content-Length'] = end - start
-                    http_response['Content-Type'] = 'audio/x-m4a'
-                    http_response.write(f.read()[start:end])
-                    return http_response
-            else:
-                return response(err_message='File does not exist', err_status=Status.NOT_FOUND)
+    @swagger_auto_schema(
+        manual_parameters=[openapi.Parameter('full', openapi.IN_QUERY, description="Indicates if the full track should be returned", type=openapi.TYPE_BOOLEAN)],
+        responses={"200": openapi.Schema(type=openapi.TYPE_FILE)}
+    )
+    @action(detail=True, methods=['GET'], content_negotiation_class=AudioFileNegotiation)
+    def download(self, request, pk):
+        full_requested = request.GET.get('full', False)
+        file = self.get_object()
+        file_path = get_file_path(TRACKS_DIR, file.fileId, 'm4a')
+        if os.path.exists(file_path):
+            with open(file_path, "rb") as f:
+                start, end, partial, full_length = _get_range(request, file_path, full_requested != 'true')
+                http_response = HttpResponse()
+                if partial:
+                    http_response.status_code = 206
+                    http_response['Content-Range'] = f'bytes {start}-{end-1}/{full_length}'
+                http_response['Accept-Ranges'] = 'bytes'
+                http_response['Content-Length'] = end - start
+                http_response['Content-Type'] = 'audio/x-m4a'
+                http_response.write(f.read()[start:end])
+                return http_response
         else:
-            return response(err_message='Unknown format', err_status=Status.NOT_FOUND)
+            return response(err_message='File does not exist', err_status=Status.NOT_FOUND)
 
 
-def _get_range(request, file_path):
+def _get_range(request, file_path, use_partial):
     file_size = os.path.getsize(file_path)
     start = 0
     end = file_size
@@ -63,7 +67,7 @@ def _get_range(request, file_path):
         start = file_size - requested_end if requested_start == '' else int(requested_start)
         end = file_size if requested_end == '' else int(requested_end)
 
-    end = min(file_size, start + PACKET_SIZE)
+    end = min(file_size, start + PACKET_SIZE) if use_partial else file_size
 
     return start, end, (end - start) != (file_size), file_size
 

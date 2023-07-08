@@ -34,4 +34,6 @@ class AutoSchema(SwaggerAutoSchema):
     def get_produces(self):
         if self.get_operation_id().endswith('image'):
             return ["image/webp"]
+        elif self.get_operation_id() == 'file_download':
+            return ["audio/x-m4a"]
         return super(AutoSchema, self).get_produces()

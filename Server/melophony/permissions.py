@@ -1,5 +1,7 @@
 
+import logging
 from rest_framework import permissions
+from melophony.models import File
 
 
 class IsOwnerOfInstance(permissions.IsAuthenticated):
@@ -9,7 +11,14 @@ class IsOwnerOfInstance(permissions.IsAuthenticated):
 
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the owner of the object.
-        return obj.user == request.user
+        if type(obj) == File:
+            tracks = obj.track_set.all()
+            for track in tracks:
+                if track.user == request.user:
+                    return True
+            return False
+        else:
+            return obj.user == request.user
 
 
 class IsAdminOrReadOnly(permissions.IsAdminUser):
