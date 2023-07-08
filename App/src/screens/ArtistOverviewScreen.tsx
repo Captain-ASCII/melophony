@@ -27,11 +27,14 @@ const ArtistOverviewScreen = (): JSX.Element => {
     const configuration = selectConfiguration()
     const [background, setBackground] = useState({})
 
-    useEffect(() => apiManager.getImage(
-      `${configuration.getServerAddress()}/api/artist/${artist.getId()}/image`,
-      (url: string) => setBackground({ backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${url})` }),
-      () => setBackground({ backgroundColor: ColorUtils.getRandomColor() })
-    ), [])
+    useEffect(() => {
+      if (artist.getImageName === null) {
+        setBackground({ backgroundColor: ColorUtils.getRandomColor() })
+      } else {
+        const token = JWT.get().substring(7)
+        setBackground({ backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?jwt=${token})` })
+      }
+      }, [])
 
     KeyboardManager.addMainNodes(tracks, {containerLevel: 3})
 

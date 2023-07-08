@@ -28,10 +28,10 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
 
   const id = KeyboardManager.getId(playlist)
 
-  useEffect(() => apiManager.getImage(`${serverAddress}/api/playlist/${playlist.getId()}/image`, (url: string) => {
-    const img = document.getElementById(id)
-    img.style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${url})`
-  }), [])
+  useEffect(() => {
+    const token = JWT.get().substring(7)
+    document.getElementById(id).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url("${serverAddress}/api/playlist/${playlist.getId()}/image?jwt=${token}")`
+  }, [])
 
   return (
     <div id={id} className="playlistCard" >

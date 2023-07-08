@@ -156,20 +156,6 @@ export default class MelophonyApiClient extends ApiClient {
       return result
     })
   }
-
-  public getImage(url: string, onResolved: (url: string) => void, onRejected: () => void = () => null) {
-    fetch(url, { headers: {"Authorization": this.tokenManager.getToken()} })
-    .then(response => {
-      if (response.status === 204) {
-        onRejected()
-        throw new Error("No image")
-      } else {
-        return response.blob()
-      }
-    })
-    .then(blob => onResolved(URL.createObjectURL(blob)))
-    .catch(err => {})
-  }
 }
 
 export { QueryParameters }

@@ -30,10 +30,10 @@ const ArtistsScreen = (): JSX.Element => {
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
     const id = KeyboardManager.getId(artist)
-    useEffect(() => apiManager.getImage(`${configuration.getServerAddress()}/api/artist/${artist.getId()}/image`, (url) => {
-      const img = document.getElementById(id)
-      img.style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${url})`
-    }), [])
+    useEffect(() => {
+      const token = JWT.get().substring(7)
+      document.getElementById(id).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?jwt=${token})`
+    }, [])
     return (
       <div id={id} className="artistListItem" key={artist.getId()} >
         <Link id={KeyboardManager.getClickId(artist)} to={`/artist/${artist.getId()}`} className="link" >
