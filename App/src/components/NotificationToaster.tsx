@@ -14,7 +14,7 @@ class Toast {
   private shift: number = 0
   private message: string = ''
 
-  public constructor(message = '', shift = -200) {
+  public constructor(message = '', shift = -250) {
     this.message = message
     this.shift = shift
   }

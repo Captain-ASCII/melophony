@@ -26,6 +26,7 @@ export default class MediaManager {
   private isPlayable: boolean
   private isPlayingExtract: boolean
   private extractTimeout: any
+  private hasPlayedOnce: boolean
 
   constructor(audio: HTMLAudioElement = null) {
     this.audio = audio
@@ -34,6 +35,7 @@ export default class MediaManager {
     this.onPlayDone = doNothing
     this.onError = doNothing
     this.onKey = this.handleKey.bind(this)
+    this.hasPlayedOnce = false
 
     document.addEventListener('keydown', this.onKey)
   }
@@ -125,6 +127,10 @@ export default class MediaManager {
     if (this.audio !== null && this.audio.src !== '') {
       // Reload for token (music is playing, we are considering the user is still there)
       // store.getState().app.apiManager.get('/user')
+      if (!this.hasPlayedOnce) {
+        MediaUtils.raiseFooterOnMobile()
+      }
+      this.hasPlayedOnce = true
 
       this.audio.onended = (): void => {
         this.next()

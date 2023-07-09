@@ -123,11 +123,11 @@ html, body, #root {
   align-self: stretch;
 }
 
-.main-container {
+#mainContainer {
   margin-top: 80px;
   display: flex;
   width: 100%;
-  height: calc(100% - 160px);
+  height: calc(100% - 80px - var(--footer-height));
   overflow: hidden;
 }
 

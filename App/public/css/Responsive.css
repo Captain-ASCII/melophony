@@ -203,10 +203,14 @@
     bottom: 18%;
   }
 
+  #mainContainer {
+    --footer-height: 25px;
+  }
+
   #footer {
     flex-direction: column;
     flex-wrap: initial;
-    --footer-height: 80px;
+    --footer-height: 25px;
   }
 
   #controls, #currentTrackInfo {

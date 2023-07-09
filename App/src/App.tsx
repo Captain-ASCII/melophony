@@ -69,7 +69,7 @@ const App = (): JSX.Element => {
   return(
     <Router>
       <div className="App">
-        <div className="main-container">
+        <div id="mainContainer">
           <div className={`sidebar left ${menuState}`} >
             <UserDrawer hideMenu={hideMenu} />
             <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title={_("sidemenu.tracks")} icon="music" hideMenu={hideMenu} />
