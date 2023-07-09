@@ -25,6 +25,7 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "sidemenu.playlist.current": "Playlist",
   "sidemenu.playlist.tracks.number": "Titre(s)",
   "sidemenu.netstats": "Statistiques réseau",
+  "sidemenu.synchronization": "Synchronisation",
   "tracks.title": "Titres",
   "tracks.search.placeholder": "Rechercher un titre",
   "tracks.sort.select.placeholder": "Ordre",
@@ -74,5 +75,8 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "user.configuration.save.button": "Enregistrer",
   "user.configuration.password.placeholder": "Nouveau mot de passe",
   "user.configuration.password.repeat.placeholder": "Répéter le nouveau mot de passe",
-  "user.configuration.password.not.equal.alert": "Les mots de passe sont différents"
+  "user.configuration.password.not.equal.alert": "Les mots de passe sont différents",
+  "synchronization.title": "Synchronisation",
+  "synchronization.explanation": "Synchronisation des données avec le serveur principal...",
+  "synchronization.login.again": "L'application ne peut pas se synchroniser, une nouvelle connexion est requise :"
 }

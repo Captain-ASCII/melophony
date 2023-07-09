@@ -3,6 +3,7 @@
 @import url("ArtistOverviewScreen.css");
 @import url("Artists.css");
 @import url("CheckableItemList.css");
+@import url("CheckMark.css");
 @import url("ColumnLayout.css");
 @import url("CustomSelect.css");
 @import url("DropZone.css");
@@ -25,6 +26,7 @@
 @import url("Splash.css");
 @import url("Status.css");
 @import url("StatusMessage.css");
+@import url("Synchronization.css");
 @import url("Tabs.css");
 @import url("Tracks.css");
 @import url("UserDrawer.css");

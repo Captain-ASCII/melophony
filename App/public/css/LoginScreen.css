@@ -18,6 +18,11 @@
   height: 100px;
 }
 
+#loginBox {
+  display: flex;
+  flex-direction: column;
+}
+
 #loginInputs {
   display: flex;
   flex-direction: column;
@@ -46,7 +51,6 @@
 #loadingBox {
   display: flex;
   justify-content: center;
-  margin: 10px;
   width: 100%;
 }
 

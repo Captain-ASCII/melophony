@@ -70,6 +70,14 @@ h5 {
   font-size: 14px;
 }
 
+.paragraph {
+  margin: 10px 0;
+}
+
+.paragraph.centered {
+  text-align: center;
+}
+
 .title {
   margin: 10px 0;
 }

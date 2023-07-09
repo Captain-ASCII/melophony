@@ -1,0 +1,15 @@
+
+#synchronizationScreen #loadingBox {
+  flex-grow: 1;
+  align-items: center;
+}
+
+.synchroItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 3px 0;
+  background-color: var(--main-hover-bg);
+  border-radius: 4px;
+  padding: 5px 15px;
+}
