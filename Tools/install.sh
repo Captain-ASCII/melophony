@@ -31,19 +31,19 @@ echo "$config" > $melophony_dir/Server/configuration/configuration.json
 
 echo "Start server install..."
 
-#cd $melophony_dir/Server/
-#rm -rf venv
-#python -m venv venv
-#source venv/bin/activate
-#pip install -r requirements.txt
-#deactivate
+cd $melophony_dir/Server/
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+deactivate
 
 echo "Server install done"
-echo "Start front-end install..." 
+echo "Start front-end install..."
 
 cd $melophony_dir/App/
-#npm install
-#npm run build
+npm install
+npm run build
 
 cp ${melophony_dir}/Server/nginx_melophony.conf /etc/nginx/sites-available/melophony
 sed -i "s/melophony.ddns.net/$hostname/g" /etc/nginx/sites-available/melophony
