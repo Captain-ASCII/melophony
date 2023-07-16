@@ -76,6 +76,7 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "user.configuration.password.placeholder": "Nouveau mot de passe",
   "user.configuration.password.repeat.placeholder": "Répéter le nouveau mot de passe",
   "user.configuration.password.not.equal.alert": "Les mots de passe sont différents",
+  "user.configuration.clear.local.data": "Effacer les données locales",
   "synchronization.title": "Synchronisation",
   "synchronization.explanation": "Synchronisation des données avec le serveur principal...",
   "synchronization.login.again": "L'application ne peut pas se synchroniser, une nouvelle connexion est requise :"

@@ -76,6 +76,7 @@ export const EN_TRANSLATIONS: { [key: string]: string; } = {
   "user.configuration.password.placeholder": "New password",
   "user.configuration.password.repeat.placeholder": "Repeat new password",
   "user.configuration.password.not.equal.alert": "Passwords don't match",
+  "user.configuration.clear.local.data": "Clear local data",
   "synchronization.title": "Data Synchronization",
   "synchronization.explanation": "Synchronization of the data with the main server...",
   "synchronization.login.again": "The application can't synchronize with the remote server, you must login again:"

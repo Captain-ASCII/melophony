@@ -19,6 +19,7 @@ import { SelectStyles } from '@utils/SelectStyles'
 import { _, getLanguage, LANGUAGE_OPTIONS } from '@utils/TranslationUtils'
 import TextInput from '@components/TextInput'
 import Title from '@components/Title'
+import MediaUtils from '@utils/MediaUtils'
 
 const UserConfigurationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -67,6 +68,10 @@ const UserConfigurationScreen = (): JSX.Element => {
     dispatch(setKeyboardManager(keyboardManager.enabled(value)))
   }, [])
 
+  const clearLocalData = useCallback(() => {
+    apiManager.post('/user/clear-local-data', null)
+  }, [])
+
   return (
     <Screen id="UserConfigurationScreen" title={ _("user.configuration.screen.title") } >
       <Title title="Language" />
@@ -82,6 +87,11 @@ const UserConfigurationScreen = (): JSX.Element => {
           onSwitch={handleEnableKeyboard} initial={configuration.isKeyboardNavEnabled()}
         />
       </InputWithIcon>
+      { MediaUtils.isAndroidWebApp() &&
+        <InputWithIcon icon="trash" >
+          <Button title={_("user.configuration.clear.local.data")} onClick={clearLocalData} />
+        </InputWithIcon>
+      }
       <Title title="Password" />
       <InputWithIcon icon="lock" >
         <TextInput type="password" placeHolder="user.configuration.password.placeholder" onInput={handlePassword(setFirstPassword)} />
