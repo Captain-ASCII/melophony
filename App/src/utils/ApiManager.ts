@@ -95,7 +95,13 @@ export class ApiClient {
     const json = timeout(
       NETWORK_TIMEOUT,
       fetch(`${baseUrl}${path}${queryParamString}`, fetchParams)
-        .then(async (response: Response): Promise<[number, any, Headers]> => [ response.status, await response.json(), response.headers ])
+        .then(async (response: Response): Promise<[number, any, Headers]> => {
+          let json = {}
+          if (response.status != 204) {
+            json = await response.json()
+          }
+          return [ response.status, json, response.headers ]
+        })
     )
 
     return json.catch((error: Error) => {

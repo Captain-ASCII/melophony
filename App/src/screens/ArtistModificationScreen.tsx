@@ -69,7 +69,7 @@ const ArtistModificationScreen = (): JSX.Element => {
 
       const deleteArtist = useCallback(() => {
         apiManager.delete(`/artist/${id}`).then(([code, data]) => {
-          if (code === 200) {
+          if (code === 204) {
             dispatch(setArtists(Arrays.remove(artists, a => a.getId().toString() === id)))
           }
         })

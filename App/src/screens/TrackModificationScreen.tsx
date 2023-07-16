@@ -70,7 +70,7 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const deleteItem = useCallback(() => {
         apiManager.delete(`/track/${track.getId()}`).then(([code, data]) => {
-          if (code === 200) {
+          if (code === 204) {
             dispatch(setTracks(Arrays.remove(tracks, t => t.getId() === track.getId())))
           }
         })
