@@ -62,8 +62,8 @@ const ArtistModificationScreen = (): JSX.Element => {
         } else {
           apiManager.patch(`/artist/${id}`, artist).then(([code, data]) => {
             dispatch(setArtist(Artist.fromObject(data)))
+            history.goBack()
           })
-          history.goBack()
         }
       }, [ apiManager, history, artist, artists, tracks, dispatch, id, initialName ])
 

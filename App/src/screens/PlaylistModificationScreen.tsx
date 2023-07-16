@@ -107,13 +107,14 @@ const PlaylistModificationScreen = (): JSX.Element => {
         if (code === 201) {
           dispatch(addPlaylistInGlobalState(Playlist.fromObject(data, Arrays.toMap(tracks, (track) => track.getId()))))
         }
+        history.goBack()
       })
     } else {
       apiManager.patch(`/playlist/${id}`, modifications).then(([code, data]) => {
         dispatch(setPlaylistInGlobalState(Playlist.fromObject(data, Arrays.toMap(tracks, (track) => track.getId()))))
+        history.goBack()
       })
     }
-    history.goBack()
   }, [apiManager, playlist])
 
   const deletePlaylist = () => {

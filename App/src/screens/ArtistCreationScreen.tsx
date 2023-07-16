@@ -30,6 +30,7 @@ const ArtistCreationScreen = (): JSX.Element => {
     apiManager.post('/artist', { name: artistName }).then(([code, data]) => {
       if (code === 201) {
         dispatch(setArtists(Arrays.add(artists, Artist.fromObject(data))))
+        history.goBack()
       }
     })
     history.goBack()
