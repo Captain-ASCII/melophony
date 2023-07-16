@@ -30,10 +30,6 @@ const ArtistsScreen = (): JSX.Element => {
   const filtered = artists.filter(artist => artist.getName().toUpperCase().indexOf(filter.toUpperCase()) > -1)
   const artistsComponents = filtered.map(artist => {
     const id = KeyboardManager.getId(artist)
-    useEffect(() => {
-      const token = JWT.get().substring(7)
-      document.getElementById(id).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?jwt=${token})`
-    }, [])
     return (
       <div id={id} className="artistListItem" key={artist.getId()} >
         <Link id={KeyboardManager.getClickId(artist)} to={`/artist/${artist.getId()}`} className="link" >
@@ -45,6 +41,12 @@ const ArtistsScreen = (): JSX.Element => {
       </div>
     )
   })
+  useEffect(() => {
+    artists.forEach(artist => {
+      const token = JWT.get().substring(7)
+      document.getElementById(KeyboardManager.getId(artist)).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?v=${Math.random()}&jwt=${token})`
+    })
+  }, [])
 
   bindToSession('artistsScroll', () => ref.current.scrollTop, (value) => ref.current.scrollTo({top: value}))
 
