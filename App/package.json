@@ -7,8 +7,7 @@
     "start": "webpack-dev-server --config webpack/webpack.dev.js",
     "minify": "cat $(cat public/css/App.css | grep import | sed -E 's/@import url\\(\"(.*)\"\\);/public\\/css\\/\\1/g') > full.tmp.css && lessc -clean-css full.tmp.css public/App.min.css && rm full.tmp.css",
     "bundle": "webpack -p --config webpack/webpack.prod.js",
-    "build": "npm run minify && npm run bundle",
-    "production": "sudo nodejs server.js"
+    "build": "npm run minify && npm run bundle"
   },
   "author": "Daniel Ben-Lulu",
   "license": "ISC",
