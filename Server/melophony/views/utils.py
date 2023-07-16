@@ -30,7 +30,7 @@ def perform_update(viewset, message, instance, data):
     serializer = viewset.get_serializer(instance, data=data, partial=True)
     serializer.is_valid(raise_exception=True)
     viewset.perform_update(serializer)
-    return Response(serializer.data)
+    return response(serializer.data, message=message)
 
 
 def response(data=None, status=Status.SUCCESS, err_status=Status.BAD_REQUEST, message=Message.SUCCESS, err_message=Message.ERROR, token=None):
@@ -85,14 +85,14 @@ def add_file_with_provider(provider, file_id, parameters, data):
 
 # DB utils methods
 
-def get(o_type, object_id):
+def get(o_type, object_id, user):
     try:
-        return o_type.objects.get(pk=object_id)
+        return o_type.objects.get(pk=object_id, user=user)
     except Exception:
         return None
 
 
-def set_many_to_many(main_object_list, related_o_type, related_objects):
+def set_many_to_many(main_object_list, related_o_type, related_objects, user):
     try:
         with transaction.atomic():
             main_object_list.clear()
@@ -100,7 +100,7 @@ def set_many_to_many(main_object_list, related_o_type, related_objects):
                 return True
 
             for related_object_id in related_objects:
-                if type(related_object_id) != int or get(related_o_type, related_object_id) is None:
+                if type(related_object_id) != int or get(related_o_type, related_object_id, user) is None:
                     raise Exception(str(related_o_type.__name__) + ' with id [' + str(related_object_id) + '] does not exist')
                 main_object_list.add(related_object_id)
             return True
@@ -122,7 +122,19 @@ def delete_associated_image(instance):
         os.remove(instance.imageName)
 
 
+def replace_image(instance, directory, modifications):
+    imageUrl = modifications.get('imageUrl', None)
+    if imageUrl is not None:
+        delete_associated_image(instance)
+        modifications['imageName'] = download_image(directory, imageUrl)
+    return modifications
+
+
 def download_image(directory, image_url):
+    if image_url is None or not image_url.startswith('http'):
+        logging.error('URL is not usable for download, skipping...')
+        return None
+
     image_name = str(uuid.uuid4()) + '.tmp'
     image_path = get_file_path(directory, image_name)
 
