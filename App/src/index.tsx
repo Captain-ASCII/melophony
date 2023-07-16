@@ -58,13 +58,12 @@ store.getState().app.mediaManager = new MediaManager()
 store.getState().app.keyboardManager = new KeyboardManager(configuration.isKeyboardNavEnabled())
 store.getState().app.language = getLanguage(configuration.getLanguage())
 
-async function getData(apiManager: ApiManager, userId: number): Promise<void> {
 
+async function getServerData(apiManager: ApiManager) {
   const tracksResponse = await apiManager.get('/track')
   const playlistsResponse = await apiManager.get('/playlist')
   const artistsResponse = await apiManager.get('/artist')
   const filesResponse = await apiManager.get('/file')
-  const userResponse = await apiManager.get(`/user/${userId}`)
 
   const artistsArray: Array<any> = artistsResponse[1]
   const filesArray: Array<any> = filesResponse[1]
@@ -87,13 +86,20 @@ async function getData(apiManager: ApiManager, userId: number): Promise<void> {
      map.set(playlist.id, Playlist.fromObject(playlist, tracks))
      return map
   }, new Map())
-  const user = User.fromObject(userResponse[1])
 
   store.dispatch(setArtists(Array.from(artists.values())))
   store.dispatch(setTracks(Array.from(tracks.values())))
   store.dispatch(setPlaylists(Array.from(playlists.values())))
   store.dispatch(setPlaylistManager(new PlaylistManager(Array.from(tracks.values()), configuration.getShuffleMode())))
+}
+
+async function getData(apiManager: ApiManager, userId: number): Promise<void> {
+
+  const userResponse = await apiManager.get(`/user/${userId}`)
+  const user = User.fromObject(userResponse[1])
   store.dispatch(setUser(user))
+
+  await getServerData(apiManager)
 
   ReactDOM.render(
     <Provider store={store} >
@@ -139,6 +145,6 @@ async function init(): Promise<void> {
   tryAuthentication(baseApiManager)
 }
 
-export { init }
+export { init, getServerData }
 
 init()

@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 
+import { getServerData } from '@index'
+
 import { selectApiManager } from '@selectors/App'
 
 import { _ } from '@utils/TranslationUtils'
@@ -51,9 +53,26 @@ const SynchronizationScreen = (): JSX.Element => {
           socket.addEventListener('message', function (event: MessageEvent) {
             setContent(null)
             const message = JSON.parse(event.data)
-            setSynchronizationList(message.synchronizationState.map((item: any) => new SynchroItem(item.name, item.isSynchronized, item.isSuccessfullySynchronized)))
-            if (message.modifiedItem && !touched) {
-              document.getElementById(message.modifiedItem.name).scrollIntoView(false)
+            const state = message.synchronizationState
+            if (message.synchronizationCompleted) {
+              const [success, failures] = state.reduce(([success, failures]: [number, number], item: any) => {
+                if (item.isSuccessfullySynchronized) {
+                  success++
+                } else {
+                  failures++
+                }
+                return [success, failures]
+              }, [0, 0])
+              setSynchronizationList([
+                new SynchroItem(`Success synchronization(s): ${success}/${state.length}`, true, true),
+                new SynchroItem(`Failure synchronization(s): ${failures}/${state.length}`, true, false)
+              ])
+              getServerData(apiManager)
+            } else {
+              setSynchronizationList(state.map((item: any) => new SynchroItem(item.name, item.isSynchronized, item.isSuccessfullySynchronized)))
+              if (message.modifiedItem && !touched) {
+                document.getElementById(message.modifiedItem.name).scrollIntoView(false)
+              }
             }
           })
           setSocket(socket)
