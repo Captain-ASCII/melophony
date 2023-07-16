@@ -25,4 +25,8 @@ export default class MediaUtils {
   static isThinMobileScreen(): boolean {
     return window.innerWidth <= 450
   }
+
+  static isDebugMode(): boolean {
+    return false
+  }
 }

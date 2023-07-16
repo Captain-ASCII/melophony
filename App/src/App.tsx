@@ -50,6 +50,7 @@ const App = (): JSX.Element => {
   const apiManager = selectApiManager()
   const playlist = selectPlaylistManager()
   const isAndroidWebApp = MediaUtils.isAndroidWebApp()
+  const isDebugMode = MediaUtils.isDebugMode()
 
   const [ menuState, setMenu ] = useState(MediaUtils.isMobileScreen() ? 'closed' : 'opened')
 
@@ -75,7 +76,7 @@ const App = (): JSX.Element => {
             <MenuLink id={AppIds.TRACKS_MENU} path="/tracks" title={_("sidemenu.tracks")} icon="music" hideMenu={hideMenu} />
             <MenuLink id={AppIds.PLAYLISTS_MENU} path="/playlists" title={_("sidemenu.playlists")} icon="compact-disc" hideMenu={hideMenu} />
             <MenuLink id={AppIds.ARTISTS_MENU} path="/artists" title={_("sidemenu.artists")} icon="user-friends" hideMenu={hideMenu} />
-            <MenuLink id={AppIds.ARTISTS_MENU} path="/netstats" title={_("sidemenu.netstats")} icon="network-wired" hideMenu={hideMenu} />
+            { isDebugMode && <MenuLink id={AppIds.ARTISTS_MENU} path="/netstats" title={_("sidemenu.netstats")} icon="network-wired" hideMenu={hideMenu} /> }
             { isAndroidWebApp && <MenuLink id={AppIds.ARTISTS_MENU} path="/synchronization" title={_("sidemenu.synchronization")} icon="sync" hideMenu={hideMenu} /> }
             <div id="mainPlaylist" >
               <PlayList tracks={playlist.getQueue()} />
@@ -94,7 +95,7 @@ const App = (): JSX.Element => {
               <Route path="/modify/track/:id" component={TrackModificationScreen} />
               <Route path="/modify/playlist/:id" component={PlaylistModificationScreen} />
               <Route path="/user" component={UserConfigurationScreen} />
-              <Route path="/netstats" component={NetworkStatisticsScreen} />
+              { isDebugMode && <Route path="/netstats" component={NetworkStatisticsScreen} /> }
               { isAndroidWebApp && <Route path="/synchronization" component={SynchronizationScreen} /> }
               <Route path="/*" component={TracksScreen} />
             </Switch>
