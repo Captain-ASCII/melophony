@@ -30,7 +30,13 @@ const LoginForm = ({ loginOnly, onLoginResponse }: { loginOnly?: boolean; onLogi
   const login = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/user/login', { username: userName, password }).then(onLoginResponse)
+    apiManager.post('/user/login', { username: userName, password }).then(([code, data, headers]: [number, any, Headers]) => {
+      setLoading(false)
+      if (code !== 200) {
+        setErrorMessage(headers.get('Message'))
+      }
+      onLoginResponse([code, data, headers])
+    })
   }, [ apiManager, userName, password, onLoginResponse ])
 
   const formLogin = useCallback((event) => {
@@ -68,7 +74,7 @@ const LoginForm = ({ loginOnly, onLoginResponse }: { loginOnly?: boolean; onLogi
         mode === Mode.LOGIN && (
           <>
             <Button title={_("login.login.button")} icon="sign-in-alt" onClick={login} />
-            { !loginOnly && <Button title={_("login.register.mode.button")} icon="kiwi-bird" onClick={switchMode} /> }
+            { !loginOnly && <Button title={_("login.register.mode.button")} icon="file-signature" onClick={switchMode} /> }
           </>
         )
       }
