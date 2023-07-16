@@ -180,7 +180,7 @@ export default class MediaManager {
   }
 
   prepareTrack(track: Track, loadedCallback: () => void): void {
-    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile()}/download?full=true&jwt=${JWT.get()}`)
+    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getId()}/download?full=true&jwt=${JWT.get()}`)
     .then((response) => {
       if (response.status === 200) {
         response.blob().then((blob) => {
