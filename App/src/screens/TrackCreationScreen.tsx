@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 
 import Artist from '@models/Artist'
+import File from '@models/File'
 import Track from '@models/Track'
 import Icon from '@components/Icon'
 
@@ -11,6 +12,7 @@ import { selectApiManager } from '@selectors/App'
 import { selectArtists } from '@selectors/Artist'
 import { selectFiles } from '@selectors/File'
 import { selectTracks } from '@selectors/Track'
+import { setFiles } from '@actions/File'
 import { setTracks } from '@actions/Track'
 import { setArtists as setArtistsInState } from '@actions/Artist'
 
@@ -73,14 +75,27 @@ const TrackCreationScreen = (): JSX.Element => {
       Log.w("Missing keys in track adding request, refusing...")
     }
 
-    apiManager.postFile('/track', trackRequest, requestData).then(([code, data]) => {
+    apiManager.postFile('/track', trackRequest, requestData).then(([code, trackData]) => {
       if (code === 201) {
-        const newTrack = Track.fromObject(data, Arrays.toMap(allArtists, (artist) => artist.getId()), Arrays.toMap(allFiles, (file) => file.getId()))
-        dispatch(setTracks(Arrays.add(tracks, newTrack)))
-        if (allArtists.every((a: Artist) => a.getId() !== newTrack.getArtist().getId())) {
-          dispatch(setArtistsInState(Arrays.concat(allArtists, data.artists.map((a: any) => Artist.fromObject(a)))))
-        }
-        history.goBack()
+        apiManager.get(`/file/${trackData.file}`).then(([code, fileData]) => {
+          if (code === 200) {
+            const updatedFiles = Arrays.add(allFiles, File.fromObject(fileData))
+            if (trackData.artists.length > 0) {
+              apiManager.get(`/artist/${trackData.artists[0]}`).then(([code, artistData]) => {
+                if (code === 200) {
+                  const updatedArtists = Arrays.add(allArtists, Artist.fromObject(artistData))
+                  dispatch(setFiles(updatedFiles))
+                  dispatch(setArtistsInState(updatedArtists))
+                  dispatch(setTracks(Arrays.add(tracks, Track.fromObject(trackData,
+                    Arrays.toMap(updatedArtists, (artist) => artist.getId()),
+                    Arrays.toMap(updatedFiles, (file) => file.getId())
+                  ))))
+                  history.goBack()
+                }
+              })
+            }
+          }
+        })
       }
     })
   }, [ history, apiManager, providerKey, title, artistName, artists, extraInfo ])
