@@ -63,6 +63,14 @@ class Arrays {
     }
     return copy
   }
+
+  static toMap<T>(array: Array<T>, getId: (value: T) => number): Map<number, T> {
+    const result = new Map<number, T>()
+    for (const value of array) {
+      result.set(getId(value), value)
+    }
+    return result
+  }
 }
 
 class Objects {
@@ -98,6 +106,15 @@ class Objects {
 
   static isEmpty(object: {[key: string]: any}): boolean {
     return Object.keys(object).length === 0
+  }
+
+  static containsKeys(object: {[key: string]: any}, keys: Array<string>): boolean {
+    for (const key of keys) {
+      if (!(key in object)) {
+        return false
+      }
+    }
+    return true
   }
 }
 

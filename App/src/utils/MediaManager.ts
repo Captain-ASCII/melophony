@@ -26,6 +26,7 @@ export default class MediaManager {
   private isPlayable: boolean
   private isPlayingExtract: boolean
   private extractTimeout: any
+  private hasPlayedOnce: boolean
 
   constructor(audio: HTMLAudioElement = null) {
     this.audio = audio
@@ -34,6 +35,7 @@ export default class MediaManager {
     this.onPlayDone = doNothing
     this.onError = doNothing
     this.onKey = this.handleKey.bind(this)
+    this.hasPlayedOnce = false
 
     document.addEventListener('keydown', this.onKey)
   }
@@ -108,7 +110,7 @@ export default class MediaManager {
       this.audio.addEventListener('error', this.onError)
 
       this.isPlayable = false
-      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`
+      this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getId()}/download/?jwt=${JWT.get()}`
       this.audio.currentTime = track.getStartTime()
 
       this.audio.ontimeupdate = (): void => {
@@ -124,7 +126,11 @@ export default class MediaManager {
   play(): void {
     if (this.audio !== null && this.audio.src !== '') {
       // Reload for token (music is playing, we are considering the user is still there)
-      store.getState().app.apiManager.get('/user')
+      // store.getState().app.apiManager.get('/user')
+      if (!this.hasPlayedOnce) {
+        MediaUtils.raiseFooterOnMobile()
+      }
+      this.hasPlayedOnce = true
 
       this.audio.onended = (): void => {
         this.next()
@@ -174,7 +180,7 @@ export default class MediaManager {
   }
 
   prepareTrack(track: Track, loadedCallback: () => void): void {
-    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getVideoId()}?jwt=${JWT.get()}`)
+    fetch(`${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getId()}/download?full=true&jwt=${JWT.get()}`)
     .then((response) => {
       if (response.status === 200) {
         response.blob().then((blob) => {

@@ -57,7 +57,7 @@ const PerformanceEntryList = (): JSX.Element => {
 
   return (
     <ul className="perfRecords">
-    { resources.map(resource => <PerformanceTableEntry resource={resource as PerformanceResourceTiming} />) }
+    { resources.map(resource => <PerformanceTableEntry key={`${resource.name}_${resource.startTime}`} resource={resource as PerformanceResourceTiming} />) }
     </ul>
   )
 }

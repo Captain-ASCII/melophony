@@ -11,6 +11,7 @@ import { _ } from '@utils/TranslationUtils'
 import { selectArtist } from '@selectors/Artist'
 import { selectTracks } from '@selectors/Track'
 import { selectConfiguration } from '@selectors/Configuration'
+import { selectApiManager } from '@selectors/App'
 
 import CloseButton from '@components/CloseButton'
 import TrackList from '@components/TrackList'
@@ -20,19 +21,20 @@ const ArtistOverviewScreen = (): JSX.Element => {
   const { id } = useParams<QueryParameters>()
 
   if (id && StringUtils.isNumber(id)) {
+    const apiManager = selectApiManager()
     const artist = selectArtist(parseInt(id))
     const tracks = selectTracks().filter((track => track.getArtist().getId() === parseInt(id)))
     const configuration = selectConfiguration()
     const [background, setBackground] = useState({})
 
     useEffect(() => {
-      if (artist) {
-        setBackground(artist.getImageName() !== null
-          ? { backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/image/${artist.getImageName()}?jwt=${JWT.get()})` }
-          : { backgroundColor: ColorUtils.getRandomColor() }
-        )
+      if (artist.getImageName === null) {
+        setBackground({ backgroundColor: ColorUtils.getRandomColor() })
+      } else {
+        const token = JWT.get().substring(7)
+        setBackground({ backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?v=${Math.random()}&jwt=${token})` })
       }
-    }, [])
+      }, [])
 
     KeyboardManager.addMainNodes(tracks, {containerLevel: 3})
 

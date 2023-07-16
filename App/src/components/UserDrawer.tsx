@@ -27,7 +27,7 @@ class DrawerState {
   public static CLOSED = new DrawerState(false, 0, 'chevron-right')
 }
 
-const UserDrawer = (): JSX.Element => {
+const UserDrawer = ({ hideMenu } : { hideMenu: () => void }): JSX.Element => {
   const dispatch = useDispatch()
 
   const user = selectUser()
@@ -48,7 +48,7 @@ const UserDrawer = (): JSX.Element => {
     <div id="userDrawer" >
       <div id="userName" >
         <p id="userMessage" ><span className="hideWhenClosed">{ _("sidemenu.user.hello") }</span>{ user.getFirstName() }</p>
-        <Link className="hideWhenClosed" to="/user" ><Button icon="cog" /></Link>
+        <Link className="hideWhenClosed" to="/user" onClick={hideMenu}><Button icon="cog" /></Link>
         <Button className="hideWhenClosed" icon={drawerState.icon} onClick={openClose} />
       </div>
       <div id="userSpace" style={{ maxHeight: drawerState.maxHeight }} >

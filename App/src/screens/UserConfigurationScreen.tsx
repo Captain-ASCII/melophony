@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 
-import { selectApiManager } from '@selectors/App'
-import { setLanguage } from '@actions/App'
+import { selectApiManager, selectKeyboardManager, selectUser } from '@selectors/App'
+import { setKeyboardManager, setLanguage } from '@actions/App'
 import { setConfiguration } from '@actions/Configuration'
 import { selectConfiguration } from '@selectors/Configuration'
 
@@ -12,12 +12,14 @@ import Button from '@components/Button'
 import Screen from '@components/Screen'
 import InputWithIcon from '@components/InputWithIcon'
 import StatusMessage, { MessageType } from '@components/StatusMessage'
+import Switch, { SwitchState } from '@components/Switch'
 
 import { SelectStyles } from '@utils/SelectStyles'
 
 import { _, getLanguage, LANGUAGE_OPTIONS } from '@utils/TranslationUtils'
 import TextInput from '@components/TextInput'
 import Title from '@components/Title'
+import MediaUtils from '@utils/MediaUtils'
 
 const UserConfigurationScreen = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -25,6 +27,8 @@ const UserConfigurationScreen = (): JSX.Element => {
 
   const apiManager = selectApiManager()
   const configuration = selectConfiguration()
+  const keyboardManager = selectKeyboardManager()
+  const user = selectUser()
 
   const [firstPassword, setFirstPassword] = useState('')
   const [secondPassword, setSecondPassword] = useState('')
@@ -43,11 +47,13 @@ const UserConfigurationScreen = (): JSX.Element => {
   }, [firstPassword, secondPassword])
 
   const saveInfo = useCallback(() => {
-    console.warn(password)
     if (password !== '') {
-      apiManager.put('/user', { password })
+      apiManager.patch(`/user/${user.getId()}`, { password }).then(([status, data, message]) => {
+        if (status === 200) {
+          history.goBack()
+        }
+      })
     }
-    history.goBack()
   }, [ history, password, apiManager ])
 
   const handleLanguageSet = useCallback(selection => {
@@ -55,6 +61,15 @@ const UserConfigurationScreen = (): JSX.Element => {
     setStateLanguage(lang)
     dispatch(setConfiguration(configuration.withLanguage(selection.value)))
     dispatch(setLanguage(lang))
+  }, [])
+
+  const handleEnableKeyboard = useCallback((value: boolean) => {
+    dispatch(setConfiguration(configuration.withKeyboardNav(value)))
+    dispatch(setKeyboardManager(keyboardManager.enabled(value)))
+  }, [])
+
+  const clearLocalData = useCallback(() => {
+    apiManager.post('/user/clear-local-data', null)
   }, [])
 
   return (
@@ -65,6 +80,18 @@ const UserConfigurationScreen = (): JSX.Element => {
           options={LANGUAGE_OPTIONS} onChange={handleLanguageSet} value={{value: language.key, label: language.name}}
         />
       </InputWithIcon>
+      <InputWithIcon icon="keyboard" >
+        <Switch onOff
+          enabledState={new SwitchState('toggle-on', true, _("switch.enabled"))}
+          disabledState={new SwitchState('toggle-off', false, _("switch.disabled"))}
+          onSwitch={handleEnableKeyboard} initial={configuration.isKeyboardNavEnabled()}
+        />
+      </InputWithIcon>
+      { MediaUtils.isAndroidWebApp() &&
+        <InputWithIcon icon="trash" >
+          <Button title={_("user.configuration.clear.local.data")} onClick={clearLocalData} />
+        </InputWithIcon>
+      }
       <Title title="Password" />
       <InputWithIcon icon="lock" >
         <TextInput type="password" placeHolder="user.configuration.password.placeholder" onInput={handlePassword(setFirstPassword)} />
@@ -74,7 +101,7 @@ const UserConfigurationScreen = (): JSX.Element => {
       </InputWithIcon>
       { confirmationAlert && <StatusMessage message={_('user.configuration.password.not.equal.alert')} type={MessageType.WARNING} /> }
       <div id="postActions">
-        <Button icon="save" className="raised" onClick={saveInfo} title={_("user.configuration.save.button")} />
+        <Button icon="save" className="raised" disabled={confirmationAlert} onClick={saveInfo} title={_("user.configuration.save.button")} />
       </div>
     </Screen>
   )

@@ -21,8 +21,14 @@ export default class Playlist {
     return new Playlist(-1, '', [], '', '')
   }
 
-  public static fromObject(o: any): Playlist {
-    return new Playlist(o.id, o.name, o.tracks.map((track: any) => Track.fromObject(track)), o.imageUrl, o.imageName)
+  public static fromObject(o: any, tracks: Map<number, Track>): Playlist {
+    return new Playlist(
+      o.id,
+      o.name,
+      Track.getFromTracks(tracks, o.tracks),
+      o.imageUrl,
+      o.imageName
+    )
   }
 
   public clone(p: Playlist = this): Playlist {

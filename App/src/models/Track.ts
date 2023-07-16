@@ -58,14 +58,14 @@ export default class Track {
     )
   }
 
-  public static fromObject(o: any): Track | null {
+  public static fromObject(o: any, artists: Map<number, Artist>, files: Map<number, File>): Track | null {
     if (o) {
       return new Track(
         o.id,
         o.title,
-        Artist.fromArray(o.artists),
+        Artist.getFromArtists(artists, o.artists),
         o.duration,
-        File.fromObject(o.file),
+        File.getFromFiles(files, o.file),
         new Date(o.creationDate),
         o.startTime,
         o.endTime,
@@ -78,6 +78,10 @@ export default class Track {
       )
     }
     return null
+  }
+
+  public static getFromTracks(allTracks: Map<number, Track>, ids: Array<number>): Array<Track> {
+    return ids.map(id => allTracks.get(id))
   }
 
   public withId(id: number): Track {
@@ -149,6 +153,10 @@ export default class Track {
   }
 
   public getDuration(): number {
+    return this.endTime - this.startTime
+  }
+
+  public getFullDuration(): number {
     return this.duration
   }
 

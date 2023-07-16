@@ -51,3 +51,9 @@
   height: 60%;
   top: 20%;
 }
+
+#version {
+  font-size: 7px;
+  align-self: flex-start;
+  margin: 10px 0;
+}

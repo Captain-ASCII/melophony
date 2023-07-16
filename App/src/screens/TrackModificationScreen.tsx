@@ -25,6 +25,7 @@ import { Arrays, Objects } from '@utils/Immutable'
 import { QueryParameters } from '@utils/ApiManager'
 import { SelectStyles } from '@utils/SelectStyles'
 import { _ } from '@utils/TranslationUtils'
+import MediaUtils from '@utils/MediaUtils'
 
 
 function getInt(v: string): number {
@@ -36,7 +37,7 @@ function getInt(v: string): number {
 }
 
 function getValidTime(time: number, track: Track): number {
-  return Math.max(0, Math.min(time, track.getDuration()))
+  return Math.max(0, Math.min(time, track.getFullDuration()))
 }
 
 const TrackModificationScreen = (): JSX.Element => {
@@ -58,19 +59,20 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const save = useCallback(() => {
         if (!Objects.isEmpty(modifications)) {
-          apiManager.put(`/track/${track.getId()}`, modifications)
+          apiManager.patch(`/track/${track.getId()}`, modifications)
           dispatch(setTrack(track))
         }
         history.goBack()
       }, [ dispatch, apiManager, history, artist, track ])
 
-      const artistsNames = selectArtists().map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
+      const allArtists = selectArtists()
+      const artistsNames = allArtists.map(artist => ({'value': artist.getId(), 'label': artist.getName()}))
 
-      const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getVideoId()}`, { forceDownload: true }), [ apiManager, track ])
+      // const requestServerDownload = useCallback(() => apiManager.post(`/file/${track.getFile().getId()}`, { forceDownload: true }), [ apiManager, track ])
 
       const deleteItem = useCallback(() => {
         apiManager.delete(`/track/${track.getId()}`).then(([code, data]) => {
-          if (code === 200) {
+          if (code === 204) {
             dispatch(setTracks(Arrays.remove(tracks, t => t.getId() === track.getId())))
           }
         })
@@ -88,7 +90,8 @@ const TrackModificationScreen = (): JSX.Element => {
 
       const handleArtistNameSet = useCallback(artists => {
         setModifications(Object.assign(modifications, {'artists': artists.map((a: any) => a.value)}))
-        setCurrentTrack(track.withArtists(artists.map((a: any) => Artist.fromObject(a))))
+        const artistIds = artists.map((a: any) => a.value)
+        setCurrentTrack(track.withArtists(allArtists.filter(artist => artistIds.includes(artist.getId()))))
       }, [ artist, track ])
 
       const handleStartSet = useCallback(value => {
@@ -144,7 +147,7 @@ const TrackModificationScreen = (): JSX.Element => {
                 <TextInput disabled value={track.getId()} />
               </InputWithIcon>
               <InputWithIcon icon="ruler" >
-                <TextInput placeHolder="track.modification.length.placeholder" value={track.getDuration()} onInput={handleDurationSetFromEvent} />
+                <TextInput placeHolder="track.modification.length.placeholder" value={track.getFullDuration()} onInput={handleDurationSetFromEvent} />
                 <Icon icon="exclamation-triangle" size="2x" collection="fas" title="Should not be changed, to reduce size of track, set track end" />
               </InputWithIcon>
               <InputWithIcon icon="clock" >
@@ -153,24 +156,26 @@ const TrackModificationScreen = (): JSX.Element => {
               <InputWithIcon icon="file-contract" >
                 <TextInput disabled className={track.getFile().getState()} value={track.getFile().getState()} />
               </InputWithIcon>
-              <InputWithIcon icon="youtube" collection="fab" >
-                <TextInput disabled value={track.getFile().getVideoId()} />
+              <InputWithIcon icon="file" >
+                <TextInput disabled value={track.getFile().getFileId()} />
               </InputWithIcon>
             </div>
             <div id="serverInformation">
               <h2>{ _("track.modification.actions") }</h2>
               <div className="actions">
-                <Button className="raised" onClick={requestServerDownload} title={_("track.modification.actions.download")} />
+                {/* <Button className="raised" onClick={requestServerDownload} title={_("track.modification.actions.download")} /> */}
                 <Button className="raised alert" onClick={deleteItem} title={_("track.modification.actions.delete")} />
               </div>
             </div>
-            <div id="trackBarModifier">
-              <h2>Track duration</h2>
-              <InputWithIcon icon="ruler" >
-                <Button id="trackModificationButton" className="raised" title={_("track.modification.enable.length")} onClick={prepareTrackForModification} />
-                <InputRange track={track} multiRange disabled={!isPreparedForModification} onStartSet={handleStartSet} onEndSet={handleEndSet} />
-              </InputWithIcon>
-            </div>
+            { !MediaUtils.isMobileScreen() &&
+              <div id="trackBarModifier">
+                <h2>Track duration</h2>
+                <InputWithIcon icon="ruler" >
+                  <Button id="trackModificationButton" className="raised" title={_("track.modification.enable.length")} onClick={prepareTrackForModification} />
+                  <InputRange track={track} multiRange disabled={!isPreparedForModification} onStartSet={handleStartSet} onEndSet={handleEndSet} />
+                </InputWithIcon>
+              </div>
+            }
           </div>
 
           <div id="postActions" >

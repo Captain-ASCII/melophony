@@ -1,6 +1,13 @@
 django
 pyjwt
-yt_dlp
 gunicorn
 requests
 Pillow
+filetype
+djangorestframework
+markdown
+django-filter
+drf_yasg
+
+# Tests
+mock

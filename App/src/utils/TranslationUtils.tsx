@@ -16,6 +16,11 @@ interface Language {
   name: string;
 }
 
+export interface Translation {
+  key: string;
+  content: string;
+}
+
 const FR_TRANSLATION_KEY = 'fr'
 const EN_TRANSLATION_KEY = 'en'
 
@@ -25,13 +30,20 @@ const ENGLISH = {key: EN_TRANSLATION_KEY, translations: EN_TRANSLATIONS, name: '
 const LANGUAGES: Array<Language> = [FRENCH, ENGLISH]
 const LANGUAGE_OPTIONS: Array<Dict> = LANGUAGES.map(language => { return {"value": language.key, "label": language.name}})
 
-const getLanguage = function(translationKey: string) {
-  for (const translation of LANGUAGES) {
-    if (translation.key === translationKey) {
-      return translation
+const getLanguage = function(translationKey: string): Language {
+  for (const language of LANGUAGES) {
+    if (language.key === translationKey) {
+      return language
     }
   }
   return ENGLISH
+}
+
+const addTranslations = function(languageKey: string, translations: Array<Translation>) {
+  const language = getLanguage(languageKey)
+  for (const translation of translations) {
+    language.translations[translation.key] = translation.content
+  }
 }
 
 function _getTranslation(language: Language, translationKey: string, args: Array<any>) {
@@ -56,4 +68,4 @@ const _ = function(translationKey: string, args: Array<any> = null) {
   return <Text args={args}>{ translationKey }</Text>
 }
 
-export { useTranslation, _, getLanguage, Language, LANGUAGE_OPTIONS, FR_TRANSLATION_KEY, EN_TRANSLATION_KEY }
+export { useTranslation, _, getLanguage, addTranslations, Language, LANGUAGE_OPTIONS, FR_TRANSLATION_KEY, EN_TRANSLATION_KEY }

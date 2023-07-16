@@ -18,7 +18,7 @@ export default class User {
   }
 
   public static fromObject(o: any): User {
-    return new User(o.id, o.firstName, o.lastName, o.email)
+    return new User(o.id, o.first_name, o.last_name, o.email)
   }
 
   getId(): number {

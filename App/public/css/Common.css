@@ -13,6 +13,7 @@
   --main-bg-color: #282c34;
   --main-hover-bg: #3e4350;
   --main-color: #D4D7D9;
+  --main-color-hover: #a0c9ff;
 
   --main-dark-bg: #22252c;
   --disabled-color: #666;
@@ -69,6 +70,14 @@ h5 {
   font-size: 14px;
 }
 
+.paragraph {
+  margin: 10px 0;
+}
+
+.paragraph.centered {
+  text-align: center;
+}
+
 .title {
   margin: 10px 0;
 }
@@ -114,11 +123,11 @@ html, body, #root {
   align-self: stretch;
 }
 
-.main-container {
+#mainContainer {
   margin-top: 80px;
   display: flex;
   width: 100%;
-  height: calc(100% - 160px);
+  height: calc(100% - 80px - var(--footer-height));
   overflow: hidden;
 }
 
@@ -316,7 +325,7 @@ p, h1, h2, h3, h4, h5, h6 {
   height: 100%;
 }
 
-.button:hover > .overlay {
+.button:not(.disabled):hover > .overlay {
   transition: background-color 0.5s;
   background-color: rgba(255, 255, 255, 0.2) !important;
 }
@@ -327,7 +336,7 @@ p, h1, h2, h3, h4, h5, h6 {
   padding: 0px;
 }
 
-.button.icon.active {
+.button.active {
   border: 1px solid var(--primary-bg);
   color: var(--primary-bg);
   height: 34px;
@@ -341,28 +350,28 @@ p, h1, h2, h3, h4, h5, h6 {
   background-color: var(--primary-bg);
 }
 
-.button.raised:hover {
+.button.raised:not(.disabled):hover {
   background-color: var(--primary-hover-bg);
 }
 
 .button.raised.done {
   background-color: var(--done-bg);
 }
-.button.raised.done:hover {
+.button.raised.done:not(.disabled):hover {
   background-color: var(--done-hover-bg);
 }
 
 .button.raised.warning {
   background-color: var(--warning-bg);
 }
-.button.raised.warning:hover {
+.button.raised.warning:not(.disabled):hover {
   background-color: var(--warning-hover-bg);
 }
 
 .button.raised.alert {
   background-color: var(--alert-bg);
 }
-.button.raised.alert:hover {
+.button.raised.alert:not(.disabled):hover {
   background-color: var(--alert-hover-bg);
 }
 
@@ -401,12 +410,16 @@ p, h1, h2, h3, h4, h5, h6 {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.button.icon.floating:hover {
+.button.icon.floating:not(.disabled):hover {
   background-color: var(--main-hover-bg);
 }
 
 .button .buttonTitle {
   margin: 0 10px;
+}
+
+.button.disabled {
+  background-color: var(--disabled-color);
 }
 
 input {

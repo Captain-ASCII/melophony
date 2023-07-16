@@ -28,8 +28,9 @@ import ImageSearcher from '@components/ImageSearcher'
 const ArtistModificationScreen = (): JSX.Element => {
   const history = useHistory()
   const { id } = useParams<QueryParameters>()
+  const providedId = parseInt(id)
 
-  if (id) {
+  if (providedId && !Number.isNaN(providedId)) {
     const [ artist, setArtistState ] = useState(selectArtist(parseInt(id)))
     if (artist) {
       const dispatch = useDispatch()
@@ -50,7 +51,7 @@ const ArtistModificationScreen = (): JSX.Element => {
                 `Cela va effacer l'artiste "${initialName}" et affecter toutes ses musiques à l'artiste "${artist.getName()}", êtes vous sûr ?`,
                 () => {
                   tracks.forEach(track => {
-                    apiManager.put(`/track/${track.getId()}`, {artists: [sameNameArtist.getId()]})
+                    apiManager.patch(`/track/${track.getId()}`, {artists: [sameNameArtist.getId()]})
                   })
                   apiManager.delete(`/artist/${artist.getId()}`)
                   history.goBack()
@@ -59,16 +60,16 @@ const ArtistModificationScreen = (): JSX.Element => {
             )
           ))
         } else {
-          apiManager.put(`/artist/${id}`, artist).then(([code, data]) => {
+          apiManager.patch(`/artist/${id}`, artist).then(([code, data]) => {
             dispatch(setArtist(Artist.fromObject(data)))
+            history.goBack()
           })
-          history.goBack()
         }
       }, [ apiManager, history, artist, artists, tracks, dispatch, id, initialName ])
 
       const deleteArtist = useCallback(() => {
         apiManager.delete(`/artist/${id}`).then(([code, data]) => {
-          if (code === 200) {
+          if (code === 204) {
             dispatch(setArtists(Arrays.remove(artists, a => a.getId().toString() === id)))
           }
         })

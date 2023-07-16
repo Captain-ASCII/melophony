@@ -1,0 +1,10 @@
+
+.dropZone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed var(--primary-hover-bg);
+  border-radius: 40px;
+  height: 40px;
+  margin: 10px 0;
+}

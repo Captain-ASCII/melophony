@@ -34,6 +34,10 @@ export default class Artist {
     return result
   }
 
+  public static getFromArtists(allArtists: Map<number, Artist>, ids: Array<number>): Array<Artist> {
+    return ids.map(id => allArtists.get(id))
+  }
+
   public static default() {
     return new Artist(-1, 'Unknown', '', '')
   }

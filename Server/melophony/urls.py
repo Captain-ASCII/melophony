@@ -1,62 +1,56 @@
-import logging
-import json
 
-from django.http import Http404
-from django.urls import path, re_path
+from django.conf import settings
+from django.urls import path, include
 
-from . import views
-from .views import Status, response
+from rest_framework import routers, permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
-logging.basicConfig(level=logging.INFO)
-
-
-ALLOWED_PATHS = [
-    '/api/login',
-    '/api/register',
-]
-ALLOWED_STARTING_WITH_PATHS = [
-    '/admin'
-]
+from melophony.views.artist_views import ArtistViewSet
+from melophony.views.file_views import FileViewSet
+from melophony.views.playlist_views import PlaylistViewSet
+from melophony.views.synchronization_views import SynchronizationView
+from melophony.views.track_views import TrackViewSet
+from melophony.views.user_views import UserViewSet
 
 
-def associate_methods(get_method=None, put_method=None, delete_method=None, post_method=None):
-    def forward(request, **kwargs):
-        try:
-            if request.method == 'POST' and post_method is not None:
-                return post_method(request, json.loads(request.body.decode('utf-8')), **kwargs)
-            elif request.method == 'GET' and get_method is not None:
-                return get_method(request, **kwargs)
-            elif request.method == 'PUT' and put_method is not None:
-                return put_method(request, json.loads(request.body.decode('utf-8')), **kwargs)
-            elif request.method == 'DELETE' and delete_method is not None:
-                return delete_method(request, **kwargs)
-            else:
-                raise Http404('No endpoint available for: {} {}'.format(request.method, request.path))
-        except Exception as e:
-            logging.error('Error while processing request: ', e)
-            return response(status=Status.ERROR, message='An error occured: {}'.format(e))
+class OptionalSlashRouter(routers.DefaultRouter):
+    def __init__(self):
+        super().__init__()
+        self.trailing_slash = '/?'
 
-    return forward
+
+router = OptionalSlashRouter()
+router.register(r'artist', ArtistViewSet)
+router.register(r'file', FileViewSet)
+router.register(r'playlist', PlaylistViewSet)
+router.register(r'track', TrackViewSet)
+router.register(r'user', UserViewSet)
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Melophony API",
+        default_version='v1',
+        description="Melophony API schema",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="d.benlulu25@gmail.com",),
+        license=openapi.License(name="BSD License"),
+    ),
+    url="https://melophony.ddns.net",
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
 
 urlpatterns = [
-    path('api/login', associate_methods(post_method=views.login), name='login'),
-    path('api/register', associate_methods(post_method=views.create_user), name='register'),
-
-    path('api/file/<str:file_name>', associate_methods(views.play_file, post_method=views.download_again), name='file_management'),
-
-    path('api/user', associate_methods(views.get_user, views.update_user, views.delete_user, views.create_user), name='user_management'),
-
-    path('api/artist', associate_methods(views.find_artist, post_method=views.create_artist), name='artist_management'),
-    path('api/artist/<int:artist_id>', associate_methods(views.get_artist, views.update_artist, views.delete_artist)),
-    path('api/artists', views.list_artists, name='list_artists'),
-    path('api/artist/image/<str:image_name>', associate_methods(views.get_artist_image), name='get_artist_image'),
-
-    path('api/track', associate_methods(views.find_track, post_method=views.create_track), name='create_track'),
-    path('api/track/<int:track_id>', associate_methods(views.get_track, views.update_track, views.delete_track)),
-    path('api/tracks', views.list_tracks, name='list_tracks'),
-
-    path('api/playlist', associate_methods(views.find_playlist, post_method=views.create_playlist), name='create_playlist'),
-    path('api/playlist/<int:playlist_id>', associate_methods(views.get_playlist, views.update_playlist, views.delete_playlist)),
-    path('api/playlists', views.list_playlists, name='list_playlists'),
-    path('api/playlist/image/<str:image_name>', associate_methods(views.get_playlist_image), name='get_playlist_image'),
+    path('api/', include(router.urls)),
+    path('api/synchronization', SynchronizationView.as_view())
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path('api-auth/', include('rest_framework.urls', namespace='rest_framework')))
+    urlpatterns.extend([
+        path('swagger<format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+        path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+        path('redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    ])

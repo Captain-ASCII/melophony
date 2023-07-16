@@ -157,17 +157,25 @@ export default class KeyboardManager {
   public static SMOOTH_DURATION = 150
   public static MOUNT_DELAY = 200
 
-  public constructor() {
+  public constructor(isEnabled: boolean) {
     this.nodes = new Map([
       [AppIds.MELOPHONY, new Node(AppIds.MELOPHONY, AppIds.MELOPHONY, AppIds.MENU, AppIds.MELOPHONY, AppIds.MELOPHONY)],
       [AppIds.NO_OPERATION, new Node(AppIds.NO_OPERATION, AppIds.MELOPHONY, AppIds.MAIN_CONTENT, AppIds.MENU, AppIds.MELOPHONY)],
     ])
-    this.isEnabled = !MediaUtils.isMobileScreen()
+    this.isEnabled = isEnabled
     this.current = this.nodes.get(AppIds.MELOPHONY)
     this.context = { currentNode: null }
     this.lastMove = this.timestamp()
     this.onKey = this.handleKey.bind(this)
     this.bindKeys()
+  }
+
+  public enabled(enabled: boolean): KeyboardManager {
+    if (!enabled) {
+      this.removeFocus()
+    }
+    this.isEnabled = enabled
+    return this
   }
 
   private timestamp(): number {
@@ -230,16 +238,14 @@ export default class KeyboardManager {
   }
 
   public bindKeys() {
-    if (! this.isEnabled) {
-      return
-    }
-
     document.removeEventListener('keydown', this.onKey)
     document.addEventListener('keydown', this.onKey)
   }
 
   private handleKey(event: KeyboardEvent) {
-    const currentElement = document.getElementById(this.current.getId())
+    if (!this.isEnabled) {
+      return
+    }
 
     if (event.code === 'Enter') {
       document.getElementById(this.current.getClickId()).click()
@@ -249,9 +255,7 @@ export default class KeyboardManager {
         this.goTo(this.current.getRedirectionOnClick())
       }
     } else {
-      if (currentElement) {
-        currentElement.classList.remove('focus')
-      }
+      this.removeFocus()
 
       if (event.code === Keys.HOME) {
         this.goTo(AppIds.MELOPHONY)
@@ -290,6 +294,13 @@ export default class KeyboardManager {
       this.lastMove = moveTime
       container.scrollTo({top: newElement.offsetTop - KeyboardManager.OFFSET, behavior})
       newElement.classList.add('focus')
+    }
+  }
+
+  private removeFocus() {
+    const currentElement = document.getElementById(this.current.getId())
+    if (currentElement) {
+      currentElement.classList.remove('focus')
     }
   }
 

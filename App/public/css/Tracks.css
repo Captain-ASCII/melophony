@@ -6,3 +6,7 @@
 .trackListItem > div {
   flex: 1;
 }
+
+#uploadFormatExplanation {
+  text-align: center;
+}

@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import logging
+
 from pathlib import Path
+from melophony.utils import get_server_configuration
+
+logging.basicConfig(level=logging.INFO)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,12 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g%3j01e26=t5sr!6feedoq3$jlp7-f+j5g6z)f*46&i(j18y#!'
+configuration = get_server_configuration()
+if configuration is None:
+    configuration = {}
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SECRET_KEY = configuration.get("djangoSecretKey", None)
+DEBUG = configuration.get("isInDebugMode", False)
 
+logging.info(f"Debug mode enabled: {DEBUG}")
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
+APPEND_SLASH = False
 ALLOWED_HOSTS = [
     'localho.st',
     '*'
@@ -41,17 +51,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'melophony.middlewares.RedirectMiddleware',
     'melophony.middlewares.CORSMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'melophony.middlewares.JWTAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -129,3 +139,18 @@ STATIC_ROOT = '/var/www/melophony.ddns.net/public'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'melophony.authentication.JWTSimpleAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+}
+
+SWAGGER_SETTINGS = {
+    "DEFAULT_AUTO_SCHEMA_CLASS":"melophony.auto_schema.AutoSchema"
+}

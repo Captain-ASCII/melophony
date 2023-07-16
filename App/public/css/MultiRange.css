@@ -8,11 +8,11 @@ input[type=range] {
   left: 0;
   top: 50%;
   cursor: pointer;
-  /*transform: translateY(-50%);*/
+  transform: translateX(-3px);
 }
 
 
-#tracker {
+.tracker {
   flex: 1;
 }
 
@@ -67,7 +67,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   top: 50%;
 }
 
-.multi-range > .trackBar, .multi-range > .trackSlider {
+.trackSlider > .trackBar, .multi-range > .trackSlider {
   position: absolute;
   pointer-events: none;
   height: 6px;
@@ -79,14 +79,15 @@ input[type=range]::-webkit-slider-thumb:hover {
 .multi-range > .trackSlider {
   background-color: var(--main-hover-bg);
   border-radius: 3px;
+  overflow: hidden;
 }
 
-.multi-range > .trackBar {
+.trackSlider > .trackBar {
   background-color: var(--primary-bg);
-  border-radius: 3px;
+  border-radius: 3px 0 0 3px;
 }
 
-.multi-range > .trackBar.disabled {
+.trackSlider > .trackBar.disabled {
   background-color: var(--disabled-color);
 }
 

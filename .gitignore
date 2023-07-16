@@ -1,5 +1,6 @@
 node_modules
 *.m4a
+App/src/providers/*
 package-lock.json
 logs.txt
 images
@@ -23,3 +24,10 @@ db.sqlite3
 __pycache__
 files
 Server/*/static
+Server/melophony/providers/*
+Server/configuration/configuration.json
+
+# Exceptions
+!App/src/providers/ProviderList.tsx
+!App/src/providers/FileUploadProvider.tsx
+!Server/melophony/providers/upload_file_provider.py
