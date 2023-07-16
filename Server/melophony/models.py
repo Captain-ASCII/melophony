@@ -10,6 +10,7 @@ class Artist(models.Model):
     imageUrl = models.CharField(max_length=512, null=True)
     imageName = models.CharField(max_length=128, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    lastModification = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name} ({self.id})'
@@ -41,6 +42,7 @@ class Track(models.Model):
     playCount = models.IntegerField()
     rating = models.IntegerField()
     progress = models.IntegerField()
+    lastModification = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.title} ({self.id})'
@@ -52,6 +54,7 @@ class Playlist(models.Model):
     tracks = models.ManyToManyField(Track, through='melophony.PlaylistTrack')
     imageUrl = models.CharField(max_length=512, null=True)
     imageName = models.CharField(max_length=128, null=True)
+    lastModification = models.DateTimeField(auto_now=True)
 
 
 class PlaylistTrack(models.Model):
