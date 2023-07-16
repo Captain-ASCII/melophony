@@ -153,6 +153,10 @@ export default class Track {
   }
 
   public getDuration(): number {
+    return this.endTime - this.startTime
+  }
+
+  public getFullDuration(): number {
     return this.duration
   }
 

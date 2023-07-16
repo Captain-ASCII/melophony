@@ -11,7 +11,7 @@ const getPercentage = (range: HTMLInputElement, value: number, track: Track, inv
   if (range != null)  {
     base = range.offsetWidth, unit = 'px', diff = 9
   }
-  let percentage = (value / track.getDuration()) * (base - diff)
+  let percentage = (value / track.getFullDuration()) * (base - diff)
   if (inverted) {
     percentage = base - percentage
   }
@@ -33,7 +33,7 @@ const InputRange = ({ track, multiRange, disabled = false, asReader, onStartSet,
     const [ rightValue, setRightValue ] = useState(asReader ? 100 : getPercentage(trackerRef.current, track.getEndTime(), track, true))
 
     let handler = null
-    const max = asReader ? track.getEndTime() : track.getDuration()
+    const max = asReader ? track.getEndTime() : track.getFullDuration()
 
     if (asReader) {
       const element = document.getElementById('player')
@@ -90,7 +90,7 @@ const InputRange = ({ track, multiRange, disabled = false, asReader, onStartSet,
           multiRange &&
           <input
             className={`rangeDeactivate ${disabledClass}`} type='range'
-            min={0} max={track.getDuration()} defaultValue={track.getStartTime()} disabled={disabled}
+            min={0} max={track.getFullDuration()} defaultValue={track.getStartTime()} disabled={disabled}
             step="0.5" onInput={handleSecondaryInput}
           />
         }

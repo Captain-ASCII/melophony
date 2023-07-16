@@ -36,7 +36,7 @@ function getInt(v: string): number {
 }
 
 function getValidTime(time: number, track: Track): number {
-  return Math.max(0, Math.min(time, track.getDuration()))
+  return Math.max(0, Math.min(time, track.getFullDuration()))
 }
 
 const TrackModificationScreen = (): JSX.Element => {
