@@ -1,10 +1,12 @@
 # coding=utf-8
 
-import logging
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
+
+from melophony.utils import get_configuration
+
+HOSTNAME = get_configuration('hostname', 'melophony.ddns.net')
 
 
 class RedirectMiddleware:
@@ -31,7 +33,7 @@ class CORSMiddleware:
         response = HttpResponse() if request.method == 'OPTIONS' else self.get_response(request)
         response['allow'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
         response['Access-Control-Allow-Headers'] = "*"
-        response['Access-Control-Allow-Origin'] = "*" if settings.DEBUG else "https://melophony.ddns.net"
+        response['Access-Control-Allow-Origin'] = "*" if settings.DEBUG else f"https://{HOSTNAME}"
         response['Access-Control-Allow-Methods'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
         response['Access-Control-Expose-Headers'] = ','.join(CORSMiddleware.ALLOWED_RESPONSE_HEADERS)
         return response

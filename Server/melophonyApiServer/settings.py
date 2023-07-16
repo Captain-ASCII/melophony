@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import logging
 
 from pathlib import Path
-from melophony.utils import get_server_configuration
+from melophony.utils import get_configuration
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,12 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-configuration = get_server_configuration()
-if configuration is None:
-    configuration = {}
-
-SECRET_KEY = configuration.get("djangoSecretKey", None)
-DEBUG = configuration.get("isInDebugMode", False)
+HOSTNAME = get_configuration("hostname", "melophony.ddns.net")
+SECRET_KEY = get_configuration("djangoSecretKey", None)
+DEBUG = get_configuration("isInDebugMode", False)
 
 logging.info(f"Debug mode enabled: {DEBUG}")
 
@@ -133,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'public/'
-STATIC_ROOT = '/var/www/melophony.ddns.net/public'
+STATIC_ROOT = f'/var/www/{HOSTNAME}/public'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
