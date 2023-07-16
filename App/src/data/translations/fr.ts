@@ -6,7 +6,7 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "login.user.name.field": "Nom d'utilisateur",
   "login.password.field": "Mot de passe",
   "login.login.button": "Connexion",
-  "login.register.mode.button": "Rejoindre la bande des kiwis joyeux !",
+  "login.register.mode.button": "Créer un nouveau compte",
   "login.email.field": "Email (optionnel)",
   "login.first.name.field": "Prénom",
   "login.last.name.field": "Nom",

@@ -6,7 +6,7 @@ export const EN_TRANSLATIONS: { [key: string]: string; } = {
   "login.user.name.field": "User name",
   "login.password.field": "Password",
   "login.login.button": "Login",
-  "login.register.mode.button": "Join the kiwis",
+  "login.register.mode.button": "Register a new account",
   "login.email.field": "Email (optional)",
   "login.first.name.field": "First name",
   "login.last.name.field": "Last name",
