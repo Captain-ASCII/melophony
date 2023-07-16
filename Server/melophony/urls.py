@@ -36,7 +36,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="d.benlulu25@gmail.com",),
         license=openapi.License(name="BSD License"),
     ),
-    url="https://melophony-api.ddns.net",
+    url="https://melophony.ddns.net",
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
