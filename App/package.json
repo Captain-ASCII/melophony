@@ -1,7 +1,7 @@
 {
-  "name": "app",
-  "version": "2.0.0",
-  "description": "The frontEnd application with React",
+  "name": "melophony-front-end",
+  "version": "1.0.0",
+  "description": "The front-end application of the Melophony application, built with React",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack/webpack.dev.js",

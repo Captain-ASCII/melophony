@@ -33,6 +33,8 @@ import UserDrawer from '@components/UserDrawer'
 import SynchronizationScreen from '@screens/SynchronizationScreen'
 
 
+const VERSION = "1.0.0"
+
 const MenuLink = ({ id, title, path, icon, hideMenu }: { id: string; title: Str; path: string; icon: string; hideMenu: () => void }): JSX.Element => {
   return (
     <Link to={path} >
@@ -117,6 +119,7 @@ const App = (): JSX.Element => {
               </div>
             </Link>
           </div>
+          <p id="version">{ VERSION }</p>
         </div>
         <NotificationToaster />
         <div id="footer">
