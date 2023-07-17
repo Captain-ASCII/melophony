@@ -73,7 +73,7 @@ const App = (): JSX.Element => {
     return objects.map((object: Artist | Playlist) => {
       const id = object.getId()
       const imageName = object.getImageName()
-      return <link rel="preload" href={`${configuration.getServerAddress()}/api/${type}/${id}/image/${imageName}?jwt=${token}`} as="image"></link>
+      return <link key={id} rel="preload" href={`${configuration.getServerAddress()}/api/${type}/${id}/image/${imageName}?jwt=${token}`} as="image"></link>
     })
   }, [])
 
