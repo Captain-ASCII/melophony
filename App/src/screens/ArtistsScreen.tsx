@@ -45,7 +45,10 @@ const ArtistsScreen = (): JSX.Element => {
     artists.forEach(artist => {
       const token = JWT.get().substring(7)
       const img = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image/${artist.getImageName()}?jwt=${token})`
-      document.getElementById(KeyboardManager.getId(artist)).style.backgroundImage = img
+      const element = document.getElementById(KeyboardManager.getId(artist))
+      if (element) {
+        element.style.backgroundImage = img
+      }
     })
   }, [])
 
