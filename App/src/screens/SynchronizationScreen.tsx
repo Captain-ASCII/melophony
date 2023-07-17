@@ -49,7 +49,7 @@ const SynchronizationScreen = (): JSX.Element => {
         document.getElementById("synchronizationScreen").addEventListener("touchstart", () => touched = true);
 
         apiManager.get('/synchronization').then(response => {
-          const socket = new WebSocket('ws://192.168.1.80:1805')
+          const socket = new WebSocket('ws://localhost:1805')
           socket.addEventListener('message', function (event: MessageEvent) {
             setContent(null)
             const message = JSON.parse(event.data)
