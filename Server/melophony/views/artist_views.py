@@ -32,7 +32,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
         return update_artist(self.get_object(), request.data, request.user, update_fct)
 
     @swagger_auto_schema(responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
-    @action(detail=True, methods=["GET"], content_negotiation_class=ImageNegotiation)
+    @action(detail=True, methods=["GET"], url_path=r'image/[a-zA-Z0-9-]*', content_negotiation_class=ImageNegotiation)
     def image(self, request, pk):
         artist = self.get_object()
         if artist is not None:

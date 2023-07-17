@@ -73,6 +73,9 @@ export default class Artist {
   }
 
   public getImageName(): string {
-    return this.imageName
+    if (this.imageName != null) {
+      return this.imageName.replace('.webp', '')
+    }
+    return ''
   }
 }

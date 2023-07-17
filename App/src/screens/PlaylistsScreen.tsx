@@ -30,7 +30,8 @@ const PlaylistCard = ({ playlist, playlistManager, serverAddress }: { playlist: 
 
   useEffect(() => {
     const token = JWT.get().substring(7)
-    document.getElementById(id).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url("${serverAddress}/api/playlist/${playlist.getId()}/image?v=${Math.random()}&jwt=${token}")`
+    const img = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url("${serverAddress}/api/playlist/${playlist.getId()}/image/${playlist.getImageName()}?jwt=${token}")`
+    document.getElementById(id).style.backgroundImage = img
   }, [])
 
   return (

@@ -32,7 +32,7 @@ const ArtistOverviewScreen = (): JSX.Element => {
         setBackground({ backgroundColor: ColorUtils.getRandomColor() })
       } else {
         const token = JWT.get().substring(7)
-        setBackground({ backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?v=${Math.random()}&jwt=${token})` })
+        setBackground({ backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image/${artist.getImageName()}?jwt=${token})` })
       }
       }, [])
 

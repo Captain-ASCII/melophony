@@ -44,7 +44,8 @@ const ArtistsScreen = (): JSX.Element => {
   useEffect(() => {
     artists.forEach(artist => {
       const token = JWT.get().substring(7)
-      document.getElementById(KeyboardManager.getId(artist)).style.backgroundImage = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image?v=${Math.random()}&jwt=${token})`
+      const img = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image/${artist.getImageName()}?jwt=${token})`
+      document.getElementById(KeyboardManager.getId(artist)).style.backgroundImage = img
     })
   }, [])
 

@@ -7,6 +7,7 @@ export default class Playlist {
   private name: string
   private tracks: Array<Track>
   private imageUrl: string
+  private imageModified: boolean
   private imageName: string
 
   public constructor(id: number, name: string, tracks: Array<Track>, imageUrl: string, imageName: string) {
@@ -15,6 +16,7 @@ export default class Playlist {
     this.tracks = tracks
     this.imageUrl = imageUrl
     this.imageName = imageName
+    this.imageModified = false
   }
 
   public static default() {
@@ -65,6 +67,20 @@ export default class Playlist {
     return clone
   }
 
+  public withModifiedImage(): Playlist {
+    const clone = this.clone()
+    clone.imageModified = true
+    return clone
+  }
+
+  public isImageModified(): boolean {
+    return this.imageModified
+  }
+
+  public notifyImageDownloaded() {
+    this.imageModified = false
+  }
+
   public getId(): number {
     return this.id
   }
@@ -82,6 +98,9 @@ export default class Playlist {
   }
 
   public getImageName(): string {
-    return this.imageName
+    if (this.imageName != null) {
+      return this.imageName.replace('.webp', '')
+    }
+    return ''
   }
 }
