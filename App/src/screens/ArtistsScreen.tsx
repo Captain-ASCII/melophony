@@ -42,7 +42,7 @@ const ArtistsScreen = (): JSX.Element => {
     )
   })
   useEffect(() => {
-    artists.forEach(artist => {
+    filtered.forEach(artist => {
       const token = JWT.get().substring(7)
       const img = `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${configuration.getServerAddress()}/api/artist/${artist.getId()}/image/${artist.getImageName()}?jwt=${token})`
       const element = document.getElementById(KeyboardManager.getId(artist))
@@ -50,7 +50,7 @@ const ArtistsScreen = (): JSX.Element => {
         element.style.backgroundImage = img
       }
     })
-  }, [])
+  }, [filtered])
 
   bindToSession('artistsScroll', () => ref.current.scrollTop, (value) => ref.current.scrollTo({top: value}))
 
