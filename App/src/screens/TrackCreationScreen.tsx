@@ -83,11 +83,15 @@ const TrackCreationScreen = (): JSX.Element => {
             if (trackData.artists.length > 0) {
               apiManager.get(`/artist/${trackData.artists[0]}`).then(([code, artistData]) => {
                 if (code === 200) {
-                  const updatedArtists = Arrays.add(allArtists, Artist.fromObject(artistData))
+                  let artists = allArtists
+                  const newArtist = Artist.fromObject(artistData)
+                  if (artists.includes(newArtist)) {
+                    artists = Arrays.add(allArtists, newArtist)
+                    dispatch(setArtistsInState(artists))
+                  }
                   dispatch(setFiles(updatedFiles))
-                  dispatch(setArtistsInState(updatedArtists))
                   dispatch(setTracks(Arrays.add(tracks, Track.fromObject(trackData,
-                    Arrays.toMap(updatedArtists, (artist) => artist.getId()),
+                    Arrays.toMap(artists, (artist) => artist.getId()),
                     Arrays.toMap(updatedFiles, (file) => file.getId())
                   ))))
                   history.goBack()
