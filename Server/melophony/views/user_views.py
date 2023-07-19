@@ -1,10 +1,10 @@
 
-import datetime
 import json
 import jwt
 import logging
 import traceback
 
+from datetime import datetime, timedelta
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -47,7 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk):
         user = self.get_object()
-        jwt_data = _generate_new_token(user)
+        jwt_data = _generate_new_token(user, request.token_data)
         return response(_user_data(user), token=jwt.encode(jwt_data, MelophonyConfig.jwt_secret, algorithm="HS256"))
 
     def update(self, request, *args, **kwargs):
@@ -90,9 +90,13 @@ def _check_user_exists(username):
     return username
 
 
-def _generate_new_token(user):
-    expiration_date = int((datetime.datetime.now() + datetime.timedelta(days=7)).timestamp())
-    return {'exp': expiration_date, 'user': {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name}}
+def _generate_new_token(user, token_data=None):
+    if token_data is None or (token_data is not None and datetime.fromtimestamp(token_data['exp']) < (datetime.now() + timedelta(days=7))):
+        expiration_date = int((datetime.now() + timedelta(days=30)).timestamp())
+        return {'exp': expiration_date, 'user': {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name}}
+
+    return token_data
+
 
 
 def _user_data(user):

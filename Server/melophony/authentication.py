@@ -36,6 +36,7 @@ class JWTSimpleAuthentication(authentication.BaseAuthentication):
             try:
                 user_jwt = jwt.decode(token, MelophonyConfig.jwt_secret, algorithms=["HS256"])
                 if user_jwt is not None:
+                    request.token_data = user_jwt
                     user = User.objects.get(id=user_jwt['user']['id'])
                     return (user, None)
             except Exception as e:

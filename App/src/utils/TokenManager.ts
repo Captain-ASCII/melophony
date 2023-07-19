@@ -4,11 +4,9 @@ import JWT, { JWTObject } from 'jwt-client'
 export default class TokenManager {
 
   private tokenExpirationCallback: () => void
-  private timeoutId: number
 
   public constructor(tokenExpirationCallback: () => void) {
     this.tokenExpirationCallback = tokenExpirationCallback
-    this.timeoutId = null
   }
 
   public keepToken(token: string): void {
@@ -16,14 +14,6 @@ export default class TokenManager {
       const tokenObject = JWT.read(token)
       if (tokenObject && JWT.validate(tokenObject)) {
         JWT.keep(tokenObject)
-        if (this.timeoutId) {
-          clearTimeout(this.timeoutId)
-        }
-        this.timeoutId = window.setTimeout(() => {
-          if (this.tokenExpirationCallback) {
-            this.tokenExpirationCallback()
-          }
-        }, (tokenObject.claim.exp * 1000) - new Date().getTime());
       }
     }
   }
