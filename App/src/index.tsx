@@ -6,6 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import JWT from 'jwt-client'
 import { Provider } from 'react-redux'
+import { toast } from 'react-toastify'
 
 import App from './App'
 
@@ -17,13 +18,11 @@ import Playlist from '@models/Playlist'
 import User from '@models/User'
 import File from '@models/File'
 
-import Notification from '@models/Notification'
 import PlaylistManager from '@models/PlaylistManager'
 
 import LoginScreen from '@screens/LoginScreen'
 import SplashScreen from '@screens/SplashScreen'
 
-import { addNotification } from '@actions/Notification'
 import { setArtists } from '@actions/Artist'
 import { setPlaylistManager, setUser } from '@actions/App'
 import { setTracks } from '@actions/Track'
@@ -39,13 +38,7 @@ const configuration = store.getState().configuration
 
 const baseApiManager = new ApiManager(
   configuration.getServerAddress(),
-  ([status, data, headers]: [number, any, Headers]) => {
-    const message = headers.get('Message')
-    if (message != null) {
-      store.dispatch(addNotification(new Notification(message)))
-    }
-    return data
-  },
+  ([status, data, headers]: [number, any, Headers]) => data,
   new TokenManager(() => {
     JWT.forget()
     init()

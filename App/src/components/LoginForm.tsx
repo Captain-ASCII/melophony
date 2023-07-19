@@ -30,7 +30,7 @@ const LoginForm = ({ loginOnly, onLoginResponse }: { loginOnly?: boolean; onLogi
   const login = useCallback(() => {
     setLoading(true)
     setErrorMessage('')
-    apiManager.post('/user/login', { username: userName, password }).then(([code, data, headers]: [number, any, Headers]) => {
+    apiManager.post('/user/login', { username: userName, password }, {}, new Headers(), false).then(([code, data, headers]: [number, any, Headers]) => {
       setLoading(false)
       if (code !== 200) {
         setErrorMessage(headers.get('Message'))

@@ -2,13 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { FixedSizeList as List } from 'react-window'
+import { toast } from 'react-toastify'
 
-import { addNotification } from '@actions/Notification'
 import { selectPlaylistManager } from '@selectors/App'
 import { setPlaylistManager } from '@actions/App'
 
 import Track from '@models/Track'
-import Notification from '@models/Notification'
 import MediaUtils from '@utils/MediaUtils'
 
 import Button from '@components/Button'
@@ -37,7 +36,7 @@ const RTrack = ({ track, style }: { track: Track; style: any }): JSX.Element => 
   const handleEnqueue = useCallback((data:any, e: React.MouseEvent) => {
     e.stopPropagation()
     dispatch(setPlaylistManager(playlist.enqueue(track)))
-    dispatch(addNotification(new Notification('Track added to playlist')))
+    toast('Track added to playlist')
   }, [ dispatch, playlist, track ])
 
   const renderArtistName = (): JSX.Element => {

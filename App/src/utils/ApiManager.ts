@@ -1,4 +1,6 @@
 
+import { toast, Id, TypeOptions} from 'react-toastify'
+
 import Log from '@utils/Log'
 import TokenManager from '@utils/TokenManager'
 
@@ -28,6 +30,7 @@ export class ApiClient {
   protected serverUrl: string
   protected baseNode: string
   protected resultCallback: (data: [number, any, Headers]) => [number, any, Headers]
+  protected toastId: Id
 
   public constructor(serverUrl: string, baseNode = "", onResult: (data: [number, any, Headers]) => [number, any, Headers] = () => [-1, {}, null]) {
     this.serverUrl = serverUrl
@@ -35,28 +38,48 @@ export class ApiClient {
     this.resultCallback = onResult
   }
 
-  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
-    return this.send(this.serverUrl + this.baseNode, 'GET', path, null, queryParams, headers)
+  public get(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers(), toastEnabled = false): Promise<[number, any, Headers]> {
+    return this.withToast(toastEnabled, this.send(this.serverUrl + this.baseNode, 'GET', path, null, queryParams, headers))
   }
 
-  public post(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
-    return this.send(this.serverUrl + this.baseNode, 'POST', path, JSON.stringify(json), queryParams, headers)
+  public post(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers(), toastEnabled = true): Promise<[number, any, Headers]> {
+    return this.withToast(toastEnabled, this.send(this.serverUrl + this.baseNode, 'POST', path, JSON.stringify(json), queryParams, headers))
   }
 
-  public postFile(path: string, json: object, file: File, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
+  public postFile(path: string, json: object, file: File, queryParams: QueryParams = {}, headers: Headers = new Headers(), toastEnabled = true): Promise<[number, any, Headers]> {
     const formData = new FormData()
     formData.append('data', file)
     formData.append('json', JSON.stringify(json))
     headers.set('Content-Type', 'multipart/form-data')
-    return this.send(this.serverUrl + this.baseNode, 'POST', path, formData, queryParams, headers)
+    return this.withToast(toastEnabled, this.send(this.serverUrl + this.baseNode, 'POST', path, formData, queryParams, headers))
   }
 
-  public patch(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
-    return this.send(this.serverUrl + this.baseNode, 'PATCH', path, JSON.stringify(json), queryParams, headers)
+  public patch(path: string, json: object, queryParams: QueryParams = {}, headers: Headers = new Headers(), toastEnabled = true): Promise<[number, any, Headers]> {
+    return this.withToast(toastEnabled, this.send(this.serverUrl + this.baseNode, 'PATCH', path, JSON.stringify(json), queryParams, headers))
   }
 
-  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers()): Promise<[number, any, Headers]> {
-    return this.send(this.serverUrl + this.baseNode, 'DELETE', path, null, queryParams, headers)
+  public delete(path: string, queryParams: QueryParams = {}, headers: Headers = new Headers(), toastEnabled = true): Promise<[number, any, Headers]> {
+    return this.withToast(toastEnabled, this.send(this.serverUrl + this.baseNode, 'DELETE', path, null, queryParams, headers))
+  }
+
+  private withToast(toastEnabled: boolean, requestPromise: Promise<[number, any, Headers]>): Promise<[number, any, Headers]> {
+    if (toastEnabled) {
+      this.toastId = toast.loading("Operation in progress...")
+      return requestPromise.then(this.toastResult.bind(this)).catch(this.toastResult.bind(this))
+    }
+    return requestPromise
+  }
+
+  protected toastResult(promiseData: any): [number, any, Headers] {
+    let message = "Error"
+    let type: TypeOptions = 'error'
+    if (promiseData) {
+      const [code, data, headers] = promiseData
+      message = headers.get('Message') || 'Success'
+      type = (code >= 200 && code < 300) ? 'success' : 'error'
+    }
+    toast.update(this.toastId, { type, render: message, isLoading: false, autoClose: 3000, closeOnClick: true})
+    return promiseData
   }
 
   private getFetchParams(method: string, body: string | FormData, headers: Headers): RequestInit {
@@ -101,7 +124,7 @@ export class ApiClient {
             json = await response.json()
           }
           return [ response.status, json, response.headers ]
-        })
+        }).catch(() => Promise.reject([0, {}, new Headers()]))
     )
 
     return json.catch((error: Error) => {

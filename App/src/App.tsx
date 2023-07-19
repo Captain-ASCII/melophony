@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react'
+import { ToastContainer, Slide } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import JWT from 'jwt-client'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
@@ -30,7 +32,6 @@ import { selectPlaylists } from '@selectors/Playlist'
 
 import ConfirmOverlay from '@components/ConfirmOverlay'
 import Button from '@components/Button'
-import NotificationToaster from '@components/NotificationToaster'
 import Player from '@components/Player'
 import PlayList from '@components/PlayList'
 import UserDrawer from '@components/UserDrawer'
@@ -132,7 +133,7 @@ const App = (): JSX.Element => {
             </div>
             <p id="version">{ VERSION }</p>
           </div>
-          <NotificationToaster />
+          <ToastContainer position='bottom-left' transition={Slide} pauseOnHover={false} autoClose={3000} theme='dark' />
           <div id="footer">
             <Player />
           </div>
