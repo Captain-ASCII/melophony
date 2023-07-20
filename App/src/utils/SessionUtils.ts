@@ -7,7 +7,7 @@ function bindToSession(key: string, valueToKeep: string|(() => string), onFound:
       const finalValue = typeof valueToKeep === 'function' ? valueToKeep() : valueToKeep
       sessionStorage.setItem(key, finalValue)
     }
-  }, [])
+  }, [valueToKeep])
 
   if (onFound != null) {
     useEffect(() => {
