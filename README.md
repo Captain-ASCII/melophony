@@ -17,7 +17,7 @@ The Melophony project is currently composed of four elements:
 
 # Install
 
-## Requirements
+## Requirements
 
 * A machine connected to the network and with the following dependencies installed:
   * Nginx
