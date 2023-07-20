@@ -9,6 +9,10 @@ With it, you can easily listen to your favorite music while keeping everything s
 * Listen to music freely even without internet access when using the [Melophony web-application](https://github.com/Captain-ASCII/melophony-webapp).
 * A Raspberry PI is enough to host the server
 
+<p align="center">
+  <img src="Documentation/melophony.gif" width="100%" />
+</p>
+
 The Melophony project is currently composed of four elements:
 * The front-end application in this repository built with Typescript
 * The back-end server built in Python with the Django framework (also in this repository)
