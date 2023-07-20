@@ -41,24 +41,7 @@ deactivate
 echo "Server install done"
 echo "Start front-end install..."
 
-cd $melophony_dir/App/
-npm install
-npm run build
-
-cp ${melophony_dir}/Server/nginx_melophony.conf /etc/nginx/sites-available/melophony
-sed -i "s/melophony.ddns.net/$hostname/g" /etc/nginx/sites-available/melophony
-ln -sf /etc/nginx/sites-available/melophony /etc/nginx/sites-enabled/
-
-mkdir -pv /var/www/$hostname/public/
-chown -cR pi:pi /var/www/$hostname/public/
-
-public_dir=${melophony_dir}/App/public
-
-cp ${public_dir}/index.html /var/www/$hostname/public/
-cp ${public_dir}/bundle.js /var/www/$hostname/public/
-cp ${public_dir}/App.min.css /var/www/$hostname/public/
-cp ${public_dir}/favicon.ico /var/www/$hostname/public/
-cp -r ${public_dir}/img/ /var/www/$hostname/public/
+sudo ./update.sh $hostname
 
 echo "Front-end install done"
 echo ""
