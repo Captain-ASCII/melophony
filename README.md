@@ -3,15 +3,15 @@
 
 Melophony is a self-hosted application to manage & play music among different clients such as a browser or the associated web-application.
 
+<p align="center">
+  <img src="Documentation/melophony.gif" width="100%" />
+</p>
+
 With it, you can easily listen to your favorite music while keeping everything synchronized on your different devices:
 * Add tracks coming from different sources so you can get album or live versions of your favorite tracks.
 * Associate them to playlists to easily listen to an album you like but without the tracks you may always skip.
 * Listen to music freely even without internet access when using the [Melophony web-application](https://github.com/Captain-ASCII/melophony-webapp).
 * A Raspberry PI is enough to host the server
-
-<p align="center">
-  <img src="Documentation/melophony.gif" width="100%" />
-</p>
 
 The Melophony project is currently composed of four elements:
 * The front-end application in this repository built with Typescript
