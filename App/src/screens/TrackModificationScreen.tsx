@@ -160,13 +160,12 @@ const TrackModificationScreen = (): JSX.Element => {
                 <TextInput disabled value={track.getFile().getFileId()} />
               </InputWithIcon>
             </div>
-            <div id="serverInformation">
+            {/* <div id="serverInformation">
               <h2>{ _("track.modification.actions") }</h2>
               <div className="actions">
-                {/* <Button className="raised" onClick={requestServerDownload} title={_("track.modification.actions.download")} /> */}
-                <Button className="raised alert" onClick={deleteItem} title={_("track.modification.actions.delete")} />
+                 <Button className="raised" onClick={requestServerDownload} title={_("track.modification.actions.download")} />
               </div>
-            </div>
+            </div> */}
             { !MediaUtils.isMobileScreen() &&
               <div id="trackBarModifier">
                 <h2>Track duration</h2>
@@ -179,7 +178,8 @@ const TrackModificationScreen = (): JSX.Element => {
           </div>
 
           <div id="postActions" >
-            <Button id="saveButton" className="raised" onClick={save} title={_("track.modification.save")} />
+            <Button className="raised alert" icon="trash" onClick={deleteItem} title={_("track.modification.actions.delete")} />
+            <Button id="saveButton" icon="save" className="raised" onClick={save} title={_("track.modification.save")} />
           </div>
         </Screen>
       )

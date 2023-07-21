@@ -32,6 +32,12 @@
   background: var(--main-dark-bg);
   border-radius: 5px;
   flex: 1;
+  min-height: 36px;
+}
+
+#tracksAddButton {
+  margin: 10px 10px 10px 0;
+  width: 153px;
 }
 
 .playlistTrack {

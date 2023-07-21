@@ -47,3 +47,7 @@ input[type="text"] {
   min-width: 40px;
   min-height: 30px;
 }
+
+.multiSelect {
+  min-width: 160px;
+}

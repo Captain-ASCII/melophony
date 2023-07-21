@@ -30,12 +30,21 @@
     display: none;
   }
 
-  .screen {
-    padding: 10px 10px 40px 10px;
+  .wrapIfNeeded {
+    flex-grow: 1;
+    margin-left: 51px !important;
   }
 
-  .narrowOnly {
-    display: block;
+  .wrapIfNeeded .buttonTitle {
+    display: block !important;
+  }
+
+  .screen {
+    padding: 10px 10px 25px 10px;
+  }
+
+  .button.raised {
+    padding: 0 10px;
   }
 
   /* Login Screen */
@@ -148,7 +157,7 @@
   }
 
   #postActions {
-    margin: 10px 0;
+    margin: 30px 0 10px 0;
   }
 
   /* Track Modification Screen */
@@ -211,9 +220,20 @@
     height: 400px;
     background-size: cover;
   }
+
+  /* Playlist creation Screen */
+
+  .playlistTracksContainer {
+    flex-basis: 80% !important;
+  }
+
 }
 
 @media only screen and (max-width: 550px) {
+
+  .narrowOnly {
+    display: block;
+  }
 
   .notificationToasters {
     bottom: 18%;
@@ -292,8 +312,11 @@
   }
 
   .currentTrackInfoLink {
-    /* align-items: flex-start; */
     padding: 3px;
     height: 100%;
+  }
+
+  .imageSearchImages {
+    grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
   }
 }

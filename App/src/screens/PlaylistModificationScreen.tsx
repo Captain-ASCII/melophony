@@ -145,7 +145,7 @@ const PlaylistModificationScreen = (): JSX.Element => {
       </InputWithIcon>
       <InputWithIcon icon="music" >
         <TrackList playlist={playlist} removeTrack={removeTrack} onSortEnd={sortPlaylist} lockAxis="y" lockToContainerEdges lockOffset="0%" useDragHandle />
-        <Button title={_("playlist.modification.add.tracks.button")} icon="plus" onClick={showOverlay} className="responsiveShrink" />
+        <Button id="tracksAddButton" title={_("playlist.modification.add.tracks.button")} icon="plus" onClick={showOverlay} className="raised responsiveShrink wrapIfNeeded" />
         <Overlay isOpen={overlayVisible} onChange={setOverlay} className="addTrackOverlay" >
           <div>
             <AddTrackOverlayHeader filter={onTracksFilter} />

@@ -95,8 +95,8 @@ const ArtistModificationScreen = (): JSX.Element => {
             <ImageSearcher initialQuery={artist.getName()} onSelect={setArtistImage} />
           </InputWithIcon>
           <div id="postActions" >
-            <Button icon="save" className="raised" onClick={save} title={_("artist.modification.save")} />
             <Button icon="trash" className="raised alert" onClick={deleteArtist} title={_("artist.modification.delete")} />
+            <Button icon="save" className="raised" onClick={save} title={_("artist.modification.save")} />
           </div>
         </Screen>
       )

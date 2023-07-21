@@ -63,7 +63,7 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "artists.search.placeholder": "Rechercher un artiste",
   "artist.creation.screen.title": "Ajouter un nouvel artiste",
   "artist.creation.name.placeholder": "Nom de l'artiste",
-  "artist.creation.add.button": "Ajouter",
+  "artist.creation.add.button": "Enregistrer",
   "artist.modification.title": "Modifier les informations de l'artiste",
   "artist.modification.save": "Enregistrer",
   "artist.modification.delete": "Supprimer",

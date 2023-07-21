@@ -47,7 +47,7 @@ const ArtistCreationScreen = (): JSX.Element => {
         <ImageSearcher initialQuery="" onSelect={setArtistImage} />
       </InputWithIcon>
       <div id="postActions">
-        <Button icon="plus" className="raised" onClick={createArtist} title={_("artist.creation.add.button")} />
+        <Button icon="save" className="raised" onClick={createArtist} title={_("artist.creation.add.button")} />
       </div>
     </Screen>
   )
