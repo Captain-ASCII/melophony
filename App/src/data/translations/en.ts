@@ -54,6 +54,7 @@ export const EN_TRANSLATIONS: { [key: string]: string; } = {
   "playlist.modification.add.tracks.header": "Add tracks",
   "playlist.modification.add.tracks.button": "Add tracks",
   "track.modification.save": "Save",
+  "image.search.placeholder": "Text to find images...",
   "image.search.button": "Get images",
   "playlist.modification.playlist.name.placeholder": "Name of the playlist",
   "playlist.modification.button.delete": "Delete",
