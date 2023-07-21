@@ -8,6 +8,7 @@ from drf_yasg import openapi
 
 from melophony.views.artist_views import ArtistViewSet
 from melophony.views.file_views import FileViewSet
+from melophony.views.keys_views import KeysView
 from melophony.views.playlist_views import PlaylistViewSet
 from melophony.views.synchronization_views import SynchronizationView
 from melophony.views.track_views import TrackViewSet
@@ -44,7 +45,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/synchronization', SynchronizationView.as_view())
+    path('api/synchronization', SynchronizationView.as_view()),
+    path('api/keys', KeysView.as_view())
 ]
 
 if settings.DEBUG:
