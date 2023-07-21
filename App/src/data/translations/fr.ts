@@ -33,7 +33,7 @@ export const FR_TRANSLATIONS: { [key: string]: string; } = {
   "tracks.sort.option.date": "Par date de téléchargement",
   "tracks.sort.option.artist": "Par nom d'artiste",
   "tracks.sort.option.duration": "Par durée",
-  "track.creation.screen.title": "Ajouter un nouveau titre",
+  "track.creation.screen.title": "Ajouter un titre",
   "track.creation.download": "Ajouter",
   "track.creation.track.title.placeholder": "Titre",
   "track.creation.artist.list.placeholder": "Artistes...",

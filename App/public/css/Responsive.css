@@ -31,7 +31,11 @@
   }
 
   .screen {
-    padding: 10px;
+    padding: 10px 10px 40px 10px;
+  }
+
+  .narrowOnly {
+    display: block;
   }
 
   /* Login Screen */
@@ -67,6 +71,10 @@
 
   .sidebar.left.closed .hideWhenClosed {
     display: block !important;
+  }
+
+  #pageHeader {
+    margin-bottom: 0px;
   }
 
   /* Track Screen */
@@ -135,6 +143,14 @@
     display: none !important;
   }
 
+  .tabBar {
+    margin-bottom: 5px;
+  }
+
+  #postActions {
+    margin: 10px 0;
+  }
+
   /* Track Modification Screen */
 
   .columns > div {
@@ -181,7 +197,7 @@
     display: none;
   }
 
-  .input > * {
+  .input > :not(.inputLine), .inputLine > * {
     margin: 10px 5px;
   }
 

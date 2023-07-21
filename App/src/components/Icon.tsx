@@ -6,8 +6,9 @@ export interface IconParameters {
   type?: string;
   size?: string;
   title?: string
+  className?: string;
 }
 
-export default function InputWithIcon({ icon, collection = 'fa', size = '1x', type = null, title = undefined }: IconParameters): JSX.Element {
-  return <i className={`${collection} fa-${icon} fa-${size} icon ${type !== null ? `fa-${type}` : ""}`} title={title} />
+export default function InputWithIcon({ icon, collection = 'fa', size = '1x', type = null, title = undefined, className = "" }: IconParameters): JSX.Element {
+  return <i className={`${className} ${collection} fa-${icon} fa-${size} icon ${type !== null ? `fa-${type}` : ""}`} title={title} />
 }

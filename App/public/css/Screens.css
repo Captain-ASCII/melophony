@@ -18,11 +18,16 @@
   margin-bottom: 15px;
 }
 
-#pageHeader > *, .input > * {
+#pageHeader > *, .input > :not(.inputLine), .inputLine > * {
   margin: 10px;
 }
 
 #pageTitle {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+}
+
+.inputLine {
+  display: flex;
   flex: 1;
 }

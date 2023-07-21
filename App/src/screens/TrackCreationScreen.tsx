@@ -106,18 +106,27 @@ const TrackCreationScreen = (): JSX.Element => {
 
   return (
     <Screen id="AddTrackScreen" title={ _("track.creation.screen.title") } >
-        <ProviderList setProviderKey={setProviderKey} setExtraInfo={setExtraInfo} setData={setData} setTitle={setTitle} setArtistName={setArtistName} />
-        <InputWithIcon icon="music">
-          <TextInput placeHolder="track.creation.track.title.placeholder" value={title} onInput={handleTitleSet} />
-        </InputWithIcon>
-        <InputWithIcon icon="male">
-          <Select
-            isMulti isClearable className="multiSelect" id="artistNames" placeholder={_("track.creation.artist.list.placeholder")} styles={SelectStyles}
-            options={artistsNames} onChange={handleArtistsSet} value={artistsNames.filter(option => option.label !== "" && option.label === artistName)}
-          />
-          <Icon icon="plus" size="2x" />
-          <TextInput placeHolder="track.creation.artist.creation.placeholder" value={artistName} onInput={handleArtistNameSet} />
-        </InputWithIcon>
+      <ProviderList setProviderKey={setProviderKey} setExtraInfo={setExtraInfo} setData={setData} setTitle={setTitle} setArtistName={setArtistName} />
+      <InputWithIcon icon="music">
+        <TextInput placeHolder="track.creation.track.title.placeholder" value={title} onInput={handleTitleSet} />
+      </InputWithIcon>
+      <InputWithIcon icon="male"
+        lines={[(inputIcon) => (
+          <>
+            {inputIcon}
+            <Select
+              isMulti isClearable className="multiSelect" id="artistNames" placeholder={_("track.creation.artist.list.placeholder")} styles={SelectStyles}
+              options={artistsNames} onChange={handleArtistsSet} value={artistsNames.filter(option => option.label !== "" && option.label === artistName)}
+              />
+            <Icon icon="plus" size="2x" />
+          </>
+        ), (inputIcon) => (
+          <>
+            <div className="narrowOnly" >{inputIcon}</div>
+            <TextInput placeHolder="track.creation.artist.creation.placeholder" value={artistName} onInput={handleArtistNameSet} />
+          </>
+        )]}
+      />
       <div id="postActions">
         <Button icon="download" className="raised" onClick={requestServerDownload} title={_("track.creation.download")} />
       </div>
