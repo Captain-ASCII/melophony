@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { selectConfiguration } from '@selectors/Configuration'
+
 import { ApiClient } from '@utils/ApiManager'
 import { _ } from '@utils/TranslationUtils'
 
@@ -21,6 +23,8 @@ const Image = ({ url, index, onSelect, selected }: { url: string; index: number;
 
 const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSelect: (url: string) => void }): JSX.Element => {
 
+  const configuration = selectConfiguration()
+
   const [imageUrls, setImageUrls] = useState([])
   const [selected, setSelected] = useState(-1)
   const [imageQuery, setImageQuery] = useState(initialQuery)
@@ -37,8 +41,8 @@ const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSel
       if (realQuery !== undefined && realQuery !== '') {
         setLoading(true)
         const [code, result] = await googleApi.get('/customsearch/v1', {
-          key: 'AIzaSyB-9vU4FkDG8E1STGcNQDC_nTHzLYLOsKY',
-          cx: '003292925288195925892:6yuqd0j6-gk',
+          key: configuration.getKey('googleImageSecretKey'),
+          cx: configuration.getKey('googleImageCx'),
           q: realQuery,
           searchType: 'image',
           imgSize: 'xlarge'

@@ -9,6 +9,7 @@ export default class Configuration {
   private displayType: string
   private language: string
   private keyboardNavEnabled: boolean
+  private keys: Map<string, string>
 
   public constructor(
     serverAddress: string,
@@ -18,7 +19,8 @@ export default class Configuration {
     sortOrder: string,
     displayType: string,
     language: string,
-    keyboardNavEnabled: boolean
+    keyboardNavEnabled: boolean,
+    keys: Map<string, string>
   ) {
     this.serverAddress = serverAddress
     this.networkEnabled = networkEnabled
@@ -28,6 +30,7 @@ export default class Configuration {
     this.displayType = displayType
     this.language = language
     this.keyboardNavEnabled = keyboardNavEnabled
+    this.keys = keys
   }
 
   public withServerAddress(address: string): Configuration {
@@ -70,6 +73,11 @@ export default class Configuration {
     return this
   }
 
+  public withKeys(keysObject: any): Configuration {
+    this.keys = new Map(Object.entries(keysObject))
+    return this
+  }
+
   public getServerAddress(): string {
     return this.serverAddress
   }
@@ -102,4 +110,7 @@ export default class Configuration {
     return this.keyboardNavEnabled
   }
 
+  public getKey(key: string): string {
+    return this.keys.get(key)
+  }
 }

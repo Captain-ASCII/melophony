@@ -8,6 +8,6 @@ interface SetConfigurationAction {
   configuration: Configuration;
 }
 
-export const setConfiguration = (configuration: Configuration): object => ({ type: SET_CONFIGURATION, configuration })
+export const setConfiguration = (configuration: Configuration): SetConfigurationAction => ({ type: SET_CONFIGURATION, configuration })
 
 export type ConfigurationAction = SetConfigurationAction

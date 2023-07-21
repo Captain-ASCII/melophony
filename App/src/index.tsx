@@ -23,6 +23,7 @@ import PlaylistManager from '@models/PlaylistManager'
 import LoginScreen from '@screens/LoginScreen'
 import SplashScreen from '@screens/SplashScreen'
 
+import { setConfiguration } from '@actions/Configuration'
 import { setArtists } from '@actions/Artist'
 import { setPlaylistManager, setUser } from '@actions/App'
 import { setTracks } from '@actions/Track'
@@ -57,11 +58,13 @@ async function getServerData(apiManager: ApiManager) {
   const playlistsResponse = await apiManager.get('/playlist')
   const artistsResponse = await apiManager.get('/artist')
   const filesResponse = await apiManager.get('/file')
+  const keysResponse = await apiManager.get('/keys')
 
   const artistsArray: Array<any> = artistsResponse[1]
   const filesArray: Array<any> = filesResponse[1]
   const tracksArray: Array<any> = tracksResponse[1]
   const playlistsArray: Array<any> = playlistsResponse[1]
+  const keys = keysResponse[1]
 
   const artists = artistsArray.reduce((map, artist: any) => {
      map.set(artist.id, Artist.fromObject(artist))
@@ -84,6 +87,7 @@ async function getServerData(apiManager: ApiManager) {
   store.dispatch(setTracks(Array.from(tracks.values())))
   store.dispatch(setPlaylists(Array.from(playlists.values())))
   store.dispatch(setPlaylistManager(new PlaylistManager(Array.from(tracks.values()), configuration.getShuffleMode())))
+  store.dispatch(setConfiguration(configuration.withKeys(keys)))
 }
 
 async function getData(apiManager: ApiManager, userId: number): Promise<void> {

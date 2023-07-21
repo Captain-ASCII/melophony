@@ -8,7 +8,7 @@ import Configuration from '@models/Configuration'
 import { EN_TRANSLATION_KEY } from '@utils/TranslationUtils'
 
 const MELOPHONY_CONFIGURATION = 'melophony-configuration'
-const INITIAL_CONFIG = new Configuration('https://melophony.ddns.net', true, true, 'date', 'ASC', 'itemList', EN_TRANSLATION_KEY, false)
+const INITIAL_CONFIG = new Configuration('https://melophony.ddns.net', true, true, 'date', 'ASC', 'itemList', EN_TRANSLATION_KEY, false, new Map())
 
 function inflate(): Configuration {
   const jsonConfiguration = localStorage.getItem(MELOPHONY_CONFIGURATION)
@@ -23,7 +23,8 @@ function inflate(): Configuration {
         c.sortOrder || 'ASC',
         c.displayType || 'itemList',
         c.language || EN_TRANSLATION_KEY,
-        c.keyboardNavEnabled || false
+        c.keyboardNavEnabled || false,
+        c.keys || new Map()
       )
     } catch (error) {
       const errorLog: any = error
