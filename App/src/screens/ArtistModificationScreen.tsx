@@ -91,6 +91,9 @@ const ArtistModificationScreen = (): JSX.Element => {
           <InputWithIcon icon="fingerprint" >
             <TextInput disabled value={artist.getId()}/>
           </InputWithIcon>
+          <InputWithIcon icon="file-image" >
+            <TextInput disabled value={artist.getImageName()}/>
+          </InputWithIcon>
           <InputWithIcon icon="image" >
             <ImageSearcher initialQuery={artist.getName()} onSelect={setArtistImage} />
           </InputWithIcon>
