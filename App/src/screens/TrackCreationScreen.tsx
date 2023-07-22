@@ -85,7 +85,7 @@ const TrackCreationScreen = (): JSX.Element => {
                 if (code === 200) {
                   let artists = allArtists
                   const newArtist = Artist.fromObject(artistData)
-                  if (artists.includes(newArtist)) {
+                  if (!artists.some(artist => artist.getId() === newArtist.getId())) {
                     artists = Arrays.add(allArtists, newArtist)
                     dispatch(setArtistsInState(artists))
                   }
