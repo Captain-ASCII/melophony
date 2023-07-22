@@ -43,7 +43,7 @@ const ImageSearcher = ({ initialQuery, onSelect }: { initialQuery: string; onSel
         const [code, result] = await googleApi.get('/customsearch/v1', {
           key: configuration.getKey('googleImageSecretKey'),
           cx: configuration.getKey('googleImageCx'),
-          q: realQuery,
+          q: `${realQuery} filetype:png OR filetype:jpeg`,
           searchType: 'image',
           imgSize: 'xlarge'
         })

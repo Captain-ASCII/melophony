@@ -99,7 +99,7 @@ export default class Playlist {
 
   public getImageName(): string {
     if (this.imageName != null) {
-      return this.imageName.replace('.webp', '')
+      return this.imageName
     }
     return ''
   }

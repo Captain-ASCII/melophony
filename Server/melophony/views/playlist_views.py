@@ -35,8 +35,8 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         return update_playlist(self.get_object(), request.data, request.user, update_fct)
 
     @swagger_auto_schema(operation_id='playlist_image', responses={"200": openapi.Schema(type=openapi.TYPE_FILE)})
-    @action(detail=True, methods=["GET"], url_path=r'image/[a-zA-Z0-9-]*', content_negotiation_class=ImageNegotiation)
-    def image(self, request, pk):
+    @action(detail=True, methods=["GET"], url_path=r'image/(?P<imageName>[a-zA-Z0-9-]*)', content_negotiation_class=ImageNegotiation)
+    def image(self, request, pk, imageName):
         playlist = self.get_object()
         if playlist is not None:
             return get_image(PLAYLIST_IMAGES, playlist.imageName)

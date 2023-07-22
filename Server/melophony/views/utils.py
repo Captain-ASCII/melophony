@@ -15,10 +15,6 @@ from django.http import HttpResponse, JsonResponse
 from melophony.constants import Status, Message
 from melophony.track_providers import get_provider
 
-from rest_framework import viewsets
-from rest_framework.response import Response
-
-
 FILES_DIR = os.path.join(os.path.dirname(melophony.__file__), "files")
 TRACKS_DIR = 'tracks'
 
@@ -124,9 +120,12 @@ def delete_associated_image(instance):
 
 def replace_image(instance, directory, modifications):
     imageUrl = modifications.get('imageUrl', None)
-    if imageUrl is not None:
+    if imageUrl is not None and imageUrl != instance.imageUrl:
         delete_associated_image(instance)
         modifications['imageName'] = download_image(directory, imageUrl)
+    else:
+        del modifications['imageName']
+
     return modifications
 
 
@@ -135,33 +134,32 @@ def download_image(directory, image_url):
         logging.error('URL is not usable for download, skipping...')
         return None
 
-    image_name = str(uuid.uuid4()) + '.tmp'
+    image_name = str(uuid.uuid4())
     image_path = get_file_path(directory, image_name)
 
-    r = requests.get(image_url, stream=True)
+    r = requests.get(image_url, headers={'User-Agent': 'request'}, stream=True)
 
-    if r.status_code == 200:
-        r.raw.decode_content = True
-
-        with open(image_path, 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
-
-        logging.info('Image successfully Downloaded, convert to webp: %s', image_name)
-        return convert_to_webp(image_path)
-    else:
+    if r.status_code != 200:
         logging.info('Image Couldn\'t be retrieved')
         return None
+
+    r.raw.decode_content = True
+
+    with open(image_path, 'wb') as f:
+        shutil.copyfileobj(r.raw, f)
+        logging.info('Image successfully Downloaded: %s', image_path)
+
+    logging.info('Convert to WEBP')
+    return convert_to_webp(image_path)
 
 
 def convert_to_webp(source_path):
     source = Path(source_path)
     try:
-        destination = source.with_suffix(".webp")
         image = Image.open(source)
-        image.save(destination, format="webp")
-        logging.info('Image successfully converted to WebP: %s', source)
-        os.remove(source_path)
-        return destination.name
+        image.save(source_path, format="webp")
+        logging.info('Image successfully converted to WebP: %s', source.stem)
+        return source.stem
     except Exception as e:
         print("Unable to convert image: " + str(source) + ' ' + str(e))
         return source
