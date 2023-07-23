@@ -41,11 +41,11 @@ export default class MediaManager {
   }
 
   private handleKey(event: KeyboardEvent): void {
-    if (event.code === Keys.PAGE_UP) {
+    if (event.ctrlKey && event.code === Keys.PREVIOUS) {
       this.previous()
-    } else if (event.code === Keys.P) {
+    } else if (event.ctrlKey && event.code === Keys.PLAY_PAUSE) {
       this.playPause()
-    } else if (event.code === Keys.PAGE_DOWN) {
+    } else if (event.ctrlKey && event.code === Keys.NEXT) {
       this.next()
     }
   }

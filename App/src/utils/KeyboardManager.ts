@@ -358,7 +358,9 @@ class Keys {
   public static ARROW_RIGHT = 'ArrowRight'
   public static PAGE_UP = 'PageUp'
   public static PAGE_DOWN = 'PageDown'
-  public static P = 'KeyP'
+  public static PREVIOUS = 'F6'
+  public static PLAY_PAUSE = 'F7'
+  public static NEXT = 'F8'
 }
 
 
