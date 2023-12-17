@@ -22,6 +22,15 @@ export default class MediaUtils {
     }
   }
 
+  static notifyAndroidPlayerState(isPlaying: boolean, title: string, artistName: string): boolean {
+    try {
+      //@ts-ignore
+      return Android.onPlayerStateChange(isPlaying, title, artistName)
+    } catch (error) {
+      return false
+    }
+  }
+
   static isThinMobileScreen(): boolean {
     return window.innerWidth <= 450
   }

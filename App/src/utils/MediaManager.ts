@@ -16,10 +16,15 @@ function doNothing() { }
 export default class MediaManager {
 
   static EXTRACT_DURATION = 2000
+  static PREVIOUS_TRACK_ACTION = 'PREVIOUS'
+  static PLAY_PAUSE_ACTION = 'PLAY_PAUSE'
+  static PLAY_ACTION = 'PLAY'
+  static PAUSE_ACTION = 'PAUSE'
+  static NEXT_TRACK_ACTION = 'NEXT'
 
   private audio: HTMLAudioElement
 
-  private onPlayPauseCallback: (isPlaying: boolean) => void
+  private onPlayPauseCallback: (isPlaying: boolean, title: string, artistName: string) => void
   private onPlayDone: () => void
   private onError: (event: ErrorEvent) => any
   private onKey: (event: KeyboardEvent) => void
@@ -27,6 +32,7 @@ export default class MediaManager {
   private isPlayingExtract: boolean
   private extractTimeout: any
   private hasPlayedOnce: boolean
+  private currentTrack: Track
 
   constructor(audio: HTMLAudioElement = null) {
     this.audio = audio
@@ -69,7 +75,7 @@ export default class MediaManager {
     return clone
   }
 
-  onPlayPause(onPlayPauseCallback: (isPlaying: boolean) => void): MediaManager {
+  onPlayPause(onPlayPauseCallback: (isPlaying: boolean, title: string, artistName: string) => void): MediaManager {
     this.onPlayPauseCallback = onPlayPauseCallback
     return this
   }
@@ -91,6 +97,7 @@ export default class MediaManager {
 
   setTrack(track: Track | null): void {
     if (this.audio !== null && track !== null) {
+      this.currentTrack = track
       const nextTrackTask = this.getTrackSetTask(track)
       if (this.isPlayable) {
         nextTrackTask()
@@ -145,7 +152,7 @@ export default class MediaManager {
       })
     }
     if (this.onPlayPauseCallback) {
-      this.onPlayPauseCallback(true)
+      this.onPlayPauseCallback(true, this.currentTrack.getTitle(), this.currentTrack.getArtist().getName())
     }
   }
 
@@ -154,7 +161,7 @@ export default class MediaManager {
       this.audio.pause()
     }
     if (this.onPlayPauseCallback) {
-      this.onPlayPauseCallback(false)
+      this.onPlayPauseCallback(false, this.currentTrack.getTitle(), this.currentTrack.getArtist().getName())
     }
   }
 
@@ -173,9 +180,6 @@ export default class MediaManager {
       this.play()
     } else {
       this.pause()
-    }
-    if (this.onPlayPauseCallback) {
-      this.onPlayPauseCallback(this.audio === null || !this.audio.paused)
     }
   }
 
@@ -212,5 +216,19 @@ export default class MediaManager {
       return ! this.audio.paused
     }
     return false
+  }
+
+  handleCommand(action: string): void {
+    if (MediaManager.PREVIOUS_TRACK_ACTION === action) {
+      this.previous()
+    } else if (MediaManager.PLAY_ACTION === action) {
+      this.play()
+    } else if (MediaManager.PAUSE_ACTION === action) {
+      this.pause()
+    } else if (MediaManager.PLAY_PAUSE_ACTION === action) {
+      this.playPause()
+    } else if (MediaManager.NEXT_TRACK_ACTION === action) {
+      this.next()
+    }
   }
 }

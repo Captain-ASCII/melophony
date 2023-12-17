@@ -52,6 +52,10 @@ store.getState().app.mediaManager = new MediaManager()
 store.getState().app.keyboardManager = new KeyboardManager(configuration.isKeyboardNavEnabled())
 store.getState().app.language = getLanguage(configuration.getLanguage())
 
+export function handleAndroidCommand(action: string) {
+  console.log(`New android command: ${action}`)
+  store.getState().app.mediaManager.handleCommand(action)
+}
 
 async function getServerData(apiManager: ApiManager) {
   const tracksResponse = await apiManager.get('/track')

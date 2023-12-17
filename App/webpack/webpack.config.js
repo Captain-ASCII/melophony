@@ -45,6 +45,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '..', 'public'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    library: {
+      name: 'Melophony',
+      type: 'var'
+    }
   }
 }

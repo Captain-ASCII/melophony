@@ -11,6 +11,7 @@ import { setPlaylistManager, setMediaManager } from '@actions/App'
 
 import InputRange from '@components/InputRange'
 import Button from '@components/Button'
+import MediaUtils from '@utils/MediaUtils'
 
 const Player = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -25,7 +26,10 @@ const Player = (): JSX.Element => {
   const player = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    dispatch(setMediaManager(mediaManager.withAudio(player.current).onPlayPause(setIsPlaying)))
+    dispatch(setMediaManager(mediaManager.withAudio(player.current).onPlayPause((isPlaying: boolean, title: string, artist: string) => {
+      setIsPlaying(isPlaying)
+      MediaUtils.notifyAndroidPlayerState(isPlaying, title, artist)
+    })))
   }, [ dispatch ])
 
   useEffect(() => {
