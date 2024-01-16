@@ -68,6 +68,10 @@ const UserConfigurationScreen = (): JSX.Element => {
     dispatch(setKeyboardManager(keyboardManager.enabled(value)))
   }, [])
 
+  const handleEnableFullDownloads = useCallback((value: boolean) => {
+    dispatch(setConfiguration(configuration.withPartialDownload(value)))
+  }, [])
+
   const clearLocalData = useCallback(() => {
     apiManager.post('/user/clear-local-data', null)
   }, [])
@@ -80,11 +84,19 @@ const UserConfigurationScreen = (): JSX.Element => {
           options={LANGUAGE_OPTIONS} onChange={handleLanguageSet} value={{value: language.key, label: language.name}}
         />
       </InputWithIcon>
+      <Title title={_("navigation")} />
       <InputWithIcon icon="keyboard" >
         <Switch onOff
-          enabledState={new SwitchState('toggle-on', true, _("switch.enabled"))}
-          disabledState={new SwitchState('toggle-off', false, _("switch.disabled"))}
+          enabledState={new SwitchState('toggle-on', true, _("keyboard.navigation.switch.enabled"))}
+          disabledState={new SwitchState('toggle-off', false, _("keyboard.navigation.switch.disabled"))}
           onSwitch={handleEnableKeyboard} initial={configuration.isKeyboardNavEnabled()}
+        />
+      </InputWithIcon>
+      <InputWithIcon icon="download" >
+        <Switch onOff
+          enabledState={new SwitchState('toggle-on', true, _("partial.download.switch.enabled"))}
+          disabledState={new SwitchState('toggle-off', false, _("partial.download.switch.disabled"))}
+          onSwitch={handleEnableFullDownloads} initial={configuration.isPartialDownloadEnabled()}
         />
       </InputWithIcon>
       { MediaUtils.isAndroidWebApp() &&
@@ -92,7 +104,7 @@ const UserConfigurationScreen = (): JSX.Element => {
           <Button title={_("user.configuration.clear.local.data")} onClick={clearLocalData} />
         </InputWithIcon>
       }
-      <Title title="Password" />
+      <Title title={_("password")} />
       <InputWithIcon icon="lock" >
         <TextInput type="password" placeHolder="user.configuration.password.placeholder" onInput={handlePassword(setFirstPassword)} />
       </InputWithIcon>
@@ -101,7 +113,7 @@ const UserConfigurationScreen = (): JSX.Element => {
       </InputWithIcon>
       { confirmationAlert && <StatusMessage message={_('user.configuration.password.not.equal.alert')} type={MessageType.WARNING} /> }
       <div id="postActions">
-        <Button icon="save" className="raised" disabled={confirmationAlert} onClick={saveInfo} title={_("user.configuration.save.button")} />
+        <Button icon="save" className="raised" disabled={confirmationAlert} onClick={saveInfo} title={_("user.configuration.password.save.button")} />
       </div>
     </Screen>
   )

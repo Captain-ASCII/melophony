@@ -118,6 +118,9 @@ export default class MediaManager {
 
       this.isPlayable = false
       this.audio.src = `${store.getState().configuration.getServerAddress()}/api/file/${track.getFile().getId()}/download/?jwt=${JWT.get()}`
+      if (!store.getState().configuration.isPartialDownloadEnabled()) {
+        this.audio.src += '&full=true'
+      }
       this.audio.currentTime = track.getStartTime()
 
       this.audio.ontimeupdate = (): void => {

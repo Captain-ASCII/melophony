@@ -1,6 +1,6 @@
 {
   "name": "melophony-front-end",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The front-end application of the Melophony application, built with React",
   "main": "index.js",
   "scripts": {

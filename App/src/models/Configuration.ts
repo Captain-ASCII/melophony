@@ -9,6 +9,7 @@ export default class Configuration {
   private displayType: string
   private language: string
   private keyboardNavEnabled: boolean
+  private partialDownloadEnabled: boolean
   private keys: Map<string, string>
 
   public constructor(
@@ -20,6 +21,7 @@ export default class Configuration {
     displayType: string,
     language: string,
     keyboardNavEnabled: boolean,
+    partialDownloadEnabled: boolean,
     keys: Map<string, string>
   ) {
     this.serverAddress = serverAddress
@@ -30,6 +32,7 @@ export default class Configuration {
     this.displayType = displayType
     this.language = language
     this.keyboardNavEnabled = keyboardNavEnabled
+    this.partialDownloadEnabled = partialDownloadEnabled
     this.keys = keys
   }
 
@@ -73,6 +76,11 @@ export default class Configuration {
     return this
   }
 
+  public withPartialDownload(enabled: boolean): Configuration {
+    this.partialDownloadEnabled = enabled
+    return this
+  }
+
   public withKeys(keysObject: any): Configuration {
     this.keys = new Map(Object.entries(keysObject))
     return this
@@ -108,6 +116,10 @@ export default class Configuration {
 
   public isKeyboardNavEnabled(): boolean {
     return this.keyboardNavEnabled
+  }
+
+  public isPartialDownloadEnabled(): boolean {
+    return this.partialDownloadEnabled
   }
 
   public getKey(key: string): string {
