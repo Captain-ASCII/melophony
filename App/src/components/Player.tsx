@@ -47,12 +47,20 @@ const Player = (): JSX.Element => {
     }
   }, [ dispatch, mediaManager, currentTrack, playlist ])
 
+  const rewind = useCallback(() => {
+    mediaManager.rewind()
+  }, [ dispatch, playlist ])
+
   const previous = useCallback(() => {
     dispatch(setPlaylistManager(playlist.previous()))
   }, [ dispatch, playlist ])
 
   const next = useCallback(() => {
     dispatch(setPlaylistManager(playlist.next()))
+  }, [ dispatch, playlist ])
+
+  const goForward = useCallback(() => {
+    mediaManager.goForward()
   }, [ dispatch, playlist ])
 
   const updateTime = useCallback((t) => {
@@ -68,9 +76,9 @@ const Player = (): JSX.Element => {
       <div id="bubble" />
       <div id="right" />
       <div id="controls">
-        <Button icon="backward" onClick={previous} />
+        <Button icon="backward" onClick={previous} onLongClick={rewind} />
         <Button id="playButton" icon={isPlaying ? 'pause' : 'play'} onClick={playPause} />
-        <Button icon="forward" onClick={next} />
+        <Button icon="forward" onClick={next} onLongClick={goForward} />
       </div>
       { currentTrack &&
         (

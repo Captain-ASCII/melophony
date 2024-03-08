@@ -178,6 +178,18 @@ export default class MediaManager {
     store.dispatch(setPlaylistManager(store.getState().app.playlist.next()))
   }
 
+  rewind(): void {
+    if (this.audio !== null) {
+      this.audio.currentTime -= 10
+    }
+  }
+
+  goForward(): void {
+    if (this.audio !== null) {
+      this.audio.currentTime += 10
+    }
+  }
+
   playPause(): void {
     if (this.audio !== null && this.audio.paused) {
       this.play()
