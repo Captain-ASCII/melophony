@@ -17,14 +17,14 @@ function inflate(): Configuration {
       const c: any = JSON.parse(jsonConfiguration)
       return new Configuration(
         c.serverAddress || 'https://melophony.ddns.net',
-        c.networkEnabled || true,
-        c.shuffleMode || true,
+        c.networkEnabled,
+        c.shuffleMode,
         c.sortType || 'date',
         c.sortOrder || 'ASC',
         c.displayType || 'itemList',
         c.language || EN_TRANSLATION_KEY,
-        c.keyboardNavEnabled || false,
-        c.partialDownloadEnabled || true,
+        c.keyboardNavEnabled,
+        c.partialDownloadEnabled,
         c.keys || new Map()
       )
     } catch (error) {
