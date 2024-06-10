@@ -15,7 +15,7 @@ function timeout<T>(ms: number, promise: Promise<T>): Promise<T> {
   })
 }
 
-const NETWORK_TIMEOUT = 15000
+const NETWORK_TIMEOUT = 30000
 
 interface QueryParams {
   [key: string]: string;

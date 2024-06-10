@@ -68,6 +68,15 @@ const TrackCreationScreen = (): JSX.Element => {
     setInternalArtistName(newArtistName)
   }, [setArtists])
 
+  const updateTracksInState = (updatedFiles: File[], trackData: any) => {
+    dispatch(setFiles(updatedFiles))
+    dispatch(setTracks(Arrays.add(tracks, Track.fromObject(trackData,
+      Arrays.toMap(artists, (artist) => artist.getId()),
+      Arrays.toMap(updatedFiles, (file) => file.getId())
+    ))))
+    history.goBack()
+  }
+
   const requestServerDownload = useCallback(() => {
     const trackRequest = {providerKey, title, artistName, artists, ...extraInfo}
 
@@ -89,14 +98,11 @@ const TrackCreationScreen = (): JSX.Element => {
                     artists = Arrays.add(allArtists, newArtist)
                     dispatch(setArtistsInState(artists))
                   }
-                  dispatch(setFiles(updatedFiles))
-                  dispatch(setTracks(Arrays.add(tracks, Track.fromObject(trackData,
-                    Arrays.toMap(artists, (artist) => artist.getId()),
-                    Arrays.toMap(updatedFiles, (file) => file.getId())
-                  ))))
-                  history.goBack()
+                  updateTracksInState(updatedFiles, trackData)
                 }
               })
+            } else {
+              updateTracksInState(updatedFiles, trackData)
             }
           }
         })
