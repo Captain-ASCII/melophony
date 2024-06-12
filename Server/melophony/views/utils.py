@@ -119,12 +119,13 @@ def delete_associated_image(instance):
 
 
 def replace_image(instance, directory, modifications):
-    imageUrl = modifications.get('imageUrl', None)
-    if imageUrl is not None and imageUrl != instance.imageUrl:
-        delete_associated_image(instance)
-        modifications['imageName'] = download_image(directory, imageUrl)
-    else:
-        del modifications['imageName']
+    if 'imageUrl' in modifications:
+        imageUrl = modifications.get('imageUrl', None)
+        if imageUrl != instance.imageUrl:
+            delete_associated_image(instance)
+            modifications['imageName'] = download_image(directory, imageUrl)
+        else:
+            del modifications['imageName']
 
     return modifications
 
