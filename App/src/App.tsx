@@ -74,7 +74,7 @@ const App = (): JSX.Element => {
     return objects.map((object: Artist | Playlist) => {
       const id = object.getId()
       const imageName = object.getImageName()
-      return <link key={id} rel="preload" href={`${configuration.getServerAddress()}/api/${type}/${id}/image/${imageName}?jwt=${token}`} as="image"></link>
+      return <link key={id} rel="prefetch" href={`${configuration.getServerAddress()}/api/${type}/${id}/image/${imageName}?jwt=${token}`} as="image"></link>
     })
   }, [])
 
@@ -140,8 +140,8 @@ const App = (): JSX.Element => {
           <ConfirmOverlay />
         </div>
       </Router>
-      { preloadImages('artist', artists) }
-      { preloadImages('playlist', playlists) }
+      { isAndroidWebApp && preloadImages('artist', artists) }
+      { isAndroidWebApp && preloadImages('playlist', playlists) }
     </>
   )
 }
