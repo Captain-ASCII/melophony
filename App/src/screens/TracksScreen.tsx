@@ -101,7 +101,7 @@ const TracksScreen = (): JSX.Element => {
   return (
     <div id="trackScreen" className="screen" >
       <div id="contentHeader">
-        <h1>{ _("tracks.title") }</h1>
+        <h1>{_("tracks.title")} <span id="tracksNumber">{tracks.length}</span></h1>
         <div id="toolBar">
           <div className="searchbar">
             <TextInput id="trackSearch" icon="search" initialValue={filter} placeHolder="tracks.search.placeholder" onInput={handleFilterSet} />

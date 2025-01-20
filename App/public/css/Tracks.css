@@ -1,4 +1,9 @@
 
+#tracksNumber {
+  font-size: 25px;
+  font-variant-position: super;
+}
+
 .trackListItem {
   padding: 10px;
 }
