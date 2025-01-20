@@ -41,41 +41,47 @@ class TrackViewSet(viewsets.ModelViewSet):
 
         file_id = str(uuid.uuid4())
         logging.info(f"Add file through provider: {provider}")
-        success, message, status = add_file_with_provider(provider, file_id, track_request, data)
-        if not success:
-            return response(err_status=status, err_message=message)
-
-        file = create_file_object({'fileId': file_id})
-
-        track_info = {
-            'title': track_request['title'] if 'title' in track_request else 'Default title',
-            'file': file.id,
-            'duration': track_request['duration'] if 'duration' in track_request else 0,
-            'startTime': 0,
-            'endTime': track_request['duration'] if 'duration' in track_request else 0,
-            'playCount': 0,
-            'rating': 0,
-            'progress': 0,
-        }
 
         # List object to allow thread mutability and result
-        output = [response({}, message='Creation in progress...', status=Status.CREATED)]
+        output = [response({}, message='Creation in progress...', status=Status.SUCCESS)]
 
-        def add_extra_info(track_request, data):
-            logging.info(f"Get file extra info from provider: {provider}")
-            title, duration = provider.get_extra_track_info(track_request, data)
-            if title is not None:
-                track_info['title'] = title
-            if duration is not None:
-                track_info['duration'] = duration
-                track_info['endTime'] = duration
+        def add_file():
+            success, message, status = add_file_with_provider(provider, file_id, track_request, data)
+            if not success:
+                output[0] = response(err_status=status, err_message=message)
 
-            logging.info(f"Done adding file with provider: {provider}")
-            output[0] = create_track(track_request, request.user, track_info, lambda track: self.get_serializer(track).data)
+            file = create_file_object({'fileId': file_id})
 
-        t = threading.Thread(target=add_extra_info, args=(track_request, data,))
-        t.start()
-        t.join(timeout=TIMEOUT_BEFORE_CREATION_IN_PROGRESS_RESPONSE)
+            track_info = {
+                'title': track_request['title'] if 'title' in track_request else 'Default title',
+                'file': file.id,
+                'duration': track_request['duration'] if 'duration' in track_request else 0,
+                'startTime': 0,
+                'endTime': track_request['duration'] if 'duration' in track_request else 0,
+                'playCount': 0,
+                'rating': 0,
+                'progress': 0,
+            }
+
+            def add_extra_info():
+                logging.info(f"Get file extra info from provider: {provider}")
+                title, duration = provider.get_extra_track_info(track_request, data)
+                if title is not None:
+                    track_info['title'] = title
+                if duration is not None:
+                    track_info['duration'] = duration
+                    track_info['endTime'] = duration
+
+                logging.info(f"Done adding file with provider: {provider}")
+                output[0] = create_track(track_request, request.user, track_info, lambda track: self.get_serializer(track).data)
+
+            extra_info_thread = threading.Thread(target=add_extra_info)
+            extra_info_thread.start()
+            extra_info_thread.join(timeout=TIMEOUT_BEFORE_CREATION_IN_PROGRESS_RESPONSE - 5)
+
+        file_add_thread = threading.Thread(target=add_file)
+        file_add_thread.start()
+        file_add_thread.join(timeout=TIMEOUT_BEFORE_CREATION_IN_PROGRESS_RESPONSE)
 
         return output[0]
 

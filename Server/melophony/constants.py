@@ -1,5 +1,6 @@
 
 class Status:
+    IN_PROGRESS = 102
     SUCCESS = 200
     CREATED = 201
     NO_CONTENT = 204
