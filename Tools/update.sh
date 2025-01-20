@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 echo "Update Melophony front-end"
 echo "=========================="
@@ -7,7 +7,9 @@ echo ""
 if [ "$EUID" -ne 0 ]; then
   echo "This script must be run as root"
   exit
-elif [ $# -ne 1 ]; then
+fi
+
+if [ $# -ne 1 ]; then
   echo "Hostname must be provided. Usage: sudo ./update.sh <hostname>"
   exit
 fi
