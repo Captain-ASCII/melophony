@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
+from melophony.constants import Message
 from melophony.utils import get_configuration
 
 HOSTNAME = get_configuration('hostname', 'melophony.ddns.net')
@@ -36,4 +37,19 @@ class CORSMiddleware:
         response['Access-Control-Allow-Origin'] = "*" if settings.DEBUG else f"https://{HOSTNAME}"
         response['Access-Control-Allow-Methods'] = ','.join(CORSMiddleware.ALLOWED_METHODS)
         response['Access-Control-Expose-Headers'] = ','.join(CORSMiddleware.ALLOWED_RESPONSE_HEADERS)
+        return response
+
+
+class MessageMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if 'Message' not in response:
+            message = Message.SUCCESS
+            if response.status_code == 404:
+                message = Message.NOT_FOUND
+
+            response['Message'] = message
         return response
