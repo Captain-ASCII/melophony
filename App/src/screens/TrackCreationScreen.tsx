@@ -68,10 +68,10 @@ const TrackCreationScreen = (): JSX.Element => {
     setInternalArtistName(newArtistName)
   }, [setArtists])
 
-  const updateTracksInState = (updatedFiles: File[], trackData: any) => {
+  const updateTracksInState = (updatedFiles: File[], updatedArtists: Artist[], trackData: any) => {
     dispatch(setFiles(updatedFiles))
     dispatch(setTracks(Arrays.add(tracks, Track.fromObject(trackData,
-      Arrays.toMap(artists, (artist) => artist.getId()),
+      Arrays.toMap(updatedArtists, (artist) => artist.getId()),
       Arrays.toMap(updatedFiles, (file) => file.getId())
     ))))
     history.goBack()
@@ -98,11 +98,11 @@ const TrackCreationScreen = (): JSX.Element => {
                     artists = Arrays.add(allArtists, newArtist)
                     dispatch(setArtistsInState(artists))
                   }
-                  updateTracksInState(updatedFiles, trackData)
+                  updateTracksInState(updatedFiles, artists, trackData)
                 }
               })
             } else {
-              updateTracksInState(updatedFiles, trackData)
+              updateTracksInState(updatedFiles, allArtists, trackData)
             }
           }
         })
