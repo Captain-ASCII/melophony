@@ -49,4 +49,4 @@ class TrackProvider(TrackProviderInterface):
             return False
 
         logging.info(f'File: (extension: {kind.extension}, MIME type: {kind.mime}')
-        return kind.mime == 'audio/mp4'
+        return kind.mime.startswith('audio/')
