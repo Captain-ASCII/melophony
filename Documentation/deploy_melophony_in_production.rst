@@ -70,11 +70,17 @@ SSL Certificate
 
 A certificate must be used in order to use HTTPS with Melophony. To create the certificate, follow this process:
 
+First open (temporarily) the port 80 and redirect the HTTP requests to the server.
+
+Run the following command to create / renew the certificate:
+
 .. code-block:: bash
 
     sudo certbot --nginx --rsa-key-size 4096 --no-redirect
 
 Once these steps have been done, the Melophony server should be available.
+
+Close the 80 port.
 
 Start & stop Melophony
 ======================
