@@ -1,5 +1,5 @@
 const common = require('./webpack.config.js')
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const path = require('path')
 const webpack = require('webpack')
 
@@ -9,10 +9,11 @@ module.exports = merge(common, {
           index: 'public/index.html'
         },
         host: '0.0.0.0',
-        contentBase: path.join(__dirname, '..'),
-        publicPath: 'http://0.0.0.0:1958/public',
+        static: {
+          directory: path.join(__dirname, '..')
+        },
         port: 1958,
-        hotOnly: true
+        hot: true
     },
     devtool: 'source-map',
     plugins: [new webpack.HotModuleReplacementPlugin()]

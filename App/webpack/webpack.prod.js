@@ -1,7 +1,6 @@
 const common = require('./webpack.config.js')
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const CompressionPlugin = require('compression-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
 
 module.exports = merge(common, {
     mode: 'production',
@@ -12,7 +11,11 @@ module.exports = merge(common, {
         threshold: 10240,
         minRatio: 0.7
       }),
-      new BrotliPlugin({
+      new CompressionPlugin({
+        algorithm: 'brotliCompress',
+        compressionOptions: {
+          level: 11,
+        },
         test: /\.js$|\.css$|\.html$/,
         threshold: 10240,
         minRatio: 0.7
