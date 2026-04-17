@@ -36,3 +36,28 @@ cp ${public_dir}/bundle.js /var/www/$hostname/public/
 cp ${public_dir}/App.min.css /var/www/$hostname/public/
 cp ${public_dir}/favicon.ico /var/www/$hostname/public/
 cp -r ${public_dir}/img/ /var/www/$hostname/public/
+
+# Optional: (re)install / renew Let's Encrypt certificate
+read -r -p "Do you want to (re)install/renew the Let's Encrypt certificate for $hostname? [y/N] " answer
+case "$answer" in
+  [Yy]*)
+    echo -e "\nWarning: port 80 must be open on your router (NAT) for certbot to validate the domain."
+    read -r -p "Confirm port 80 is open and you want to continue? [y/N] " confirm
+    case "$confirm" in
+      [Yy]*)
+        if ! command -v certbot >/dev/null 2>&1; then
+          echo "certbot is not installed. Install it with: apt install certbot python3-certbot-nginx"
+          exit 1
+        fi
+        echo "Running: certbot --nginx --rsa-key-size 4096 --no-redirect -d $hostname"
+        certbot --nginx --rsa-key-size 4096 --no-redirect -d "$hostname"
+        ;;
+      *)
+        echo "Certificate update cancelled."
+        ;;
+    esac
+    ;;
+  *)
+    echo "Skipping certificate update."
+    ;;
+esac

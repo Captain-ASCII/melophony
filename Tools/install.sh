@@ -9,6 +9,13 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
+apt-get install -y lsof nginx npm python3 python3-venv python3-certbot-nginx gunicorn libopenjp2-7
+
+if [ -e /etc/nginx/sites-enabled/default ]; then
+  echo "Disabling default Nginx site to avoid conflicts with Melophony."
+  rm -f /etc/nginx/sites-enabled/default
+fi
+
 script_dir=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 melophony_dir=${script_dir%"/Tools"}
 
